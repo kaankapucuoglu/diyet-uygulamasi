@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" translate="no">
 <head>
 <meta charset="UTF-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#16a36b">
 <link rel="manifest" href="manifest.webmanifest">
@@ -1444,7 +1445,7 @@ function ogunleriCiz(){
       return `<li class="item">
         <div class="item-row">
           <div class="item-info"><b>${esc(f.ad)}</b><small>${agirlik}${bilgi(besin(it.f, it.g))}</small></div>
-          <div class="gram"><button class="adim" data-arti="${oi},${ii}" data-yon="-1" aria-label="${T('dec')}">−</button><label class="val"><input type="text" inputmode="decimal" value="${sayi(it.g)}" data-gram="${oi},${ii}" aria-label="${T('amount')}"><span>${birimAd(f)}</span></label><button class="adim" data-arti="${oi},${ii}" data-yon="1" aria-label="${T('inc')}">+</button></div>
+          <div class="gram"><button class="adim" data-arti="${oi},${ii}" data-yon="-1" aria-label="${T('dec')}">−</button><label class="val"><input autocomplete="off" autocorrect="off" spellcheck="false" type="text" inputmode="decimal" value="${sayi(it.g)}" data-gram="${oi},${ii}" aria-label="${T('amount')}"><span>${birimAd(f)}</span></label><button class="adim" data-arti="${oi},${ii}" data-yon="1" aria-label="${T('inc')}">+</button></div>
         </div>
         <div class="item-acts">
           <button class="mini cmp" data-kiyas="${oi},${ii}">${T('compare')}</button>
@@ -1703,7 +1704,7 @@ function detayGorunumu(){
     <div class="hint">100 ${T('g')}: ${f.k} ${T('kcal')} · ${T('protein')} ${sayi(f.p)} · ${T('carb')} ${sayi(f.c)} · ${T('sugar')} ${sayi(f.s)} · ${T('fat')} ${sayi(f.y)} · ${T('fiber')} ${sayi(f.l)}${ip ? ' · ' + esc(ip) : ''}</div>
     <div class="stepper">
       <button data-adim="-1" aria-label="${T('dec')}">−</button>
-      <input id="gramIn" type="text" inputmode="decimal" value="${sayi(SE.g)}">
+      <input autocomplete="off" autocorrect="off" spellcheck="false" id="gramIn" type="text" inputmode="decimal" value="${sayi(SE.g)}">
       <button data-adim="1" aria-label="${T('inc')}">+</button>
     </div>
     <div class="hint" style="text-align:center" id="birimYazi"></div>
@@ -1732,10 +1733,10 @@ function detayGorunumu(){
   $('sbody').scrollTop = 0;
 }
 function ozelYemekFormu(){
-  const alan = (id, ad, ek = '') => `<label class="field"><span>${ad}</span><input id="${id}" type="text" inputmode="decimal" ${ek}></label>`;
+  const alan = (id, ad, ek = '') => `<label class="field"><span>${ad}</span><input autocomplete="off" autocorrect="off" spellcheck="false" id="${id}" type="text" inputmode="decimal" ${ek}></label>`;
   $('sbody').innerHTML = `<div class="det-name">${T('cTitle')}</div>
     <div class="hint" style="margin-bottom:12px">${T('cHint')}</div>
-    <label class="field"><span>${T('cName')}</span><input id="oAd" placeholder="${esc(T('cNamePh'))}"></label>
+    <label class="field"><span>${T('cName')}</span><input autocomplete="off" autocorrect="off" spellcheck="false" id="oAd" placeholder="${esc(T('cNamePh'))}"></label>
     <div class="grid2">
       ${alan('oK', T('tKcal'))}${alan('oP', T('tProtein'))}${alan('oC', T('tCarb'))}${alan('oS', T('sugar') + ' (' + T('g') + ')')}
       ${alan('oY', T('tFat'))}${alan('oL', T('fiber') + ' (' + T('g') + ')')}${alan('oA', T('cPiece'))}${alan('oD', T('cDefault'), 'value="100"')}
@@ -1790,7 +1791,7 @@ function dilListesi(sec){
 // ---------- Ayarlar ve yedek ----------
 function ayarlarAc(){
   const P = D.profil, h = P.hedef ? hedefHesapla(P) : null;
-  const alan = k => `<label class="field"><span>${T(HEDEF_ETIKET[k])}</span><input id="p_${k}" type="number" inputmode="numeric" value="${P[k]}"></label>`;
+  const alan = k => `<label class="field"><span>${T(HEDEF_ETIKET[k])}</span><input autocomplete="off" autocorrect="off" spellcheck="false" id="p_${k}" type="number" inputmode="numeric" value="${P[k]}"></label>`;
   ac(T('setTitle'), `
     <div class="sec" style="margin-top:0">${T('sProfile')}</div>
     <div class="cur"><b>${esc(P.ad || '—')}</b> · ${P.cins ? T(P.cins === 'k' ? 'female' : 'male') : ''} · ${P.yas} · ${P.boy} cm · ${sayi(P.kilo)} kg${h ? ` · ${T('bmi')} ${sayi(h.vki)}` : ''}<br>
@@ -1884,7 +1885,7 @@ function sihirbazKapat(){
 }
 const wStepper = (alan, etiketKey, adim) => `<div class="wfield"><label for="w_${alan}">${T(etiketKey)}</label>
   <div class="stepper"><button data-wadim="${alan}" data-yon="-${adim}" aria-label="${T('dec')}">−</button>
-  <input id="w_${alan}" data-wf="${alan}" type="text" inputmode="decimal" value="${sayi(W[alan])}">
+  <input autocomplete="off" autocorrect="off" spellcheck="false" id="w_${alan}" data-wf="${alan}" type="text" inputmode="decimal" value="${sayi(W[alan])}">
   <button data-wadim="${alan}" data-yon="${adim}" aria-label="${T('inc')}">+</button></div></div>`;
 const wOpt = (data, deger, sec, ic, baslik, alt = '', kapali = false) =>
   `<button class="opt${sec ? ' on' : ''}" data-${data}="${deger}"${kapali ? ' disabled' : ''}><span class="ic">${ic}</span><div><b>${baslik}</b>${alt ? `<small>${alt}</small>` : ''}</div></button>`;
@@ -1902,7 +1903,7 @@ function wCiz(){
     govde = `<div class="opts">${DILLER.map(d => wOpt('wdil', d.k, d.k === W.dil, d.k.toUpperCase(), d.ad).replace('class="ic"', 'class="ic kod"')).join('')}</div>`;
   } else if (ad === 'ad'){
     baslik = T('wNameT'); alt = T('wNameS');
-    govde = `<div class="wfield"><label for="wAd">${T('name')}</label><input class="wname" id="wAd" data-wf="ad" value="${esc(W.ad)}" placeholder="${esc(T('namePh'))}" autocomplete="given-name" maxlength="30"></div>
+    govde = `<div class="wfield"><label for="wAd">${T('name')}</label><input class="wname" id="wAd" data-wf="ad" value="${esc(W.ad)}" placeholder="${esc(T('namePh'))}" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" enterkeyhint="next" maxlength="30"></div>
       <div class="wsec">${T('gender')}</div>
       <div class="opts">${wOpt('wcins', 'e', W.cins === 'e', '👨', T('male'))}${wOpt('wcins', 'k', W.cins === 'k', '👩', T('female'))}</div>
       <div class="hint" style="margin-top:8px">${T('genderWhy')}</div>`;
