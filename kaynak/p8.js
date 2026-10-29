@@ -280,6 +280,7 @@ function baslat2(){
 D = tamamla(enYeni(lsOku(), gomuluOku()) || varsayilanDurum());
 baslat2();
 adresProgramKontrol();
+destekHatirlat();
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
 try { localStorage.setItem(ANAHTAR + '_test', '1'); localStorage.removeItem(ANAHTAR + '_test'); } catch(e){ depoCalisiyor = false; }
 idbOku().then(v => {

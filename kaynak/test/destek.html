@@ -1,0 +1,18 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Destek: titreme sınıfı, pazar hatırlatması (günde bir), "Destek oldum" sonrası hiç yok
+localStorage.clear();const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Ayşe',cins:'k',hamile:false,yas:32,boy:166,kilo:72,hedef:'ver',hedefKilo:64,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir()`);
+  L('titre: '+d.getElementById('destekBtn').classList.contains('titre')+' · animasyon '+w.getComputedStyle(d.getElementById('destekBtn')).animationName);
+  w.eval("destekHatirlat('2026-10-30')");await bekle(2800);L('cuma hatirlatma: '+d.getElementById('overlay').classList.contains('open'));
+  w.eval("destekHatirlat('2026-11-01')");await bekle(2800);L('pazar hatirlatma: '+d.getElementById('overlay').classList.contains('open')+' · '+(d.querySelector('#sbody .onay-metin')||{}).textContent);
+  d.getElementById('hatSonra').click();w.eval("destekHatirlat('2026-11-01')");await bekle(2800);L('ayni pazar tekrar: '+d.getElementById('overlay').classList.contains('open'));
+  w.eval("destekHatirlat('2026-11-08')");await bekle(2800);L('sonraki pazar: '+d.getElementById('overlay').classList.contains('open'));
+  d.getElementById('hatDestek').click();L('destek ac: tutar '+d.getElementById('tutarIn').value+' · verdim dugmesi '+!!d.querySelector('[data-verdim]'));
+  d.querySelector('[data-verdim]').click();L('verdim: flag '+w.eval('D.ayar.destekVerdi')+' · titre '+d.getElementById('destekBtn').classList.contains('titre'));
+  w.eval("destekHatirlat('2026-11-15')");await bekle(2800);L('destek sonrasi pazar: '+d.getElementById('overlay').classList.contains('open'));
+  w.eval('destekAc()');L('destek penceresi: '+(d.querySelector('#sbody .wmsg.info')||{}).textContent);
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_destek',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

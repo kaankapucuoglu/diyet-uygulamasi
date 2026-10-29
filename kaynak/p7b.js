@@ -109,6 +109,22 @@ function kopyala(metin, mesaj){
 }
 
 // ---------- Destek ol ----------
+// "Destek oldum" → düğme titremesi ve pazar hatırlatması kalıcı olarak kapanır
+function destekVerildi(){ D.ayar.destekVerdi = true; kaydet(); ciz(); toast(T('supThanks')); }
+// Pazar günleri ana ekranda kibar hatırlatma (günde bir kez; destek olana hiç gösterilmez)
+function destekHatirlat(bugun = bugunK()){
+  if (!D.ayar.kurulum || D.ayar.destekVerdi || haftaGunu(bugun) !== 6 || D.ayar.destekHatirlatma === bugun) return;
+  setTimeout(() => {
+    if ($('overlay').classList.contains('open') || !$('kurulum').hidden || !$('koc').hidden) return;
+    D.ayar.destekHatirlatma = bugun; kaydet();
+    ac('☕ ' + T('supRemT'), `<p class="onay-metin">${esc(T('supRemText'))}</p>
+      <div class="acts"><button class="btn ghost" id="hatSonra">${T('instLater')}</button><button class="btn solid" id="hatDestek">☕ ${T('supBtn')}</button></div>
+      <button class="btn ghost full" style="margin-top:8px" id="hatVerdim">${T('supDone')}</button>`);
+    $('hatSonra').onclick = kapat;
+    $('hatDestek').onclick = destekAc;
+    $('hatVerdim').onclick = () => { kapat(); destekVerildi(); };
+  }, 2500);
+}
 const DESTEK = {iban:'TR37 0015 7000 0000 0091 2185 43', ad:'Kaan Kapucuoğlu', banka:'Npara'};
 let destekTutar = 200;
 function destekAc(){
@@ -123,7 +139,8 @@ function destekAc(){
       ${satir('tutar', T('supAmount'), destekTutar + ' ₺')}${satir('aciklama', T('supDesc'), T('supDescVal'), false)}
       <button class="btn solid full" style="margin-top:10px" data-kopya="hepsi">${T('supCopyAll')}</button>
       <div class="tip" style="margin-top:12px">${esc(T('supHow'))}</div>
-      <div class="hint" style="margin-top:8px">${esc(T('supForeign'))}</div>`;
+      <div class="hint" style="margin-top:8px">${esc(T('supForeign'))}</div>
+      ${D.ayar.destekVerdi ? `<div class="wmsg info" style="margin-top:12px">${esc(T('supThanks'))}</div>` : `<button class="btn ghost full" style="margin-top:12px" data-verdim="1">${T('supDone')}</button>`}`;
     $('tutarIn').addEventListener('change', e => { destekTutar = sinirla(Math.round(+String(e.target.value).replace(/\D/g, '')) || 200, 10, 100000); ciz2(); });
   };
   ac(T('supTitle'));
@@ -131,6 +148,7 @@ function destekAc(){
   $('sbody').onclick = e => {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.tutar){ destekTutar = +b.dataset.tutar; ciz2(); return; }
+    if (b.dataset.verdim){ destekVerildi(); kapat(); return; }
     if (b.dataset.tadim){ destekTutar = sinirla(destekTutar + (+b.dataset.tadim), 10, 100000); ciz2(); return; }
     const k = b.dataset.kopya; if (!k) return;
     const deger = {iban: DESTEK.iban.replace(/\s/g, ''), ad: DESTEK.ad, banka: DESTEK.banka, tutar: String(destekTutar), aciklama: T('supDescVal'),

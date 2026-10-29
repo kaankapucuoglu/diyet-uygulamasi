@@ -383,6 +383,10 @@ body.klavye .toast{display:none}
 .saat-in{font-size:22px;font-weight:800;text-align:center;height:56px}
 .tool-btn.destek{background:#fff8e8;border-color:#f5dfb0}
 .tool-btn.destek small{color:#8a5a0c}
+/* Destek düğmesi ara sıra hafifçe titrer (destek olana ve hareket azaltma açıkken titremez) */
+.tool-btn.destek.titre{animation:titre 8s ease-in-out 4s infinite}
+@keyframes titre{0%,86%,100%{transform:none}88%{transform:rotate(-5deg) scale(1.05)}90%{transform:rotate(5deg) scale(1.05)}92%{transform:rotate(-4deg) scale(1.03)}94%{transform:rotate(3deg)}96%{transform:rotate(-1deg)}98%{transform:none}}
+@media (prefers-reduced-motion:reduce){ .tool-btn.destek.titre{animation:none} }
 /* Destek */
 .kopya-satir{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:#fbfcfe}
 .kopya-satir div{flex:1;min-width:0}
@@ -1062,6 +1066,10 @@ Object.assign(S, {
   wSaatHint:["Saate dokunup değiştirebilirsin. Ara öğün saatleri ana öğünlere göre kendiliğinden ayarlanır; istersen onları da değiştir.","Tap a time to change it. Snack times follow your main meals automatically; you can change them too.","Нажмите на время, чтобы изменить. Перекусы подстраиваются под основные приёмы пищи; их тоже можно изменить.","Tippe auf eine Uhrzeit, um sie zu ändern. Snacks richten sich nach den Hauptmahlzeiten; du kannst sie auch ändern.","اضغط على الوقت لتغييره. تُضبط الوجبات الخفيفة تلقائياً حسب الوجبات الرئيسية، ويمكنك تغييرها أيضاً."],
   tartiUlasti:["🎉 Hedefine ulaştın!","🎉 You reached your goal!","🎉 Цель достигнута!","🎉 Ziel erreicht!","🎉 وصلت إلى هدفك!"],
   tartiHedefK:["Hedef: {n} kg","Goal: {n} kg","Цель: {n} кг","Ziel: {n} kg","الهدف: {n} كغ"],
+  supRemT:["Küçük bir rica","A small favor","Небольшая просьба","Eine kleine Bitte","طلب صغير"],
+  supRemText:["Merhaba 😊 Diyet Listesi tamamen ücretsiz ve reklamsız. İşine yarıyorsa geliştiriciye küçük bir destekle bir kahve ısmarlayabilirsin ☕ Her destek yeni bir özellik olarak sana geri döner. Şimdiden teşekkürler! 🙏","Hi there 😊 Diet List is completely free and ad-free. If it helps you, you can buy the developer a coffee with a small support ☕ Every bit comes back to you as a new feature. Thank you! 🙏","Привет 😊 Diet List полностью бесплатный и без рекламы. Если приложение вам помогает, можно угостить разработчика кофе небольшой поддержкой ☕ Каждая поддержка возвращается новой функцией. Спасибо! 🙏","Hallo 😊 Diet List ist komplett kostenlos und werbefrei. Wenn dir die App hilft, kannst du dem Entwickler mit einer kleinen Unterstützung einen Kaffee spendieren ☕ Jede Unterstützung kommt als neue Funktion zu dir zurück. Danke! 🙏","مرحباً 😊 تطبيق قائمة الحمية مجاني تماماً وبلا إعلانات. إن كان مفيداً لك، يمكنك دعوة المطوّر على فنجان قهوة بدعم بسيط ☕ كل دعم يعود إليك ميزةً جديدة. شكراً لك! 🙏"],
+  supDone:["✅ Destek oldum","✅ I’ve already supported","✅ Я уже поддержал(а)","✅ Ich habe schon unterstützt","✅ لقد دعمت بالفعل"],
+  supThanks:["💚 Desteğin için çok teşekkürler! Artık hatırlatma göstermeyeceğiz.","💚 Thank you so much for your support! We won’t remind you again.","💚 Большое спасибо за поддержку! Больше не будем напоминать.","💚 Vielen Dank für deine Unterstützung! Wir erinnern dich nicht mehr.","💚 شكراً جزيلاً على دعمك! لن نذكّرك مرة أخرى."],
   sMore:["Diğer","More","Прочее","Weiteres","المزيد"],
   instNow:["Şimdi yükle","Install now","Установить","Jetzt installieren","ثبّت الآن"]
 });
@@ -2139,6 +2147,7 @@ function ciz(){
   $('baslik').textContent = selam();
   $('lAyar').textContent = T('settings'); $('lUyari').textContent = T('warnBtn');
   $('lKoc').textContent = T('kocBtn'); $('lDestek').textContent = T('supBtn');
+  $('destekBtn').classList.toggle('titre', !D.ayar.destekVerdi);
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
@@ -2941,6 +2950,22 @@ function kopyala(metin, mesaj){
 }
 
 // ---------- Destek ol ----------
+// "Destek oldum" → düğme titremesi ve pazar hatırlatması kalıcı olarak kapanır
+function destekVerildi(){ D.ayar.destekVerdi = true; kaydet(); ciz(); toast(T('supThanks')); }
+// Pazar günleri ana ekranda kibar hatırlatma (günde bir kez; destek olana hiç gösterilmez)
+function destekHatirlat(bugun = bugunK()){
+  if (!D.ayar.kurulum || D.ayar.destekVerdi || haftaGunu(bugun) !== 6 || D.ayar.destekHatirlatma === bugun) return;
+  setTimeout(() => {
+    if ($('overlay').classList.contains('open') || !$('kurulum').hidden || !$('koc').hidden) return;
+    D.ayar.destekHatirlatma = bugun; kaydet();
+    ac('☕ ' + T('supRemT'), `<p class="onay-metin">${esc(T('supRemText'))}</p>
+      <div class="acts"><button class="btn ghost" id="hatSonra">${T('instLater')}</button><button class="btn solid" id="hatDestek">☕ ${T('supBtn')}</button></div>
+      <button class="btn ghost full" style="margin-top:8px" id="hatVerdim">${T('supDone')}</button>`);
+    $('hatSonra').onclick = kapat;
+    $('hatDestek').onclick = destekAc;
+    $('hatVerdim').onclick = () => { kapat(); destekVerildi(); };
+  }, 2500);
+}
 const DESTEK = {iban:'TR37 0015 7000 0000 0091 2185 43', ad:'Kaan Kapucuoğlu', banka:'Npara'};
 let destekTutar = 200;
 function destekAc(){
@@ -2955,7 +2980,8 @@ function destekAc(){
       ${satir('tutar', T('supAmount'), destekTutar + ' ₺')}${satir('aciklama', T('supDesc'), T('supDescVal'), false)}
       <button class="btn solid full" style="margin-top:10px" data-kopya="hepsi">${T('supCopyAll')}</button>
       <div class="tip" style="margin-top:12px">${esc(T('supHow'))}</div>
-      <div class="hint" style="margin-top:8px">${esc(T('supForeign'))}</div>`;
+      <div class="hint" style="margin-top:8px">${esc(T('supForeign'))}</div>
+      ${D.ayar.destekVerdi ? `<div class="wmsg info" style="margin-top:12px">${esc(T('supThanks'))}</div>` : `<button class="btn ghost full" style="margin-top:12px" data-verdim="1">${T('supDone')}</button>`}`;
     $('tutarIn').addEventListener('change', e => { destekTutar = sinirla(Math.round(+String(e.target.value).replace(/\D/g, '')) || 200, 10, 100000); ciz2(); });
   };
   ac(T('supTitle'));
@@ -2963,6 +2989,7 @@ function destekAc(){
   $('sbody').onclick = e => {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.tutar){ destekTutar = +b.dataset.tutar; ciz2(); return; }
+    if (b.dataset.verdim){ destekVerildi(); kapat(); return; }
     if (b.dataset.tadim){ destekTutar = sinirla(destekTutar + (+b.dataset.tadim), 10, 100000); ciz2(); return; }
     const k = b.dataset.kopya; if (!k) return;
     const deger = {iban: DESTEK.iban.replace(/\s/g, ''), ad: DESTEK.ad, banka: DESTEK.banka, tutar: String(destekTutar), aciklama: T('supDescVal'),
@@ -3621,6 +3648,7 @@ function baslat2(){
 D = tamamla(enYeni(lsOku(), gomuluOku()) || varsayilanDurum());
 baslat2();
 adresProgramKontrol();
+destekHatirlat();
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
 try { localStorage.setItem(ANAHTAR + '_test', '1'); localStorage.removeItem(ANAHTAR + '_test'); } catch(e){ depoCalisiyor = false; }
 idbOku().then(v => {
