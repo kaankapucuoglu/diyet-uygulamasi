@@ -3,9 +3,10 @@ let W = null, wAdim = 0, wHata = '';
 const HEDEFLER = [['ver','🔥'],['sekil','🏋️'],['koru','⚖️'],['kas','💪'],['al','📈']];
 const odakAd = k => T(k === 'seker' ? 'g_seker' : 'o_' + k);
 const wAdimlar = () => ['dil','ad', ...(W.cins === 'k' ? ['hamile'] : []), 'olcu','hedef','aktivite',
-  ...(!W.hamile && (W.hedef === 'ver' || W.hedef === 'al') ? ['kilo'] : []), 'tercih','alerji','ozet'];
+  ...(!W.hamile && (W.hedef === 'ver' || W.hedef === 'al') ? ['kilo'] : []), 'tercih','alerji','saat','ozet'];
 function sihirbazAc(baslangic = 0){
   W = {...kopya(D.profil), dil: D.ayar.dil || 'tr', alerjiAra: ''};
+  const st = saatSeti(bugunK()); W.saatler = {kahvalti: st.kahvalti, ogle: st.ogle, aksam: st.aksam};
   if (W.cins !== 'k') W.hamile = false;
   // Alerji sorusu: kurulumu bitmiş kullanıcıda mevcut seçim, yeni kullanıcıda boş (seçmesi gerekir)
   W.alerjiVar = (W.alerjiler || []).length ? 'var' : D.ayar.kurulum ? 'yok' : '';
@@ -80,6 +81,11 @@ function wCiz(){
     govde = `<div class="opts">${wOpt('walerjivar', 'yok', W.alerjiVar === 'yok', '✅', T('alerjiYok'))}${wOpt('walerjivar', 'var', W.alerjiVar === 'var', '⚠️', T('alerjiVar'))}</div>`
       + (W.alerjiVar === 'var' ? `<div class="wfield" style="margin-top:12px"><input class="wname" id="wAlerjiAra" value="${esc(W.alerjiAra)}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
         <div class="al-sonuc" id="alSonuc"></div><div class="al-secili" id="alSecili"></div>` : '');
+  } else if (ad === 'saat'){
+    baslik = T('wSaatT'); alt = T('wSaatS');
+    if (!W.saatler){ const st = saatSeti(bugunK()); W.saatler = {kahvalti: st.kahvalti, ogle: st.ogle, aksam: st.aksam}; }
+    govde = `<div class="saat-grid">${['kahvalti','ogle','aksam'].map(id => `<div class="wfield" style="margin:0"><label for="ws_${id}">${OGUN_IKON[id]} ${T('m_' + id)}</label><input type="time" id="ws_${id}" data-wsaat="${id}" value="${W.saatler[id]}" step="300"></div>`).join('')}</div>
+      <ul class="saat-onizle" id="wSaatOn"></ul>`;
   } else {
     const h = hedefHesapla(W);
     baslik = T('wSumT', {ad: esc(wHitap())}); alt = T('wSumS');
@@ -105,7 +111,7 @@ function wCiz(){
     <div class="wiz-body">${govde}${wHata ? `<div class="wmsg err">${wHata}</div>` : ''}</div>
     <div class="wnav">${ilk ? '' : `<button class="btn ghost" data-wgeri="1">${T('back')}</button>`}<button class="btn ${son ? 'green' : 'solid'}" data-wileri="1">${son ? T('create') : T('next')}</button></div>
   </div>`;
-  wSureYaz(); alListeCiz();
+  wSureYaz(); alListeCiz(); wSaatOnizle();
   $('kurulum').scrollTop = 0;
 }
 // Alerji arama: sonuçlar ve seçilenler (yeniden çizmeden; arama kutusu odakta kalır)
@@ -123,6 +129,12 @@ function alListeCiz(){
     ? `<div class="wmsg warn" style="margin-top:10px"><b>🚫 ${T('alerjiSecili')}</b><div class="al-etiketler">${[...sec].map(id => `<button class="al-chip on" data-walerji="${id}">${esc(alerjen(id).ad)} ✕</button>`).join('')}</div></div>`
     : `<div class="hint" style="margin-top:10px">${T('alerjiBos')}</div>`;
 }
+// Saat adımı: ana öğünlere göre ara öğün saatlerinin önizlemesi
+function wSaatOnizle(){
+  const el = $('wSaatOn'); if (!el) return;
+  const s = {...W.saatler, ...araHesapla(W.saatler)};
+  el.innerHTML = ['kahvalti','ogle','ara1','aksam','gece'].map(id => `<li class="${id.startsWith('ara') || id === 'gece' ? 'ara' : ''}"><span>${OGUN_IKON[id]} ${T('m_' + id)}</span><b>${s[id]}</b></li>`).join('');
+}
 // Canlı alanlar: VKİ ve tahmini süre (input yazarken yeniden çizmeden)
 function wSureYaz(){
   const el = $('wSure');
@@ -135,13 +147,14 @@ function wDogrula(ad){
   if (ad === 'olcu' && !(W.yas >= 14 && W.yas <= 100 && W.boy >= 120 && W.boy <= 230 && W.kilo >= 30 && W.kilo <= 300)) return T('errBody');
   if (ad === 'hedef' && (!W.hedef || (vki(W) < 18.5 && (W.hedef === 'ver' || W.hedef === 'sekil')))) return W.hedef ? T('warnLow') : T('errGoal');
   if (ad === 'alerji' && !W.alerjiVar) return T('errGoal');
+  if (ad === 'saat' && !(dk(W.saatler.kahvalti) < dk(W.saatler.ogle) && dk(W.saatler.ogle) < dk(W.saatler.aksam))) return T('saatHata');
   if (ad === 'alerji' && W.alerjiVar === 'var' && !(W.alerjiler || []).length) return T('errAlerji');
   if (ad === 'kilo' && ((W.hedef === 'ver' && !(W.hedefKilo < W.kilo && W.hedefKilo >= 30)) || (W.hedef === 'al' && !(W.hedefKilo > W.kilo)))) return T('errTarget');
   return '';
 }
 function wBitir(){
   const h = hedefHesapla(W);
-  const {dil: secilenDil, alerjiAra, alerjiVar, ...profil} = W;
+  const {dil: secilenDil, alerjiAra, alerjiVar, saatler, ...profil} = W;
   profil.ad = profil.ad.trim();
   if (alerjiVar !== 'var') profil.alerjiler = [];
   // Profil düzenlemesinde hamilelik ve alerji değişikliklerini logla
@@ -153,10 +166,13 @@ function wBitir(){
   D.profil = {...profil, kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su};
   D.ayar.dil = secilenDil; D.ayar.kurulum = true;
   dil = secilenDil;
-  planYenile(); kaydet();
+  planYenile();
+  saatKaydet(bugunK(), {...saatler, ...araHesapla(saatler)});
+  kaydet();
   aktif = bugunK(); detayAcik = false;
   sihirbazKapat();
   toast('👋 ' + selam());
+  bekleyenProgramYukle();   // linkle gelen program: profil tamamlanınca otomatik yüklenir
 }
 $('kurulum').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || b.disabled) return;
@@ -170,7 +186,13 @@ $('kurulum').addEventListener('click', e => {
     wCiz(); return;
   }
   if (ds.wtri){ W.trimester = +ds.wtri; wCiz(); return; }
-  if (ds.walerjivar){ W.alerjiVar = ds.walerjivar; if (W.alerjiVar === 'yok') W.alerjiler = []; wHata = ''; wCiz(); if ($('wAlerjiAra')) $('wAlerjiAra').focus(); return; }
+  if (ds.walerjivar){
+    W.alerjiVar = ds.walerjivar; if (W.alerjiVar === 'yok') W.alerjiler = []; wHata = ''; wCiz();
+    // "Var": arama kutusu ve seçenekler ekranın üstüne gelsin (liste yarım kalmasın)
+    const kutu = $('wAlerjiAra');
+    if (kutu) requestAnimationFrame(() => $('kurulum').scrollTo({top: Math.max(0, kutu.closest('.wfield').offsetTop - 12), behavior:'smooth'}));
+    return;
+  }
   if (ds.walerji){
     const s = new Set(W.alerjiler || []); s.has(ds.walerji) ? s.delete(ds.walerji) : s.add(ds.walerji);
     W.alerjiler = [...s]; wHata = ''; alListeCiz(); return;
@@ -201,6 +223,7 @@ $('kurulum').addEventListener('click', e => {
 });
 $('kurulum').addEventListener('input', e => {
   if (e.target.id === 'wAlerjiAra'){ W.alerjiAra = e.target.value; alListeCiz(); return; }
+  if (e.target.dataset.wsaat){ if (/^\d\d:\d\d$/.test(e.target.value)){ W.saatler[e.target.dataset.wsaat] = e.target.value; wHata = ''; wSaatOnizle(); } return; }
   const alan = e.target.dataset.wf; if (!alan) return;
   W[alan] = alan === 'ad' ? e.target.value : Math.max(0, +String(e.target.value).replace(/[,٫]/g, '.') || 0);
   wSureYaz();
@@ -221,6 +244,7 @@ function baslat2(){
 }
 D = tamamla(enYeni(lsOku(), gomuluOku()) || varsayilanDurum());
 baslat2();
+adresProgramKontrol();
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
 try { localStorage.setItem(ANAHTAR + '_test', '1'); localStorage.removeItem(ANAHTAR + '_test'); } catch(e){ depoCalisiyor = false; }
 idbOku().then(v => {
@@ -252,7 +276,8 @@ if (window.visualViewport){
 }
 document.addEventListener('focusin', e => {
   if (!/^(INPUT|TEXTAREA)$/.test(e.target.tagName) || e.target.type === 'file') return;
-  setTimeout(() => { gorunenAlan(); e.target.scrollIntoView({block:'center', behavior:'smooth'}); }, 350);
+  // Alerji araması: kutu üstte kalsın ki seçenekler klavyenin üstünde görünsün
+  setTimeout(() => { gorunenAlan(); e.target.scrollIntoView({block: e.target.id === 'wAlerjiAra' ? 'start' : 'center', behavior:'smooth'}); }, 350);
 });
 document.addEventListener('focusout', () => setTimeout(gorunenAlan, 100));
 // Gece yarısını geçince "bugün" değişsin

@@ -119,12 +119,13 @@ function ciz(){
   $('baslik').textContent = selam();
   $('lGecmis').textContent = T('history'); $('lLog').textContent = T('logs'); $('lAyar').textContent = T('settings');
   $('lUyari').textContent = T('warnBtn'); $('lYaz').textContent = T('fbBtn');
-  const d = tarihDen(aktif);
+  $('lKoc').textContent = T('kocBtn'); $('lDestek').textContent = T('supBtn');
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
-  $('altBaslik').textContent = `${gunUzun(aktif)}, ${d.toLocaleDateString(LOC(), {day:'numeric', month:'long', year:'numeric'})} · ${hedef}${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg`;
-  gunleriCiz(); ozetCiz(); ogunleriCiz(); altCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz();
+  // Tarih zaten en üstte (saat satırında) yazıyor; burada yalnız hedef özeti
+  $('altBaslik').textContent = `${hedef}${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg`;
+  gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); altCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz(); programBantCiz(); yukleBantCiz();
   ustHizala();
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
@@ -183,9 +184,9 @@ function ozetCiz(){
         ${stat(T('fiber'), yuv(yenen.l), T('g'), P.lif, true)}
       </div>
       <div class="eaten-list">${yenenOgun.length
-        ? `<b>${T('eatenMeals', {n: yenenOgun.length, t: menu.length})}</b> ` + yenenOgun.map(o => `${esc(ogunAd(o))} ${o.saat}`).join(' · ')
+        ? `<b>${T('eatenMeals', {n: yenenOgun.length, t: menu.length})}</b> ` + yenenOgun.map(o => esc(ogunEt(aktif, o))).join(' · ')
         : T('noEaten')}</div>
-      <div class="acts"><button class="btn ${detayAcik ? 'ghost' : 'solid'}" data-detay="1">${detayAcik ? T('hideDetail') : T('showDetail')}</button></div>
+      <div class="tip" style="margin-top:12px">${esc(T('pastTip'))}</div>
     </div>`;
     return;
   }
@@ -218,7 +219,6 @@ function ozetCiz(){
     </div>`;
 }
 function ogunleriCiz(){
-  if (gecmisMi(aktif) && !detayAcik){ $('ogunler').innerHTML = ''; return; }
   const menu = menuOku(aktif), kay = kayitOku(aktif), gecmis = gecmisMi(aktif);
   $('ogunler').innerHTML = menu.map((o, oi) => {
     const t = topla(o.ogeler), yendi = !!kay.yendi[o.id];
@@ -237,12 +237,15 @@ function ogunleriCiz(){
         </div>
       </li>`;
     }).join('') : `<li class="empty">${T('noItems')}</li>`;
-    return `<article class="card meal${yendi ? ' eaten' : ''}">
+    const kapali = ogunKapali(o.id);
+    return `<article class="card meal${yendi ? ' eaten' : ''}${kapali ? ' kapali' : ''}">
       <div class="meal-head">
-        <div class="meal-ico">${o.ico}</div>
-        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span>${o.saat} · ${yuv(t.k)} ${T('kcal')} · ${T('aP')} ${yuv(t.p)} ${T('g')} · ${T('aS')} ${yuv(t.s)} ${T('g')}</span></div>
+        <div class="meal-ico">${o.ico || OGUN_IKON[o.id] || '🍽️'}</div>
+        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span><button class="saat-btn" data-saat="${oi}" title="${esc(T('saatEdit'))}" aria-label="${esc(T('saatEdit'))}">${ogunSaati(aktif, o)}</button> · ${yuv(t.k)} ${T('kcal')} · ${T('aP')} ${yuv(t.p)} ${T('g')} · ${T('aS')} ${yuv(t.s)} ${T('g')}</span></div>
         <button class="eat-btn" data-yedim="${oi}">${yendi ? T('ateDone') : (gecmis ? T('notEaten') : T('ate'))}</button>
+        <button class="tog-btn" data-tog="${esc(o.id)}" aria-expanded="${!kapali}" title="${esc(T(kapali ? 'showMeal' : 'hideMeal'))}"><i>${kapali ? '▾' : '▴'}</i><span class="lbl">${T(kapali ? 'showMeal' : 'hideMeal')}</span></button>
       </div>
+      ${o.not ? `<div class="ogun-not">📝 ${esc(o.not)}</div>` : ''}
       <ul class="items">${ogeler}</ul>
       <button class="add-food" data-ekle="${oi}">${T('addFood')}</button>
     </article>`;
@@ -264,10 +267,10 @@ function saatYaz(){
   $('saat').textContent = `${z.toLocaleDateString(LOC(), {day:'2-digit', month:'2-digit', year:'numeric'})} ${z.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})} ${z.toLocaleDateString(LOC(), {weekday:'long'})}`;
 }
 function altCiz(){
-  if (gecmisMi(aktif) && !detayAcik){ $('altIslem').innerHTML = ''; return; }
   const ozel = !!(D.kayit[aktif] && D.kayit[aktif].ogunler), gun = gunUzun(aktif);
   $('altIslem').innerHTML = `<button class="btn ghost" data-sablon="1">${T('makeDefault', {gun})}</button>`
-    + (ozel ? `<button class="btn ghost" data-sablondan="1">${T('revertDay', {gun})}</button>` : '');
+    + (ozel ? `<button class="btn ghost" data-sablondan="1">${T('revertDay', {gun})}</button>` : '')
+    + `<div class="tpl-ipucu">${esc(T('tplHint', {gun}))}</div>`;
 }
 
 // ---------- Değişiklik işlemleri (hepsi loglanır) ----------
@@ -284,8 +287,8 @@ function yedimDegis(oi){
   k.yendi[o.id] = !k.yendi[o.id];
   const t = topla(o.ogeler);
   logEkle('yedim', aktif, k.yendi[o.id]
-    ? T('lAte', {o: ogunAd(o), k: yuv(t.k), l: o.ogeler.map(i => yemek(i.f).ad + ' ' + miktarYazi(yemek(i.f), i.g)).join(', ') || '—'})
-    : T('lUnate', {o: ogunAd(o)}));
+    ? T('lAte', {o: ogunEt(aktif, o), k: yuv(t.k), l: o.ogeler.map(i => yemek(i.f).ad + ' ' + miktarYazi(yemek(i.f), i.g)).join(', ') || '—'})
+    : T('lUnate', {o: ogunEt(aktif, o)}));
   kaydet(); ciz();
 }
 function ogeEkle(oi, f, g){
@@ -339,6 +342,15 @@ function sonSecilenler(ogunId){
   const puan = {};
   D.planlar.flat().forEach(gun => gun.filter(o => o.id === ogunId).forEach(o => o.ogeler.forEach(it => puan[it.f] = (puan[it.f] || 0) + 1)));
   for (const [f, v] of Object.entries(D.son[ogunId] || {})) puan[f] = (puan[f] || 0) + v.n * 10 + v.t / 1e14;
+  // Öğüne uygun yaygın seçenekler: kullanıcının kendi seçimlerinden sonra gelir (yazmadan dokunarak seçebilsin)
+  (OGUN_ONERI[ogunId] || OGUN_ONERI.ara1).forEach((f, i) => puan[f] = (puan[f] || 0) + 0.9 - i * 0.005);
   const varOlan = new Set(tumYemekler().map(f => f.id));
-  return Object.entries(puan).filter(([f]) => varOlan.has(f)).sort((a, b) => b[1] - a[1]).slice(0, 15).map(([f]) => f);
+  return Object.entries(puan).filter(([f]) => varOlan.has(f)).sort((a, b) => b[1] - a[1]).slice(0, 45).map(([f]) => f);
+}
+// Kategori listelerinde sıra: en çok seçtiklerin, sonra Türkiye'de en sık yenenler, sonra ada göre
+const POP_SIRA = new Map(POPULER.map((id, i) => [id, i]));
+function populerPuan(f){
+  let n = 0;
+  for (const s of Object.values(D.son || {})) if (s[f.id]) n += s[f.id].n;
+  return n * 1000 + (POP_SIRA.has(f.id) ? 500 - POP_SIRA.get(f.id) : 0);
 }

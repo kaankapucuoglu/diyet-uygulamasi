@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="tr" translate="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="google" content="notranslate">
+<meta name="theme-color" content="#16a36b">
+<title>Diyet Listesi · Ücretsiz kişisel diyet planı uygulaması</title>
+<meta name="description" content="Ücretsiz, reklamsız kişisel diyet planı: öğün öğün menü, su takibi, besin kıyaslama, alerji ve hamilelik desteği, diyetisyenler için program linki. İnternetsiz de çalışır.">
+<meta property="og:title" content="Diyet Listesi · Kişisel diyet planı">
+<meta property="og:description" content="Ücretsiz, reklamsız, internetsiz çalışan diyet planı uygulaması. 5 dil.">
+<meta property="og:image" content="https://diyet.maviplay.com/img/og.png">
+<meta property="og:url" content="https://diyet.maviplay.com/">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="/app/icons/icon.svg">
+<link rel="apple-touch-icon" href="/app/icons/apple-touch-icon.png">
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--line:#e3e9f1;--text:#132036;--muted:#5b6b82;--green:#13935f;--green2:#16a36b;--green-soft:#e5f6ee;--blue:#2563eb;--blue-soft:#eaf1ff;--gold:#b7791f;--gold-soft:#fdf3e2;--r:18px;
+  --shadow:0 1px 2px rgba(19,32,54,.05),0 10px 30px rgba(19,32,54,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{font-family:Inter,system-ui,"Segoe UI",Roboto,"Noto Sans Arabic",Tahoma,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-text-size-adjust:100%;overflow-x:hidden}
+a{color:var(--blue)}
+img{max-width:100%;display:block}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid #93b4f5;outline-offset:2px;border-radius:8px}
+.ic{width:22px;height:22px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* Üst çubuk */
+.nav{position:sticky;top:0;z-index:20;background:rgba(244,247,251,.86);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid rgba(227,233,241,.8)}
+.nav .wrap{display:flex;align-items:center;gap:12px;min-height:62px;padding-top:max(0px,env(safe-area-inset-top))}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--text);text-decoration:none;margin-inline-end:auto}
+.brand img{width:34px;height:34px;border-radius:9px}
+.langs{display:flex;gap:4px}
+.langs button{font:inherit;font-size:12.5px;font-weight:700;min-width:40px;min-height:36px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.langs button[aria-pressed=true]{background:var(--blue);border-color:var(--blue);color:#fff}
+/* Kahraman */
+.hero{padding:56px 0 40px;background:radial-gradient(900px 420px at 85% 0%,#d9f3e7 0%,transparent 60%),radial-gradient(800px 380px at 0% 10%,#e3ecff 0%,transparent 60%)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--green);background:var(--green-soft);padding:6px 12px;border-radius:99px}
+h1{font-size:clamp(32px,5vw,54px);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin:16px 0 14px}
+h1 em{font-style:normal;color:var(--green2)}
+.lead{font-size:clamp(16px,1.6vw,19px);color:var(--muted);max-width:560px}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:0 20px;border-radius:14px;font:inherit;font-weight:700;font-size:15.5px;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .12s,box-shadow .2s}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--green2);color:#fff;box-shadow:0 8px 20px rgba(22,163,107,.28)}
+.btn.pri:hover{background:var(--green)}
+.btn.sec{background:var(--card);color:var(--text);border-color:var(--line);box-shadow:var(--shadow)}
+.btn.sec:hover{border-color:#c9d5e6}
+.facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;color:var(--muted);font-size:14px;font-weight:600}
+.facts span{display:inline-flex;align-items:center;gap:6px}
+.facts .ic{width:18px;height:18px;color:var(--green2)}
+.shots{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:18px;min-height:420px}
+.phone{width:min(250px,44vw);border-radius:34px;padding:9px;background:#0f1a2c;box-shadow:0 30px 60px rgba(19,32,54,.25)}
+.phone img{border-radius:26px;width:100%;height:auto;aspect-ratio:390/844;object-fit:cover;object-position:top;background:#eef2f7}
+.phone.b{transform:translateY(-34px)}
+/* Bölümler */
+section{padding:64px 0}
+.sec-head{max-width:720px;margin-bottom:30px}
+.sec-head h2{font-size:clamp(26px,3.2vw,36px);letter-spacing:-.02em;line-height:1.15;margin-bottom:10px}
+.sec-head p{color:var(--muted);font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);min-width:0}
+.feat .fi{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:var(--green-soft);color:var(--green2);margin-bottom:14px}
+.feat:nth-child(3n+2) .fi{background:var(--blue-soft);color:var(--blue)}
+.feat:nth-child(3n) .fi{background:var(--gold-soft);color:var(--gold)}
+.feat h3{font-size:17.5px;margin-bottom:6px}
+.feat p{color:var(--muted);font-size:15px}
+/* Galeri */
+.gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.gallery figure{text-align:center}
+.gallery .phone{width:100%;max-width:240px;margin:0 auto}
+.gallery figcaption{margin-top:12px;font-weight:700;font-size:14.5px;color:var(--muted)}
+.pc{margin-top:34px;border-radius:16px;border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;background:#fff}
+.pc .bar{display:flex;gap:6px;padding:10px 14px;background:#eef2f7;border-bottom:1px solid var(--line)}
+.pc .bar i{width:11px;height:11px;border-radius:50%;background:#cfd8e5}
+.pc img{width:100%;height:auto}
+/* Koç */
+.coach{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.steps{list-style:none;counter-reset:s;display:grid;gap:12px}
+.steps li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.steps li::before{content:counter(s);flex:none;width:30px;height:30px;border-radius:50%;background:var(--green2);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+.steps b{display:block}
+.steps span{color:var(--muted);font-size:14.5px}
+/* Yükleme */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tab{font:inherit;font-weight:700;font-size:15px;min-height:46px;padding:0 18px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.tab[aria-selected=true]{background:var(--text);border-color:var(--text);color:#fff}
+.panel{display:none}
+.panel.on{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:start}
+.panel ol{padding-inline-start:0;list-style:none;counter-reset:a;display:grid;gap:10px}
+.panel ol li{counter-increment:a;display:flex;gap:12px;font-size:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px}
+.panel ol li::before{content:counter(a);flex:none;width:28px;height:28px;border-radius:9px;background:var(--blue-soft);color:var(--blue);font-weight:800;display:grid;place-items:center;font-size:14px}
+.panel .side{display:grid;gap:10px}
+.note{font-size:14px;color:var(--muted);background:var(--card);border:1px dashed #c9d5e6;border-radius:14px;padding:14px 16px}
+/* KVKK */
+.kvkk{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow)}
+.kvkk h3{font-size:16.5px;margin:18px 0 6px}
+.kvkk h3:first-child{margin-top:0}
+.kvkk p,.kvkk li{color:#3c4b62;font-size:15px}
+.kvkk ul{padding-inline-start:20px;display:grid;gap:4px}
+footer{padding:34px 0 calc(34px + env(safe-area-inset-bottom));color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+footer .sp{margin-inline-start:auto}
+@media (max-width:900px){
+  .hero .wrap,.coach,.panel.on{grid-template-columns:1fr}
+  .shots{min-height:0;margin-top:6px}
+  .gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .hero{padding-top:30px}
+  .langs button{min-width:36px;font-size:12px}
+  .brand span{display:none}
+  .phone{width:44vw;border-radius:26px;padding:6px}
+  .phone img{border-radius:21px}
+  .phone.b{transform:translateY(-20px)}
+  .btn{width:100%}
+  section{padding:46px 0}
+  .gallery{gap:12px}
+}
+</style>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+  <a class="brand" href="/"><img src="/app/icons/icon-192.png" alt="" width="34" height="34"><span data-t="name"></span></a>
+  <nav class="langs" id="langs" aria-label="Language"></nav>
+</div></header>
+
+<main>
+<div class="hero"><div class="wrap">
+  <div>
+    <span class="eyebrow"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M20 6 9 17l-5-5"/></svg><span data-t="badge"></span></span>
+    <h1 data-t="h1" data-html="1"></h1>
+    <p class="lead" data-t="lead"></p>
+    <div class="ctas">
+      <a class="btn pri" href="/app/"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span data-t="open"></span></a>
+      <button class="btn sec" id="installBtn" type="button"><svg class="ic" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg><span data-t="install"></span></button>
+      <a class="btn sec" href="/app/index.html" download="Diyet-Listesi.html"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span data-t="download"></span></a>
+    </div>
+    <div class="facts">
+      <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span data-t="f1"></span></span>
+      <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span data-t="f2"></span></span>
+      <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span data-t="f3"></span></span>
+      <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span data-t="f4"></span></span>
+    </div>
+  </div>
+  <div class="shots" aria-hidden="true">
+    <div class="phone"><img src="/img/tel-ana.png" alt="" width="390" height="844" loading="eager"></div>
+    <div class="phone b"><img src="/img/tel-ogun.png" alt="" width="390" height="844"></div>
+  </div>
+</div></div>
+
+<section id="ozellikler"><div class="wrap">
+  <div class="sec-head"><h2 data-t="featT"></h2><p data-t="featS"></p></div>
+  <div class="grid">
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M3 11h18M5 11a7 7 0 0 0 14 0M9 4c0 2 1 3 3 3s3-1 3-3"/></svg></div><h3 data-t="c1t"></h3><p data-t="c1"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2.7s6 6.3 6 11.3a6 6 0 0 1-12 0c0-5 6-11.3 6-11.3z"/></svg></div><h3 data-t="c2t"></h3><p data-t="c2"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M8 3H5v18h3M16 3h3v18h-3M9 12h6M12 9l3 3-3 3"/></svg></div><h3 data-t="c3t"></h3><p data-t="c3"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg></div><h3 data-t="c4t"></h3><p data-t="c4"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3 data-t="c5t"></h3><p data-t="c5"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></div><h3 data-t="c6t"></h3><p data-t="c6"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12h3l3-8 4 16 3-8h7"/></svg></div><h3 data-t="c7t"></h3><p data-t="c7"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 3 21l9-4 9 4-2-8.5M12 3v14"/><circle cx="12" cy="7" r="0.5"/></svg></div><h3 data-t="c8t"></h3><p data-t="c8"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M2 5h20M2 12h20M2 19h20"/><path d="M8 2v6M16 9v6M12 16v6"/></svg></div><h3 data-t="c9t"></h3><p data-t="c9"></p></article>
+  </div>
+</div></section>
+
+<section id="ekranlar" style="padding-top:20px"><div class="wrap">
+  <div class="sec-head"><h2 data-t="galT"></h2><p data-t="galS"></p></div>
+  <div class="gallery">
+    <figure><div class="phone"><img src="/img/tel-ana.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g1"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/tel-kiyas.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g2"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/tel-koc.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g3"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/tel-sihirbaz.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g4"></figcaption></figure>
+  </div>
+  <div class="pc"><div class="bar"><i></i><i></i><i></i></div><img src="/img/pc.png" alt="" loading="lazy" width="1440" height="900"></div>
+</div></section>
+
+<section id="diyetisyen"><div class="wrap coach">
+  <div>
+    <div class="sec-head" style="margin-bottom:18px"><h2 data-t="coachT"></h2><p data-t="coachS"></p></div>
+    <ol class="steps">
+      <li><div><b data-t="s1t"></b><span data-t="s1"></span></div></li>
+      <li><div><b data-t="s2t"></b><span data-t="s2"></span></div></li>
+      <li><div><b data-t="s3t"></b><span data-t="s3"></span></div></li>
+    </ol>
+  </div>
+  <div class="phone" style="margin:0 auto"><img src="/img/tel-koc.png" alt="" loading="lazy" width="390" height="844"></div>
+</div></section>
+
+<section id="yukle"><div class="wrap">
+  <div class="sec-head"><h2 data-t="instT"></h2><p data-t="instS"></p></div>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="android" aria-selected="false"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="9" width="14" height="10" rx="2"/><path d="M8 9a4 4 0 0 1 8 0M8 5 7 3M16 5l1-2"/></svg>Android</button>
+    <button class="tab" role="tab" data-tab="ios" aria-selected="false"><svg class="ic" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg>iPhone / iPad</button>
+    <button class="tab" role="tab" data-tab="pc" aria-selected="false"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span data-t="pcTab"></span></button>
+  </div>
+  <div class="panel" data-panel="android"><ol data-t="andSteps" data-list="1"></ol><div class="side"><button class="btn pri js-install" type="button"><span data-t="installNow"></span></button><div class="note" data-t="andNote"></div></div></div>
+  <div class="panel" data-panel="ios"><ol data-t="iosSteps" data-list="1"></ol><div class="side"><a class="btn pri" href="/app/"><span data-t="open"></span></a><div class="note" data-t="iosNote"></div></div></div>
+  <div class="panel" data-panel="pc"><ol data-t="pcSteps" data-list="1"></ol><div class="side"><button class="btn pri js-install" type="button"><span data-t="installPc"></span></button><a class="btn sec" href="/app/index.html" download="Diyet-Listesi.html"><span data-t="download"></span></a><div class="note" data-t="pcNote"></div></div></div>
+</div></section>
+
+<section id="gizlilik" style="padding-top:20px"><div class="wrap">
+  <div class="sec-head"><h2 data-t="kvkkT"></h2><p data-t="kvkkS"></p></div>
+  <div class="kvkk" data-t="kvkk" data-html="1"></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <span>© 2026 maviplay · <span data-t="name"></span></span>
+  <a href="mailto:destek@maviplay.com">destek@maviplay.com</a>
+  <a href="#gizlilik" data-t="kvkkLink"></a>
+  <a class="sp" href="https://maviplay.com">maviplay.com</a>
+</div></footer>
+
+<script>
+const DIL = ['tr','en','ru','de','ar'];
+const AD = {tr:'Türkçe', en:'English', ru:'Русский', de:'Deutsch', ar:'العربية'};
+const M = {
+name:['Diyet Listesi','Diet Plan','План питания','Ernährungsplan','خطة غذائية'],
+badge:['Ücretsiz · Reklamsız · Üyelik yok','Free · No ads · No sign-up','Бесплатно · Без рекламы · Без регистрации','Kostenlos · Werbefrei · Ohne Anmeldung','مجاني · بلا إعلانات · بلا تسجيل'],
+h1:['Sana özel diyet planı, <em>öğün öğün</em> cebinde.','Your personal diet plan, <em>meal by meal</em>, in your pocket.','Ваш план питания — <em>по приёмам пищи</em>, всегда под рукой.','Dein persönlicher Ernährungsplan, <em>Mahlzeit für Mahlzeit</em>, immer dabei.','خطتك الغذائية الشخصية، <em>وجبة بوجبة</em>، في جيبك.'],
+lead:['Yaşın, boyun, kilon ve hedefine göre 4 haftalık menü hazırlar. Yediklerini, suyunu ve besin değerlerini takip et; yemekleri tek dokunuşla değiştir, kıyasla. İnternetsiz de çalışır, verilerin yalnızca senin cihazında kalır.','Builds a 4-week menu from your age, height, weight and goal. Track meals, water and nutrients; swap and compare foods with one tap. Works offline, and your data stays on your device.','Составляет меню на 4 недели по возрасту, росту, весу и цели. Отмечайте еду, воду и нутриенты; меняйте и сравнивайте блюда одним касанием. Работает без интернета, данные остаются на устройстве.','Erstellt einen 4-Wochen-Plan nach Alter, Größe, Gewicht und Ziel. Mahlzeiten, Wasser und Nährwerte verfolgen; Lebensmittel mit einem Tipp tauschen und vergleichen. Funktioniert offline, Daten bleiben auf deinem Gerät.','تُعدّ قائمة لأربعة أسابيع حسب عمرك وطولك ووزنك وهدفك. تابع وجباتك والماء والعناصر الغذائية، وبدّل الأطعمة وقارنها بلمسة. تعمل دون إنترنت وتبقى بياناتك على جهازك.'],
+open:['Uygulamayı aç','Open the app','Открыть приложение','App öffnen','افتح التطبيق'],
+install:['Telefona yükle','Install on phone','Установить на телефон','Aufs Handy installieren','ثبّت على الهاتف'],
+download:['Bilgisayara indir (HTML)','Download for PC (HTML)','Скачать для ПК (HTML)','Für PC herunterladen (HTML)','تنزيل للكمبيوتر (HTML)'],
+f1:['5 dil','5 languages','5 языков','5 Sprachen','5 لغات'],
+f2:['İnternetsiz çalışır','Works offline','Работает офлайн','Funktioniert offline','يعمل دون إنترنت'],
+f3:['340+ yemek','340+ foods','340+ блюд','340+ Lebensmittel','+340 طعاماً'],
+f4:['Verin cihazında','Data stays on device','Данные на устройстве','Daten bleiben lokal','بياناتك على جهازك'],
+featT:['Neler yapabilirsin?','What can you do?','Что умеет приложение?','Was kann die App?','ماذا يمكنك أن تفعل؟'],
+featS:['Kısa bir kurulumdan sonra plan hazır. Gerisi dokunarak seçmek.','A short setup and your plan is ready. After that, just tap to choose.','Короткая настройка — и план готов. Дальше просто выбирайте касанием.','Kurze Einrichtung, und dein Plan steht. Danach nur noch antippen.','إعداد قصير وتصبح خطتك جاهزة. بعدها اختر باللمس فقط.'],
+c1t:['Öğün öğün menü','Meal-by-meal menu','Меню по приёмам пищи','Menü pro Mahlzeit','قائمة لكل وجبة'],
+c1:['Kahvaltı, öğle, akşam ve ara öğünler; Türk mutfağından 340’tan fazla yemek, kuruyemiş ve kurutulmuş meyve.','Breakfast, lunch, dinner and snacks, with 340+ foods from Turkish cuisine plus nuts and dried fruit.','Завтрак, обед, ужин и перекусы: более 340 блюд турецкой кухни, орехи и сухофрукты.','Frühstück, Mittag, Abend und Snacks: über 340 Gerichte der türkischen Küche, Nüsse und Trockenobst.','فطور وغداء وعشاء ووجبات خفيفة، مع أكثر من 340 طعاماً من المطبخ التركي والمكسرات والفواكه المجففة.'],
+c2t:['Su ve hedef takibi','Water & target tracking','Вода и цели','Wasser & Ziele','الماء والأهداف'],
+c2:['Kalori, protein, karbonhidrat, şeker, yağ ve lif hedefleri; aşınca uyarır, tamamlayınca kutlar.','Calorie, protein, carb, sugar, fat and fibre targets. You get a warning when you go over and a cheer when you hit a target.','Цели по калориям, белкам, углеводам, сахару, жирам и клетчатке; предупреждает о превышении.','Ziele für Kalorien, Eiweiß, Kohlenhydrate, Zucker, Fett und Ballaststoffe; warnt bei Überschreitung.','أهداف السعرات والبروتين والكربوهيدرات والسكر والدهون والألياف، مع تنبيه عند التجاوز.'],
+c3t:['Değiştir ve kıyasla','Swap & compare','Замена и сравнение','Tauschen & vergleichen','بدّل وقارن'],
+c3:['Bir yemeği benzeriyle değiştir; protein, şeker ve kalori farkını renkli olarak gör.','Swap a food for a similar one and see the protein, sugar and calorie difference in colour.','Замените блюдо похожим и увидите разницу белков, сахара и калорий в цвете.','Tausche ein Lebensmittel gegen ein ähnliches und sieh Unterschiede farbig.','بدّل طعاماً بآخر مشابه وشاهد الفرق في البروتين والسكر والسعرات بالألوان.'],
+c4t:['Alerji ve tercih','Allergies & preferences','Аллергии и предпочтения','Allergien & Vorlieben','الحساسية والتفضيلات'],
+c4:['Alerjen içeren yemekler hiç önerilmez. Vejetaryen, vegan; kan şekeri, tansiyon, kolesterol odakları.','Foods with your allergens are never suggested. Vegetarian and vegan options, plus blood sugar, blood pressure and cholesterol modes.','Блюда с аллергенами не предлагаются. Вегетарианство, веганство; сахар, давление, холестерин.','Lebensmittel mit Allergenen werden nie vorgeschlagen. Vegetarisch, vegan; Blutzucker, Blutdruck, Cholesterin.','لا تُقترح الأطعمة المسببة لحساسيتك أبداً. نباتي ونباتي صرف، وتركيز على السكر والضغط والكوليسترول.'],
+c5t:['Öğün saatlerin','Your meal times','Ваше время еды','Deine Essenszeiten','مواعيد وجباتك'],
+c5:['Kahvaltı, öğle ve akşam saatini seç; ara öğünler otomatik ayarlanır. Değişiklikler geçmişi bozmaz.','Pick breakfast, lunch and dinner times; snacks are set automatically. Changes never alter your history.','Выберите время основных приёмов пищи — перекусы расставятся сами. История не меняется.','Wähle die Hauptmahlzeiten; Snacks werden automatisch gesetzt. Der Verlauf bleibt unverändert.','اختر مواعيد الوجبات الرئيسية وتُضبط الوجبات الخفيفة تلقائياً، دون تغيير السجل.'],
+c6t:['Diyetisyen linki','Dietitian link','Ссылка от диетолога','Link vom Ernährungsberater','رابط أخصائي التغذية'],
+c6:['Diyetisyenin ya da antrenörün hazırladığı program bir linkle gelir, tek onayla uygulamana yüklenir.','A plan from your dietitian or coach arrives as a link and loads into your app with one confirmation.','План от диетолога или тренера приходит ссылкой и загружается одним подтверждением.','Ein Plan vom Berater oder Trainer kommt als Link und wird mit einer Bestätigung geladen.','تصلك خطة أخصائي التغذية أو المدرب برابط وتُحمَّل بتأكيد واحد.'],
+c7t:['Hamilelik desteği','Pregnancy support','Поддержка беременности','Schwangerschaft','دعم الحمل'],
+c7:['Trimestere göre kalori, protein ve su ihtiyacı; hamilelikte önerilmeyen yiyecekler listeden çıkar.','Calorie, protein and water needs adjusted by trimester; foods not advised in pregnancy are left out.','Калории, белок и вода по триместрам; нерекомендуемые продукты исключаются.','Kalorien, Eiweiß und Wasser je Trimester; nicht empfohlene Lebensmittel werden ausgelassen.','احتياجات السعرات والبروتين والماء حسب الثلث، مع استبعاد الأطعمة غير المناسبة للحمل.'],
+c8t:['Geçmiş ve kayıtlar','History & logs','История и журнал','Verlauf & Protokoll','السجل والتاريخ'],
+c8:['Her günün özeti saklanır; ne zaman neyi değiştirdiğin adım adım kayıtlıdır.','Every day’s summary is kept, and each change you make is logged step by step.','Итоги каждого дня сохраняются; все изменения записаны по шагам.','Jede Tagesübersicht bleibt erhalten; jede Änderung wird protokolliert.','يُحفظ ملخص كل يوم وتُسجَّل كل تغييراتك خطوة بخطوة.'],
+c9t:['5 dil, her cihaz','5 languages, any device','5 языков, любое устройство','5 Sprachen, jedes Gerät','5 لغات وأي جهاز'],
+c9:['Türkçe, İngilizce, Rusça, Almanca, Arapça. Telefon, tablet ve bilgisayarda aynı düzen.','Turkish, English, Russian, German and Arabic. Same layout on phone, tablet and computer.','Турецкий, английский, русский, немецкий, арабский. Телефон, планшет и ПК.','Türkisch, Englisch, Russisch, Deutsch, Arabisch. Handy, Tablet und PC.','التركية والإنجليزية والروسية والألمانية والعربية، على الهاتف واللوح والكمبيوتر.'],
+galT:['Ekranlardan','Screenshots','Скриншоты','Screenshots','لقطات من التطبيق'],
+galS:['Sade, büyük dokunma alanları; telefonda tek elle kullanılır.','Clean design with big touch targets; easy to use with one hand.','Простой дизайн и крупные кнопки — удобно одной рукой.','Klares Design, große Tippflächen; einhändig bedienbar.','تصميم بسيط وأزرار كبيرة؛ سهل الاستخدام بيد واحدة.'],
+g1:['Günün özeti ve öğünler','Day summary & meals','Итоги дня и приёмы пищи','Tagesübersicht & Mahlzeiten','ملخص اليوم والوجبات'],
+g2:['Yemek kıyaslama','Food comparison','Сравнение блюд','Lebensmittelvergleich','مقارنة الأطعمة'],
+g3:['Diyetisyen programı','Dietitian plan','План диетолога','Plan vom Berater','خطة أخصائي التغذية'],
+g4:['Kişisel kurulum','Personal setup','Личная настройка','Persönliche Einrichtung','الإعداد الشخصي'],
+coachT:['Diyetisyenler ve spor hocaları için','For dietitians and coaches','Для диетологов и тренеров','Für Ernährungsberater und Trainer','لأخصائيي التغذية والمدربين'],
+coachS:['Danışanına gün gün, öğün öğün program yaz; saatleri ve miktarları belirle, linkle gönder. Hesap açmak, sunucuya veri göndermek yok.','Write a plan for your client day by day and meal by meal, set times and amounts, and send it as a link. No accounts, no server uploads.','Составьте план для клиента по дням и приёмам пищи, задайте время и порции и отправьте ссылкой. Без аккаунтов и серверов.','Plan für Klienten Tag für Tag und Mahlzeit für Mahlzeit schreiben, Zeiten und Mengen festlegen, als Link senden. Ohne Konto, ohne Server-Upload.','اكتب خطة لعميلك يوماً بيوم ووجبة بوجبة، وحدد المواعيد والكميات وأرسلها برابط. بلا حسابات ولا رفع بيانات.'],
+s1t:['Programı hazırla','Create the plan','Составьте план','Plan erstellen','أعدّ الخطة'],
+s1:['Uygulamada “Program hazırla”ya dokun; öğün saatlerini seç, yemekleri ekle, notlarını yaz.','Tap “Create plan” in the app; set meal times, add foods and notes.','Нажмите «Составить план», задайте время, добавьте блюда и заметки.','Tippe auf „Plan erstellen“, setze Zeiten, füge Lebensmittel und Notizen hinzu.','اضغط «إعداد خطة»، حدد المواعيد وأضف الأطعمة والملاحظات.'],
+s2t:['Linki gönder','Send the link','Отправьте ссылку','Link senden','أرسل الرابط'],
+s2:['WhatsApp, SMS ya da e-postayla paylaş. İstersen yazdır ya da PDF kaydet.','Share via WhatsApp, SMS or e-mail, or print it / save it as PDF.','Отправьте в WhatsApp, SMS или почтой; можно распечатать или сохранить PDF.','Per WhatsApp, SMS oder E-Mail teilen; auch drucken oder als PDF speichern.','شاركه عبر واتساب أو رسالة أو بريد، أو اطبعه واحفظه PDF.'],
+s3t:['Danışan onaylar','Client confirms','Клиент подтверждает','Klient bestätigt','العميل يؤكد'],
+s3:['“Beslenme programı otomatik olarak yüklenecektir, onaylıyor musunuz?” Evet’e basınca program, saatleriyle birlikte yüklenir.','“The meal plan will be loaded automatically. Do you confirm?” After a tap on Yes, the plan loads with its times.','«План будет загружен автоматически. Подтверждаете?» — после «Да» план загружается вместе со временем.','„Der Plan wird automatisch geladen. Bestätigen?“ Nach „Ja“ wird er samt Zeiten geladen.','«سيتم تحميل الخطة تلقائياً، هل توافق؟» عند الضغط على نعم تُحمَّل الخطة بمواعيدها.'],
+instT:['Uygulama gibi yükle','Install it like an app','Установите как приложение','Wie eine App installieren','ثبّته كتطبيق'],
+instS:['Mağazaya gerek yok. Ana ekranına eklenir, simgesiyle açılır, internetsiz çalışır.','No app store needed. It sits on your home screen, opens from its icon and works offline.','Магазин не нужен: значок на главном экране, работа без интернета.','Kein App-Store nötig: Symbol auf dem Startbildschirm, funktioniert offline.','لا حاجة لمتجر: أيقونة على الشاشة الرئيسية ويعمل دون إنترنت.'],
+pcTab:['Bilgisayar','Computer','Компьютер','Computer','الكمبيوتر'],
+installNow:['Şimdi yükle','Install now','Установить','Jetzt installieren','ثبّت الآن'],
+installPc:['Uygulama olarak yükle','Install as app','Установить как приложение','Als App installieren','ثبّت كتطبيق'],
+andSteps:['Bu sayfayı Chrome ile aç|“Şimdi yükle”ye dokun (ya da ⋮ menüsünden “Uygulamayı yükle”)|“Yükle”yi onayla; simge ana ekrana gelir','Open this page in Chrome|Tap “Install now” (or ⋮ menu → “Install app”)|Confirm “Install”; the icon appears on your home screen','Откройте страницу в Chrome|Нажмите «Установить» (или ⋮ → «Установить приложение»)|Подтвердите; значок появится на экране','Öffne diese Seite in Chrome|Tippe „Jetzt installieren“ (oder ⋮ → „App installieren“)|Bestätige; das Symbol erscheint auf dem Startbildschirm','افتح الصفحة في كروم|اضغط «ثبّت الآن» (أو ⋮ ← «تثبيت التطبيق»)|أكّد؛ تظهر الأيقونة على الشاشة'],
+andNote:['Samsung İnternet’te: menü ☰ → “Sayfayı ekle” → “Ana ekran”.','In Samsung Internet: menu ☰ → “Add page to” → “Home screen”.','В Samsung Internet: меню ☰ → «Добавить страницу» → «Главный экран».','In Samsung Internet: Menü ☰ → „Seite hinzufügen“ → „Startbildschirm“.','في Samsung Internet: القائمة ☰ ← «إضافة صفحة» ← «الشاشة الرئيسية».'],
+iosSteps:['“Uygulamayı aç”a dokun (Safari ile)|Alttaki Paylaş düğmesine (□↑) dokun|“Ana Ekrana Ekle”yi seç ve sağ üstte “Ekle”ye bas','Tap “Open the app” (in Safari)|Tap the Share button (□↑)|Choose “Add to Home Screen”, then tap “Add”','Нажмите «Открыть приложение» (в Safari)|Нажмите «Поделиться» (□↑)|Выберите «На экран “Домой”» и «Добавить»','Tippe „App öffnen“ (in Safari)|Tippe auf Teilen (□↑)|Wähle „Zum Home-Bildschirm“ und „Hinzufügen“','اضغط «افتح التطبيق» (في سفاري)|اضغط زر المشاركة (□↑)|اختر «إضافة إلى الشاشة الرئيسية» ثم «إضافة»'],
+iosNote:['iPhone’da yükleme yalnızca Safari ile yapılır. Diyetisyeninden gelen linki açtığında program Safari’de açılırsa, uygulamada Ayarlar → “Program linki yapıştır” ile de yükleyebilirsin.','On iPhone, installing works only in Safari. If a plan link from your dietitian opens in Safari, you can also load it in the app via Settings → “Paste plan link”.','На iPhone установка возможна только в Safari. Если ссылка от диетолога открылась в Safari, вставьте её в приложении: Настройки → «Вставить ссылку».','Auf dem iPhone geht die Installation nur in Safari. Öffnet sich ein Plan-Link in Safari, füge ihn in der App unter Einstellungen → „Plan-Link einfügen“ ein.','على iPhone يتم التثبيت عبر سفاري فقط. إذا فُتح رابط الخطة في سفاري، الصقه في التطبيق: الإعدادات ← «لصق رابط الخطة».'],
+pcSteps:['Chrome ya da Edge ile “Uygulama olarak yükle”ye tıkla; masaüstünde kendi penceresinde açılır|Ya da “Bilgisayara indir (HTML)” ile tek dosyayı indir; çift tıklayınca tarayıcıda açılır|İndirilen dosyada verilerin o tarayıcıda saklanır; Ayarlar’dan yedek alıp başka cihaza taşıyabilirsin','In Chrome or Edge click “Install as app”; it opens in its own window|Or use “Download for PC (HTML)” to get one file that opens in your browser|With the downloaded file, data is stored in that browser; use Settings → backup to move it','В Chrome или Edge нажмите «Установить как приложение» — откроется в отдельном окне|Или скачайте один HTML-файл и откройте его в браузере|Данные хранятся в этом браузере; перенос — через резервную копию в Настройках','In Chrome oder Edge „Als App installieren“ klicken; öffnet im eigenen Fenster|Oder als eine HTML-Datei herunterladen und im Browser öffnen|Daten liegen in diesem Browser; per Sicherung in den Einstellungen übertragen','في كروم أو إيدج اضغط «ثبّت كتطبيق» ليفتح في نافذته|أو نزّل ملف HTML واحداً وافتحه في المتصفح|تُحفظ البيانات في ذلك المتصفح؛ انقلها عبر النسخ الاحتياطي في الإعدادات'],
+pcNote:['Telefon ve tablette HTML indirme önerilmez: indirilen dosyada kayıtlar kaybolabilir. Oralarda “Telefona yükle”yi kullan.','HTML download isn’t recommended on phones and tablets because records may be lost. Use “Install on phone” there.','На телефонах и планшетах HTML-файл не рекомендуется — записи могут теряться. Используйте установку.','Auf Handy und Tablet ist der HTML-Download nicht empfohlen (Daten können verloren gehen). Dort „Installieren“ nutzen.','لا يُنصح بتنزيل HTML على الهاتف واللوح لأن السجلات قد تضيع؛ استخدم التثبيت.'],
+kvkkT:['Gizlilik ve KVKK','Privacy','Конфиденциальность','Datenschutz','الخصوصية'],
+kvkkS:['Kısaca: hesap yok, takip yok, sağlık verilerin sunucumuza gelmez.','In short: no accounts, no tracking, and your health data never reaches our server.','Коротко: без аккаунтов и слежки; данные о здоровье не попадают на сервер.','Kurz: kein Konto, kein Tracking, Gesundheitsdaten erreichen nie unseren Server.','باختصار: بلا حسابات ولا تتبع، وبيانات صحتك لا تصل إلى خادمنا.'],
+kvkkLink:['Gizlilik ve KVKK','Privacy','Конфиденциальность','Datenschutz','الخصوصية'],
+kvkk:[
+`<h3>Veri sorumlusu</h3><p>Kaan Kapucuoğlu (maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
+<h3>Hangi veriler, nerede?</h3><ul><li>Adın, yaşın, boyun, kilon, hedefin, alerjilerin, hamilelik bilgin, öğünlerin ve su kayıtların <b>yalnızca kendi cihazında</b> (tarayıcı depolaması) tutulur. Bu veriler bize ya da üçüncü kişilere <b>gönderilmez</b>.</li>
+<li>Diyetisyenin gönderdiği program linkinde program, adresin “#” işaretinden sonraki kısmında taşınır. Tarayıcılar bu kısmı sunucuya göndermez; program doğrudan cihazına yüklenir.</li>
+<li>Uygulamada çerez, reklam, analiz ya da takip aracı yoktur.</li></ul>
+<h3>Sunucu kayıtları</h3><p>Sayfaları sunan sunucu (Almanya), güvenlik ve hata tespiti için standart erişim kayıtları tutar: IP adresi, tarih-saat, istenen sayfa, tarayıcı bilgisi. Bu kayıtlar en fazla 30 gün saklanır ve başka amaçla kullanılmaz (KVKK m.5/2-f, meşru menfaat).</p>
+<h3>Özel nitelikli veri</h3><p>Sağlık bilgileri KVKK m.6 kapsamında özel nitelikli veridir. Bu bilgiler yalnızca senin cihazında işlenir; tarafımızca toplanmaz, saklanmaz ve aktarılmaz.</p>
+<h3>Hakların</h3><p>KVKK m.11 kapsamındaki haklarını (bilgi alma, düzeltme, silme vb.) destek@maviplay.com adresine yazarak kullanabilirsin. Cihazındaki verileri uygulamada Ayarlar → “Kayıtları sıfırla” ile ya da tarayıcı verilerini silerek istediğin an silebilirsin.</p>
+<h3>Sağlık uyarısı</h3><p>Uygulamadaki öneriler genel bilgilendirme amaçlıdır, tıbbi teşhis ya da tedavi yerine geçmez. Hamilelik, kronik hastalık ya da ilaç kullanımında doktoruna veya diyetisyenine danış.</p>`,
+`<h3>Controller</h3><p>Kaan Kapucuoğlu (maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
+<h3>What data, where?</h3><ul><li>Your name, age, height, weight, goal, allergies, pregnancy status, meals and water logs are stored <b>only on your device</b> (browser storage). They are <b>never sent</b> to us or third parties.</li>
+<li>A plan link from your dietitian carries the plan after the “#” in the address. Browsers don’t send that part to the server; the plan loads directly onto your device.</li>
+<li>No cookies, ads, analytics or trackers.</li></ul>
+<h3>Server logs</h3><p>The web server (Germany) keeps standard access logs for security: IP address, time, requested page and browser. They are kept for at most 30 days (legitimate interest, GDPR Art. 6(1)(f)).</p>
+<h3>Health data</h3><p>Health information is processed only on your device; we don’t collect, store or transfer it.</p>
+<h3>Your rights</h3><p>Write to destek@maviplay.com to exercise your rights. You can erase on-device data at any time in Settings → “Reset records” or by clearing browser data.</p>
+<h3>Health notice</h3><p>Suggestions are general information and not medical advice. If you are pregnant, have a chronic condition or take medication, consult your doctor or dietitian.</p>`,
+`<h3>Ответственный</h3><p>Kaan Kapucuoğlu (maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
+<h3>Какие данные и где?</h3><ul><li>Имя, возраст, рост, вес, цель, аллергии, беременность, приёмы пищи и вода хранятся <b>только на вашем устройстве</b> и <b>не передаются</b> нам или третьим лицам.</li>
+<li>План в ссылке от диетолога передаётся после знака «#» в адресе; браузеры не отправляют эту часть на сервер.</li>
+<li>Нет cookie, рекламы, аналитики и трекеров.</li></ul>
+<h3>Журналы сервера</h3><p>Сервер (Германия) хранит стандартные журналы доступа (IP, время, страница, браузер) не более 30 дней для безопасности.</p>
+<h3>Ваши права</h3><p>Пишите на destek@maviplay.com. Данные на устройстве можно удалить в Настройках или очистив данные браузера.</p>
+<h3>Важно</h3><p>Рекомендации носят общий характер и не заменяют консультацию врача.</p>`,
+`<h3>Verantwortlicher</h3><p>Kaan Kapucuoğlu (maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
+<h3>Welche Daten, wo?</h3><ul><li>Name, Alter, Größe, Gewicht, Ziel, Allergien, Schwangerschaft, Mahlzeiten und Wasser werden <b>nur auf deinem Gerät</b> gespeichert und <b>nie</b> an uns oder Dritte gesendet.</li>
+<li>Ein Plan-Link überträgt den Plan nach dem „#“ in der Adresse; Browser senden diesen Teil nicht an den Server.</li>
+<li>Keine Cookies, Werbung, Analyse oder Tracker.</li></ul>
+<h3>Server-Protokolle</h3><p>Der Server (Deutschland) speichert Standard-Zugriffsprotokolle (IP, Zeit, Seite, Browser) höchstens 30 Tage zur Sicherheit (Art. 6 Abs. 1 lit. f DSGVO).</p>
+<h3>Deine Rechte</h3><p>Schreib an destek@maviplay.com. Lokale Daten löschst du jederzeit in den Einstellungen oder über die Browserdaten.</p>
+<h3>Gesundheitshinweis</h3><p>Die Vorschläge sind allgemeine Informationen und ersetzen keine ärztliche Beratung.</p>`,
+`<h3>المسؤول عن البيانات</h3><p>Kaan Kapucuoğlu (maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
+<h3>ما البيانات وأين؟</h3><ul><li>الاسم والعمر والطول والوزن والهدف والحساسية والحمل والوجبات والماء تُحفظ <b>على جهازك فقط</b> و<b>لا تُرسل</b> إلينا أو لأي طرف.</li>
+<li>تنقل روابط الخطط البيانات بعد علامة «#» في العنوان، ولا ترسل المتصفحات هذا الجزء إلى الخادم.</li>
+<li>لا ملفات تعريف ارتباط ولا إعلانات ولا تتبع.</li></ul>
+<h3>سجلات الخادم</h3><p>يحتفظ الخادم (ألمانيا) بسجلات وصول قياسية (IP، الوقت، الصفحة، المتصفح) لمدة أقصاها 30 يوماً لأغراض الأمان.</p>
+<h3>حقوقك</h3><p>راسلنا على destek@maviplay.com. يمكنك حذف البيانات من الإعدادات أو بمسح بيانات المتصفح.</p>
+<h3>تنبيه صحي</h3><p>الاقتراحات معلومات عامة ولا تغني عن استشارة الطبيب.</p>`]
+};
+let dil = 'tr';
+try { const q = new URLSearchParams(location.search).get('lang'); dil = DIL.includes(q) ? q : (localStorage.getItem('diyet_site_dil') || (navigator.language || 'tr').slice(0, 2)); } catch(e){}
+if (!DIL.includes(dil)) dil = 'en';
+function uygula(){
+  const i = DIL.indexOf(dil);
+  document.documentElement.lang = dil; document.documentElement.dir = dil === 'ar' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-t]').forEach(el => {
+    const v = M[el.dataset.t][i] || M[el.dataset.t][0];
+    if (el.dataset.list) el.innerHTML = v.split('|').map(s => '<li>' + s.replace(/</g, '&lt;') + '</li>').join('');
+    else if (el.dataset.html) el.innerHTML = v; else el.textContent = v;
+  });
+  document.title = M.name[i] + ' · ' + M.badge[i];
+  document.getElementById('langs').innerHTML = DIL.map(k => `<button type="button" data-dil="${k}" aria-pressed="${k === dil}" title="${AD[k]}" lang="${k}">${k.toUpperCase()}</button>`).join('');
+  try { localStorage.setItem('diyet_site_dil', dil); } catch(e){}
+}
+document.getElementById('langs').addEventListener('click', e => { const b = e.target.closest('[data-dil]'); if (b){ dil = b.dataset.dil; uygula(); } });
+// Yükleme sekmeleri: cihaza göre doğru sekme açık gelir
+const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const android = /Android/.test(navigator.userAgent);
+function sekme(ad){
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.tab === ad));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('on', p.dataset.panel === ad));
+}
+document.querySelector('.tabs').addEventListener('click', e => { const t = e.target.closest('.tab'); if (t) sekme(t.dataset.tab); });
+sekme(ios ? 'ios' : android ? 'android' : 'pc');
+// Tek dokunuşla yükleme (Android/Chrome/Edge); olmazsa adımlara götür
+let olay = null;
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); olay = e; });
+function yukle(){
+  if (olay){ olay.prompt(); olay.userChoice.finally(() => { olay = null; }); return; }
+  sekme(ios ? 'ios' : android ? 'android' : 'pc');
+  document.getElementById('yukle').scrollIntoView({behavior: 'smooth'});
+}
+document.getElementById('installBtn').addEventListener('click', yukle);
+document.querySelectorAll('.js-install').forEach(b => b.addEventListener('click', yukle));
+if (matchMedia('(display-mode: standalone)').matches) location.replace('/app/');
+uygula();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+</script>
+</body>
+</html>

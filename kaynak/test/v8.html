@@ -1,0 +1,101 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><pre id="o"></pre><script>
+// v8: saat adımı, tarih kaldırıldı, öğün gizle/göster, geçmiş gün, saat düzenleme, vücut ölçüleri, destek, program hazırla → link → yükle, kategori sırası, "her X" şablonu
+localStorage.clear();const f=document.getElementById('f');const out=[];const L=x=>out.push(x);
+setInterval(()=>fetch('/SONUC_v8_ara',{method:'POST',body:out.join(String.fromCharCode(10))}),4000);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document,q=s=>d.querySelector('#kurulum '+s),nx=()=>{const y=q('[data-walerjivar="yok"]');if(y&&!q('[data-walerjivar].on'))y.click();q('[data-wileri]').click();},adim=()=>w.eval('wAdimlar()[wAdim]');
+try{
+  nx();const a=q('#wAd');a.value='Kaan';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();
+  L('adimlar: '+w.eval('wAdimlar().join(",")'));
+  for(let g=0;g<20&&adim()!=='saat';g++){if(adim()==='hedef'&&!w.eval('W.hedef'))q('[data-whedef="kas"]').click();nx();}
+  // ters sıra saat hata vermeli
+  const ws=id=>q('#ws_'+id);ws('ogle').value='07:00';ws('ogle').dispatchEvent(new Event('input',{bubbles:true}));nx();L('ters saat hatasi: '+((q('.wmsg.err')||{}).textContent||'YOK'));
+  for(const [k,v] of [['kahvalti','07:30'],['ogle','12:30'],['aksam','19:00']]){ws(k).value=v;ws(k).dispatchEvent(new Event('input',{bubbles:true}));}
+  L('onizleme: '+q('#wSaatOn').innerText.replace(/\s+/g,' '));
+  nx();nx();await bekle(100);
+  L('alt baslik (tarih yok): '+d.getElementById('altBaslik').textContent);
+  L('saatler bugun: '+w.eval("JSON.stringify(saatSeti(bugunK()))"));
+  L('ogun basliklari: '+[...d.querySelectorAll('.meal-title')].map(t=>t.innerText.split('·')[0].replace(/\s+/g,' ').trim()).join(' | '));
+  L('ust dugmeler: '+[...d.querySelectorAll('.top-btns .tool-btn small')].map(s=>s.textContent).join(', '));
+  // Gizle / göster
+  d.querySelector('[data-tog="kahvalti"]').click();
+  L('kahvalti kapali: '+d.querySelector('.meal').classList.contains('kapali')+' · items gizli: '+(w.getComputedStyle(d.querySelector('.meal .items')).display==='none')+' · kayit: '+w.eval('JSON.stringify(D.ayar.kapali)'));
+  d.querySelector('[data-togall]').click();L('hepsi: '+[...d.querySelectorAll('.meal')].map(m=>m.classList.contains('kapali')?'K':'A').join('')+' · dugme: '+d.querySelector('[data-togall]').textContent);
+  // yeniden aç: kalıcı mı
+  f.contentWindow.location.reload();await bekle(1500);
+  {const w=f.contentWindow,d=w.document;
+  L('yeniden acilista: '+[...d.querySelectorAll('.meal')].map(m=>m.classList.contains('kapali')?'K':'A').join('')+' · dugme: '+d.querySelector('[data-togall]').textContent);
+  d.querySelector('[data-togall]').click();L('goster sonrasi: '+[...d.querySelectorAll('.meal')].map(m=>m.classList.contains('kapali')?'K':'A').join(''));
+  // saat düzenleme: bugünden itibaren kahvaltı 09:15, yalnız bu gün akşam 20:45
+  w.eval('saatDuzenle(0)');d.getElementById('saatIn').value='09:15';d.getElementById('saatHer').click();
+  w.eval('saatDuzenle(3)');d.getElementById('saatIn').value='20:45';d.getElementById('saatGun').click();
+  L('bugun saatler: '+[...d.querySelectorAll('.saat-btn')].map(b=>b.textContent).join(' '));
+  L('yarin aksam: '+w.eval("ogunSaati(gunEkle(bugunK(),1),{id:'aksam'})")+' · dun kahvalti: '+w.eval("ogunSaati(gunEkle(bugunK(),-1),{id:'kahvalti'})"));
+  w.eval('yedimDegis(0)');L('yedim logu: '+w.eval('D.log[D.log.length-1].m').slice(0,60));
+  // geçmiş gün: özet + öğünler + ipucu
+  d.querySelector('.day.past')?d.querySelector('.day.past').click():w.eval("aktif=gunEkle(bugunK(),-1);ciz()");
+  L('gecmis: ozet '+!!d.querySelector('.past-card')+' · ogun karti '+d.querySelectorAll('.meal').length+' · gizle dugmesi '+d.querySelectorAll('.tog-btn').length+' · ipucu '+!!d.querySelector('.past-card .tip'));
+  w.eval('aktif=bugunK();ciz()');
+  // "Her perşembe": tüm haftalara
+  w.eval("menuYaz(aktif)[0].ogeler.push({f:'simit',g:1})");d.querySelector('[data-sablon]').click();d.getElementById('onayEvet').click();
+  L('her X: '+w.eval("D.planlar.map(h=>h[haftaGunu(aktif)][0].ogeler.some(i=>i.f==='simit')).join(',')")+' · ipucu: '+d.querySelector('.tpl-ipucu').textContent.slice(0,50));
+  // Ayarlar: kilo değişimi
+  w.eval('ayarlarAc()');const k0=w.eval('D.profil.kcal');d.getElementById('b_kilo').value='90';d.getElementById('olcuKaydet').click();
+  L('kilo 90: kcal '+k0+' -> '+w.eval('D.profil.kcal')+' · onay: '+(d.querySelector('#sbody .onay-metin')||{}).textContent?.slice(0,40));d.getElementById('onayEvet').click();
+  L('log: '+w.eval("D.log.filter(l=>/Vücut|Öğün saat/.test(l.m)).map(l=>l.m).join(' | ')").slice(0,200));
+  // Ayarlar öğün saatleri
+  w.eval('ayarlarAc()');d.getElementById('st_aksam').value='20:00';d.getElementById('saatOto').click();L('oto ara: '+d.getElementById('st_ara1').value+' '+d.getElementById('st_gece').value);d.getElementById('saatKaydetBtn').click();
+  L('ayar sonrasi bugun: '+w.eval("JSON.stringify(saatSeti(bugunK()))"));
+  // Destek
+  d.getElementById('destekBtn').click();L('destek: tutar '+d.getElementById('tutarIn').value+' · satirlar '+[...d.querySelectorAll('.kopya-satir b')].map(b=>b.textContent).join(' | '));
+  d.querySelector('[data-tadim="50"]').click();L('arti: '+d.getElementById('tutarIn').value);d.querySelector('[data-tutar="500"]').click();L('500: '+d.getElementById('tutarIn').value);w.eval('kapat()');
+  // Ekle listesi: önerilenler ve kategori sırası
+  w.eval("secimAc({mod:'ekle',oi:0})");L('kahvalti onerilen ilk 12: '+w.eval("SE.son.slice(0,12).map(f=>yemek(f).ad).join(', ')"));
+  w.eval("SE.kat='kuruyemis';kategoriCiz();listeCiz()");L('kuruyemis ilk 8: '+[...d.querySelectorAll('#flist .frow b')].slice(0,8).map(b=>b.firstChild.textContent).join(', ')+' ('+d.querySelectorAll('#flist .frow').length+')');
+  w.eval("SE.kat='meyve';kategoriCiz();listeCiz()");L('meyve sayisi: '+d.querySelectorAll('#flist .frow').length);
+  L('kategoriler: '+[...d.querySelectorAll('#kategoriler .chip')].map(c=>c.textContent).join(' / '));w.eval('kapat()');
+  // Program hazırla
+  d.getElementById('kocBtn').click();L('koc acik: '+!d.getElementById('koc').hidden);
+  const kq=s=>d.querySelector('#koc '+s);
+  const yazK=(sel,v)=>{const i=kq(sel);i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}));};
+  yazK('[data-kf="a"]','Ayşe Yılmaz');yazK('[data-kf="h"]','Dyt. Zeynep Kaya');yazK('[data-kf="n"]','Günde 2,5 L su. Kızartma yok.');yazK('[data-kt="kcal"]','1600');
+  kq('[data-kekle="kahvalti"]').click();w.eval("SE.sec='yumurta';SE.g=2");w.eval('detayGorunumu()');d.getElementById('onay').click();
+  kq('[data-kekle="kahvalti"]').click();w.eval("SE.sec='beyazp';SE.g=2;detayGorunumu()");d.getElementById('onay').click();
+  kq('[data-kekle="ogle"]').click();w.eval("SE.sec='kfasulye_zy';SE.g=250;detayGorunumu()");d.getElementById('onay').click();
+  kq('[data-kekle="aksam"]').click();w.eval("SE.sec='levrek';SE.g=200;detayGorunumu()");d.getElementById('onay').click();
+  yazK('[data-knot="aksam"]','Limonlu, tuzsuz');
+  const ks=kq('[data-ksaat="aksam"]');ks.value='18:45';ks.dispatchEvent(new Event('change',{bubbles:true}));
+  kq('[data-khepsi]').click();
+  kq('[data-kgun="2"]').click();L('koc 3. gun: '+[...d.querySelectorAll('#koc .meal-title b')].map(b=>b.textContent).join(',')+' · kalemler '+d.querySelectorAll('#koc .item').length+' · toplam '+kq('.plan-grid').innerText.replace(/\s+/g,' ').slice(0,40));
+  kq('[data-klink]').click();await bekle(400);
+  const url=kq('.link-alan').value;L('link: '+url.slice(0,60)+'… uzunluk '+url.length+' · wa '+!!kq('a[href^="https://wa.me"]'));
+  kq('[data-kkapat]').click();
+  // aynı uygulamada linki aç (alıcı)
+  w.location.hash=url.split('#')[1];await bekle(600);
+  L('onay sorusu: '+(d.querySelector('#sbody .onay-metin')||{}).textContent+' · bilgi: '+(d.querySelector('#sbody .cur')||{}).innerText?.replace(/\s+/g,' '));
+  d.getElementById('impEvet').click();await bekle(100);
+  L('yuklendi: '+w.eval("JSON.stringify(D.program)").slice(0,90)+' · kcal '+w.eval('D.profil.kcal'));
+  L('ana ekran: bant '+(d.querySelector('.prog-bant b')||{}).textContent+' · ogunler '+[...d.querySelectorAll('.meal-title')].map(t=>t.innerText.replace(/\s+/g,' ').split('·')[0].trim()).join(' | '));
+  L('not: '+((d.querySelector('.ogun-not')||{}).textContent||'yok')+' · hash temiz: '+(w.location.hash===''));
+  // Hayır akışı
+  w.location.hash=url.split('#')[1];await bekle(600);d.getElementById('impHayir').click();L('hayir: program ayni '+w.eval("D.program.h"));
+  // Programı kaldır
+  d.querySelector('[data-progkaldir]').click();d.getElementById('onayEvet').click();L('kaldirildi: '+w.eval('D.program')+' · hafta sayisi '+w.eval('D.planlar.length'));
+  // Bozuk link
+  w.location.hash='p=zABCDEF';await bekle(400);L('bozuk link: '+d.getElementById('toast').textContent);
+  // Kurulumsuz kullanıcı: link → onay → sihirbaz → otomatik yükleme
+  w.eval('D.guncel=0');w.localStorage.clear();w.indexedDB.deleteDatabase('diyet_uygulamasi');f.src='about:blank';await bekle(500);localStorage.clear();
+  f.src='../../index.html#'+url.split('#')[1];await bekle(1800);
+  }
+  {const w=f.contentWindow,d=w.document,q=s=>d.querySelector('#kurulum '+s);
+  L('yeni kullanici: sihirbaz '+!d.getElementById('kurulum').hidden+' · onay '+((d.querySelector('#sbody .onay-metin')||{}).textContent||'YOK')+' · kurulum notu '+!!d.querySelector('#sbody .wmsg.info'));
+  d.getElementById('impEvet').click();
+  const nx=()=>{const y=q('[data-walerjivar="yok"]');if(y&&!q('[data-walerjivar].on'))y.click();q('[data-wileri]').click();};
+  nx();const a=q('#wAd');a.value='Ayşe';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="k"]').click();
+  for(let i=0;i<20&&!d.getElementById('kurulum').hidden;i++){if(w.eval('wAdimlar()[wAdim]')==='hedef'&&!w.eval('W.hedef'))q('[data-whedef="koru"]').click();nx();}
+  await bekle(200);
+  L('kurulum sonrasi program: '+w.eval("D.program&&D.program.h")+' · ogunler '+[...d.querySelectorAll('.meal-title b')].map(b=>b.textContent).join(',')+' · aksam saat '+w.eval("ogunSaati(bugunK(),{id:'aksam'})"));
+  // Alerji "Var" kaydırma
+  w.eval("sihirbazAc('alerji')");q('[data-walerjivar="var"]').click();await bekle(700);L('alerji var kaydirma: scrollTop '+d.getElementById('kurulum').scrollTop+' · kutu ust '+Math.round(q('#wAlerjiAra').getBoundingClientRect().top));
+  }
+}catch(e){L('HATA '+e.stack)}document.getElementById('o').textContent=out.join('\n');fetch('/SONUC_v8',{method:'POST',body:out.join(String.fromCharCode(10))});},1500);
+</script></body></html>

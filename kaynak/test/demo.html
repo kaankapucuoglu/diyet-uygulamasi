@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Tanıtım ekran görüntüleri için örnek veri: kurulum + birkaç işaret + program taslağı → D (JSON) sunucuya
+localStorage.clear();const f=document.getElementById('f');
+setTimeout(()=>{const w=f.contentWindow;let s='';
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Ayşe',cins:'k',hamile:false,yas:32,boy:166,kilo:72,hedef:'ver',hedefKilo:64,hiz:0.5,aktivite:2,odaklar:['seker'],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir();
+    yedimDegis(0);yedimDegis(1);suDegis(5);
+    D.ayar.kapali={gece:true};
+    D.koc=kocBos();Object.assign(D.koc,{a:'Ayşe Yılmaz',h:'Dyt. Zeynep Kaya',n:'Günde 2,5 L su için. Kızartma yok; fırın, ızgara ya da haşlama.'});D.koc.t.kcal='1600';D.koc.t.protein='110';
+    D.koc.gun[0]={kahvalti:[{f:'yumurta',g:2},{f:'beyazp',g:2},{f:'domates',g:100},{f:'tamekmek',g:1}],ogle:[{f:'kfasulye_zy',g:250},{f:'bulgur',g:100},{f:'cacik',g:150}],ara1:[{f:'kuru_incir',g:2},{f:'ceviz',g:15}],aksam:[{f:'levrek',g:200},{f:'roka_salata',g:150}],gece:[{f:'kefir',g:200}]};
+    D.koc.not[0]={aksam:'Limonlu, tuzsuz',kahvalti:'Yumurta haşlanmış olsun'};
+    kaydet();`);
+  s=w.eval('JSON.stringify(D)');
+}catch(e){s='HATA '+e.stack}
+fetch('/SONUC_demo',{method:'POST',body:s});},1500);
+</script></body></html>

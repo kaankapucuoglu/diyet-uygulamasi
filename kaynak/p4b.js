@@ -58,7 +58,7 @@ const ALERJEN_SATIR = [
   ['sumak','sumak','Sumak','Sumac','Сумах','Sumach','السماق'],
   ['nane','nane','Nane','Mint','Мята','Minze','النعناع']
 ];
-const ALERJENLER = ALERJEN_SATIR.map(r => {
+const ALERJENLER = ALERJEN_SATIR.concat(ALERJEN_SATIR_EK).map(r => {
   const a = {id:r[0], e:r[1], n:r.slice(2, 7)};
   Object.defineProperty(a, 'ad', {get(){ return this.n[DI()] || this.n[0]; }});
   return a;
@@ -98,5 +98,8 @@ const YEMEK_ALERJEN = {
 };
 // Hamilelikte önerilmeyenler: az pişmiş/akışkan yumurta, yüksek cıvalı olabilecek ton balığı, yüksek kafein
 const HAMILE_DISI = new Set(['yumurta_pose', 'yumurta_sahanda', 'cilbir', 'ton', 'yesilcay']);
+Object.assign(YEMEK_ALERJEN, ALERJEN_EK);
+['rafadan', 'ton_salata', 'ciger', 'pastirma'].forEach(id => HAMILE_DISI.add(id));
+YEMEKLER.forEach(f => { if (KAT_DEGIS[f.id]) f.kat = KAT_DEGIS[f.id]; });
 YEMEKLER.forEach(f => { f.al = (YEMEK_ALERJEN[f.id] || '').split(',').filter(Boolean); });
 const alerjen = id => ALERJENLER.find(a => a.id === id);

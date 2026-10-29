@@ -144,7 +144,7 @@ const YEMEK_SATIR = [
   ['kahve','icecek',15,1,1.5,0.5,1.5,0,1,'fincan:200','d','','içecek','Sütlü filtre kahve (şekersiz)','Filter coffee with milk (no sugar)','Фильтр-кофе с молоком','Filterkaffee mit Milch','قهوة مفلترة بالحليب (بدون سكر)'],
   ['yesilcay','icecek',1,0,0.2,0,0,0,1,'fincan:200','','','içecek bitki çayı','Yeşil çay','Green tea','Зелёный чай','Grüner Tee','شاي أخضر']
 ];
-const YEMEKLER = YEMEK_SATIR.map(r => {
+const YEMEKLER = YEMEK_SATIR.concat(YEMEK_EK).map(r => {
   const [birim, bg] = r[9] ? r[9].split(':') : ['', 0];
   const f = {id:r[0], kat:r[1], k:r[2], p:r[3], c:r[4], y:r[5], s:r[6], l:r[7], d:r[8], b:birim, a:+bg, x:r[10], u:r[11], e:r[12], n:r.slice(13, 18)};
   Object.defineProperty(f, 'ad', {get(){ return this.n[DI()] || this.n[0]; }});

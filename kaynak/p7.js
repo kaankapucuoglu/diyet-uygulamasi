@@ -16,10 +16,18 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.degis){ const [oi, ii] = cift(ds.degis); secimAc({mod:'degis', oi, ii}); return; }
   if (ds.kiyas){ const [oi, ii] = cift(ds.kiyas); secimAc({mod:'kiyas', oi, ii}); return; }
   if (ds.tumlog){ loglarAc(); return; }
+  if (ds.saat !== undefined){ saatDuzenle(+ds.saat); return; }
+  if (ds.tog){ ogunTogla(ds.tog); return; }
+  if (ds.togall !== undefined){ hepsiniTogla(ds.togall === '1'); return; }
+  if (ds.progkaldir){ programKaldir(); return; }
+  if (ds.yukle){ yukleAc(); return; }
+  if (ds.yuklekapat){ D.ayar.yukleKapat = true; kaydet(); yukleBantCiz(); return; }
   if (ds.sablon){
     const gun = gunUzun(aktif);
     onayAc(T('confirmTemplate', {gun}), () => {
-      D.planlar[haftaNo(aktif)][haftaGunu(aktif)] = kopya(menuOku(aktif));
+      // "Her X": 4 haftalık planın bütün X günlerine uygulanır
+      const menu = menuOku(aktif);
+      D.planlar.forEach(h => { h[haftaGunu(aktif)] = kopya(menu); });
       logEkle('diger', aktif, T('lTemplate', {gun}));
       kaydet(); ciz(); toast(T('templateUpdated', {gun}));
     });
@@ -47,6 +55,8 @@ $('gecmisBtn').addEventListener('click', gecmisAc);
 $('uyariBtn').addEventListener('click', uyarilarAc);
 $('yazBtn').addEventListener('click', yazAc);
 $('hamileBtn').addEventListener('click', hamileDegistir);
+$('kocBtn').addEventListener('click', kocAc);
+$('destekBtn').addEventListener('click', destekAc);
 $('dilBar').addEventListener('click', e => {
   const b = e.target.closest('[data-dilsec]'); if (!b || b.dataset.dilsec === dil) return;
   D.ayar.dil = b.dataset.dilsec; kaydet(); ciz();
@@ -65,10 +75,10 @@ const SON = '__son', TUMU = '__tumu', BENZER = '__benzer';
 // Değiştir/Kıyasla için benzer yemekler: aynı tür (ad/etiket ortak kelime, ör. "ekmek") önce, sonra aynı gruptaki besin değeri en yakınlar
 // Türü değil niteliği/pişirmeyi anlatan kelimeler benzerlikte sayılmaz (ör. "tam buğday" ekmekle makarnayı eşleştirmesin)
 const NITELIK = new Set(['tam','bugday','kepekli','haslama','haslanmis','izgara','firin','tava','yarim','yagli','sekersiz','tuzsuz','sade','light','kahvalti','yemek','yemegi','zeytinyagli','yogurtlu','kimyonlu','sumakli','derisiz','suzulmus','bugulama']);
-const KAT_SIRA = ['et','balik','yumurta','sut','bitkisel','baklagil','anayemek','salata','sebze','tahil','pilav','corba','meyve','kuruyemis','atistirmalik','icecek','ozel'];
+const KAT_SIRA = ['et','balik','yumurta','sut','kahvaltilik','bitkisel','baklagil','anayemek','hamur','salata','sebze','tahil','pilav','corba','meyve','kuruyemis','atistirmalik','tatli','icecek','ozel'];
 const GRUP = {et:'protein', balik:'protein', yumurta:'protein', bitkisel:'protein'};
-function benzerler(fid){
-  const f = yemek(fid), uygun = profilUygun(D.profil);
+function benzerler(fid, uygun = profilUygun(D.profil)){
+  const f = yemek(fid);
   const sade = t => t.toLocaleLowerCase('tr-TR').replace(/[çğıöşüâû]/g, c => KATLA[c] || c);
   const kelimeler = y => new Set(sade(`${(y.n || [y.ad])[0]} ${y.e || ''}`).split(/[^a-z0-9]+/).filter(w => w.length > 2 && !NITELIK.has(w)));
   const kf = kelimeler(f), grup = y => GRUP[y.kat] || y.kat;
@@ -82,15 +92,17 @@ function benzerler(fid){
     return [y.id, puan];
   }).filter(Boolean).sort((a, b) => a[1] - b[1]).slice(0, 20).map(([id]) => id);
 }
+// opts.ogun + opts.sonra: başkası için program ekranı (profil filtresi yok, seçim geri çağrıyla döner)
 function secimAc(opts){
-  const ogun = menuOku(aktif)[opts.oi];
+  const ogun = opts.ogun || menuOku(aktif)[opts.oi];
   SE = {...opts, ogunId: ogun.id, q:'', sec:null, g:0};
-  SE.son = sonSecilenler(ogun.id).filter(f => profilUygun(D.profil)(yemek(f)));
+  SE.uygun = opts.koc ? () => true : profilUygun(D.profil);
+  SE.son = sonSecilenler(ogun.id).filter(f => SE.uygun(yemek(f)));
   SE.mevcut = SE.ii !== undefined ? {...ogun.ogeler[SE.ii]} : null;
-  SE.benzer = SE.mevcut ? benzerler(SE.mevcut.f) : [];
+  SE.benzer = SE.mevcut ? benzerler(SE.mevcut.f, SE.uygun) : [];
   SE.kat = SE.benzer.length ? BENZER : SE.son.length ? SON : TUMU;   // değiştir/kıyasla: benzerleri; ekle: son seçilenler
   const baslik = T({ekle:'pAdd', degis:'pChange', kiyas:'pCompare'}[SE.mod], {o: ogunAd(ogun)});
-  ac(esc(baslik) + (gecmisMi(aktif) ? ` <span class="tag">${etiket(aktif)}</span>` : ''));
+  ac(esc(baslik) + (!opts.koc && gecmisMi(aktif) ? ` <span class="tag">${etiket(aktif)}</span>` : ''));
   listeGorunumu();
 }
 // Kıyaslarken adayın başlangıç miktarı: aynı ağırlığa denk gelen miktar
@@ -121,7 +133,7 @@ function listeGorunumu(){
   kategoriCiz(); listeCiz();
 }
 function kategoriCiz(){
-  const uygun = profilUygun(D.profil);
+  const uygun = SE.uygun;
   const katlar = (SE.benzer.length ? [BENZER] : []).concat(SE.son.length ? [SON] : []).concat([TUMU, ...[...new Set(tumYemekler().filter(uygun).map(f => f.kat))].sort((a, b) => KAT_SIRA.indexOf(a) - KAT_SIRA.indexOf(b))]);
   const ad = k => k === BENZER ? T('similar') : k === SON ? T('recent') : k === TUMU ? T('all') : katAd(k);
   const daralt = SE.benzer.length > 0;   // değiştir/kıyasla modunda gruplar başta kapalı
@@ -137,7 +149,7 @@ function kategoriCiz(){
   };
 }
 function listeCiz(){
-  const q = SE.q.trim(), uygun = profilUygun(D.profil);
+  const q = SE.q.trim(), uygun = SE.uygun;
   let liste, A = null;
   if (q){
     // Arama tüm listede yapılır, en iyi eşleşen üstte
@@ -147,7 +159,9 @@ function listeCiz(){
     $('bulunan').textContent = T('results', {q, n: liste.length});
   } else {
     // Öneri listelerinde profile uymayanlar (yemedikleri, sağlık odağına aykırı) gösterilmez
-    liste = (SE.kat === BENZER ? SE.benzer.map(yemek) : SE.kat === SON ? SE.son.map(yemek) : tumYemekler().filter(f => SE.kat === TUMU || f.kat === SE.kat)).filter(uygun);
+    // Kategoride: en çok seçtiklerin ve en sık yenenler başta
+    liste = (SE.kat === BENZER ? SE.benzer.map(yemek) : SE.kat === SON ? SE.son.map(yemek)
+      : tumYemekler().filter(f => SE.kat === TUMU || f.kat === SE.kat).map(f => [f, populerPuan(f)]).sort((a, b) => b[1] - a[1] || a[0].ad.localeCompare(b[0].ad, LOC())).map(([f]) => f)).filter(uygun);
     $('bulunan').textContent = '';
   }
   const sayac = D.son[SE.ogunId] || {};
@@ -213,7 +227,8 @@ function detayGorunumu(){
   $('onay').onclick = () => {
     if (!(SE.g > 0)){ toast(T('tZero')); return; }
     kapat();
-    if (SE.mod === 'ekle') ogeEkle(SE.oi, SE.sec, SE.g); else ogeDegis(SE.oi, SE.ii, SE.sec, SE.g);
+    if (SE.sonra) SE.sonra(SE.sec, SE.g);
+    else if (SE.mod === 'ekle') ogeEkle(SE.oi, SE.sec, SE.g); else ogeDegis(SE.oi, SE.ii, SE.sec, SE.g);
   };
   yenile();
   $('sbody').scrollTop = 0;
@@ -302,9 +317,20 @@ function ayarlarAc(){
       <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
       ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
     <div class="acts"><button class="btn solid" id="profilDuzenle">${T('editProfile')}</button><button class="btn" id="alerjiDuzenle">${T('editAlerji')}</button></div>
+    <div class="sec">${T('sBody')}</div>
+    <div class="grid3">${[['yas', 'age', 1], ['boy', 'height', 1], ['kilo', 'weight', 0.5]].map(([k, ad]) => `<label class="field"><span>${T(ad)}</span><input autocomplete="off" id="b_${k}" type="text" inputmode="decimal" value="${sayi(P[k])}"></label>`).join('')}</div>
+    <div class="hint" style="margin:-4px 0 8px">${T('bodyHint')}</div>
+    <button class="btn full" id="olcuKaydet">${T('bodySave')}</button>
+    <div class="sec">${T('sSaat')}</div>
+    ${saatFormu()}
     <div class="sec">${T('sTargets')}</div>
     <div class="grid2">${HEDEF_KEYS.map(alan).join('')}</div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
+    <div class="sec">${T('kocBtn')}</div>
+    <div class="acts" style="margin-top:0"><button class="btn" id="kocAcBtn">👩‍⚕️ ${T('kocBtn')}</button>${D.program ? `<button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button>` : ''}</div>
+    <div class="hint" style="margin-top:10px">${T('impPasteHint')}</div>
+    <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
+    ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `<button class="btn ghost full" style="margin-top:10px" id="yukleBtn">${T('instBtn')}</button>` : ''}
     <div class="sec">${T('sLang')}</div>
     ${dilListesi(dil)}
     <div class="sec">${T('sBackup')}</div>
@@ -317,6 +343,24 @@ function ayarlarAc(){
     <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div>`);
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
   $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
+  saatFormuBagla();
+  $('kocAcBtn').onclick = kocAc;
+  if ($('progKaldirBtn')) $('progKaldirBtn').onclick = programKaldir;
+  if ($('yukleBtn')) $('yukleBtn').onclick = yukleAc;
+  $('linkYukle').onclick = async () => { const v = $('linkYapistir').value; kapat(); if (!(await programLinkiAc(v))) toast(T('impBad')); };
+  $('olcuKaydet').onclick = () => {
+    const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;
+    const yeni = {yas: Math.round(oku('yas')), boy: Math.round(oku('boy')), kilo: Math.round(oku('kilo') * 2) / 2};
+    if (!(yeni.yas >= 14 && yeni.yas <= 100 && yeni.boy >= 120 && yeni.boy <= 230 && yeni.kilo >= 30 && yeni.kilo <= 300)){ toast(T('errBody')); return; }
+    const degisen = ['yas', 'boy', 'kilo'].filter(k => yeni[k] !== P[k]).map(k => `${T({yas:'age', boy:'height', kilo:'weight'}[k])}: ${sayi(P[k])} → ${sayi(yeni[k])}`);
+    if (!degisen.length){ kapat(); return; }
+    Object.assign(P, yeni);
+    hedefleriYenile();
+    logEkle('diger', null, T('lBody', {l: degisen.join(', ')}));
+    kaydet(); ciz(); kapat(); toast(T('tSaved'));
+    // Gönderilen program varsa planı bozma; yoksa yeni hedeflere göre planı yeniden hazırlamayı sor
+    if (!D.program) onayAc(T('cBodyPlan'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
+  };
   $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(); });
   $('hedefKaydet').onclick = () => {
     const degisen = [];

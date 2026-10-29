@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><body style="margin:0"><div id="kap"></div><pre id="o"></pre><script>
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><div id="kap"></div><pre id="o"></pre><script>
 const U='../../index.html';localStorage.clear();
 const GEN=[375,768,844,1440], DIL=['tr','en','ru','de','ar'];const out=[];const L=x=>out.push(x);
 const kisa=e=>e.tagName.toLowerCase()+(e.id?'#'+e.id:'')+(e.className&&typeof e.className==='string'?'.'+e.className.trim().split(/\s+/).join('.'):'')+' "'+(e.textContent||'').trim().slice(0,28)+'"';
@@ -53,7 +53,12 @@ async function cerceve(gen){
       pen("secimAc({mod:'ekle',oi:0})",'yemek-ekle');
       w.eval("secimAc({mod:'kiyas',oi:1,ii:0});SE.sec='levrek';SE.g=150;detayGorunumu()");denetle(w,d.getElementById('sheet'),gen+' kiyas '+dl);w.eval('kapat()');
       w.eval("secimAc({mod:'ekle',oi:0});ozelYemekFormu()");denetle(w,d.getElementById('sheet'),gen+' ozel-yemek '+dl);w.eval('kapat()');
+      pen('destekAc()','destek');pen('saatDuzenle(0)','saat');pen('yukleAc()','yukle');
+      w.eval("D.koc=null;kocAc();D.koc.a='Ayşe Yılmaz-Kapucuoğlu';D.koc.h='Dyt. Maximilian Alexander';D.koc.gun[0].kahvalti=[{f:'yumurta',g:2},{f:'simit',g:1},{f:'kuru_kizilcik',g:20}];D.koc.not[0].kahvalti='Limonlu su ile başlayın';kocCiz()");
+      denetle(w,d.getElementById('koc'),gen+' koc '+dl);w.eval('kocKapat()');
+      w.eval('hepsiniTogla(true)');denetle(w,d.querySelector('.wrap'),gen+' ana-kapali '+dl);w.eval('hepsiniTogla(false)');
+      w.eval("D.program={a:'Ayşe Yılmaz',h:'Dyt. Maximilian Alexander',n:'Günde 2,5 litre su için; kızartma yerine fırın.'};D.ayar.yukleKapat=false;ciz()");denetle(w,d.querySelector('.wrap'),gen+' program-bant '+dl);w.eval('D.program=null;ciz()');
     }
   }
-}catch(e){L('HATA '+e.stack)}document.getElementById('o').textContent=out.join('\n');})();
+}catch(e){L('HATA '+e.stack)}document.getElementById('o').textContent=out.join('\n');fetch('/SONUC_kontrol',{method:'POST',body:out.join(String.fromCharCode(10))});})();
 </script></body></html>

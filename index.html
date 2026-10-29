@@ -277,7 +277,7 @@ a.btn{text-decoration:none}
 .uyari h4{font-size:14.5px;margin-bottom:4px}
 .uyari p{font-size:13.5px;line-height:1.55;color:#40506a}
 .sayfalar{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px;font-size:13px;color:var(--muted);font-weight:600}
-.al-sonuc{display:flex;flex-wrap:wrap;gap:6px;max-height:230px;overflow-y:auto;padding:2px}
+.al-sonuc{display:flex;flex-wrap:wrap;gap:6px;max-height:max(200px,calc(var(--vv-h,100vh) - 290px));overflow-y:auto;padding:2px}
 .al-chip{font-size:13.5px;padding:7px 12px;border-radius:99px;background:var(--card);border:1px solid var(--line);font-weight:600;color:#40506a}
 .al-chip.on{background:var(--red-soft);border-color:#f5c2c6;color:#b4232c}
 .al-etiketler{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -314,6 +314,65 @@ body.klavye .toast{display:none}
   background:#172338;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;z-index:80;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .foot{color:var(--muted);font-size:12.5px;text-align:center;margin-top:22px}
+
+/* Öğün gizle / göster, saat düğmesi */
+.ogun-arac{display:flex;justify-content:flex-end;margin:0 0 10px}
+.ogun-arac:empty{display:none}
+.tog-all{min-height:36px;font-size:13px;font-weight:700}
+.meal{container-type:inline-size}
+.meal.kapali .items,.meal.kapali .add-food,.meal.kapali .ogun-not{display:none}
+.meal.kapali .meal-head{border-bottom:0}
+.tog-btn{display:inline-flex;align-items:center;gap:4px;min-height:38px;padding:0 10px;border-radius:10px;font-weight:700;font-size:12.5px;background:var(--blue-soft);color:var(--blue);flex-shrink:0;white-space:nowrap}
+.tog-btn i{font-style:normal;font-size:13px}
+@container (max-width:400px){ .tog-btn .lbl{display:none} .tog-btn{width:38px;justify-content:center;padding:0} }
+.saat-btn{display:inline-flex;align-items:center;gap:3px;font:inherit;font-size:13px;color:var(--blue);font-weight:700;padding:0 4px 0 0;border-radius:6px}
+.saat-btn::after{content:"✎";font-size:11px;opacity:.55}
+.saat-btn:hover{background:var(--blue-soft)}
+.ogun-not{font-size:13px;color:#8a5a0c;background:var(--gold-soft);padding:8px 16px;border-bottom:1px solid #f0f3f8}
+.saat-in{font-size:22px;font-weight:800;text-align:center;height:56px}
+.tool-btn.destek{background:#fff8e8;border-color:#f5dfb0}
+.tool-btn.destek small{color:#8a5a0c}
+/* Destek */
+.kopya-satir{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:#fbfcfe}
+.kopya-satir div{flex:1;min-width:0}
+.kopya-satir small{display:block;font-size:11.5px;color:var(--muted);font-weight:700}
+.kopya-satir b{font-size:15px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+/* Program bandı, uygulama yükle bandı */
+.prog-bant,.yukle-bant{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid #cfe9dc;border-inline-start:4px solid var(--green);border-radius:14px;padding:10px 14px;margin:0 0 12px;box-shadow:var(--shadow)}
+.prog-bant > div{flex:1 1 240px;min-width:0}
+.prog-bant p{font-size:13px;color:#40506a;margin-top:3px;overflow-wrap:anywhere}
+.prog-bant .btn{min-height:36px;font-size:13px}
+.yukle-bant{border-color:#d3e1fd;border-inline-start-color:var(--blue)}
+.yukle-bant span{flex:1 1 200px;font-weight:700;font-size:14px}
+.yukle-bant .btn{min-height:36px;font-size:13px}
+.adimlar{padding-inline-start:22px;line-height:1.7;font-size:15px}
+.tpl-ipucu{flex:1 1 100%;font-size:12.5px;color:var(--muted);line-height:1.5}
+/* Program hazırlama ekranı */
+.koc-in{max-width:980px}
+.koc .card{margin-bottom:4px}
+.koc textarea,.koc-not{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;resize:vertical;color:var(--text);background:#fff}
+.koc-not{border:0;border-top:1px dashed var(--line);border-radius:0;padding:10px 16px;font-size:13.5px;background:#fffdf6}
+.koc .field input[type=time],.field input[type=time]{min-height:40px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0 10px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 10px}
+.koc-check{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-top:4px}
+.koc-check input{width:20px;height:20px}
+.koc-days{margin-bottom:8px}
+.koc-days .day{padding:10px 2px 8px}
+.koc-gun-arac{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.koc-gun-bas{font-size:18px;margin:6px 0 10px}
+.link-alan{width:100%;font:12.5px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--line);border-radius:10px;padding:8px;margin:10px 0 4px;resize:none;background:#f7f9fc;color:#40506a}
+.koc-nav .btn.ghost{flex:1}
+.link-yapistir{display:flex;gap:8px;margin-top:6px}
+.link-yapistir .search{flex:1;min-width:0}
+.link-yapistir .btn{flex:none}
+.saat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.saat-grid input{width:100%;height:50px;border:1px solid var(--line);border-radius:12px;font-size:19px;font-weight:700;text-align:center;background:#fff;color:var(--text)}
+.saat-onizle{list-style:none;margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 14px}
+.saat-onizle li{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f3f8;font-size:14.5px}
+.saat-onizle li:last-child{border-bottom:0}
+.saat-onizle b{font-variant-numeric:tabular-nums}
+.saat-onizle li.ara{color:var(--muted)}
 
 /* Kurulum sihirbazı */
 .wiz{position:fixed;inset:0;top:var(--vv-top,0px);bottom:auto;height:var(--vv-h,100%);z-index:40;overflow-y:auto;-webkit-overflow-scrolling:touch;
@@ -374,10 +433,20 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
   .gram .val{height:38px}
   .mini{height:38px}
   @container (max-width: 420px){ .item-acts .mini{width:38px} }
-  .top-row .top-btns{grid-template-columns:repeat(6,minmax(0,1fr))}
-  .top-row .top-btns .tool-btn{grid-column:span 2}
-  .top-row .top-btns .tool-btn:nth-child(n+4){grid-column:span 3;flex-direction:row;height:44px;gap:6px}
+  .top-row .top-btns{grid-template-columns:repeat(12,minmax(0,1fr))}
+  .top-row .top-btns .tool-btn{grid-column:span 3}
+  .top-row .top-btns .tool-btn:nth-child(n+5){grid-column:span 4;flex-direction:row;height:44px;gap:6px}
+  .grid4{grid-template-columns:1fr 1fr}
+  .koc-nav .btn{font-size:14px;padding:0 10px}
 }
+/* Tablet: 7 araç düğmesi tek sırada eşit genişlikte (simge üstte, yazı altta) */
+@media (min-width:601px) and (max-width:1180px){
+  .top-row .top-btns{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));width:100%;margin-inline-start:0}
+  .tool-btn{flex-direction:column;gap:2px;height:58px;padding:0 4px}
+  .tool-btn small{white-space:normal;line-height:1.15;text-align:center;font-size:12.5px}
+}
+.koc-nav{flex-wrap:wrap;position:static;box-shadow:none}
+@media (max-width:600px){ .koc-nav .btn.green{flex:1 1 100%;order:-1} }
 @media (max-width:600px){ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px} }
 @media (max-width:600px){ .gunsatir{gap:4px} .gunsatir .nav-btn{width:28px;font-size:16px} .gunsatir .days{gap:4px} }
 @media (max-width:360px){ .days{gap:4px} .day{padding:7px 0 5px} .macros{gap:6px} .crow{font-size:13px} }
@@ -394,13 +463,17 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
         <button class="tool-btn" id="gecmisBtn"><span>📅</span><small id="lGecmis"></small></button>
         <button class="tool-btn" id="logBtn"><span>📋</span><small id="lLog"></small></button>
         <button class="tool-btn" id="ayarBtn"><span>⚙️</span><small id="lAyar"></small></button>
+        <button class="tool-btn" id="kocBtn"><span>👩‍⚕️</span><small id="lKoc"></small></button>
         <button class="tool-btn" id="uyariBtn"><span>⚠️</span><small id="lUyari"></small></button>
         <button class="tool-btn" id="yazBtn"><span>✉️</span><small id="lYaz"></small></button>
+        <button class="tool-btn destek" id="destekBtn"><span>☕</span><small id="lDestek"></small></button>
       </div>
     </div>
     <div class="sub"><span id="altBaslik"></span> <span class="save-chip" id="kayitDurum"></span> <button class="hamile-btn" id="hamileBtn" hidden></button></div>
   </header>
 
+  <div id="yukleBant"></div>
+  <div id="programBant"></div>
   <div class="weeknav" id="haftaNav"></div>
   <div class="gunsatir">
     <button class="nav-btn" data-hafta="-7" aria-label="‹">‹</button>
@@ -408,11 +481,13 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
     <button class="nav-btn" data-hafta="7" aria-label="›">›</button>
   </div>
   <section class="summary" id="ozet"></section>
+  <div class="ogun-arac" id="ogunArac"></div>
   <section class="meals" id="ogunler"></section>
   <div class="under" id="altIslem"></div>
 </div>
 
 <div class="wiz" id="kurulum" hidden></div>
+<div class="wiz koc" id="koc" hidden></div>
 <div class="overlay" id="overlay"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
 
@@ -806,6 +881,420 @@ Object.assign(S, {
   // Log sayfaları
   sayfaN:["Sayfa {n} / {t} · {k} kayıt","Page {n} / {t} · {k} records","Стр. {n} / {t} · {k} записей","Seite {n} / {t} · {k} Einträge","صفحة {n} / {t} · {k} سجل"]
 });
+// Destek ol, diyetisyen/antrenör programı, program linki, öğün saatleri, vücut ölçüleri, öğün gizle/göster, kurulum metinleri
+Object.assign(S, {
+  k_kahvaltilik:["Kahvaltılık (Bal, Reçel, Tahin…)","Breakfast spreads (honey, jam, tahini…)","К завтраку (мёд, варенье, тахини…)","Frühstücksaufstriche (Honig, Marmelade, Tahin…)","للفطور (عسل، مربى، طحينة…)"],
+  k_hamur:["Börek, Pide & Hamur İşi","Pastries, pide & börek","Выпечка, пиде и бёрек","Gebäck, Pide & Börek","المعجنات والبيدا والبوريك"],
+  k_atistirmalik:["Atıştırmalık","Snacks","Перекусы","Snacks","وجبات خفيفة"],
+  k_tatli:["Tatlı","Desserts","Десерты","Desserts","الحلويات"],
+  u_bardak:["bardak","glass","стакан","Glas","كوب"],
+  m_ara0:["Kuşluk Ara Öğün","Morning snack","Второй завтрак","Vormittagssnack","وجبة خفيفة صباحية"],
+  recent:["⭐ Önerilenler","⭐ Suggested","⭐ Рекомендуемые","⭐ Vorschläge","⭐ مقترحات"],
+  // Öğünleri gizle / göster
+  hideAll:["▴ Öğünleri gizle","▴ Collapse meals","▴ Свернуть приёмы пищи","▴ Mahlzeiten einklappen","▴ طي الوجبات"],
+  showAll:["▾ Öğünleri göster","▾ Expand meals","▾ Развернуть приёмы пищи","▾ Mahlzeiten ausklappen","▾ عرض الوجبات"],
+  hideMeal:["Gizle","Hide","Скрыть","Ausblenden","إخفاء"],
+  showMeal:["Göster","Show","Показать","Anzeigen","عرض"],
+  // Şablon düğmeleri (ne işe yaradıkları açık)
+  makeDefault:["📌 Bu menüyü her {gun} kullan","📌 Use this menu every {gun}","📌 Использовать это меню каждый {gun}","📌 Dieses Menü jeden {gun} verwenden","📌 استخدم هذه القائمة كل {gun}"],
+  revertDay:["↺ Bugünkü değişiklikleri geri al","↺ Undo today’s changes","↺ Отменить изменения этого дня","↺ Änderungen dieses Tages zurücknehmen","↺ تراجع عن تغييرات هذا اليوم"],
+  tplHint:["📌 Bu günde yaptığın değişiklikler sonraki bütün {gun} günlerine uygulanır. ↺ Bu günde yaptığın değişiklikler silinir, planlanan {gun} menüsü geri gelir.","📌 Applies the changes you made today to every following {gun}. ↺ Discards today’s changes and restores the planned {gun} menu.","📌 Изменения этого дня будут применяться ко всем следующим дням: {gun}. ↺ Изменения этого дня удаляются, возвращается запланированное меню ({gun}).","📌 Übernimmt die heutigen Änderungen für jeden folgenden {gun}. ↺ Verwirft die heutigen Änderungen und stellt das geplante {gun}-Menü wieder her.","📌 تُطبَّق تغييرات هذا اليوم على كل {gun} قادم. ↺ تُحذف تغييرات هذا اليوم وتعود قائمة {gun} المخططة."],
+  confirmTemplate:["Bu günün menüsü bundan sonraki her {gun} günü için kullanılsın mı?","Use this day’s menu for every {gun} from now on?","Использовать меню этого дня для каждого следующего дня: {gun}?","Das Menü dieses Tages ab jetzt für jeden {gun} verwenden?","استخدام قائمة هذا اليوم لكل {gun} من الآن؟"],
+  pastTip:["Bu gün geçti. Üstte o günün özeti var: içtiğin su, yediğin kalori ve besin değerleri. Unuttuğun öğünü aşağıdan açıp “Yedim” ile işaretleyebilir, suyu −/+ ile düzeltebilirsin.","This day is over. Above is its summary: water, calories and nutrients you had. Open a meal below and tap “Eaten” if you forgot to mark it; fix water with −/+.","Этот день прошёл. Вверху — его итоги: вода, калории и нутриенты. Откройте приём пищи ниже и отметьте «Съел», если забыли; воду можно поправить −/+.","Dieser Tag ist vorbei. Oben siehst du die Übersicht: Wasser, Kalorien und Nährwerte. Öffne unten eine Mahlzeit und tippe „Gegessen“, falls du es vergessen hast; Wasser mit −/+ korrigieren.","انتهى هذا اليوم. في الأعلى ملخصه: الماء والسعرات والعناصر الغذائية. افتح وجبة بالأسفل واضغط «أكلت» إن نسيت، وعدّل الماء بـ −/+."],
+  // Vücut ölçüleri (Ayarlar)
+  sBody:["Yaş, boy ve kilo","Age, height and weight","Возраст, рост и вес","Alter, Größe und Gewicht","العمر والطول والوزن"],
+  bodyHint:["Değiştirince günlük hedeflerin yeniden hesaplanır.","Your daily targets are recalculated when you change these.","При изменении дневные цели пересчитываются.","Bei Änderung werden deine Tagesziele neu berechnet.","عند التغيير تُعاد حساب أهدافك اليومية."],
+  bodySave:["💾 Kaydet ve hedefleri güncelle","💾 Save and update targets","💾 Сохранить и обновить цели","💾 Speichern und Ziele aktualisieren","💾 حفظ وتحديث الأهداف"],
+  cBodyPlan:["Hedeflerin güncellendi. Öğün planın da yeni hedeflere göre yeniden hazırlansın mı? (Geçmiş günler değişmez.)","Targets updated. Rebuild your meal plan for the new targets too? (Past days stay unchanged.)","Цели обновлены. Пересобрать план питания под новые цели? (Прошлые дни не меняются.)","Ziele aktualisiert. Auch den Essensplan an die neuen Ziele anpassen? (Vergangene Tage bleiben.)","تم تحديث الأهداف. هل نعيد إعداد خطة الوجبات للأهداف الجديدة؟ (الأيام السابقة لا تتغير.)"],
+  lBody:["Vücut ölçüleri güncellendi: {l}","Body measurements updated: {l}","Параметры тела обновлены: {l}","Körpermaße aktualisiert: {l}","تم تحديث قياسات الجسم: {l}"],
+  // Öğün saatleri
+  wSaatT:["Öğün saatlerin","Your meal times","Время приёмов пищи","Deine Essenszeiten","مواعيد وجباتك"],
+  wSaatS:["Kahvaltı, öğle ve akşam yemeği saatini seç; ara öğünleri bunlara göre biz ayarlarız.","Pick your breakfast, lunch and dinner times; we’ll place the snacks around them.","Выберите время завтрака, обеда и ужина; перекусы расставим сами.","Wähle Frühstück, Mittag- und Abendessen; die Snacks planen wir passend dazu.","اختر مواعيد الفطور والغداء والعشاء، وسنضبط الوجبات الخفيفة وفقها."],
+  saatAra:["Ara öğünler (otomatik)","Snacks (automatic)","Перекусы (автоматически)","Snacks (automatisch)","الوجبات الخفيفة (تلقائياً)"],
+  saatHata:["Saatler sırayla olmalı: kahvaltı → öğle → akşam.","Times must be in order: breakfast → lunch → dinner.","Время должно идти по порядку: завтрак → обед → ужин.","Die Zeiten müssen in Reihenfolge sein: Frühstück → Mittag → Abend.","يجب أن تكون المواعيد بالترتيب: الفطور ← الغداء ← العشاء."],
+  sSaat:["Öğün saatleri","Meal times","Время приёмов пищи","Essenszeiten","مواعيد الوجبات"],
+  saatHint:["Değişiklik bugünden itibaren geçerli olur; geçmiş günlerin saatleri ve kayıtları değişmez.","Changes apply from today on; past days keep their times and records.","Изменения действуют с сегодняшнего дня; прошлые дни не меняются.","Änderungen gelten ab heute; vergangene Tage behalten ihre Zeiten.","تسري التغييرات من اليوم؛ الأيام السابقة تبقى كما هي."],
+  saatKaydet:["🕒 Saatleri kaydet","🕒 Save times","🕒 Сохранить время","🕒 Zeiten speichern","🕒 حفظ المواعيد"],
+  saatOto:["Ara öğünleri otomatik ayarla","Set snacks automatically","Расставить перекусы автоматически","Snacks automatisch setzen","ضبط الوجبات الخفيفة تلقائياً"],
+  lSaat:["Öğün saatleri güncellendi ({d} itibarıyla): {l}","Meal times updated (from {d}): {l}","Время приёмов пищи обновлено (с {d}): {l}","Essenszeiten aktualisiert (ab {d}): {l}","تم تحديث مواعيد الوجبات (من {d}): {l}"],
+  lSaatGun:["{o} saati bu gün için değişti: {a} → {b}","{o} time changed for this day: {a} → {b}","Время ({o}) изменено на этот день: {a} → {b}","{o}-Zeit für diesen Tag geändert: {a} → {b}","تغير موعد {o} لهذا اليوم: {a} ← {b}"],
+  saatTitle:["🕒 {o} saati","🕒 {o} time","🕒 Время: {o}","🕒 Zeit: {o}","🕒 موعد {o}"],
+  saatBuGun:["Yalnız bu gün","Only this day","Только этот день","Nur dieser Tag","هذا اليوم فقط"],
+  saatHerGun:["Bu günden itibaren her gün","Every day from this day on","Каждый день, начиная с этого","Ab diesem Tag jeden Tag","كل يوم بدءاً من هذا اليوم"],
+  saatEdit:["Saati değiştir","Change time","Изменить время","Zeit ändern","تغيير الموعد"],
+  tSaat:["Saat güncellendi","Time updated","Время обновлено","Zeit aktualisiert","تم تحديث الموعد"],
+  // Destek ol
+  supBtn:["Destek ol","Support","Поддержать","Unterstützen","ادعمنا"],
+  supTitle:["☕ Geliştiriciye destek ol","☕ Support the developer","☕ Поддержать разработчика","☕ Den Entwickler unterstützen","☕ ادعم المطوّر"],
+  supText:["Bu uygulama ücretsiz ve reklamsız. Beğendiysen bir kahve ısmarlayarak geliştirmeye destek olabilirsin. Her destek yeni özellik olarak geri döner. Teşekkürler!","This app is free and ad-free. If you like it, you can support development by buying me a coffee. Every bit of support turns into new features. Thank you!","Приложение бесплатное и без рекламы. Если оно вам нравится, поддержите разработку «чашкой кофе». Каждая поддержка превращается в новые функции. Спасибо!","Diese App ist kostenlos und werbefrei. Wenn sie dir gefällt, kannst du die Entwicklung mit einem Kaffee unterstützen. Jede Unterstützung wird zu neuen Funktionen. Danke!","هذا التطبيق مجاني وبلا إعلانات. إن أعجبك يمكنك دعم التطوير بثمن فنجان قهوة. كل دعم يتحول إلى ميزات جديدة. شكراً!"],
+  supAmount:["Destek tutarı","Amount","Сумма","Betrag","المبلغ"],
+  supIban:["IBAN","IBAN","IBAN","IBAN","IBAN"],
+  supName:["Alıcı adı","Recipient","Получатель","Empfänger","المستفيد"],
+  supBank:["Banka","Bank","Банк","Bank","البنك"],
+  supCopy:["Kopyala","Copy","Копировать","Kopieren","نسخ"],
+  supCopyAll:["📋 Tüm bilgileri kopyala","📋 Copy all details","📋 Скопировать все данные","📋 Alle Angaben kopieren","📋 نسخ كل البيانات"],
+  supHow:["Bankanın uygulamasında “IBAN’a para gönder”i seç, bilgileri kopyalayıp yapıştır. Açıklamaya “Diyet uygulaması destek” yazabilirsin.","In your bank app choose “send to IBAN”, then paste the details. You can write “Diet app support” as the reference.","В приложении банка выберите перевод по IBAN и вставьте данные. В назначении можно написать «Поддержка приложения».","Wähle in deiner Banking-App „Überweisung an IBAN“ und füge die Angaben ein. Verwendungszweck z. B. „Diet App Support“.","في تطبيق البنك اختر «تحويل إلى IBAN» ثم الصق البيانات. يمكنك كتابة «دعم تطبيق الحمية» في الوصف."],
+  supForeign:["Yurt dışından gönderimlerde bankan uluslararası transfer ücreti alabilir; tutar Türk lirası (TL) cinsindendir.","Transfers from abroad may incur international bank fees; the amount is in Turkish lira (TRY).","За переводы из-за рубежа банк может взять комиссию; сумма указана в турецких лирах (TRY).","Bei Überweisungen aus dem Ausland können Gebühren anfallen; der Betrag ist in Türkischer Lira (TRY).","قد تفرض البنوك رسوماً على التحويلات الدولية؛ المبلغ بالليرة التركية (TRY)."],
+  supCopied:["{x} kopyalandı","{x} copied","Скопировано: {x}","{x} kopiert","تم نسخ {x}"],
+  supDesc:["Açıklama","Reference","Назначение","Verwendungszweck","الوصف"],
+  supDescVal:["Diyet uygulaması destek","Diet app support","Поддержка приложения","Diet App Support","دعم تطبيق الحمية"],
+  // Diyetisyen / antrenör: başkası için program
+  kocBtn:["Program hazırla","Create plan","Составить план","Plan erstellen","إعداد خطة"],
+  kocTitle:["👩‍⚕️ Başkası için beslenme programı","👩‍⚕️ Meal plan for someone else","👩‍⚕️ План питания для другого человека","👩‍⚕️ Ernährungsplan für jemand anderen","👩‍⚕️ خطة غذائية لشخص آخر"],
+  kocIntro:["Diyetisyen, spor hocası ya da aileniz için gün gün, öğün öğün program yazın; saatleri ve miktarları belirleyin, linkle gönderin. Link açılınca program kişinin uygulamasına yüklenir. Kendi planınız değişmez.","Dietitians, coaches or family: write a plan day by day, meal by meal, set times and amounts, and send it as a link. When opened, it loads into the person’s app. Your own plan is not affected.","Для диетологов, тренеров и близких: составьте план по дням и приёмам пищи, задайте время и порции и отправьте ссылкой. При открытии план загрузится в приложение человека. Ваш план не меняется.","Für Ernährungsberater, Trainer oder Familie: Plan Tag für Tag und Mahlzeit für Mahlzeit schreiben, Zeiten und Mengen festlegen und als Link senden. Beim Öffnen wird er in die App der Person geladen. Dein eigener Plan bleibt unverändert.","لأخصائيي التغذية والمدربين والعائلة: اكتب خطة يوماً بيوم ووجبة بوجبة، وحدد المواعيد والكميات وأرسلها برابط. عند فتحه تُحمَّل في تطبيق الشخص. خطتك لا تتغير."],
+  kocClient:["Danışan / kişi adı","Client name","Имя клиента","Name des Klienten","اسم العميل"],
+  kocAuthor:["Hazırlayan (adınız, unvanınız)","Prepared by (your name, title)","Составитель (имя, должность)","Erstellt von (Name, Titel)","أعدّها (اسمك، صفتك)"],
+  kocAuthorPh:["ör. Dyt. Ayşe Yılmaz","e.g. Jane Doe, RD","напр. диетолог Анна","z. B. Anna Müller, Ernährungsberaterin","مثال: أخصائية التغذية سارة"],
+  kocNote:["Genel not (isteğe bağlı)","General note (optional)","Общая заметка (необязательно)","Allgemeine Notiz (optional)","ملاحظة عامة (اختياري)"],
+  kocNotePh:["ör. Günde 2,5 L su için. Kızartma yok, yemekleri fırında veya haşlama yapın.","e.g. Drink 2.5 L water a day. No frying; bake or boil.","напр. Пейте 2,5 л воды в день. Без жарки.","z. B. 2,5 L Wasser pro Tag. Nicht frittieren.","مثال: اشرب 2.5 لتر ماء يومياً. بدون قلي."],
+  kocTargets:["Günlük hedefler (isteğe bağlı)","Daily targets (optional)","Дневные цели (необязательно)","Tagesziele (optional)","الأهداف اليومية (اختياري)"],
+  kocMeals:["Öğünler ve saatler","Meals and times","Приёмы пищи и время","Mahlzeiten und Zeiten","الوجبات والمواعيد"],
+  kocAra0:["Kuşluk ara öğünü ekle (kahvaltı ile öğle arası)","Add a morning snack (between breakfast and lunch)","Добавить второй завтрак","Vormittagssnack hinzufügen","أضف وجبة خفيفة صباحية"],
+  kocDays:["Günler","Days","Дни","Tage","الأيام"],
+  kocCopyAll:["⧉ Bu günü tüm günlere kopyala","⧉ Copy this day to all days","⧉ Скопировать день на все дни","⧉ Diesen Tag auf alle Tage kopieren","⧉ انسخ هذا اليوم لكل الأيام"],
+  kocCopyPrev:["⧉ Önceki günü kopyala","⧉ Copy previous day","⧉ Скопировать предыдущий день","⧉ Vortag kopieren","⧉ انسخ اليوم السابق"],
+  kocClear:["🗑 Bu günü temizle","🗑 Clear this day","🗑 Очистить день","🗑 Tag leeren","🗑 امسح هذا اليوم"],
+  kocMealNotePh:["Öğün notu (ör. limonlu, tuzsuz)","Meal note (e.g. with lemon, no salt)","Заметка (напр. с лимоном, без соли)","Notiz (z. B. mit Zitrone, ohne Salz)","ملاحظة (مثل: بالليمون، بدون ملح)"],
+  kocAdd:["+ Yemek ekle","+ Add food","+ Добавить блюдо","+ Lebensmittel hinzufügen","+ إضافة طعام"],
+  kocDayTotal:["Gün toplamı","Day total","Итого за день","Tagessumme","مجموع اليوم"],
+  kocLink:["🔗 Paylaşım linki oluştur","🔗 Create share link","🔗 Создать ссылку","🔗 Link erstellen","🔗 إنشاء رابط المشاركة"],
+  kocLinkReady:["Link hazır. Kişiye WhatsApp, SMS ya da e-postayla gönderin. Açınca programı onaylayıp yükler.","Link ready. Send it by WhatsApp, SMS or e-mail. The person confirms and loads the plan.","Ссылка готова. Отправьте её в WhatsApp, SMS или по почте. Человек подтвердит и загрузит план.","Link fertig. Per WhatsApp, SMS oder E-Mail senden. Die Person bestätigt und lädt den Plan.","الرابط جاهز. أرسله عبر واتساب أو رسالة أو بريد. يؤكد الشخص ويحمّل الخطة."],
+  kocCopyLink:["📋 Linki kopyala","📋 Copy link","📋 Копировать ссылку","📋 Link kopieren","📋 نسخ الرابط"],
+  kocWhatsapp:["WhatsApp ile gönder","Send via WhatsApp","Отправить в WhatsApp","Per WhatsApp senden","إرسال عبر واتساب"],
+  kocShare:["📤 Paylaş","📤 Share","📤 Поделиться","📤 Teilen","📤 مشاركة"],
+  kocPrint:["🖨 Yazdır / PDF","🖨 Print / PDF","🖨 Печать / PDF","🖨 Drucken / PDF","🖨 طباعة / PDF"],
+  kocNew:["＋ Yeni program","＋ New plan","＋ Новый план","＋ Neuer Plan","＋ خطة جديدة"],
+  cKocNew:["Şu anki taslak silinip boş bir program açılacak. Emin misin?","The current draft will be cleared. Continue?","Текущий черновик будет очищен. Продолжить?","Der aktuelle Entwurf wird geleert. Fortfahren?","سيتم مسح المسودة الحالية. متابعة؟"],
+  kocEmpty:["Önce en az bir öğüne yemek ekleyin.","Add food to at least one meal first.","Сначала добавьте блюдо хотя бы в один приём пищи.","Füge zuerst mindestens einer Mahlzeit etwas hinzu.","أضف طعاماً إلى وجبة واحدة على الأقل أولاً."],
+  kocShareMsg:["{a} için hazırladığım beslenme programı: {u}","Meal plan I prepared for {a}: {u}","План питания для {a}: {u}","Ernährungsplan für {a}: {u}","خطة غذائية أعددتها لـ {a}: {u}"],
+  kocDraft:["Taslak bu cihazda otomatik kaydedilir.","The draft is saved automatically on this device.","Черновик сохраняется на этом устройстве.","Der Entwurf wird auf diesem Gerät gespeichert.","تُحفظ المسودة تلقائياً على هذا الجهاز."],
+  kocLinkLen:["Link uzunluğu: {n} karakter","Link length: {n} characters","Длина ссылки: {n} символов","Linklänge: {n} Zeichen","طول الرابط: {n} حرف"],
+  kocFor:["{a} için","for {a}","для {a}","für {a}","لـ {a}"],
+  kocBy:["Hazırlayan: {h}","Prepared by: {h}","Составитель: {h}","Erstellt von: {h}","أعدّها: {h}"],
+  // Program linki ile yükleme
+  impQ:["Beslenme programı otomatik olarak yüklenecektir, onaylıyor musunuz?","The meal plan will be loaded automatically. Do you confirm?","План питания будет загружен автоматически. Подтверждаете?","Der Ernährungsplan wird automatisch geladen. Bestätigen?","سيتم تحميل الخطة الغذائية تلقائياً، هل توافق؟"],
+  impYes:["Evet","Yes","Да","Ja","نعم"],
+  impNo:["Hayır","No","Нет","Nein","لا"],
+  impInfo:["{d} günlük program · {m} öğün · saatler ve miktarlar dahil. Mevcut planın bu programla değişir; geçmiş günlerin korunur.","{d}-day plan · {m} meals · times and amounts included. Your current plan is replaced; past days are kept.","План на {d} дн. · {m} приёмов пищи · с временем и порциями. Текущий план будет заменён; прошлые дни сохранятся.","{d}-Tage-Plan · {m} Mahlzeiten · mit Zeiten und Mengen. Dein aktueller Plan wird ersetzt; vergangene Tage bleiben.","خطة {d} أيام · {m} وجبات · مع المواعيد والكميات. ستستبدل خطتك الحالية وتبقى الأيام السابقة."],
+  impSetup:["Önce birkaç bilgini (yaş, cinsiyet, boy, kilo…) dolduralım; ardından program otomatik yüklenecek.","Let’s fill in a few details first (age, sex, height, weight…); the plan will then load automatically.","Сначала заполним несколько данных (возраст, пол, рост, вес…); затем план загрузится автоматически.","Zuerst ein paar Angaben (Alter, Geschlecht, Größe, Gewicht…); danach wird der Plan automatisch geladen.","لنملأ بعض البيانات أولاً (العمر، الجنس، الطول، الوزن…)، ثم تُحمَّل الخطة تلقائياً."],
+  impDone:["Beslenme programı yüklendi ✓","Meal plan loaded ✓","План питания загружен ✓","Ernährungsplan geladen ✓","تم تحميل الخطة الغذائية ✓"],
+  impNot:["Program yüklenmedi","Plan not loaded","План не загружен","Plan nicht geladen","لم يتم تحميل الخطة"],
+  impBad:["Program linki bozuk ya da eksik kopyalanmış.","The plan link is broken or incomplete.","Ссылка на план повреждена или неполная.","Der Plan-Link ist beschädigt oder unvollständig.","رابط الخطة تالف أو غير مكتمل."],
+  lImport:["Program yüklendi: {h} ({a})","Plan loaded: {h} ({a})","План загружен: {h} ({a})","Plan geladen: {h} ({a})","تم تحميل الخطة: {h} ({a})"],
+  progBanner:["📋 {h} tarafından hazırlanan program","📋 Plan prepared by {h}","📋 План от: {h}","📋 Plan von {h}","📋 خطة من إعداد {h}"],
+  progAnon:["Size gönderilen program","Plan sent to you","Присланный вам план","Dir gesendeter Plan","خطة مرسلة إليك"],
+  progRemove:["↺ Programı kaldır, kendi planıma dön","↺ Remove plan, back to my own","↺ Удалить план, вернуться к своему","↺ Plan entfernen, zurück zu meinem","↺ إزالة الخطة والعودة إلى خطتي"],
+  cProgRemove:["Gönderilen program kaldırılacak ve önceki planın geri gelecek. Emin misin?","The received plan will be removed and your previous plan restored. Continue?","Присланный план будет удалён, вернётся прежний. Продолжить?","Der erhaltene Plan wird entfernt und dein vorheriger Plan wiederhergestellt. Fortfahren?","ستتم إزالة الخطة المرسلة واستعادة خطتك السابقة. متابعة؟"],
+  lProgRemove:["Gönderilen program kaldırıldı","Received plan removed","Присланный план удалён","Erhaltener Plan entfernt","تمت إزالة الخطة المرسلة"],
+  impPaste:["🔗 Program linki yapıştır","🔗 Paste plan link","🔗 Вставить ссылку на план","🔗 Plan-Link einfügen","🔗 لصق رابط الخطة"],
+  impPasteHint:["Uygulamayı ana ekrandan açıyorsan ve link tarayıcıda açıldıysa, linki buraya yapıştır.","If you use the app from your home screen and the link opened in the browser, paste it here.","Если вы открываете приложение с главного экрана, а ссылка открылась в браузере, вставьте её сюда.","Wenn du die App vom Startbildschirm nutzt und der Link im Browser geöffnet wurde, füge ihn hier ein.","إذا كنت تفتح التطبيق من الشاشة الرئيسية وفُتح الرابط في المتصفح، الصقه هنا."],
+  impPasteBtn:["Yükle","Load","Загрузить","Laden","تحميل"],
+  // Uygulama olarak yükle
+  instBtn:["📲 Uygulama olarak yükle","📲 Install as app","📲 Установить как приложение","📲 Als App installieren","📲 التثبيت كتطبيق"],
+  instTitle:["📲 Telefona uygulama olarak ekle","📲 Add to your phone as an app","📲 Добавить на телефон как приложение","📲 Als App aufs Handy","📲 أضفه إلى هاتفك كتطبيق"],
+  instIos:["Safari’de alttaki Paylaş düğmesine (□↑) dokun|Listeyi kaydırıp “Ana Ekrana Ekle”yi seç|Sağ üstte “Ekle”ye dokun. Simge ana ekrana gelir, internetsiz de açılır.","Tap the Share button (□↑) in Safari|Scroll and choose “Add to Home Screen”|Tap “Add”. The icon appears on your home screen and works offline.","Нажмите «Поделиться» (□↑) в Safari|Выберите «На экран “Домой”»|Нажмите «Добавить». Значок появится на экране и будет работать без интернета.","Tippe in Safari auf Teilen (□↑)|Wähle „Zum Home-Bildschirm“|Tippe auf „Hinzufügen“. Das Symbol erscheint und funktioniert offline.","اضغط زر المشاركة (□↑) في سفاري|اختر «إضافة إلى الشاشة الرئيسية»|اضغط «إضافة». ستظهر الأيقونة وتعمل دون إنترنت."],
+  instAndroid:["Chrome’da sağ üstteki ⋮ menüsüne dokun|“Uygulamayı yükle” ya da “Ana ekrana ekle”yi seç|“Yükle”ye dokun. Simge ana ekrana gelir, internetsiz de açılır.","Tap the ⋮ menu in Chrome|Choose “Install app” or “Add to Home screen”|Tap “Install”. The icon appears and works offline.","Откройте меню ⋮ в Chrome|Выберите «Установить приложение» или «Добавить на гл. экран»|Нажмите «Установить». Значок появится и будет работать офлайн.","Tippe in Chrome auf ⋮|Wähle „App installieren“ oder „Zum Startbildschirm“|Tippe auf „Installieren“. Das Symbol erscheint und funktioniert offline.","اضغط قائمة ⋮ في كروم|اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»|اضغط «تثبيت». تظهر الأيقونة وتعمل دون إنترنت."],
+  instLater:["Daha sonra","Later","Позже","Später","لاحقاً"],
+  instNow:["Şimdi yükle","Install now","Установить","Jetzt installieren","ثبّت الآن"]
+});
+// ---------- Ek yemekler: Türk mutfağı, kahvaltılık, hamur işi, tatlı, kuruyemiş ve kurutulmuş meyveler ----------
+// Sütunlar YEMEK_SATIR ile aynı: [id, kategori, kcal, protein, karb, yağ, şeker, lif (100 g), varsayılan miktar, 'birim:gram', içerik, porsiyon notu, arama, tr, en, ru, de, ar]
+const YEMEK_EK = [
+  // Et & tavuk
+  ['kuzu_tandir','et',250,25,0,17,0,0,150,'','my','','kuzu fırın kırmızı et','Kuzu tandır','Slow-roasted lamb (tandır)','Томлёная баранина (тандыр)','Lamm aus dem Ofen (Tandır)','لحم ضأن تندير'],
+  ['kuzu_incik','et',210,24,2,12,1,0.5,200,'','my','','kuzu fırın kırmızı et','Kuzu incik (fırın)','Lamb shank (baked)','Баранья голяшка (запечённая)','Lammhaxe (Ofen)','موزة ضأن (بالفرن)'],
+  ['kuzu_sis','et',230,24,1,14,0.5,0.2,150,'','my','','kuzu ızgara kırmızı et','Kuzu şiş','Lamb skewers','Шашлык из баранины','Lammspieß','شيش لحم ضأن'],
+  ['cop_sis','et',220,24,1,13,0.5,0,150,'','my','','ızgara kırmızı et','Çöp şiş','Small lamb skewers (çöp şiş)','Мини-шашлык (чёп шиш)','Kleine Lammspieße (Çöp Şiş)','شيش صغير'],
+  ['sac_kavurma','et',200,20,4,11,2,1,200,'','my','','kırmızı et kavurma biber domates','Sac kavurma','Sizzling meat with vegetables (sac kavurma)','Мясо на садже с овощами','Fleisch vom Sac mit Gemüse','قاورما على الصاج'],
+  ['ciger','et',190,26,5,7,0,0.3,120,'','m','','ciğer tava ızgara arnavut','Ciğer (tava)','Liver (pan-fried)','Печень (жареная)','Leber (gebraten)','كبدة (مقلية)'],
+  ['iskender','et',210,12,15,11,2,1,300,'','mdy','','kebap döner yoğurt pide','İskender kebap','İskender kebab','Искендер-кебаб','İskender-Kebab','كباب إسكندر'],
+  ['beyti','et',240,15,15,13,1.5,1,250,'','my','','kebap kıyma lavaş','Beyti kebap','Beyti kebab','Бейти-кебаб','Beyti-Kebab','كباب بيتي'],
+  ['urfa','et',255,17,2,20,1,0.5,150,'','my','','kebap kıyma ızgara acısız','Urfa kebap','Urfa kebab','Урфа-кебаб','Urfa-Kebab','كباب أورفا'],
+  ['tavuk_pirzola','et',190,24,0,10,0,0,180,'','c','','piliç but ızgara','Tavuk pirzola (ızgara)','Chicken thigh steak (grilled)','Куриное филе бедра (гриль)','Hähnchenschenkel-Steak (gegrillt)','ستيك فخذ دجاج (مشوي)'],
+  ['tavuk_kavurma','et',180,22,3,9,1.5,0.5,180,'','c','','piliç kavurma sote','Tavuk kavurma','Pan-roasted chicken (kavurma)','Жареная курица (кавурма)','Geschmortes Hähnchen (Kavurma)','قاورما دجاج'],
+  ['sucuk','et',450,18,2,41,1,0,3,'dilim:10','mty','','kahvaltı sucuk','Sucuk','Turkish beef sausage (sucuk)','Суджук (говяжья колбаса)','Sucuk (Rinderwurst)','سجق تركي'],
+  ['pastirma','et',250,30,2,13,0,0.5,3,'dilim:8','mt','','kahvaltı pastırma','Pastırma','Cured beef (pastırma)','Бастурма','Pastırma (luftgetrocknetes Rind)','بسطرمة'],
+  ['hindi_fume','et',110,18,2,3,1,0,3,'dilim:15','ct','','kahvaltı hindi füme jambon','Hindi füme','Smoked turkey slices','Копчёная индейка (ломтики)','Geräucherte Pute (Scheiben)','ديك رومي مدخن'],
+  // Balık & deniz ürünü
+  ['uskumru','balik',205,19,0,14,0,0,200,'','f','','deniz ürünü ızgara','Uskumru (ızgara)','Mackerel (grilled)','Скумбрия (гриль)','Makrele (gegrillt)','ماكريل (مشوي)'],
+  ['alabalik','balik',150,21,0,6.6,0,0,200,'','f','','tatlı su ızgara','Alabalık (ızgara)','Trout (grilled)','Форель (гриль)','Forelle (gegrillt)','سلمون مرقط (مشوي)'],
+  ['sardalya','balik',208,25,0,11.5,0,0,150,'','f','','deniz ürünü ızgara','Sardalya (ızgara)','Sardines (grilled)','Сардины (гриль)','Sardinen (gegrillt)','سردين (مشوي)'],
+  ['istavrit','balik',220,19,6,13,0,0.3,150,'','fy','','deniz ürünü kızartma tava','İstavrit (tava)','Horse mackerel (fried)','Ставрида (жареная)','Stöcker (gebraten)','سمك الصوريل (مقلي)'],
+  ['mezgit','balik',90,18,2,1,1,0.3,200,'','f','','deniz ürünü buğulama','Mezgit (buğulama)','Whiting (steamed)','Мерланг (на пару)','Wittling (gedünstet)','سمك الأبيض (مطهو بالبخار)'],
+  ['karides','balik',110,23,1,1.7,0,0,150,'','f','','deniz ürünü ızgara karides','Karides (ızgara)','Shrimp (grilled)','Креветки (гриль)','Garnelen (gegrillt)','روبيان (مشوي)'],
+  ['karides_guvec','balik',140,14,4,7.5,2.5,1,250,'','fd','','deniz ürünü güveç kaşar','Karides güveç','Shrimp casserole','Креветки в горшочке','Garnelen-Auflauf','طاجن روبيان'],
+  ['kalamar','balik',130,18,4,4.5,0,0,150,'','f','','deniz ürünü ızgara','Kalamar (ızgara)','Squid (grilled)','Кальмар (гриль)','Tintenfisch (gegrillt)','كاليماري (مشوي)'],
+  ['midye_dolma','balik',190,8,25,6,1,1,5,'adet:20','f','','deniz ürünü midye pilav meze','Midye dolma','Stuffed mussels','Фаршированные мидии','Gefüllte Muscheln','بلح البحر المحشي'],
+  // Yumurta
+  ['rafadan','yumurta',150,12.6,0.8,10,0.8,0,2,'adet:50','e','','kahvaltı haşlama','Rafadan yumurta','Soft-boiled egg','Яйцо всмятку','Weichgekochtes Ei','بيض نصف مسلوق'],
+  ['sucuklu_yumurta','yumurta',260,15,1.5,21,1,0,150,'','emty','','kahvaltı tava sucuk','Sucuklu yumurta','Eggs with sucuk','Яичница с суджуком','Eier mit Sucuk','بيض بالسجق'],
+  ['peynirli_omlet','yumurta',180,12,2,14,1.5,0,150,'','ed','','kahvaltı tava peynir kaşar','Peynirli omlet','Cheese omelette','Омлет с сыром','Käseomelett','عجة بالجبن'],
+  ['ispanakli_yumurta','yumurta',110,7,4,7.5,1.5,2,200,'','e','','kahvaltı tava ıspanak','Ispanaklı yumurta','Eggs with spinach','Яйца со шпинатом','Eier mit Spinat','بيض بالسبانخ'],
+  ['patatesli_yumurta','yumurta',150,6,12,9,1,1.5,200,'','e','','kahvaltı tava patates','Patatesli yumurta','Eggs with potatoes','Яйца с картофелем','Eier mit Kartoffeln','بيض بالبطاطس'],
+  // Süt ürünü & peynir
+  ['tulum','sut',360,22,2,29,0.5,0,30,'','dty','','peynir kahvaltı','Tulum peyniri','Tulum cheese','Сыр тулум','Tulum-Käse','جبن تولوم'],
+  ['keci_peyniri','sut',290,20,2,23,1,0,2,'dilim:25','dt','','peynir kahvaltı keçi','Keçi peyniri','Goat cheese','Козий сыр','Ziegenkäse','جبن الماعز'],
+  ['dil_peyniri','sut',260,22,2,18,1,0,2,'dilim:25','dt','','peynir kahvaltı','Dil peyniri','String cheese (dil peyniri)','Сыр чечил','Fadenkäse (Dil Peyniri)','جبن مجدول'],
+  ['hellim','sut',320,22,2,25,1.5,0,2,'dilim:25','dt','','peynir kahvaltı ızgara','Hellim (ızgara)','Halloumi (grilled)','Халуми (гриль)','Halloumi (gegrillt)','حلوم (مشوي)'],
+  ['labne','sut',230,6,4,21,3,0,30,'','dy','yk:20','peynir kahvaltı sürülebilir','Labne','Labneh (cream cheese)','Лабне (сливочный сыр)','Labneh (Frischkäse)','لبنة'],
+  ['kaymak','sut',380,2.5,3,40,3,0,20,'','dy','yk:15','kahvaltı','Kaymak','Clotted cream (kaymak)','Каймак','Kaymak (Rahm)','قيمر'],
+  ['cokelek','sut',100,15,3.5,3,3,0,50,'','d','yk:15','peynir kahvaltı','Çökelek','Cottage cheese (çökelek)','Творог (чёкелек)','Hüttenkäse (Çökelek)','جبن قريش'],
+  ['yogurt_tam','sut',61,3.5,4.7,3.3,4.7,0,150,'','d','yk:20','','Yoğurt (tam yağlı)','Yogurt (whole milk)','Йогурт (цельный)','Joghurt (Vollmilch)','زبادي (كامل الدسم)'],
+  ['yogurt_light','sut',40,4.2,5.5,0.4,5.5,0,150,'','d','yk:20','yağsız','Yoğurt (light)','Yogurt (light)','Йогурт (лёгкий)','Joghurt (light)','زبادي (خفيف)'],
+  ['sut_tam','sut',61,3.2,4.7,3.3,4.7,0,200,'','d','bardak:200','içecek','Süt (tam yağlı)','Milk (whole)','Молоко (цельное)','Milch (Vollmilch)','حليب (كامل الدسم)'],
+  // Kahvaltılık
+  ['tahin','kahvaltilik',595,17,21,54,0.5,9.3,15,'','','yk:15','susam','Tahin','Tahini','Тахини','Tahin (Sesammus)','طحينة'],
+  ['pekmez','kahvaltilik',290,0.5,73,0.1,65,0,15,'','','yk:20','üzüm','Üzüm pekmezi','Grape molasses (pekmez)','Виноградная патока (пекмез)','Traubensirup (Pekmez)','دبس العنب'],
+  ['tahin_pekmez','kahvaltilik',430,8,47,24,38,4,25,'','','yk:15','tahin pekmez','Tahin-pekmez','Tahini with grape molasses','Тахини с пекмезом','Tahin mit Traubensirup','طحينة بدبس'],
+  ['recel','kahvaltilik',250,0.4,62,0.1,48,1,15,'','','tk:7','reçel marmelat','Reçel','Jam','Варенье','Marmelade','مربى'],
+  ['zeytin_ezmesi','kahvaltilik',230,1.5,5,23,0.5,3,15,'','t','tk:7','zeytin','Zeytin ezmesi','Olive paste','Оливковая паста','Olivenpaste','معجون الزيتون'],
+  ['kakao_krema','kahvaltilik',540,6,57,31,54,3,15,'','d','tk:8','çikolata fındık kreması','Kakaolu fındık kreması','Cocoa hazelnut spread','Шоколадно-ореховая паста','Nuss-Nougat-Creme','كريمة البندق بالكاكاو'],
+  ['siyah_zeytin','kuruyemis',180,1.5,4,18,0.5,3,5,'adet:4','t','','kahvaltı salamura','Siyah zeytin','Black olives','Чёрные оливки','Schwarze Oliven','زيتون أسود'],
+  ['tereyagi','kuruyemis',717,0.9,0.1,81,0.1,0,5,'','dy','tk:5','yağ','Tereyağı','Butter','Сливочное масло','Butter','زبدة'],
+  // Ekmek & tahıl
+  ['yulaf_ekmegi','tahil',250,9,44,4,3,6,2,'dilim:25','','','ekmek','Yulaf ekmeği','Oat bread','Овсяный хлеб','Haferbrot','خبز الشوفان'],
+  ['eksi_maya','tahil',260,9,50,2,2,3,2,'dilim:30','','','ekmek ekşi maya','Ekşi mayalı ekmek','Sourdough bread','Хлеб на закваске','Sauerteigbrot','خبز العجين المخمر'],
+  ['bazlama','tahil',270,8,52,3.5,2,2.5,0.5,'adet:120','','','ekmek','Bazlama','Bazlama (flatbread)','Базлама (лепёшка)','Bazlama (Fladenbrot)','خبز بازلاما'],
+  ['misir_ekmegi','tahil',260,6,45,6.5,3,4,1,'dilim:40','','','ekmek mısır','Mısır ekmeği','Cornbread','Кукурузный хлеб','Maisbrot','خبز الذرة'],
+  ['granola','tahil',450,12,60,18,10,8,40,'','','','kahvaltı yulaf','Granola (şekersiz)','Granola (no added sugar)','Гранола (без сахара)','Granola (ohne Zucker)','جرانولا (بدون سكر)'],
+  ['musli','tahil',360,10,64,6,14,8,40,'','','','kahvaltı yulaf','Müsli (şekersiz)','Muesli (no added sugar)','Мюсли (без сахара)','Müsli (ohne Zucker)','موسلي (بدون سكر)'],
+  ['misir_gevregi','tahil',360,7,84,1,8,3,30,'','','','kahvaltı gevrek','Mısır gevreği (şekersiz)','Corn flakes (unsweetened)','Кукурузные хлопья (без сахара)','Cornflakes (ungesüßt)','رقائق الذرة (بدون سكر)'],
+  // Börek, pide & hamur işi
+  ['simit','hamur',300,10,55,5,4,3,1,'adet:100','','','kahvaltı susamlı','Simit','Simit (sesame bagel)','Симит (бублик с кунжутом)','Simit (Sesamring)','سميت (كعك بالسمسم)'],
+  ['pogaca','hamur',360,9,40,18,3,1.5,1,'adet:70','dy','','kahvaltı peynirli','Peynirli poğaça','Cheese poğaça','Погача с сыром','Käse-Poğaça','بوغاتشا بالجبن'],
+  ['acma','hamur',380,8,45,18,5,1.5,1,'adet:80','y','','kahvaltı','Açma','Açma (soft bun)','Ачма (булочка)','Açma (weiches Gebäck)','أتشما (كعكة طرية)'],
+  ['su_boregi','hamur',250,10,25,12,2,1,150,'','dy','','börek peynirli','Su böreği','Water börek (cheese)','Су бёрек (с сыром)','Wasser-Börek (Käse)','بوريك مائي (بالجبن)'],
+  ['ispanakli_borek','hamur',230,8,24,11,2,2,150,'','d','','börek fırın ıspanak','Ispanaklı börek','Spinach börek','Бёрек со шпинатом','Spinat-Börek','بوريك بالسبانخ'],
+  ['peynirli_borek','hamur',270,10,25,14,2,1,150,'','dy','','börek fırın peynir','Peynirli börek','Cheese börek','Бёрек с сыром','Käse-Börek','بوريك بالجبن'],
+  ['kiymali_borek','hamur',260,10,24,14,1.5,1,150,'','my','','börek fırın kıyma','Kıymalı börek','Minced meat börek','Бёрек с фаршем','Hackfleisch-Börek','بوريك باللحم المفروم'],
+  ['patatesli_borek','hamur',240,6,30,10,2,1.5,150,'','','','börek fırın patates','Patatesli börek','Potato börek','Бёрек с картофелем','Kartoffel-Börek','بوريك بالبطاطس'],
+  ['sigara_boregi','hamur',280,9,28,14,2,1,3,'adet:30','d','','börek peynir','Sigara böreği (fırın)','Cheese rolls (baked)','Сигара-бёрек (запечённый)','Zigarren-Börek (Ofen)','بوريك سيجارة (بالفرن)'],
+  ['gozleme_peynir','hamur',240,10,30,9,2,1.5,200,'','d','','gözleme peynir','Peynirli gözleme','Cheese gözleme','Гёзлеме с сыром','Gözleme mit Käse','جوزليمة بالجبن'],
+  ['gozleme_patates','hamur',220,6,34,7,1.5,2,200,'','','','gözleme patates','Patatesli gözleme','Potato gözleme','Гёзлеме с картофелем','Gözleme mit Kartoffeln','جوزلمة بالبطاطس'],
+  ['lahmacun','hamur',230,11,32,6.5,3,2.5,1,'adet:120','m','','pide kıyma','Lahmacun','Lahmacun (thin meat flatbread)','Лахмаджун','Lahmacun','لحم بعجين'],
+  ['pide_kiymali','hamur',245,12,30,8.5,2,1.5,3,'dilim:60','my','','pide kıyma','Kıymalı pide','Minced meat pide','Пиде с фаршем','Pide mit Hackfleisch','بيدا باللحم المفروم'],
+  ['pide_kasarli','hamur',270,12,31,11,2,1.5,3,'dilim:60','dty','','pide kaşar peynir','Kaşarlı pide','Cheese pide','Пиде с сыром','Pide mit Käse','بيدا بالجبن'],
+  ['pide_kusbasi','hamur',240,14,28,8,2,1.5,3,'dilim:60','m','','pide et','Kuşbaşılı pide','Diced meat pide','Пиде с мясом','Pide mit Fleischwürfeln','بيدا بقطع اللحم'],
+  ['etli_ekmek','hamur',230,12,30,7,2,1.5,3,'dilim:60','m','','konya pide kıyma','Etli ekmek','Etli ekmek (Konya meat flatbread)','Этли экмек (лепёшка с мясом)','Etli Ekmek (Fleischfladen)','خبز باللحم'],
+  ['icli_kofte','hamur',200,9,24,7.5,1,3,2,'adet:60','m','','köfte bulgur kıyma haşlama','İçli köfte (haşlama)','Stuffed bulgur balls (boiled)','Ичли кёфте (отварные)','Gefüllte Bulgurbällchen (gekocht)','كبة (مسلوقة)'],
+  ['tost','hamur',280,13,30,12,3,4,1,'adet:120','dt','','kaşarlı tost tam buğday','Kaşarlı tost (tam buğday)','Cheese toastie (whole-wheat)','Тост с сыром (цельнозерновой)','Käsetoast (Vollkorn)','توست بالجبن (قمح كامل)'],
+  ['karisik_tost','hamur',300,14,28,15,3,3,1,'adet:130','mdty','','sucuklu kaşarlı tost','Karışık tost (sucuk-kaşar)','Mixed toastie (sucuk & cheese)','Тост с суджуком и сыром','Toast mit Sucuk und Käse','توست بالسجق والجبن'],
+  // Pilav, makarna, patates
+  ['sehriyeli_pilav','pilav',160,3,28,4,0.2,0.5,150,'','','servis:50','pirinç pilav şehriye','Şehriyeli pirinç pilavı','Rice pilaf with orzo','Рисовый плов с вермишелью','Reispilaw mit Fadennudeln','أرز بالشعيرية'],
+  ['nohutlu_pilav','pilav',155,4.5,26,4,0.5,2,150,'','','servis:50','pirinç pilav nohut','Nohutlu pilav','Rice pilaf with chickpeas','Плов с нутом','Reispilaw mit Kichererbsen','أرز بالحمص'],
+  ['bulgur_domates','pilav',125,3.5,22,3,1.5,4.5,150,'','','servis:50','bulgur pilav domatesli','Domatesli bulgur pilavı','Bulgur pilaf with tomato','Булгур с томатами','Bulgur-Pilaw mit Tomate','برغل بالطماطم'],
+  ['firik','pilav',130,4.5,23,3,0.5,5,150,'','','servis:50','firik pilav','Firik pilavı','Freekeh pilaf','Плов из фрике','Freekeh-Pilaw','فريكة'],
+  ['esmer_pirinc','pilav',112,2.6,23,0.9,0.4,1.8,150,'','','servis:50','pirinç haşlama','Esmer pirinç (haşlama)','Brown rice (boiled)','Бурый рис (отварной)','Naturreis (gekocht)','أرز بني (مسلوق)'],
+  ['kuskus','pilav',112,3.8,23,0.2,0.1,1.4,150,'','','servis:50','kuskus haşlama','Kuskus (haşlama)','Couscous (boiled)','Кускус (отварной)','Couscous (gekocht)','كسكس (مسلوق)'],
+  ['karabugday','pilav',92,3.4,20,0.6,0.9,2.7,150,'','','servis:50','karabuğday haşlama glutensiz','Karabuğday (haşlama)','Buckwheat (boiled)','Гречка (отварная)','Buchweizen (gekocht)','الحنطة السوداء (مسلوقة)'],
+  ['eriste','pilav',140,5,27,1.5,0.5,1.5,150,'','e','','erişte makarna','Ev eriştesi (haşlama)','Homemade noodles (boiled)','Домашняя лапша (отварная)','Hausgemachte Nudeln (gekocht)','معكرونة منزلية (مسلوقة)'],
+  ['makarna_domates','pilav',130,4.5,23,2.5,3,2,250,'','','','makarna domates soslu','Domates soslu makarna','Pasta with tomato sauce','Макароны с томатным соусом','Nudeln mit Tomatensoße','معكرونة بصلصة الطماطم'],
+  ['kiymali_makarna','pilav',170,8,22,5.5,2,1.5,250,'','m','','makarna kıyma','Kıymalı makarna','Pasta with minced meat','Макароны с фаршем','Nudeln mit Hackfleisch','معكرونة باللحم المفروم'],
+  ['patates_pure','pilav',90,2,14,3,1.5,1.3,150,'','d','','patates püre','Patates püresi','Mashed potatoes','Картофельное пюре','Kartoffelpüree','بطاطس مهروسة'],
+  ['misir_hasl','pilav',96,3.4,21,1.5,4.5,2.4,1,'adet:150','','','mısır koçan haşlama','Haşlanmış mısır','Boiled corn on the cob','Варёная кукуруза','Gekochter Maiskolben','ذرة مسلوقة'],
+  // Ana yemek & zeytinyağlı
+  ['kfasulye_zy','anayemek',110,6,14,3.5,2,5,250,'','','','kuru fasulye etsiz zeytinyağlı','Kuru fasulye (etsiz)','White bean stew (no meat)','Тушёная фасоль (без мяса)','Weiße-Bohnen-Eintopf (ohne Fleisch)','فاصوليا بيضاء (بدون لحم)'],
+  ['barbunya','anayemek',105,5.5,13,3.5,2,5,250,'','','','barbunya zeytinyağlı fasulye','Zeytinyağlı barbunya','Borlotti beans in olive oil','Фасоль барбунья в оливковом масле','Borlotti-Bohnen in Olivenöl','فاصوليا بربونيا بزيت الزيتون'],
+  ['nohut_yemegi','anayemek',120,6,17,3.5,2,5.5,250,'','','','nohut yemek etsiz','Nohut yemeği (etsiz)','Chickpea stew (no meat)','Тушёный нут (без мяса)','Kichererbsen-Eintopf (ohne Fleisch)','يخنة الحمص (بدون لحم)'],
+  ['imambayildi','anayemek',110,1.5,8,8,4.5,3,250,'','','','patlıcan zeytinyağlı','İmam bayıldı','Stuffed eggplant in olive oil (imam bayıldı)','Имам баялды (баклажаны)','Imam Bayıldı (gefüllte Aubergine)','إمام بايلدي (باذنجان محشي)'],
+  ['musakka','anayemek',120,6,7,8,3.5,2.5,250,'','m','','patlıcan kıyma','Patlıcan musakka','Eggplant moussaka','Мусака из баклажанов','Auberginen-Moussaka','مسقعة باذنجان'],
+  ['hunkar','anayemek',170,10,8,11,3,1.5,250,'','mdy','','patlıcan beğendi et','Hünkâr beğendi','Lamb stew on eggplant purée (hünkâr beğendi)','Хюнкяр бегенди','Hünkâr Beğendi (Lamm auf Auberginenpüree)','هونكار بيغندي'],
+  ['yaprak_sarma','anayemek',160,3,22,6.5,3,3,6,'adet:25','','','sarma dolma zeytinyağlı','Zeytinyağlı yaprak sarma','Stuffed vine leaves in olive oil','Долма из виноградных листьев (постная)','Gefüllte Weinblätter in Olivenöl','ورق عنب بزيت الزيتون'],
+  ['etli_sarma','anayemek',150,7,14,7,2,2.5,5,'adet:30','m','','sarma dolma kıyma','Etli yaprak sarma','Stuffed vine leaves with meat','Долма с мясом','Gefüllte Weinblätter mit Fleisch','ورق عنب باللحم'],
+  ['biber_dolma','anayemek',120,6,12,5,3,2,2,'adet:90','m','','dolma biber kıyma','Biber dolması (etli)','Stuffed peppers with meat','Фаршированный перец с мясом','Gefüllte Paprika mit Fleisch','فلفل محشي باللحم'],
+  ['biber_dolma_zy','anayemek',140,2.5,20,6,3,2,2,'adet:80','','','dolma biber zeytinyağlı','Zeytinyağlı biber dolması','Stuffed peppers in olive oil','Перец, фаршированный рисом','Gefüllte Paprika in Olivenöl','فلفل محشي بزيت الزيتون'],
+  ['lahana_sarma','anayemek',110,6,11,4.5,2,2.5,4,'adet:40','m','','sarma lahana kıyma','Etli lahana sarması','Stuffed cabbage rolls with meat','Голубцы с мясом','Kohlrouladen mit Fleisch','ملفوف محشي باللحم'],
+  ['pirasa','anayemek',85,1.5,10,4.5,3.5,2.5,250,'','','','pırasa zeytinyağlı','Zeytinyağlı pırasa','Leeks in olive oil','Лук-порей в оливковом масле','Lauch in Olivenöl','كراث بزيت الزيتون'],
+  ['enginar','anayemek',90,2.5,9,5,2,4.5,200,'','','','enginar zeytinyağlı','Zeytinyağlı enginar','Artichokes in olive oil','Артишоки в оливковом масле','Artischocken in Olivenöl','خرشوف بزيت الزيتون'],
+  ['bamya','anayemek',85,5.5,6,4.5,2,3,250,'','m','','bamya etli','Etli bamya','Okra stew with meat','Бамия с мясом','Okra mit Fleisch','بامية باللحم'],
+  ['kabak_zy','anayemek',70,1.5,7,4,3.5,1.5,250,'','','','kabak zeytinyağlı','Zeytinyağlı kabak','Zucchini in olive oil','Кабачки в оливковом масле','Zucchini in Olivenöl','كوسا بزيت الزيتون'],
+  ['bakla','anayemek',100,5,11,4,2,5,200,'','','','bakla zeytinyağlı','Zeytinyağlı taze bakla','Broad beans in olive oil','Бобы в оливковом масле','Dicke Bohnen in Olivenöl','فول أخضر بزيت الزيتون'],
+  ['patlican_kebabi','anayemek',150,9,6,10,3,3,250,'','my','','patlıcan kebap kıyma','Patlıcan kebabı','Eggplant kebab','Кебаб с баклажанами','Auberginen-Kebab','كباب الباذنجان'],
+  ['orman_kebabi','anayemek',130,11,7,6.5,2.5,2,250,'','m','','et sebze bezelye','Orman kebabı','Forest kebab (meat & vegetables)','Лесной кебаб (мясо с овощами)','Wald-Kebab (Fleisch & Gemüse)','كباب الغابة'],
+  ['tavuk_guvec','anayemek',110,13,5,4,3,1.5,250,'','c','','tavuk güveç sebze','Tavuk güveç','Chicken casserole','Курица в горшочке','Hähnchen-Güveç','طاجن دجاج'],
+  ['et_guvec','anayemek',135,12,6,7,3,2,250,'','m','','et güveç sebze','Etli güveç','Meat & vegetable casserole','Мясо с овощами в горшочке','Fleisch-Güveç','طاجن لحم بالخضار'],
+  ['etli_patates','anayemek',110,7,10,4.5,2,1.5,250,'','m','','patates yemek et','Etli patates yemeği','Potato stew with meat','Картофель с мясом','Kartoffeleintopf mit Fleisch','يخنة البطاطس باللحم'],
+  ['kiymali_patates','anayemek',125,6.5,11,6,1.5,1.5,250,'','m','','patates kıyma','Kıymalı patates','Potatoes with minced meat','Картофель с фаршем','Kartoffeln mit Hackfleisch','بطاطس باللحم المفروم'],
+  ['sulu_kofte','anayemek',110,8,9,4.5,1.5,1,250,'','m','','köfte ekşili terbiyeli','Sulu köfte (ekşili)','Meatball soup-stew (ekşili köfte)','Тефтели в соусе (экшили)','Fleischbällchen in Soße (Ekşili Köfte)','كفتة بالمرق'],
+  ['kadinbudu','anayemek',230,15,12,14,1,0.5,150,'','my','','köfte pirinçli kızartma','Kadınbudu köfte','Kadınbudu meatballs','Котлеты кадынбуду','Kadınbudu-Frikadellen','كفتة قادين بودو'],
+  ['cig_kofte','anayemek',170,5,30,3.5,2,5,150,'','','','çiğ köfte etsiz bulgur','Etsiz çiğ köfte','Vegan çiğ köfte (bulgur)','Чи кёфте (без мяса)','Çiğ Köfte (vegan, Bulgur)','تشي كفتة (نباتية)'],
+  ['mantar_sote','sebze',60,3,4,4,2,1.5,150,'','','','mantar sote','Mantar sote','Sautéed mushrooms','Грибы соте','Gebratene Pilze','فطر سوتيه'],
+  // Çorba
+  ['ezogelin','corba',60,3,10,1.5,1.5,2,250,'','','kepce:125','mercimek bulgur','Ezogelin çorbası','Ezogelin soup (lentil & bulgur)','Суп эзогелин','Ezogelin-Suppe (Linsen & Bulgur)','شوربة عزوجلين'],
+  ['tarhana','corba',55,2.5,8.5,1.5,2,1.2,250,'','d','kepce:125','tarhana','Tarhana çorbası','Tarhana soup','Суп тархана','Tarhana-Suppe','شوربة طرحنة'],
+  ['domates_corba','corba',50,1.5,7,2,4,1,250,'','d','kepce:125','domates','Domates çorbası','Tomato soup','Томатный суп','Tomatensuppe','شوربة الطماطم'],
+  ['iskembe','corba',70,7,3,3.5,0.5,0,250,'','m','kepce:125','işkembe','İşkembe çorbası','Tripe soup','Суп из рубца (ишкембе)','Kuttelsuppe','شوربة الكرشة'],
+  ['mantar_corba','corba',55,2,6,2.5,2,0.8,250,'','d','kepce:125','mantar kremalı','Mantar çorbası','Mushroom soup','Грибной суп','Pilzsuppe','شوربة الفطر'],
+  ['brokoli_corba','corba',50,2.5,6,2,2,1.5,250,'','d','kepce:125','brokoli','Brokoli çorbası','Broccoli soup','Суп из брокколи','Brokkolisuppe','شوربة البروكلي'],
+  ['sehriye_corba','corba',55,1.8,9,1.3,2,0.8,250,'','','kepce:125','şehriye domates','Şehriye çorbası','Vermicelli soup','Суп с вермишелью','Fadennudelsuppe','شوربة الشعيرية'],
+  ['dugun_corba','corba',75,5.5,4,4,0.5,0.2,250,'','md','kepce:125','düğün et terbiyeli','Düğün çorbası','Wedding soup (meat, egg & lemon)','Свадебный суп','Hochzeitssuppe','شوربة العرس'],
+  ['balkabagi_corba','corba',45,1,7,1.5,3.5,1.2,250,'','d','kepce:125','balkabağı','Balkabağı çorbası','Pumpkin soup','Тыквенный суп','Kürbissuppe','شوربة القرع'],
+  // Salata & meze
+  ['gavurdagi','salata',120,2.5,6,10,4,2.5,150,'','','','salata ceviz nar','Gavurdağı salatası','Gavurdağı salad (tomato & walnut)','Салат гавурдаги','Gavurdağı-Salat (Tomate & Walnuss)','سلطة غاوورداغي'],
+  ['roka_salata','salata',50,2.5,3.5,3,2,1.6,150,'','','','roka salata','Roka salatası','Rocket salad','Салат из рукколы','Rucola-Salat','سلطة جرجير'],
+  ['ton_salata','salata',110,11,4,5.5,2,1.5,200,'','ft','','ton balığı salata','Ton balıklı salata','Tuna salad','Салат с тунцом','Thunfischsalat','سلطة التونة'],
+  ['kisir','salata',140,3.5,22,4.5,3,4.5,150,'','','','bulgur salata','Kısır','Kısır (bulgur salad)','Кысыр (салат из булгура)','Kısır (Bulgursalat)','كسير (سلطة برغل)'],
+  ['humus','salata',170,7,14,9.5,0.3,6,50,'','','yk:20','nohut meze','Humus','Hummus','Хумус','Hummus','حمص بالطحينة'],
+  ['haydari','salata',150,5,4,13,3.5,0.3,50,'','d','yk:20','yoğurt meze','Haydari','Haydari (yogurt dip)','Хайдари (йогуртовый соус)','Haydari (Joghurt-Dip)','حيدري (صلصة لبن)'],
+  ['acili_ezme','salata',60,1.5,7,3,4,2,50,'','','yk:20','ezme domates biber meze','Acılı ezme','Spicy tomato dip (ezme)','Острая эзме','Scharfer Tomatendip (Ezme)','إزمة حارة'],
+  ['patlican_salata','salata',70,1.2,7,4.5,3.5,3,100,'','','','közlenmiş patlıcan meze','Közlenmiş patlıcan salatası','Roasted eggplant salad','Салат из печёных баклажанов','Gerösteter Auberginensalat','سلطة باذنجان مشوي'],
+  ['babagannus','salata',120,2.5,8,9,3,3,100,'','','','patlıcan tahin meze','Babagannuş','Baba ganoush','Баба гануш','Baba Ganoush','بابا غنوج'],
+  ['muhammara','salata',290,5,20,21,8,4,30,'','','yk:15','ceviz biber meze','Muhammara','Muhammara (pepper & walnut dip)','Мухаммара','Muhammara','محمرة'],
+  ['yogurtlu_patlican','salata',70,3,6,4,4,2,150,'','d','','patlıcan yoğurt meze','Yoğurtlu patlıcan','Eggplant with yogurt','Баклажаны с йогуртом','Aubergine mit Joghurt','باذنجان باللبن'],
+  ['patates_salatasi','salata',100,2,14,4,1.5,2,150,'','','','patates salata','Patates salatası','Potato salad','Картофельный салат','Kartoffelsalat','سلطة البطاطس'],
+  ['barbunya_pilaki','salata',110,5.5,14,3.5,2,5,150,'','','','barbunya pilaki meze','Barbunya pilaki','Borlotti bean salad (pilaki)','Пилаки из фасоли','Bohnen-Pilaki','فاصوليا بلاكي'],
+  ['borulce','salata',110,7,15,3,1,5,150,'','','','börülce salata','Börülce salatası','Black-eyed pea salad','Салат из вигны','Augenbohnensalat','سلطة اللوبياء'],
+  // Sebze
+  ['yesil_biber','sebze',20,0.9,4.6,0.2,2.4,1.7,2,'adet:20','','','biber kahvaltı','Yeşil biber','Green pepper','Зелёный перец','Grüne Paprika','فلفل أخضر'],
+  ['roka','sebze',25,2.6,3.7,0.7,2,1.6,50,'','','','yeşillik','Roka','Rocket (arugula)','Руккола','Rucola','جرجير'],
+  ['havuc','sebze',41,0.9,9.6,0.2,4.7,2.8,1,'adet:80','','','havuç','Havuç','Carrot','Морковь','Karotte','جزر'],
+  ['kozbiber','sebze',30,1,6,0.3,4,2,100,'','','','közlenmiş biber','Közlenmiş kırmızı biber','Roasted red pepper','Печёный красный перец','Gerösteter roter Paprika','فلفل أحمر مشوي'],
+  ['tursu','sebze',20,0.8,3,0.3,1,1.5,50,'','t','','turşu','Turşu (karışık)','Mixed pickles','Соленья (ассорти)','Gemischte Pickles','مخلل مشكل'],
+  // Baklagil
+  ['kfasulye_hasl','baklagil',127,8.7,22.8,0.5,0.3,6.4,100,'','','yk:15','kuru fasulye haşlanmış','Kuru fasulye (haşlama)','White beans (boiled)','Белая фасоль (отварная)','Weiße Bohnen (gekocht)','فاصوليا بيضاء (مسلوقة)'],
+  ['yesil_mercimek_hasl','baklagil',116,9,20,0.4,1.8,8,150,'','','','mercimek haşlanmış','Yeşil mercimek (haşlama)','Green lentils (boiled)','Зелёная чечевица (отварная)','Grüne Linsen (gekocht)','عدس أخضر (مسلوق)'],
+  // Meyve
+  ['karpuz','meyve',30,0.6,7.6,0.2,6.2,0.4,250,'','','','yaz meyve','Karpuz','Watermelon','Арбуз','Wassermelone','بطيخ أحمر'],
+  ['kavun','meyve',34,0.8,8,0.2,7.9,0.9,200,'','','','yaz meyve','Kavun','Melon','Дыня','Honigmelone','شمام'],
+  ['uzum','meyve',69,0.7,18,0.2,15.5,0.9,100,'','','','taze üzüm','Üzüm','Grapes','Виноград','Trauben','عنب'],
+  ['seftali','meyve',39,0.9,9.5,0.3,8.4,1.5,1,'adet:150','','','','Şeftali','Peach','Персик','Pfirsich','خوخ'],
+  ['erik','meyve',46,0.7,11.4,0.3,9.9,1.4,4,'adet:30','','','yeşil erik','Erik','Plums','Слива','Pflaumen','برقوق'],
+  ['kiraz','meyve',63,1.1,16,0.2,12.8,2.1,150,'','','','vişne','Kiraz','Cherries','Черешня','Kirschen','كرز'],
+  ['kivi','meyve',61,1.1,14.7,0.5,9,3,1,'adet:75','','','','Kivi','Kiwi','Киви','Kiwi','كيوي'],
+  ['nar','meyve',83,1.7,18.7,1.2,13.7,4,100,'','','','nar taneleri','Nar','Pomegranate','Гранат','Granatapfel','رمان'],
+  ['incir','meyve',74,0.8,19,0.3,16,2.9,2,'adet:50','','','taze incir','İncir (taze)','Figs (fresh)','Инжир (свежий)','Feigen (frisch)','تين (طازج)'],
+  ['greyfurt','meyve',42,0.8,10.7,0.1,6.9,1.6,0.5,'adet:250','','','narenciye','Greyfurt','Grapefruit','Грейпфрут','Grapefruit','جريب فروت'],
+  ['avokado','meyve',160,2,8.5,14.7,0.7,6.7,0.5,'adet:150','','','avokado','Avokado','Avocado','Авокадо','Avocado','أفوكادو'],
+  ['yabanmersini','meyve',57,0.7,14.5,0.3,10,2.4,100,'','','','blueberry orman meyvesi','Yaban mersini','Blueberries','Черника','Heidelbeeren','توت أزرق'],
+  ['dut','meyve',43,1.4,9.8,0.4,8.1,1.7,100,'','','','taze dut','Dut (taze)','Mulberries (fresh)','Шелковица (свежая)','Maulbeeren (frisch)','توت (طازج)'],
+  ['cennet_hurmasi','meyve',70,0.6,18.6,0.2,12.5,3.6,1,'adet:170','','','trabzon hurması','Trabzon hurması','Persimmon','Хурма','Kaki','كاكا'],
+  ['ayva','meyve',57,0.4,15,0.1,12,1.9,0.5,'adet:250','','','','Ayva','Quince','Айва','Quitte','سفرجل'],
+  // Kurutulmuş meyve
+  ['kuru_incir','meyve',249,3.3,64,0.9,48,9.8,2,'adet:20','','','kuru meyve incir','Kuru incir','Dried figs','Сушёный инжир','Getrocknete Feigen','تين مجفف'],
+  ['kuru_erik','meyve',240,2.2,64,0.4,38,7.1,3,'adet:10','','','kuru meyve erik','Kuru erik','Prunes','Чернослив','Trockenpflaumen','برقوق مجفف'],
+  ['kuru_dut','meyve',320,10,66,1.5,57,10,20,'','','yk:8','kuru meyve dut','Kuru dut','Dried mulberries','Сушёная шелковица','Getrocknete Maulbeeren','توت مجفف'],
+  ['gun_kurusu','meyve',240,3.4,62,0.5,53,7.3,30,'','','','kuru meyve kayısı sülfitsiz','Gün kurusu kayısı','Sun-dried apricots (unsulphured)','Урюк (без сульфитов)','Sonnengetrocknete Aprikosen (ungeschwefelt)','مشمش مجفف بالشمس'],
+  ['kuru_elma','meyve',243,0.9,66,0.3,57,8.7,20,'','','','kuru meyve elma cipsi','Kuru elma (elma cipsi)','Dried apple chips','Сушёные яблоки','Apfelchips (getrocknet)','رقائق تفاح مجففة'],
+  ['kuru_kizilcik','meyve',308,0.1,82,1.4,65,5.3,20,'','','yk:10','kuru meyve kızılcık','Kuru kızılcık','Dried cranberries','Сушёная клюква','Getrocknete Cranberries','توت بري مجفف'],
+  ['kuru_visne','meyve',290,1.5,70,0.8,55,3,20,'','','yk:10','kuru meyve vişne','Kuru vişne','Dried sour cherries','Сушёная вишня','Getrocknete Sauerkirschen','كرز حامض مجفف'],
+  ['kuru_uzum_siyah','meyve',300,3,79,0.5,59,4,15,'','','yk:10','kuru meyve üzüm çekirdeksiz','Siyah kuru üzüm','Black raisins','Тёмный изюм','Dunkle Rosinen','زبيب أسود'],
+  ['kuru_meyve_karisik','meyve',290,2.5,72,0.6,58,7,30,'','','','kuru meyve karışık','Karışık kuru meyve','Mixed dried fruit','Сухофрукты (ассорти)','Trockenobst-Mischung','فواكه مجففة مشكلة'],
+  // Kuruyemiş & tohum
+  ['antep','kuruyemis',560,20,28,45,7.7,10.6,15,'','','10:7','antep fıstığı çerez','Antep fıstığı (tuzsuz)','Pistachios (unsalted)','Фисташки (несолёные)','Pistazien (ungesalzen)','فستق حلبي (غير مملح)'],
+  ['kaju','kuruyemis',553,18,30,44,6,3.3,15,'','','10:15','kaju çerez','Kaju','Cashews','Кешью','Cashewkerne','كاجو'],
+  ['yerfistigi','kuruyemis',585,24,21,50,4.7,8,15,'','','10:10','yer fıstığı çerez kavrulmuş','Yer fıstığı (kavrulmuş, tuzsuz)','Peanuts (roasted, unsalted)','Арахис (жареный, несолёный)','Erdnüsse (geröstet, ungesalzen)','فول سوداني (محمص، غير مملح)'],
+  ['ay_cekirdek','kuruyemis',584,21,20,51,2.6,8.6,15,'','','yk:8','ay çekirdeği içi çerez','Ay çekirdeği içi (tuzsuz)','Sunflower seeds (unsalted)','Семечки подсолнечника (несолёные)','Sonnenblumenkerne (ungesalzen)','بذور دوار الشمس (غير مملحة)'],
+  ['badem_kavrulmus','kuruyemis',600,21,19,53,4.5,11,15,'','','10:12','badem çerez kavrulmuş','Kavrulmuş badem (tuzsuz)','Roasted almonds (unsalted)','Жареный миндаль (несолёный)','Geröstete Mandeln (ungesalzen)','لوز محمص (غير مملح)'],
+  ['findik_kavrulmus','kuruyemis',646,15,17,62,4.4,9.4,15,'','','10:12','fındık çerez kavrulmuş','Kavrulmuş fındık','Roasted hazelnuts','Жареный фундук','Geröstete Haselnüsse','بندق محمص'],
+  ['karisik_kuruyemis','kuruyemis',600,18,22,52,5,7,20,'','','','çerez karışık kuruyemiş','Karışık kuruyemiş (tuzsuz)','Mixed nuts (unsalted)','Ореховая смесь (несолёная)','Nussmischung (ungesalzen)','مكسرات مشكلة (غير مملحة)'],
+  ['susam','kuruyemis',573,17.7,23,49.7,0.3,11.8,10,'','','yk:9','susam tohum','Susam','Sesame seeds','Кунжут','Sesam','سمسم'],
+  ['badem_ezmesi','kuruyemis',614,21,19,56,4.4,10,15,'','','tk:8','badem ezmesi şekersiz','Badem ezmesi (şekersiz)','Almond butter (no sugar)','Миндальная паста (без сахара)','Mandelmus (ohne Zucker)','زبدة اللوز (بدون سكر)'],
+  ['findik_ezmesi','kuruyemis',630,15,17,60,4,9,15,'','','tk:8','fındık ezmesi şekersiz','Fındık ezmesi (şekersiz)','Hazelnut butter (no sugar)','Ореховая паста из фундука (без сахара)','Haselnussmus (ohne Zucker)','زبدة البندق (بدون سكر)'],
+  ['cevizli_sucuk','atistirmalik',400,6,58,17,45,4,30,'','','','pestil cevizli sucuk kuru meyve','Cevizli sucuk (pestil)','Walnut-grape molasses roll (cevizli sucuk)','Чурчхела с грецким орехом','Walnuss-Traubenstange (Cevizli Sucuk)','سجق الجوز (حلوى)'],
+  ['pestil','atistirmalik',320,4,75,1,60,4,20,'','','','dut pestili kuru meyve','Dut pestili','Mulberry fruit leather (pestil)','Пестиль из шелковицы','Maulbeer-Fruchtleder (Pestil)','بستيل التوت'],
+  // Atıştırmalık
+  ['patlamis_misir','atistirmalik',390,12,74,4.5,0.9,14,25,'','','','patlamış mısır','Patlamış mısır (az yağlı)','Popcorn (low-fat)','Попкорн (с малым количеством масла)','Popcorn (fettarm)','فشار (قليل الدسم)'],
+  ['granola_bar','atistirmalik',420,7,64,15,28,5,1,'adet:30','','','bar yulaf','Granola bar','Granola bar','Гранола-батончик','Müsliriegel','لوح جرانولا'],
+  ['meyveli_yogurt','atistirmalik',90,4,14,1.5,12,0.5,150,'','d','','yoğurt meyve','Meyveli yoğurt','Fruit yogurt','Фруктовый йогурт','Fruchtjoghurt','زبادي بالفواكه'],
+  // Tatlı
+  ['muhallebi','tatli',120,3.5,19,3,14,0,150,'','d','','sütlü tatlı','Muhallebi','Milk pudding (muhallebi)','Мухаллеби (молочный пудинг)','Milchpudding (Muhallebi)','مهلبية'],
+  ['kazandibi','tatli',150,4,25,3.5,18,0,150,'','d','','sütlü tatlı','Kazandibi','Kazandibi (caramelised milk pudding)','Казандиби','Kazandibi','قزان ديبي'],
+  ['keskul','tatli',150,4,20,6,15,1,150,'','d','','sütlü tatlı badem','Keşkül','Almond milk pudding (keşkül)','Кешкюль (миндальный пудинг)','Mandelpudding (Keşkül)','كشكول (مهلبية باللوز)'],
+  ['asure','tatli',140,3,28,2.5,15,3.5,150,'','','','aşure tatlı','Aşure','Noah’s pudding (aşure)','Ашуре','Aşure (Noahs Pudding)','عاشوراء'],
+  ['ayva_tatlisi','tatli',150,0.4,38,0.1,32,2.5,150,'','','','meyve tatlı','Ayva tatlısı','Poached quince dessert','Десерт из айвы','Quittendessert','حلوى السفرجل'],
+  ['kabak_tatlisi','tatli',160,1.5,33,3,30,2,150,'','','','balkabağı tatlı ceviz','Kabak tatlısı','Candied pumpkin dessert','Десерт из тыквы','Kürbisdessert','حلوى القرع'],
+  ['baklava','tatli',430,6,47,25,25,2,1,'adet:30','dy','','şerbetli tatlı fıstık','Baklava','Baklava','Пахлава','Baklava','بقلاوة'],
+  ['revani','tatli',320,5,52,10,35,1,80,'','d','','şerbetli tatlı irmik','Revani','Revani (semolina cake)','Ревани (манник)','Revani (Grießkuchen)','ريفاني (كيك السميد)'],
+  ['kunefe','tatli',340,8,38,18,25,1,150,'','dy','','şerbetli tatlı peynir','Künefe','Künefe','Кюнефе','Künefe','كنافة'],
+  ['irmik_helvasi','tatli',350,5,50,14,30,1,100,'','dy','','helva irmik','İrmik helvası','Semolina halva','Халва из манки','Grieß-Helva','حلاوة السميد'],
+  ['tahin_helvasi','tatli',520,12,55,30,48,4,30,'','','','helva tahin','Tahin helvası','Tahini halva','Тахинная халва','Tahin-Helva','حلاوة طحينية'],
+  ['lokum','tatli',330,0.2,85,0.2,70,0,2,'adet:12','','','lokum','Lokum','Turkish delight','Рахат-лукум','Lokum (Türkischer Honig)','راحة الحلقوم'],
+  ['dondurma','tatli',200,3.5,24,10,21,0,100,'','dy','','dondurma','Dondurma','Ice cream','Мороженое','Eiscreme','آيس كريم'],
+  // İçecek
+  ['cay','icecek',1,0,0.3,0,0,0,2,'bardak:100','','','çay','Çay (şekersiz)','Tea (no sugar)','Чай (без сахара)','Tee (ohne Zucker)','شاي (بدون سكر)'],
+  ['turk_kahvesi','icecek',2,0.1,0.3,0,0,0,1,'fincan:70','','','kahve','Türk kahvesi (şekersiz)','Turkish coffee (no sugar)','Кофе по-турецки (без сахара)','Türkischer Kaffee (ohne Zucker)','قهوة تركية (بدون سكر)'],
+  ['sade_kahve','icecek',2,0.1,0,0,0,0,1,'fincan:200','','','filtre kahve sütsüz americano','Filtre kahve (sade)','Black coffee','Чёрный кофе','Schwarzer Kaffee','قهوة سوداء'],
+  ['latte','icecek',42,2.8,4,1.6,4,0,1,'fincan:250','d','','kahve sütlü','Latte (şekersiz)','Latte (no sugar)','Латте (без сахара)','Latte (ohne Zucker)','لاتيه (بدون سكر)'],
+  ['bitki_cayi','icecek',1,0,0.2,0,0,0,1,'fincan:200','','','ıhlamur adaçayı papatya','Bitki çayı (ıhlamur, adaçayı)','Herbal tea','Травяной чай','Kräutertee','شاي أعشاب'],
+  ['maden_suyu','icecek',0,0,0,0,0,0,1,'bardak:200','t','','soda','Maden suyu','Mineral water','Минеральная вода','Mineralwasser','مياه معدنية'],
+  ['portakal_suyu','icecek',45,0.7,10.4,0.2,8.4,0.2,1,'bardak:200','','','taze sıkma','Portakal suyu (taze)','Orange juice (fresh)','Апельсиновый сок (свежий)','Orangensaft (frisch)','عصير برتقال (طازج)'],
+  ['salgam','icecek',8,0.3,1.5,0,0.5,0.3,1,'bardak:250','t','','şalgam','Şalgam suyu','Şalgam (fermented carrot drink)','Шалгам (напиток)','Şalgam (Karottensaft, fermentiert)','شلغم (مشروب)']
+];
+// Yeni yemeklerin içerikleri (alerji filtresi)
+const ALERJEN_EK = {
+  kuzu_tandir:'kirmizi', kuzu_incik:'kirmizi', kuzu_sis:'kirmizi', cop_sis:'kirmizi', sac_kavurma:'kirmizi,biber,domates,sogan', ciger:'kirmizi',
+  iskender:'kirmizi,gluten,bugday,sut,domates', beyti:'kirmizi,gluten,bugday,biber,sogan,sarimsak', urfa:'kirmizi,sogan', tavuk_pirzola:'tavuk', tavuk_kavurma:'tavuk,sogan,biber',
+  sucuk:'kirmizi,sarimsak,kimyon,biber', pastirma:'kirmizi,sarimsak,biber', hindi_fume:'hindi',
+  uskumru:'balik', alabalik:'balik', sardalya:'balik', istavrit:'balik,gluten,bugday', mezgit:'balik', karides:'kabuklu', karides_guvec:'kabuklu,sut,domates,biber,sarimsak', kalamar:'kabuklu', midye_dolma:'kabuklu,pirinc,sogan',
+  rafadan:'yumurta', sucuklu_yumurta:'yumurta,kirmizi,sarimsak,kimyon', peynirli_omlet:'yumurta,sut', ispanakli_yumurta:'yumurta,ispanak,sogan', patatesli_yumurta:'yumurta,patates',
+  tulum:'sut', keci_peyniri:'sut', dil_peyniri:'sut', hellim:'sut', labne:'sut', kaymak:'sut', cokelek:'sut', yogurt_tam:'sut', yogurt_light:'sut', sut_tam:'sut',
+  tahin:'susam', pekmez:'uzum', tahin_pekmez:'susam,uzum', recel:'', zeytin_ezmesi:'zeytin', kakao_krema:'kakao,kuruyemis,findik,sut', siyah_zeytin:'zeytin', tereyagi:'sut',
+  yulaf_ekmegi:'gluten,yulaf,bugday', eksi_maya:'gluten,bugday', bazlama:'gluten,bugday', misir_ekmegi:'misir,gluten,bugday', granola:'gluten,yulaf,kuruyemis,bal', musli:'gluten,yulaf,bugday,kuruyemis,uzum', misir_gevregi:'misir',
+  simit:'gluten,bugday,susam,uzum', pogaca:'gluten,bugday,sut,yumurta', acma:'gluten,bugday,sut,yumurta', su_boregi:'gluten,bugday,sut,yumurta', ispanakli_borek:'gluten,bugday,sut,yumurta,ispanak,sogan',
+  peynirli_borek:'gluten,bugday,sut,yumurta', kiymali_borek:'gluten,bugday,kirmizi,sogan,yumurta', patatesli_borek:'gluten,bugday,patates,sogan,yumurta', sigara_boregi:'gluten,bugday,sut',
+  gozleme_peynir:'gluten,bugday,sut', gozleme_patates:'gluten,bugday,patates,sogan', lahmacun:'kirmizi,gluten,bugday,domates,biber,sogan', pide_kiymali:'kirmizi,gluten,bugday,sogan,domates',
+  pide_kasarli:'gluten,bugday,sut', pide_kusbasi:'kirmizi,gluten,bugday,domates,biber', etli_ekmek:'kirmizi,gluten,bugday,sogan,domates', icli_kofte:'kirmizi,gluten,bugday,sogan,ceviz,kuruyemis',
+  tost:'gluten,bugday,sut', karisik_tost:'gluten,bugday,sut,kirmizi',
+  sehriyeli_pilav:'pirinc,gluten,bugday', nohutlu_pilav:'pirinc,nohut', bulgur_domates:'gluten,bugday,domates,biber', firik:'gluten,bugday', esmer_pirinc:'pirinc', kuskus:'gluten,bugday', karabugday:'',
+  eriste:'gluten,bugday,yumurta', makarna_domates:'gluten,bugday,domates', kiymali_makarna:'gluten,bugday,kirmizi,domates,sogan', patates_pure:'patates,sut', misir_hasl:'misir',
+  kfasulye_zy:'fasulye,sogan,domates,zeytin', barbunya:'fasulye,sogan,domates,zeytin', nohut_yemegi:'nohut,sogan,domates', imambayildi:'patlican,sogan,domates,sarimsak,zeytin',
+  musakka:'patlican,kirmizi,sogan,domates,biber', hunkar:'kirmizi,patlican,sut,gluten,bugday', yaprak_sarma:'pirinc,sogan,zeytin,nane', etli_sarma:'kirmizi,pirinc,sogan,domates',
+  biber_dolma:'biber,kirmizi,pirinc,sogan,domates', biber_dolma_zy:'biber,pirinc,sogan,zeytin,nane', lahana_sarma:'kirmizi,pirinc,sogan,domates', pirasa:'sogan,zeytin,pirinc,havuc',
+  enginar:'zeytin,sogan,patates,havuc,bezelye', bamya:'kirmizi,domates,sogan', kabak_zy:'kabak,sogan,domates,zeytin', bakla:'zeytin,sogan', patlican_kebabi:'patlican,kirmizi,domates,biber',
+  orman_kebabi:'kirmizi,bezelye,patates,sogan,domates,havuc', tavuk_guvec:'tavuk,domates,biber,sogan', et_guvec:'kirmizi,patlican,domates,biber,sogan,patates', etli_patates:'kirmizi,patates,sogan,domates',
+  kiymali_patates:'kirmizi,patates,sogan,domates', sulu_kofte:'kirmizi,pirinc,yumurta,gluten,bugday,sogan', kadinbudu:'kirmizi,pirinc,yumurta,gluten,bugday,sogan',
+  cig_kofte:'gluten,bugday,biber,sogan,domates', mantar_sote:'mantar,zeytin,sogan',
+  ezogelin:'mercimek,pirinc,gluten,bugday,sogan,nane,biber', tarhana:'gluten,bugday,sut,domates,biber,sogan', domates_corba:'domates,sut,gluten,bugday', iskembe:'kirmizi,sarimsak,gluten,bugday',
+  mantar_corba:'mantar,sut,gluten,bugday', brokoli_corba:'brokoli,sut', sehriye_corba:'gluten,bugday,domates', dugun_corba:'kirmizi,yumurta,sut,gluten,bugday', balkabagi_corba:'kabak,sut,sogan',
+  gavurdagi:'ceviz,kuruyemis,domates,biber,sogan,zeytin', roka_salata:'zeytin', ton_salata:'balik,domates,zeytin,misir', kisir:'gluten,bugday,domates,biber,sogan,nane', humus:'nohut,susam,sarimsak',
+  haydari:'sut,sarimsak,nane', acili_ezme:'domates,biber,sogan', patlican_salata:'patlican,biber,sarimsak,zeytin', babagannus:'patlican,susam,sarimsak', muhammara:'ceviz,kuruyemis,biber,gluten,bugday',
+  yogurtlu_patlican:'patlican,sut,sarimsak', patates_salatasi:'patates,sogan', barbunya_pilaki:'fasulye,sogan,domates,zeytin,havuc', borulce:'fasulye,sogan,zeytin',
+  yesil_biber:'biber', roka:'', havuc:'havuc', kozbiber:'biber', tursu:'salatalik,biber,havuc', kfasulye_hasl:'fasulye', yesil_mercimek_hasl:'mercimek',
+  karpuz:'', kavun:'', uzum:'uzum', seftali:'', erik:'', kiraz:'', kivi:'kivi', nar:'', incir:'incir', greyfurt:'narenciye', avokado:'avokado', yabanmersini:'', dut:'', cennet_hurmasi:'', ayva:'',
+  kuru_incir:'incir', kuru_erik:'sulfit', kuru_dut:'', gun_kurusu:'kayisi', kuru_elma:'elma', kuru_kizilcik:'sulfit', kuru_visne:'sulfit', kuru_uzum_siyah:'uzum,sulfit', kuru_meyve_karisik:'sulfit,uzum,kayisi,incir',
+  antep:'kuruyemis,antepfistigi', kaju:'kuruyemis,kaju', yerfistigi:'yerfistigi', ay_cekirdek:'aycekirdegi', badem_kavrulmus:'kuruyemis,badem', findik_kavrulmus:'kuruyemis,findik',
+  karisik_kuruyemis:'kuruyemis,ceviz,badem,findik,kaju,antepfistigi', susam:'susam', badem_ezmesi:'kuruyemis,badem', findik_ezmesi:'kuruyemis,findik',
+  cevizli_sucuk:'ceviz,kuruyemis,uzum,gluten,bugday', pestil:'', patlamis_misir:'misir', granola_bar:'gluten,yulaf,kuruyemis,bal', meyveli_yogurt:'sut',
+  muhallebi:'sut,pirinc', kazandibi:'sut,pirinc', keskul:'sut,badem,kuruyemis', asure:'gluten,bugday,nohut,fasulye,kuruyemis,uzum,kayisi,incir', ayva_tatlisi:'', kabak_tatlisi:'kabak,ceviz,kuruyemis',
+  baklava:'gluten,bugday,kuruyemis,antepfistigi,ceviz,sut', revani:'gluten,bugday,yumurta,sut', kunefe:'gluten,bugday,sut', irmik_helvasi:'gluten,bugday,sut,kuruyemis', tahin_helvasi:'susam',
+  lokum:'', dondurma:'sut', cay:'kafein', turk_kahvesi:'kafein', sade_kahve:'kafein', latte:'kafein,sut', bitki_cayi:'', maden_suyu:'', portakal_suyu:'narenciye', salgam:'havuc'
+};
+// Yeni alerjenler: [id, arama, tr, en, ru, de, ar]
+const ALERJEN_SATIR_EK = [
+  ['mantar','mantar','Mantar','Mushroom','Грибы','Pilze','الفطر'],
+  ['misir','mısır','Mısır','Corn','Кукуруза','Mais','الذرة'],
+  ['kaju','kaju','Kaju','Cashew','Кешью','Cashew','الكاجو'],
+  ['antepfistigi','antep fıstığı fıstık','Antep fıstığı','Pistachio','Фисташки','Pistazie','الفستق الحلبي'],
+  ['aycekirdegi','ay çekirdeği çekirdek','Ay çekirdeği','Sunflower seed','Семечки подсолнечника','Sonnenblumenkerne','بذور دوار الشمس'],
+  ['havuc','havuç','Havuç','Carrot','Морковь','Karotte','الجزر'],
+  ['kivi','kivi','Kivi','Kiwi','Киви','Kiwi','الكيوي'],
+  ['incir','incir','İncir','Fig','Инжир','Feige','التين'],
+  ['avokado','avokado','Avokado','Avocado','Авокадо','Avocado','الأفوكادو']
+];
+// Kategori düzeltmeleri (yeni kategoriler: kahvaltılık, börek/hamur işi, tatlı)
+const KAT_DEGIS = {bal:'kahvaltilik', sutlac:'tatli'};
+// Türkiye'de en sık yenenler: listelerde (kullanıcının kendi seçimlerinden sonra) başta gelir
+const POPULER = ['yumurta','beyazp','tamekmek','domates','salatalik','zeytin','cay','simit','menemen','tavuk','yogurt','kofte','mcorba','pirinc','bulgur','fasulye','kfasulye_zy',
+  'nohut_yemegi','ayran','elma','muz','ceviz','badem','findik','kuru_uzum_siyah','uzum_kuru','kayisi','kuru_incir','antep','coban','cacik','tavuk_sis','lahmacun','pide_kiymali',
+  'manti','karniyarik','imambayildi','yaprak_sarma','biber_dolma','ezogelin','tarhana','kisir','humus','su_boregi','ispanakli_borek','pogaca','tost','sucuklu_yumurta','omlet',
+  'kasar','lor','bal','tahin_pekmez','recel','kahve','turk_kahvesi','portakal','mandalina','karpuz','uzum','cilek','kivi','yesil_mercimek','tfasulye','ispanak','kabak_zy','musakka',
+  'tavuk_sote','tavuklu_pilav','adana','iskender','tavuk_doner','et_doner','levrek','hamsi','somon','uskumru','sutlac','muhallebi','asure','baklava','kefir','suzme','leblebi','yerfistigi','kaju'];
+// Öğüne göre öneriler: "⭐ Önerilenler" listesinde kullanıcının seçimlerinden sonra gelir
+const OGUN_ONERI = {
+  kahvalti: ['yumurta','rafadan','menemen','omlet','peynirli_omlet','sucuklu_yumurta','beyazp','kasar','lor','tulum','keci_peyniri','dil_peyniri','hellim','labne','zeytin','siyah_zeytin',
+    'domates','salatalik','yesil_biber','roka','tamekmek','cavdar','yulaf_ekmegi','eksi_maya','simit','pogaca','acma','su_boregi','tost','gozleme_peynir','bal','tahin_pekmez','pekmez','recel',
+    'kaymak','tereyagi','ceviz','yulaf','granola','musli','sut','kahve','cay','turk_kahvesi','pankek'],
+  ara0: ['elma','muz','portakal','mandalina','kivi','ceviz','badem','findik','antep','kaju','kuru_incir','kuru_erik','gun_kurusu','kuru_uzum_siyah','yogurt','kefir','ayran','sut','suzme','galeta','cay','kahve'],
+  ogle: ['tavuk','tavuk_sis','kofte','tavuk_sote','tavuklu_pilav','tavuk_durum','mcorba','ezogelin','tarhana','kfasulye_zy','fasulye','nohut_yemegi','yesil_mercimek','bulgur','pirinc','tammakarna',
+    'salata','coban','cacik','ayran','yogurt','tamekmek','lahmacun','pide_kiymali','manti','kisir','tfasulye','barbunya','imambayildi','yaprak_sarma','biber_dolma','ton_salata','tavuk_salata'],
+  ara1: ['elma','armut','muz','portakal','mandalina','kivi','uzum','karpuz','cilek','ceviz','badem','findik','antep','kaju','yerfistigi','kabak_cek','ay_cekirdek','kuru_incir','kuru_erik','kayisi',
+    'gun_kurusu','kuru_dut','uzum_kuru','kuru_uzum_siyah','hurma','leblebi','suzme','yogurt','kefir','ayran','galeta','patlak','bitter','kahve','cay','meyveli_yogurt','granola_bar','cevizli_sucuk'],
+  aksam: ['tavuk','tavuk_firin','tavuk_sis','levrek','somon','cipura','hamsi','uskumru','alabalik','kofte','biftek','dana_sis','kavurma','adana','karniyarik','musakka','kabak_dolma','etli_sarma',
+    'lahana_sarma','turlu','bezelye','ispanak_kiyma','tavuk_guvec','et_guvec','orman_kebabi','sulu_kofte','izmir_kofte','tas_kebabi','bulgur','pirinc','firik','salata','coban','cacik','yogurt',
+    'izgarasebze','firin_sebze','mcorba','ezogelin','tavuk_corba','tamekmek'],
+  gece: ['yogurt','suzme','kefir','sut','ayran','ceviz','badem','findik','antep','kaju','elma','armut','muz','kivi','kuru_incir','kuru_erik','gun_kurusu','chia_puding','firin_elma','keten',
+    'galeta','bitki_cayi','muhallebi','sutlac','kabak_cek']
+};
 // ---------- Yemekler ----------
 // [id, kategori, kcal, protein, karb, yağ, şeker, lif (100 g), varsayılan miktar, 'birim:gram', içerik (m kırmızı et, c tavuk, f balık, e yumurta, d süt), porsiyon notu, arama kelimeleri, tr, en, ru, de, ar]
 const YEMEK_SATIR = [
@@ -952,7 +1441,7 @@ const YEMEK_SATIR = [
   ['kahve','icecek',15,1,1.5,0.5,1.5,0,1,'fincan:200','d','','içecek','Sütlü filtre kahve (şekersiz)','Filter coffee with milk (no sugar)','Фильтр-кофе с молоком','Filterkaffee mit Milch','قهوة مفلترة بالحليب (بدون سكر)'],
   ['yesilcay','icecek',1,0,0.2,0,0,0,1,'fincan:200','','','içecek bitki çayı','Yeşil çay','Green tea','Зелёный чай','Grüner Tee','شاي أخضر']
 ];
-const YEMEKLER = YEMEK_SATIR.map(r => {
+const YEMEKLER = YEMEK_SATIR.concat(YEMEK_EK).map(r => {
   const [birim, bg] = r[9] ? r[9].split(':') : ['', 0];
   const f = {id:r[0], kat:r[1], k:r[2], p:r[3], c:r[4], y:r[5], s:r[6], l:r[7], d:r[8], b:birim, a:+bg, x:r[10], u:r[11], e:r[12], n:r.slice(13, 18)};
   Object.defineProperty(f, 'ad', {get(){ return this.n[DI()] || this.n[0]; }});
@@ -1020,7 +1509,7 @@ const ALERJEN_SATIR = [
   ['sumak','sumak','Sumak','Sumac','Сумах','Sumach','السماق'],
   ['nane','nane','Nane','Mint','Мята','Minze','النعناع']
 ];
-const ALERJENLER = ALERJEN_SATIR.map(r => {
+const ALERJENLER = ALERJEN_SATIR.concat(ALERJEN_SATIR_EK).map(r => {
   const a = {id:r[0], e:r[1], n:r.slice(2, 7)};
   Object.defineProperty(a, 'ad', {get(){ return this.n[DI()] || this.n[0]; }});
   return a;
@@ -1060,6 +1549,9 @@ const YEMEK_ALERJEN = {
 };
 // Hamilelikte önerilmeyenler: az pişmiş/akışkan yumurta, yüksek cıvalı olabilecek ton balığı, yüksek kafein
 const HAMILE_DISI = new Set(['yumurta_pose', 'yumurta_sahanda', 'cilbir', 'ton', 'yesilcay']);
+Object.assign(YEMEK_ALERJEN, ALERJEN_EK);
+['rafadan', 'ton_salata', 'ciger', 'pastirma'].forEach(id => HAMILE_DISI.add(id));
+YEMEKLER.forEach(f => { if (KAT_DEGIS[f.id]) f.kat = KAT_DEGIS[f.id]; });
 YEMEKLER.forEach(f => { f.al = (YEMEK_ALERJEN[f.id] || '').split(',').filter(Boolean); });
 const alerjen = id => ALERJENLER.find(a => a.id === id);
 // ---------- Öğün düzeni ve temel menü ----------
@@ -1560,12 +2052,13 @@ function ciz(){
   $('baslik').textContent = selam();
   $('lGecmis').textContent = T('history'); $('lLog').textContent = T('logs'); $('lAyar').textContent = T('settings');
   $('lUyari').textContent = T('warnBtn'); $('lYaz').textContent = T('fbBtn');
-  const d = tarihDen(aktif);
+  $('lKoc').textContent = T('kocBtn'); $('lDestek').textContent = T('supBtn');
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
-  $('altBaslik').textContent = `${gunUzun(aktif)}, ${d.toLocaleDateString(LOC(), {day:'numeric', month:'long', year:'numeric'})} · ${hedef}${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg`;
-  gunleriCiz(); ozetCiz(); ogunleriCiz(); altCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz();
+  // Tarih zaten en üstte (saat satırında) yazıyor; burada yalnız hedef özeti
+  $('altBaslik').textContent = `${hedef}${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg`;
+  gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); altCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz(); programBantCiz(); yukleBantCiz();
   ustHizala();
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
@@ -1624,9 +2117,9 @@ function ozetCiz(){
         ${stat(T('fiber'), yuv(yenen.l), T('g'), P.lif, true)}
       </div>
       <div class="eaten-list">${yenenOgun.length
-        ? `<b>${T('eatenMeals', {n: yenenOgun.length, t: menu.length})}</b> ` + yenenOgun.map(o => `${esc(ogunAd(o))} ${o.saat}`).join(' · ')
+        ? `<b>${T('eatenMeals', {n: yenenOgun.length, t: menu.length})}</b> ` + yenenOgun.map(o => esc(ogunEt(aktif, o))).join(' · ')
         : T('noEaten')}</div>
-      <div class="acts"><button class="btn ${detayAcik ? 'ghost' : 'solid'}" data-detay="1">${detayAcik ? T('hideDetail') : T('showDetail')}</button></div>
+      <div class="tip" style="margin-top:12px">${esc(T('pastTip'))}</div>
     </div>`;
     return;
   }
@@ -1659,7 +2152,6 @@ function ozetCiz(){
     </div>`;
 }
 function ogunleriCiz(){
-  if (gecmisMi(aktif) && !detayAcik){ $('ogunler').innerHTML = ''; return; }
   const menu = menuOku(aktif), kay = kayitOku(aktif), gecmis = gecmisMi(aktif);
   $('ogunler').innerHTML = menu.map((o, oi) => {
     const t = topla(o.ogeler), yendi = !!kay.yendi[o.id];
@@ -1678,12 +2170,15 @@ function ogunleriCiz(){
         </div>
       </li>`;
     }).join('') : `<li class="empty">${T('noItems')}</li>`;
-    return `<article class="card meal${yendi ? ' eaten' : ''}">
+    const kapali = ogunKapali(o.id);
+    return `<article class="card meal${yendi ? ' eaten' : ''}${kapali ? ' kapali' : ''}">
       <div class="meal-head">
-        <div class="meal-ico">${o.ico}</div>
-        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span>${o.saat} · ${yuv(t.k)} ${T('kcal')} · ${T('aP')} ${yuv(t.p)} ${T('g')} · ${T('aS')} ${yuv(t.s)} ${T('g')}</span></div>
+        <div class="meal-ico">${o.ico || OGUN_IKON[o.id] || '🍽️'}</div>
+        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span><button class="saat-btn" data-saat="${oi}" title="${esc(T('saatEdit'))}" aria-label="${esc(T('saatEdit'))}">${ogunSaati(aktif, o)}</button> · ${yuv(t.k)} ${T('kcal')} · ${T('aP')} ${yuv(t.p)} ${T('g')} · ${T('aS')} ${yuv(t.s)} ${T('g')}</span></div>
         <button class="eat-btn" data-yedim="${oi}">${yendi ? T('ateDone') : (gecmis ? T('notEaten') : T('ate'))}</button>
+        <button class="tog-btn" data-tog="${esc(o.id)}" aria-expanded="${!kapali}" title="${esc(T(kapali ? 'showMeal' : 'hideMeal'))}"><i>${kapali ? '▾' : '▴'}</i><span class="lbl">${T(kapali ? 'showMeal' : 'hideMeal')}</span></button>
       </div>
+      ${o.not ? `<div class="ogun-not">📝 ${esc(o.not)}</div>` : ''}
       <ul class="items">${ogeler}</ul>
       <button class="add-food" data-ekle="${oi}">${T('addFood')}</button>
     </article>`;
@@ -1705,10 +2200,10 @@ function saatYaz(){
   $('saat').textContent = `${z.toLocaleDateString(LOC(), {day:'2-digit', month:'2-digit', year:'numeric'})} ${z.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})} ${z.toLocaleDateString(LOC(), {weekday:'long'})}`;
 }
 function altCiz(){
-  if (gecmisMi(aktif) && !detayAcik){ $('altIslem').innerHTML = ''; return; }
   const ozel = !!(D.kayit[aktif] && D.kayit[aktif].ogunler), gun = gunUzun(aktif);
   $('altIslem').innerHTML = `<button class="btn ghost" data-sablon="1">${T('makeDefault', {gun})}</button>`
-    + (ozel ? `<button class="btn ghost" data-sablondan="1">${T('revertDay', {gun})}</button>` : '');
+    + (ozel ? `<button class="btn ghost" data-sablondan="1">${T('revertDay', {gun})}</button>` : '')
+    + `<div class="tpl-ipucu">${esc(T('tplHint', {gun}))}</div>`;
 }
 
 // ---------- Değişiklik işlemleri (hepsi loglanır) ----------
@@ -1725,8 +2220,8 @@ function yedimDegis(oi){
   k.yendi[o.id] = !k.yendi[o.id];
   const t = topla(o.ogeler);
   logEkle('yedim', aktif, k.yendi[o.id]
-    ? T('lAte', {o: ogunAd(o), k: yuv(t.k), l: o.ogeler.map(i => yemek(i.f).ad + ' ' + miktarYazi(yemek(i.f), i.g)).join(', ') || '—'})
-    : T('lUnate', {o: ogunAd(o)}));
+    ? T('lAte', {o: ogunEt(aktif, o), k: yuv(t.k), l: o.ogeler.map(i => yemek(i.f).ad + ' ' + miktarYazi(yemek(i.f), i.g)).join(', ') || '—'})
+    : T('lUnate', {o: ogunEt(aktif, o)}));
   kaydet(); ciz();
 }
 function ogeEkle(oi, f, g){
@@ -1780,8 +2275,17 @@ function sonSecilenler(ogunId){
   const puan = {};
   D.planlar.flat().forEach(gun => gun.filter(o => o.id === ogunId).forEach(o => o.ogeler.forEach(it => puan[it.f] = (puan[it.f] || 0) + 1)));
   for (const [f, v] of Object.entries(D.son[ogunId] || {})) puan[f] = (puan[f] || 0) + v.n * 10 + v.t / 1e14;
+  // Öğüne uygun yaygın seçenekler: kullanıcının kendi seçimlerinden sonra gelir (yazmadan dokunarak seçebilsin)
+  (OGUN_ONERI[ogunId] || OGUN_ONERI.ara1).forEach((f, i) => puan[f] = (puan[f] || 0) + 0.9 - i * 0.005);
   const varOlan = new Set(tumYemekler().map(f => f.id));
-  return Object.entries(puan).filter(([f]) => varOlan.has(f)).sort((a, b) => b[1] - a[1]).slice(0, 15).map(([f]) => f);
+  return Object.entries(puan).filter(([f]) => varOlan.has(f)).sort((a, b) => b[1] - a[1]).slice(0, 45).map(([f]) => f);
+}
+// Kategori listelerinde sıra: en çok seçtiklerin, sonra Türkiye'de en sık yenenler, sonra ada göre
+const POP_SIRA = new Map(POPULER.map((id, i) => [id, i]));
+function populerPuan(f){
+  let n = 0;
+  for (const s of Object.values(D.son || {})) if (s[f.id]) n += s[f.id].n;
+  return n * 1000 + (POP_SIRA.has(f.id) ? 500 - POP_SIRA.get(f.id) : 0);
 }
 // ---------- Olaylar ----------
 const cift = s => s.split(',').map(Number);
@@ -1801,10 +2305,18 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.degis){ const [oi, ii] = cift(ds.degis); secimAc({mod:'degis', oi, ii}); return; }
   if (ds.kiyas){ const [oi, ii] = cift(ds.kiyas); secimAc({mod:'kiyas', oi, ii}); return; }
   if (ds.tumlog){ loglarAc(); return; }
+  if (ds.saat !== undefined){ saatDuzenle(+ds.saat); return; }
+  if (ds.tog){ ogunTogla(ds.tog); return; }
+  if (ds.togall !== undefined){ hepsiniTogla(ds.togall === '1'); return; }
+  if (ds.progkaldir){ programKaldir(); return; }
+  if (ds.yukle){ yukleAc(); return; }
+  if (ds.yuklekapat){ D.ayar.yukleKapat = true; kaydet(); yukleBantCiz(); return; }
   if (ds.sablon){
     const gun = gunUzun(aktif);
     onayAc(T('confirmTemplate', {gun}), () => {
-      D.planlar[haftaNo(aktif)][haftaGunu(aktif)] = kopya(menuOku(aktif));
+      // "Her X": 4 haftalık planın bütün X günlerine uygulanır
+      const menu = menuOku(aktif);
+      D.planlar.forEach(h => { h[haftaGunu(aktif)] = kopya(menu); });
       logEkle('diger', aktif, T('lTemplate', {gun}));
       kaydet(); ciz(); toast(T('templateUpdated', {gun}));
     });
@@ -1832,6 +2344,8 @@ $('gecmisBtn').addEventListener('click', gecmisAc);
 $('uyariBtn').addEventListener('click', uyarilarAc);
 $('yazBtn').addEventListener('click', yazAc);
 $('hamileBtn').addEventListener('click', hamileDegistir);
+$('kocBtn').addEventListener('click', kocAc);
+$('destekBtn').addEventListener('click', destekAc);
 $('dilBar').addEventListener('click', e => {
   const b = e.target.closest('[data-dilsec]'); if (!b || b.dataset.dilsec === dil) return;
   D.ayar.dil = b.dataset.dilsec; kaydet(); ciz();
@@ -1850,10 +2364,10 @@ const SON = '__son', TUMU = '__tumu', BENZER = '__benzer';
 // Değiştir/Kıyasla için benzer yemekler: aynı tür (ad/etiket ortak kelime, ör. "ekmek") önce, sonra aynı gruptaki besin değeri en yakınlar
 // Türü değil niteliği/pişirmeyi anlatan kelimeler benzerlikte sayılmaz (ör. "tam buğday" ekmekle makarnayı eşleştirmesin)
 const NITELIK = new Set(['tam','bugday','kepekli','haslama','haslanmis','izgara','firin','tava','yarim','yagli','sekersiz','tuzsuz','sade','light','kahvalti','yemek','yemegi','zeytinyagli','yogurtlu','kimyonlu','sumakli','derisiz','suzulmus','bugulama']);
-const KAT_SIRA = ['et','balik','yumurta','sut','bitkisel','baklagil','anayemek','salata','sebze','tahil','pilav','corba','meyve','kuruyemis','atistirmalik','icecek','ozel'];
+const KAT_SIRA = ['et','balik','yumurta','sut','kahvaltilik','bitkisel','baklagil','anayemek','hamur','salata','sebze','tahil','pilav','corba','meyve','kuruyemis','atistirmalik','tatli','icecek','ozel'];
 const GRUP = {et:'protein', balik:'protein', yumurta:'protein', bitkisel:'protein'};
-function benzerler(fid){
-  const f = yemek(fid), uygun = profilUygun(D.profil);
+function benzerler(fid, uygun = profilUygun(D.profil)){
+  const f = yemek(fid);
   const sade = t => t.toLocaleLowerCase('tr-TR').replace(/[çğıöşüâû]/g, c => KATLA[c] || c);
   const kelimeler = y => new Set(sade(`${(y.n || [y.ad])[0]} ${y.e || ''}`).split(/[^a-z0-9]+/).filter(w => w.length > 2 && !NITELIK.has(w)));
   const kf = kelimeler(f), grup = y => GRUP[y.kat] || y.kat;
@@ -1867,15 +2381,17 @@ function benzerler(fid){
     return [y.id, puan];
   }).filter(Boolean).sort((a, b) => a[1] - b[1]).slice(0, 20).map(([id]) => id);
 }
+// opts.ogun + opts.sonra: başkası için program ekranı (profil filtresi yok, seçim geri çağrıyla döner)
 function secimAc(opts){
-  const ogun = menuOku(aktif)[opts.oi];
+  const ogun = opts.ogun || menuOku(aktif)[opts.oi];
   SE = {...opts, ogunId: ogun.id, q:'', sec:null, g:0};
-  SE.son = sonSecilenler(ogun.id).filter(f => profilUygun(D.profil)(yemek(f)));
+  SE.uygun = opts.koc ? () => true : profilUygun(D.profil);
+  SE.son = sonSecilenler(ogun.id).filter(f => SE.uygun(yemek(f)));
   SE.mevcut = SE.ii !== undefined ? {...ogun.ogeler[SE.ii]} : null;
-  SE.benzer = SE.mevcut ? benzerler(SE.mevcut.f) : [];
+  SE.benzer = SE.mevcut ? benzerler(SE.mevcut.f, SE.uygun) : [];
   SE.kat = SE.benzer.length ? BENZER : SE.son.length ? SON : TUMU;   // değiştir/kıyasla: benzerleri; ekle: son seçilenler
   const baslik = T({ekle:'pAdd', degis:'pChange', kiyas:'pCompare'}[SE.mod], {o: ogunAd(ogun)});
-  ac(esc(baslik) + (gecmisMi(aktif) ? ` <span class="tag">${etiket(aktif)}</span>` : ''));
+  ac(esc(baslik) + (!opts.koc && gecmisMi(aktif) ? ` <span class="tag">${etiket(aktif)}</span>` : ''));
   listeGorunumu();
 }
 // Kıyaslarken adayın başlangıç miktarı: aynı ağırlığa denk gelen miktar
@@ -1906,7 +2422,7 @@ function listeGorunumu(){
   kategoriCiz(); listeCiz();
 }
 function kategoriCiz(){
-  const uygun = profilUygun(D.profil);
+  const uygun = SE.uygun;
   const katlar = (SE.benzer.length ? [BENZER] : []).concat(SE.son.length ? [SON] : []).concat([TUMU, ...[...new Set(tumYemekler().filter(uygun).map(f => f.kat))].sort((a, b) => KAT_SIRA.indexOf(a) - KAT_SIRA.indexOf(b))]);
   const ad = k => k === BENZER ? T('similar') : k === SON ? T('recent') : k === TUMU ? T('all') : katAd(k);
   const daralt = SE.benzer.length > 0;   // değiştir/kıyasla modunda gruplar başta kapalı
@@ -1922,7 +2438,7 @@ function kategoriCiz(){
   };
 }
 function listeCiz(){
-  const q = SE.q.trim(), uygun = profilUygun(D.profil);
+  const q = SE.q.trim(), uygun = SE.uygun;
   let liste, A = null;
   if (q){
     // Arama tüm listede yapılır, en iyi eşleşen üstte
@@ -1932,7 +2448,9 @@ function listeCiz(){
     $('bulunan').textContent = T('results', {q, n: liste.length});
   } else {
     // Öneri listelerinde profile uymayanlar (yemedikleri, sağlık odağına aykırı) gösterilmez
-    liste = (SE.kat === BENZER ? SE.benzer.map(yemek) : SE.kat === SON ? SE.son.map(yemek) : tumYemekler().filter(f => SE.kat === TUMU || f.kat === SE.kat)).filter(uygun);
+    // Kategoride: en çok seçtiklerin ve en sık yenenler başta
+    liste = (SE.kat === BENZER ? SE.benzer.map(yemek) : SE.kat === SON ? SE.son.map(yemek)
+      : tumYemekler().filter(f => SE.kat === TUMU || f.kat === SE.kat).map(f => [f, populerPuan(f)]).sort((a, b) => b[1] - a[1] || a[0].ad.localeCompare(b[0].ad, LOC())).map(([f]) => f)).filter(uygun);
     $('bulunan').textContent = '';
   }
   const sayac = D.son[SE.ogunId] || {};
@@ -1998,7 +2516,8 @@ function detayGorunumu(){
   $('onay').onclick = () => {
     if (!(SE.g > 0)){ toast(T('tZero')); return; }
     kapat();
-    if (SE.mod === 'ekle') ogeEkle(SE.oi, SE.sec, SE.g); else ogeDegis(SE.oi, SE.ii, SE.sec, SE.g);
+    if (SE.sonra) SE.sonra(SE.sec, SE.g);
+    else if (SE.mod === 'ekle') ogeEkle(SE.oi, SE.sec, SE.g); else ogeDegis(SE.oi, SE.ii, SE.sec, SE.g);
   };
   yenile();
   $('sbody').scrollTop = 0;
@@ -2087,9 +2606,20 @@ function ayarlarAc(){
       <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
       ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
     <div class="acts"><button class="btn solid" id="profilDuzenle">${T('editProfile')}</button><button class="btn" id="alerjiDuzenle">${T('editAlerji')}</button></div>
+    <div class="sec">${T('sBody')}</div>
+    <div class="grid3">${[['yas', 'age', 1], ['boy', 'height', 1], ['kilo', 'weight', 0.5]].map(([k, ad]) => `<label class="field"><span>${T(ad)}</span><input autocomplete="off" id="b_${k}" type="text" inputmode="decimal" value="${sayi(P[k])}"></label>`).join('')}</div>
+    <div class="hint" style="margin:-4px 0 8px">${T('bodyHint')}</div>
+    <button class="btn full" id="olcuKaydet">${T('bodySave')}</button>
+    <div class="sec">${T('sSaat')}</div>
+    ${saatFormu()}
     <div class="sec">${T('sTargets')}</div>
     <div class="grid2">${HEDEF_KEYS.map(alan).join('')}</div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
+    <div class="sec">${T('kocBtn')}</div>
+    <div class="acts" style="margin-top:0"><button class="btn" id="kocAcBtn">👩‍⚕️ ${T('kocBtn')}</button>${D.program ? `<button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button>` : ''}</div>
+    <div class="hint" style="margin-top:10px">${T('impPasteHint')}</div>
+    <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
+    ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `<button class="btn ghost full" style="margin-top:10px" id="yukleBtn">${T('instBtn')}</button>` : ''}
     <div class="sec">${T('sLang')}</div>
     ${dilListesi(dil)}
     <div class="sec">${T('sBackup')}</div>
@@ -2102,6 +2632,24 @@ function ayarlarAc(){
     <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div>`);
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
   $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
+  saatFormuBagla();
+  $('kocAcBtn').onclick = kocAc;
+  if ($('progKaldirBtn')) $('progKaldirBtn').onclick = programKaldir;
+  if ($('yukleBtn')) $('yukleBtn').onclick = yukleAc;
+  $('linkYukle').onclick = async () => { const v = $('linkYapistir').value; kapat(); if (!(await programLinkiAc(v))) toast(T('impBad')); };
+  $('olcuKaydet').onclick = () => {
+    const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;
+    const yeni = {yas: Math.round(oku('yas')), boy: Math.round(oku('boy')), kilo: Math.round(oku('kilo') * 2) / 2};
+    if (!(yeni.yas >= 14 && yeni.yas <= 100 && yeni.boy >= 120 && yeni.boy <= 230 && yeni.kilo >= 30 && yeni.kilo <= 300)){ toast(T('errBody')); return; }
+    const degisen = ['yas', 'boy', 'kilo'].filter(k => yeni[k] !== P[k]).map(k => `${T({yas:'age', boy:'height', kilo:'weight'}[k])}: ${sayi(P[k])} → ${sayi(yeni[k])}`);
+    if (!degisen.length){ kapat(); return; }
+    Object.assign(P, yeni);
+    hedefleriYenile();
+    logEkle('diger', null, T('lBody', {l: degisen.join(', ')}));
+    kaydet(); ciz(); kapat(); toast(T('tSaved'));
+    // Gönderilen program varsa planı bozma; yoksa yeni hedeflere göre planı yeniden hazırlamayı sor
+    if (!D.program) onayAc(T('cBodyPlan'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
+  };
   $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(); });
   $('hedefKaydet').onclick = () => {
     const degisen = [];
@@ -2211,14 +2759,451 @@ function hamileDegistir(){
     $('triSec').querySelectorAll('[data-tri]').forEach(x => x.classList.toggle('on', +x.dataset.tri === tri));
   });
 }
+// ---------- Öğün saatleri (tarihli: değişiklik o günden itibaren geçerli, geçmiş bozulmaz) ----------
+const SAAT_IDLER = ['kahvalti','ara0','ogle','ara1','aksam','gece'];
+const OGUN_IKON = {kahvalti:'☀️', ara0:'🍏', ogle:'🥗', ara1:'🍎', aksam:'🍗', gece:'🌙'};
+const VARSAYILAN_SAAT = {kahvalti:'08:30', ara0:'10:30', ogle:'12:00', ara1:'15:00', aksam:'19:30', gece:'21:30'};
+const dk = s => { const [h, m] = String(s || '0:0').split(':').map(Number); return (h || 0) * 60 + (m || 0); };
+const ssYaz = n => { n = sinirla(Math.round(n / 15) * 15, 0, 23 * 60 + 45); return String(Math.floor(n / 60)).padStart(2, '0') + ':' + String(n % 60).padStart(2, '0'); };
+// Ana öğünlere göre ara öğünler: kuşluk = kahvaltı-öğle ortası, ikindi = öğle-akşam ortası, gece = akşamdan 2 saat sonra
+function araHesapla(s){
+  const k = dk(s.kahvalti), o = dk(s.ogle), a = dk(s.aksam);
+  return {ara0: ssYaz((k + o) / 2), ara1: ssYaz((o + a) / 2), gece: ssYaz(Math.min(a + 120, 23 * 60 + 30))};
+}
+// Bir tarihte geçerli saat seti (o tarihe kadar yapılan son değişiklik)
+function saatSeti(k){
+  let s = {...VARSAYILAN_SAAT};
+  OGUN_TANIM.forEach(o => s[o.id] = o.saat);
+  (D.planlar[0] && D.planlar[0][0] || []).forEach(o => { if (o.saat) s[o.id] = o.saat; });
+  for (const g of D.saatGecmis || []) if (g.t <= k) s = {...s, ...g.s};
+  return s;
+}
+const ogunSaati = (k, o) => (D.kayit[k] && D.kayit[k].saat && D.kayit[k].saat[o.id]) || saatSeti(k)[o.id] || o.saat;
+const ogunEt = (k, o) => `${ogunAd(o)} ${ogunSaati(k, o)}`;
+// k gününden itibaren geçerli yeni saatler; sonraki tarihli değişiklikler bu seçimle geçersiz olur
+function saatKaydet(k, s){
+  const eski = saatSeti(k);
+  const fark = SAAT_IDLER.filter(id => s[id] && s[id] !== eski[id]);
+  if (!fark.length) return false;
+  D.saatGecmis = (D.saatGecmis || []).filter(g => g.t < k).concat([{t:k, s:{...eski, ...s}}]);
+  logEkle('diger', null, T('lSaat', {d: etiket(k), l: fark.map(id => `${T('m_' + id)} ${eski[id]} → ${s[id]}`).join(', ')}));
+  return true;
+}
+// Öğün başlığındaki saate dokununca: yalnız bu gün ya da bu günden itibaren
+function saatDuzenle(oi){
+  const o = menuOku(aktif)[oi], simdi = ogunSaati(aktif, o);
+  ac(esc(T('saatTitle', {o: ogunAd(o)})), `<input class="search saat-in" id="saatIn" type="time" value="${simdi}" step="300">
+    <div class="hint" style="margin-top:6px">${esc(etiket(aktif))}</div>
+    <div class="acts"><button class="btn ghost" id="saatGun">${T('saatBuGun')}</button><button class="btn green" id="saatHer">${T('saatHerGun')}</button></div>
+    <div class="hint" style="margin-top:8px">${T('saatHint')}</div>`);
+  const yeni = () => /^\d\d:\d\d$/.test($('saatIn').value) ? $('saatIn').value : null;
+  $('saatGun').onclick = () => {
+    const v = yeni(); if (!v) return;
+    const r = kayitAl(aktif); r.saat = {...(r.saat || {}), [o.id]: v};
+    if (v !== simdi) logEkle('diger', aktif, T('lSaatGun', {o: ogunAd(o), a: simdi, b: v}));
+    kaydet(); kapat(); ciz(); toast(T('tSaat'));
+  };
+  $('saatHer').onclick = () => {
+    const v = yeni(); if (!v) return;
+    const r = D.kayit[aktif]; if (r && r.saat) delete r.saat[o.id];
+    saatKaydet(aktif, {...saatSeti(aktif), [o.id]: v});
+    kaydet(); kapat(); ciz(); toast(T('tSaat'));
+  };
+}
+// Ayarlar: öğün saatleri formu
+function saatFormu(){
+  const s = saatSeti(bugunK()), ara0 = menuOku(bugunK()).some(o => o.id === 'ara0');
+  const alan = (id, ad) => `<label class="field"><span>${ad}</span><input type="time" id="st_${id}" value="${s[id]}" step="300"></label>`;
+  return `<div class="grid3">${alan('kahvalti', T('m_kahvalti'))}${alan('ogle', T('m_ogle'))}${alan('aksam', T('m_aksam'))}</div>
+    <div class="hint" style="margin:-2px 0 6px">${T('saatAra')}</div>
+    <div class="grid3">${ara0 ? alan('ara0', T('m_ara0')) : ''}${alan('ara1', T('m_ara1'))}${alan('gece', T('m_gece'))}</div>
+    <div class="acts" style="margin-top:4px"><button class="btn ghost" id="saatOto">${T('saatOto')}</button><button class="btn" id="saatKaydetBtn">${T('saatKaydet')}</button></div>
+    <div class="hint" style="margin-top:6px">${T('saatHint')}</div>`;
+}
+function saatFormuBagla(){
+  const oku = id => $('st_' + id) && /^\d\d:\d\d$/.test($('st_' + id).value) ? $('st_' + id).value : null;
+  $('saatOto').onclick = () => {
+    const ara = araHesapla({kahvalti: oku('kahvalti'), ogle: oku('ogle'), aksam: oku('aksam')});
+    for (const [id, v] of Object.entries(ara)) if ($('st_' + id)) $('st_' + id).value = v;
+  };
+  $('saatKaydetBtn').onclick = () => {
+    const s = {};
+    SAAT_IDLER.forEach(id => { const v = oku(id); if (v) s[id] = v; });
+    if (!(dk(s.kahvalti) < dk(s.ogle) && dk(s.ogle) < dk(s.aksam))){ toast(T('saatHata')); return; }
+    if (saatKaydet(bugunK(), s)) kaydet();
+    ciz(); toast(T('tSaat'));
+  };
+}
+
+// ---------- Öğünleri gizle / göster (seçim kaydedilir, her açılışta aynı) ----------
+const ogunKapali = id => { const k = D.ayar.kapali || {}; return k[id] != null ? !!k[id] : !!D.ayar.hepsiKapali; };
+function ogunAracCiz(){
+  const menu = menuOku(aktif), acikVar = menu.some(o => !ogunKapali(o.id));
+  $('ogunArac').innerHTML = menu.length ? `<button class="btn ghost tog-all" data-togall="${acikVar ? 1 : 0}">${T(acikVar ? 'hideAll' : 'showAll')}</button>` : '';
+}
+function ogunTogla(id){
+  D.ayar.kapali = {...(D.ayar.kapali || {}), [id]: !ogunKapali(id)};
+  kaydet(); ogunleriCiz(); ogunAracCiz();
+}
+function hepsiniTogla(kapat){
+  D.ayar.hepsiKapali = !!kapat; D.ayar.kapali = {};
+  kaydet(); ogunleriCiz(); ogunAracCiz();
+}
+
+// ---------- Kopyalama yardımcısı ----------
+function kopyala(metin, mesaj){
+  const bitti = () => toast(mesaj || T('tCopied'));
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(metin).then(bitti, () => eskiKopya());
+  else eskiKopya();
+  function eskiKopya(){ const t = document.createElement('textarea'); t.value = metin; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); bitti(); } catch(e){} t.remove(); }
+}
+
+// ---------- Destek ol ----------
+const DESTEK = {iban:'TR37 0015 7000 0000 0091 2185 43', ad:'Kaan Kapucuoğlu', banka:'Npara'};
+let destekTutar = 100;
+function destekAc(){
+  const satir = (k, ad, deger, ltr = true) => `<div class="kopya-satir"><div><small>${ad}</small><b${ltr ? ' dir="ltr"' : ''}>${esc(deger)}</b></div><button class="mini" data-kopya="${k}">📋 ${T('supCopy')}</button></div>`;
+  const ciz2 = () => {
+    $('sbody').innerHTML = `<p class="onay-metin">${esc(T('supText'))}</p>
+      <div class="sec" style="margin-top:6px">${T('supAmount')}</div>
+      <div class="chips" style="margin-top:0">${[50, 100, 200, 500].map(n => `<button class="chip${n === destekTutar ? ' on' : ''}" data-tutar="${n}">${n} ₺</button>`).join('')}</div>
+      <div class="stepper"><button data-tadim="-50" aria-label="${T('dec')}">−</button><input id="tutarIn" type="text" inputmode="numeric" autocomplete="off" value="${destekTutar}"><button data-tadim="50" aria-label="${T('inc')}">+</button></div>
+      <div class="hint" style="text-align:center;margin-bottom:10px">₺ TRY</div>
+      ${satir('iban', T('supIban'), DESTEK.iban)}${satir('ad', T('supName'), DESTEK.ad, false)}${satir('banka', T('supBank'), DESTEK.banka, false)}
+      ${satir('tutar', T('supAmount'), destekTutar + ' ₺')}${satir('aciklama', T('supDesc'), T('supDescVal'), false)}
+      <button class="btn solid full" style="margin-top:10px" data-kopya="hepsi">${T('supCopyAll')}</button>
+      <div class="tip" style="margin-top:12px">${esc(T('supHow'))}</div>
+      <div class="hint" style="margin-top:8px">${esc(T('supForeign'))}</div>`;
+    $('tutarIn').addEventListener('change', e => { destekTutar = sinirla(Math.round(+String(e.target.value).replace(/\D/g, '')) || 100, 10, 100000); ciz2(); });
+  };
+  ac(T('supTitle'));
+  ciz2();
+  $('sbody').onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.tutar){ destekTutar = +b.dataset.tutar; ciz2(); return; }
+    if (b.dataset.tadim){ destekTutar = sinirla(destekTutar + (+b.dataset.tadim), 10, 100000); ciz2(); return; }
+    const k = b.dataset.kopya; if (!k) return;
+    const deger = {iban: DESTEK.iban.replace(/\s/g, ''), ad: DESTEK.ad, banka: DESTEK.banka, tutar: String(destekTutar), aciklama: T('supDescVal'),
+      hepsi: `${T('supIban')}: ${DESTEK.iban}\n${T('supName')}: ${DESTEK.ad}\n${T('supBank')}: ${DESTEK.banka}\n${T('supAmount')}: ${destekTutar} TL\n${T('supDesc')}: ${T('supDescVal')}`}[k];
+    const ad = {iban: T('supIban'), ad: T('supName'), banka: T('supBank'), tutar: T('supAmount'), aciklama: T('supDesc'), hepsi: T('supCopyAll').replace(/^\S+\s/, '')}[k];
+    kopyala(deger, T('supCopied', {x: ad}));
+  };
+}
+
+// ---------- Başkası için program (diyetisyen / spor hocası) ----------
+const PAYLASIM_TABAN = 'https://diyet.maviplay.com/app/';
+const KOC_GUN = 7;
+function kocBos(){
+  return {a:'', h:'', n:'', t:{kcal:'', protein:'', karb:'', yag:''}, ara0:false, saat:{...VARSAYILAN_SAAT},
+    gun: Array.from({length: KOC_GUN}, () => ({})), not: Array.from({length: KOC_GUN}, () => ({})), sec:0};
+}
+const kocOgunler = K => ['kahvalti', ...(K.ara0 ? ['ara0'] : []), 'ogle', 'ara1', 'aksam', 'gece'];
+// Haftanın günleri (Pzt..Paz) seçili dilde
+const haftaGunAd = (i, uzun) => new Date(2024, 0, 1 + i, 12).toLocaleDateString(LOC(), {weekday: uzun ? 'long' : RTL() ? 'narrow' : 'short'}).replace('.', '');
+let kocKaydetZaman = null;
+function kocKaydet(){ clearTimeout(kocKaydetZaman); kocKaydetZaman = setTimeout(kaydet, 400); }
+function kocAc(){
+  if (!D.koc) D.koc = kocBos();
+  kapat();
+  document.body.classList.add('wiz-acik');
+  $('koc').hidden = false;
+  kocCiz();
+  $('koc').scrollTop = 0;
+}
+function kocKapat(){
+  clearTimeout(kocKaydetZaman); kaydet();
+  document.body.classList.remove('wiz-acik');
+  $('koc').hidden = true;
+  ciz();
+}
+function kocGunToplam(K, i){ return topla(kocOgunler(K).flatMap(id => K.gun[i][id] || [])); }
+function kocCiz(){
+  const K = D.koc, i = K.sec, ogunler = kocOgunler(K);
+  const hedefAlan = (k, ad) => `<label class="field"><span>${ad}</span><input data-kt="${k}" type="text" inputmode="numeric" autocomplete="off" value="${esc(K.t[k] || '')}" placeholder="—"></label>`;
+  const gunDolu = j => ogunler.some(id => (K.gun[j][id] || []).length);
+  const t = kocGunToplam(K, i), hd = K.t;
+  const tHucre = (ad, v, h, birim) => `<div class="${h && v > h * 1.05 ? 'asti' : ''}"><small>${ad}</small><b>${yuv(v)}</b> <span>${h ? '/ ' + h + ' ' : ''}${birim}</span></div>`;
+  const ogunKart = id => {
+    const liste = K.gun[i][id] || [];
+    const satirlar = liste.map((it, ii) => {
+      const f = yemek(it.f);
+      return `<li class="item"><div class="item-info"><b>${esc(f.ad)}</b><small>${bilgi(besin(it.f, it.g))}</small></div>
+        <div class="item-ctl"><div class="gram"><button class="adim" data-kadim="${id},${ii}" data-yon="-1" aria-label="${T('dec')}">−</button><label class="val"><input autocomplete="off" type="text" inputmode="decimal" value="${sayi(it.g)}" data-kgram="${id},${ii}" aria-label="${T('amount')}"><span>${birimAd(f)}</span></label><button class="adim" data-kadim="${id},${ii}" data-yon="1" aria-label="${T('inc')}">+</button></div>
+        <div class="item-acts"><button class="mini" data-kdegis="${id},${ii}" title="${esc(T('change'))}">${ikonlu('change')}</button><button class="mini del" data-ksil="${id},${ii}" title="${esc(T('remove'))}">${ikonlu('remove')}</button></div></div></li>`;
+    }).join('');
+    const tt = topla(liste);
+    return `<article class="card meal">
+      <div class="meal-head"><div class="meal-ico">${OGUN_IKON[id]}</div><div class="meal-title"><b>${T('m_' + id)}</b><span>${K.saat[id]} · ${yuv(tt.k)} ${T('kcal')} · ${T('aP')} ${yuv(tt.p)} ${T('g')}</span></div></div>
+      <ul class="items">${satirlar}</ul>
+      <input class="koc-not" data-knot="${id}" type="text" autocomplete="off" maxlength="120" placeholder="${esc(T('kocMealNotePh'))}" value="${esc(K.not[i][id] || '')}">
+      <button class="add-food" data-kekle="${id}">${T('kocAdd')}</button>
+    </article>`;
+  };
+  $('koc').innerHTML = `<div class="wiz-in koc-in">
+    <div class="wiz-top"><div class="wiz-brand">🥗 ${T('app')}</div><button class="icon-btn" data-kkapat="1" aria-label="✕">✕</button></div>
+    <h2>${T('kocTitle')}</h2><p class="wiz-sub">${esc(T('kocIntro'))}</p>
+    <div class="card">
+      <div class="grid2"><label class="field"><span>${T('kocClient')}</span><input data-kf="a" autocomplete="off" maxlength="40" value="${esc(K.a)}"></label>
+      <label class="field"><span>${T('kocAuthor')}</span><input data-kf="h" autocomplete="off" maxlength="60" placeholder="${esc(T('kocAuthorPh'))}" value="${esc(K.h)}"></label></div>
+      <label class="field"><span>${T('kocNote')}</span><textarea data-kf="n" rows="2" maxlength="400" placeholder="${esc(T('kocNotePh'))}">${esc(K.n)}</textarea></label>
+      <div class="sec" style="margin-top:4px">${T('kocTargets')}</div>
+      <div class="grid4">${hedefAlan('kcal', T('tKcal'))}${hedefAlan('protein', T('tProtein'))}${hedefAlan('karb', T('tCarb'))}${hedefAlan('yag', T('tFat'))}</div>
+    </div>
+    <div class="sec">${T('kocMeals')}</div>
+    <div class="card">
+      <div class="grid3">${ogunler.map(id => `<label class="field"><span>${OGUN_IKON[id]} ${T('m_' + id)}</span><input type="time" step="300" data-ksaat="${id}" value="${K.saat[id]}"></label>`).join('')}</div>
+      <label class="koc-check"><input type="checkbox" data-kara0="1" ${K.ara0 ? 'checked' : ''}> ${T('kocAra0')}</label>
+    </div>
+    <div class="sec">${T('kocDays')}</div>
+    <div class="days koc-days">${Array.from({length: KOC_GUN}, (_, j) => `<button class="day${j === i ? ' active' : ''}" data-kgun="${j}"><b>${haftaGunAd(j)}</b><i class="${gunDolu(j) ? 'on' : ''}"></i></button>`).join('')}</div>
+    <div class="koc-gun-arac">${i > 0 ? `<button class="chip" data-konceki="1">${T('kocCopyPrev')}</button>` : ''}<button class="chip" data-khepsi="1">${T('kocCopyAll')}</button><button class="chip" data-ktemizle="1">${T('kocClear')}</button></div>
+    <h3 class="koc-gun-bas">${haftaGunAd(i, true)}</h3>
+    <section class="meals">${ogunler.map(ogunKart).join('')}</section>
+    <div class="card" style="margin-top:14px"><h3>${T('kocDayTotal')} · ${haftaGunAd(i, true)}</h3><div class="plan-grid">
+      ${tHucre(T('calories'), t.k, +hd.kcal, T('kcal'))}${tHucre(T('protein'), t.p, +hd.protein, T('g'))}${tHucre(T('carbS'), t.c, +hd.karb, T('g'))}${tHucre(T('fat'), t.y, +hd.yag, T('g'))}${tHucre(T('sugar'), t.s, 0, T('g'))}${tHucre(T('fiber'), t.l, 0, T('g'))}
+    </div></div>
+    <div id="kocLink"></div>
+    <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kyazdir="1">${T('kocPrint')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
+    <div class="hint" style="text-align:center;margin-top:6px">${T('kocDraft')}</div>
+  </div>`;
+}
+function kocYemekSec(id, ii){
+  const K = D.koc, liste = K.gun[K.sec][id] || (K.gun[K.sec][id] = []);
+  const ogun = {id, ad: T('m_' + id), ogeler: liste};
+  secimAc({mod: ii === undefined ? 'ekle' : 'degis', ogun, ii, koc: true, sonra: (f, g) => {
+    if (ii === undefined) liste.push({f, g}); else liste[ii] = {f, g};
+    kocKaydet(); kocCiz();
+  }});
+}
+$('koc').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const K = D.koc, ds = b.dataset, gun = K.gun[K.sec];
+  const par = s => { const [id, ii] = s.split(','); return [id, +ii]; };
+  if (ds.kkapat){ kocKapat(); return; }
+  if (ds.kgun){ K.sec = +ds.kgun; kocKaydet(); kocCiz(); return; }
+  if (ds.kekle){ kocYemekSec(ds.kekle); return; }
+  if (ds.kdegis){ const [id, ii] = par(ds.kdegis); kocYemekSec(id, ii); return; }
+  if (ds.ksil){ const [id, ii] = par(ds.ksil); gun[id].splice(ii, 1); kocKaydet(); kocCiz(); return; }
+  if (ds.kadim){
+    const [id, ii] = par(ds.kadim), it = gun[id][ii], f = yemek(it.f), yon = +ds.yon;
+    const adim = f.a ? (it.g + yon < 1 || (yon > 0 && it.g < 1) ? 0.5 : 1) : (it.g + yon * 5 <= 30 ? 5 : 10);
+    it.g = Math.max(f.a ? 0.5 : 5, it.g + yon * adim); kocKaydet(); kocCiz(); return;
+  }
+  if (ds.konceki){ K.gun[K.sec] = kopya(K.gun[K.sec - 1]); K.not[K.sec] = kopya(K.not[K.sec - 1]); kocKaydet(); kocCiz(); toast('✓'); return; }
+  if (ds.khepsi){ for (let j = 0; j < KOC_GUN; j++) if (j !== K.sec){ K.gun[j] = kopya(gun); K.not[j] = kopya(K.not[K.sec]); } kocKaydet(); kocCiz(); toast('✓'); return; }
+  if (ds.ktemizle){ K.gun[K.sec] = {}; K.not[K.sec] = {}; kocKaydet(); kocCiz(); return; }
+  if (ds.kyeni){ onayAc(T('cKocNew'), () => { D.koc = kocBos(); kaydet(); kocCiz(); }); return; }
+  if (ds.kyazdir){ kocYazdir(); return; }
+  if (ds.klink){ kocLinkOlustur(); return; }
+});
+$('koc').addEventListener('input', e => {
+  const t = e.target, K = D.koc; if (!K) return;
+  if (t.dataset.kf){ K[t.dataset.kf] = t.value; kocKaydet(); return; }
+  if (t.dataset.kt){ K.t[t.dataset.kt] = t.value.replace(/[^\d]/g, ''); kocKaydet(); return; }
+  if (t.dataset.knot){ K.not[K.sec][t.dataset.knot] = t.value; kocKaydet(); return; }
+});
+$('koc').addEventListener('change', e => {
+  const t = e.target, K = D.koc; if (!K) return;
+  if (t.dataset.ksaat && /^\d\d:\d\d$/.test(t.value)){ K.saat[t.dataset.ksaat] = t.value; kocKaydet(); kocCiz(); return; }
+  if (t.dataset.kara0){ K.ara0 = t.checked; kocKaydet(); kocCiz(); return; }
+  if (t.dataset.kt){ kocCiz(); return; }
+  if (t.dataset.kgram){
+    const [id, ii] = t.dataset.kgram.split(','), it = K.gun[K.sec][id][+ii];
+    it.g = miktarOku(yemek(it.f), t.value) || it.g; kocKaydet(); kocCiz();
+  }
+});
+// Programı link için sıkıştır: kısa alan adları, yalnız kullanılan özel yemekler
+function kocPaket(){
+  const K = D.koc, ids = kocOgunler(K);
+  const g = K.gun.map(gun => ids.map(id => (gun[id] || []).map(it => [it.f, it.g])));
+  if (!g.some(gun => gun.some(o => o.length))) return null;
+  const m = K.not.map(n => ids.map(id => (n[id] || '').trim()));
+  const kullanilan = new Set(g.flat(2).map(x => x[0]));
+  const y = (D.ozelYemek || []).filter(f => kullanilan.has(f.id)).map(f => ({id:f.id, ad:f.ad, k:f.k, p:f.p, c:f.c, y:f.y, s:f.s, l:f.l, a:f.a, b:f.b, d:f.d}));
+  const t = {}; for (const k of ['kcal','protein','karb','yag']) if (+K.t[k] > 0) t[k] = +K.t[k];
+  const P = {v:1, a:K.a.trim(), h:K.h.trim(), n:K.n.trim(), l:dil, o: ids.map(id => [id, K.saat[id]]), g};
+  if (m.some(gun => gun.some(Boolean))) P.m = m;
+  if (y.length) P.y = y;
+  if (Object.keys(t).length) P.t = t;
+  return P;
+}
+const b64url = bytes => { let s = ''; bytes.forEach(b => s += String.fromCharCode(b)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+const b64oku = s => { const b = atob(s.replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(b, c => c.charCodeAt(0)); };
+async function akisla(veri, akim){ return new Uint8Array(await new Response(new Blob([veri]).stream().pipeThrough(akim)).arrayBuffer()); }
+async function paketKodla(P){
+  const ham = new TextEncoder().encode(JSON.stringify(P));
+  if (window.CompressionStream){ try { return 'z' + b64url(await akisla(ham, new CompressionStream('deflate-raw'))); } catch(e){} }
+  return 'j' + b64url(ham);
+}
+async function paketCoz(kod){
+  const tur = kod[0], veri = b64oku(kod.slice(1));
+  const ham = tur === 'z' ? await akisla(veri, new DecompressionStream('deflate-raw')) : veri;
+  return JSON.parse(new TextDecoder().decode(ham));
+}
+async function kocLinkOlustur(){
+  const P = kocPaket();
+  if (!P){ toast(T('kocEmpty')); return; }
+  const url = PAYLASIM_TABAN + '#p=' + await paketKodla(P);
+  const ad = P.a || '—';
+  const mesaj = T('kocShareMsg', {a: ad, u: url});
+  $('kocLink').innerHTML = `<div class="card link-kart"><div class="wmsg info" style="margin-top:0">${esc(T('kocLinkReady'))}</div>
+    <textarea class="link-alan" readonly rows="3">${esc(url)}</textarea><div class="hint">${T('kocLinkLen', {n: url.length})}</div>
+    <div class="acts"><button class="btn solid" id="linkKopya">${T('kocCopyLink')}</button>
+    <a class="btn green" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(mesaj)}">${T('kocWhatsapp')}</a>
+    ${navigator.share ? `<button class="btn" id="linkPaylas">${T('kocShare')}</button>` : ''}</div></div>`;
+  $('linkKopya').onclick = () => kopyala(url);
+  if ($('linkPaylas')) $('linkPaylas').onclick = () => navigator.share({title: T('app'), text: T('kocShareMsg', {a: ad, u: ''}).trim(), url}).catch(() => {});
+  $('kocLink').scrollIntoView({behavior:'smooth', block:'center'});
+}
+// Yazdırılabilir program (tarayıcıdan PDF olarak da kaydedilebilir)
+function kocYazdir(){
+  const P = kocPaket();
+  if (!P){ toast(T('kocEmpty')); return; }
+  const ids = P.o.map(o => o[0]);
+  const gunHtml = (gun, i) => `<section><h2>${esc(haftaGunAd(i, true))}</h2><table>${ids.map((id, oi) => gun[oi].length ? `<tr><th>${esc(P.o[oi][1])}<br>${esc(T('m_' + id))}</th><td>${gun[oi].map(([f, g]) => esc(yemek(f).ad) + ' — ' + esc(miktarYazi(yemek(f), g))).join('<br>')}${P.m && P.m[i][oi] ? `<br><i>${esc(P.m[i][oi])}</i>` : ''}</td><td class="k">${yuv(topla(gun[oi].map(([f, g]) => ({f, g}))).k)} kcal</td></tr>` : '').join('')}</table></section>`;
+  const html = `<!DOCTYPE html><html lang="${dil}" dir="${RTL() ? 'rtl' : 'ltr'}"><head><meta charset="utf-8"><title>${esc(T('app'))} · ${esc(P.a)}</title><style>
+    body{font-family:system-ui,"Segoe UI",Roboto,sans-serif;color:#172338;margin:24px;font-size:13px}h1{font-size:20px;margin:0 0 4px}p{margin:2px 0;color:#40506a}
+    section{break-inside:avoid;margin-top:14px}h2{font-size:15px;margin:0 0 6px;color:#16a36b}table{width:100%;border-collapse:collapse}th,td{border:1px solid #dfe5ee;padding:6px 8px;text-align:start;vertical-align:top}
+    th{width:120px;background:#f5f8fc;font-weight:700}td.k{width:70px;text-align:end;white-space:nowrap;color:#718096}</style></head><body>
+    <h1>${esc(T('app'))}${P.a ? ' · ' + esc(T('kocFor', {a: P.a})) : ''}</h1>${P.h ? `<p>${esc(T('kocBy', {h: P.h}))}</p>` : ''}${P.n ? `<p>${esc(P.n)}</p>` : ''}
+    ${P.t ? `<p>${Object.entries(P.t).map(([k, v]) => T(HEDEF_ETIKET[k]) + ': ' + v).join(' · ')}</p>` : ''}
+    ${P.g.map(gunHtml).join('')}<script>onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`;
+  const w = window.open('', '_blank');
+  if (w){ w.document.write(html); w.document.close(); } else indir(html, `program_${(P.a || 'diyet').replace(/[^\wçğıöşüÇĞİÖŞÜ]+/g, '_')}.html`, 'text/html');
+}
+
+// ---------- Program linkiyle gelen programı yükle ----------
+const BEKLEYEN = ANAHTAR + '_bekleyen_program';
+function programDogrula(P){
+  if (!P || P.v !== 1 || !Array.isArray(P.o) || !Array.isArray(P.g) || !P.o.length || P.g.length < 1 || P.g.length > 14) return null;
+  const ozel = {};
+  (Array.isArray(P.y) ? P.y : []).slice(0, 50).forEach(f => {
+    if (!f || typeof f.id !== 'string') return;
+    const n = v => sinirla(+v || 0, 0, 1000);
+    ozel[f.id] = {id:'pk_' + String(f.id).replace(/[^\w]/g, '').slice(0, 30), ad:String(f.ad || '?').slice(0, 60), kat:'ozel', k:n(f.k), p:n(f.p), c:n(f.c), y:n(f.y), s:n(f.s), l:n(f.l), a:n(f.a), b:f.a ? String(f.b || 'adet').slice(0, 12) : '', d:n(f.d) || 100, e:'', x:'', u:''};
+  });
+  const bilinen = new Set(YEMEKLER.map(f => f.id));
+  const o = P.o.filter(x => Array.isArray(x) && SAAT_IDLER.includes(x[0])).map(([id, s]) => [id, /^\d\d:\d\d$/.test(s) ? s : VARSAYILAN_SAAT[id]]);
+  if (!o.length) return null;
+  const g = P.g.map(gun => o.map((_, oi) => ((gun || [])[oi] || []).filter(x => Array.isArray(x) && (bilinen.has(x[0]) || ozel[x[0]]) && +x[1] > 0)
+    .slice(0, 30).map(([f, m]) => ({f: ozel[f] ? ozel[f].id : f, g: sinirla(+m, 0.5, 2000)}))));
+  const m = Array.isArray(P.m) ? P.m.map(gun => o.map((_, oi) => String(((gun || [])[oi]) || '').slice(0, 120))) : null;
+  const t = {};
+  if (P.t) for (const k of ['kcal','protein','karb','yag']) if (+P.t[k] > 0) t[k] = sinirla(Math.round(+P.t[k]), 1, 10000);
+  return {a:String(P.a || '').slice(0, 40), h:String(P.h || '').slice(0, 60), n:String(P.n || '').slice(0, 400), l:DILLER.some(d => d.k === P.l) ? P.l : '', o, g, m, t, ozel:Object.values(ozel)};
+}
+function programUygula(P){
+  if (!D.program) D.oncekiPlan = {planlar: kopya(D.planlar), planBaslangic: D.planBaslangic, miktar: kopya(D.miktar || {})};
+  // 7 güne tamamla (daha kısa programda günler sırayla tekrar eder)
+  const hafta = Array.from({length: 7}, (_, i) => {
+    const gi = i % P.g.length;
+    return P.o.map(([id, saat], oi) => ({id, ad: T('m_' + id), saat, ico: OGUN_IKON[id], ogeler: kopya(P.g[gi][oi]), ...(P.m && P.m[gi][oi] ? {not: P.m[gi][oi]} : {})}));
+  });
+  const bugun = bugunK();
+  P.ozel.forEach(f => { if (!D.ozelYemek.some(y => y.id === f.id)) D.ozelYemek.push(f); });
+  D.planlar = [hafta];
+  D.planBaslangic = gunEkle(bugun, -haftaGunu(bugun));
+  D.miktar = {};
+  for (const k of Object.keys(D.kayit)) if (k >= bugun){ delete D.kayit[k].ogunler; delete D.kayit[k].saat; }
+  saatKaydet(bugun, Object.fromEntries(P.o));
+  if (P.t.kcal) D.profil.kcal = P.t.kcal;
+  if (P.t.protein) D.profil.protein = P.t.protein;
+  if (P.t.karb) D.profil.karb = P.t.karb;
+  if (P.t.yag) D.profil.yag = P.t.yag;
+  D.program = {a:P.a, h:P.h, n:P.n, t:Date.now()};
+  logEkle('diger', null, T('lImport', {h: P.h || T('progAnon'), a: P.a || '—'}));
+  aktif = bugun; detayAcik = false;
+  kaydet(); ciz(); toast(T('impDone'));
+}
+function programKaldir(){
+  onayAc(T('cProgRemove'), () => {
+    const o = D.oncekiPlan;
+    if (o && o.planlar && o.planlar.length){ D.planlar = o.planlar; D.planBaslangic = o.planBaslangic; D.miktar = o.miktar || {}; }
+    else D.planlar = planOlustur(D.profil);
+    for (const k of Object.keys(D.kayit)) if (k >= bugunK()) delete D.kayit[k].ogunler;
+    hedefleriYenile();
+    D.program = null; D.oncekiPlan = null;
+    logEkle('diger', null, T('lProgRemove'));
+    kaydet(); ciz(); toast(T('tSaved'));
+  });
+}
+// Evet → yükle (kurulum bitmemişse önce profil, sonra otomatik); Hayır / kapat → yükleme
+function programSor(P){
+  const ogunSay = P.o.length, gunSay = P.g.length;
+  const kim = [P.h ? T('kocBy', {h: P.h}) : '', P.a ? T('kocFor', {a: P.a}) : ''].filter(Boolean).join(' · ');
+  ac(T('confirmT'), `<p class="onay-metin"><b>${esc(T('impQ'))}</b></p>
+    ${kim ? `<div class="cur"><b>📋 ${esc(kim)}</b>${P.n ? `<br><small>${esc(P.n)}</small>` : ''}</div>` : ''}
+    <div class="hint">${esc(T('impInfo', {d: gunSay, m: ogunSay}))}</div>
+    ${D.ayar.kurulum ? '' : `<div class="wmsg info">${esc(T('impSetup'))}</div>`}
+    <div class="acts"><button class="btn ghost" id="impHayir">${T('impNo')}</button><button class="btn green" id="impEvet">${T('impYes')}</button></div>`);
+  $('impHayir').onclick = () => { kapat(); toast(T('impNot')); };
+  $('impEvet').onclick = () => {
+    kapat();
+    if (D.ayar.kurulum) programUygula(P);
+    else { try { localStorage.setItem(BEKLEYEN, JSON.stringify(P)); } catch(e){} programBekleyen = P; toast(T('impSetup')); }
+  };
+}
+let programBekleyen = null;
+// Kurulum bitince bekleyen programı otomatik yükle
+function bekleyenProgramYukle(){
+  let P = programBekleyen;
+  if (!P){ try { P = JSON.parse(localStorage.getItem(BEKLEYEN) || 'null'); } catch(e){} }
+  try { localStorage.removeItem(BEKLEYEN); } catch(e){}
+  programBekleyen = null;
+  if (P) programUygula(P);
+}
+async function programLinkiAc(metin){
+  const m = String(metin || '').match(/#p=([A-Za-z0-9_-]+)/);
+  if (!m) return false;
+  let P = null;
+  try { P = programDogrula(await paketCoz(m[1])); } catch(e){}
+  if (!P){ toast(T('impBad')); return true; }
+  if (!D.ayar.kurulum && P.l && $('kurulum') && !$('kurulum').hidden && W){ W.dil = P.l; wCiz(); }
+  programSor(P);
+  return true;
+}
+// Açılışta adres çubuğundaki program linki (# kısmı sunucuya gitmez)
+function adresProgramKontrol(){
+  if (!/^#p=/.test(location.hash)) return;
+  const h = location.hash;
+  try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
+  programLinkiAc(h);
+}
+window.addEventListener('hashchange', adresProgramKontrol);
+
+// ---------- Ana ekrandaki program bandı ----------
+function programBantCiz(){
+  const P = D.program, el = $('programBant');
+  if (!P){ el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="prog-bant"><div><b>${esc(P.h ? T('progBanner', {h: P.h}) : '📋 ' + T('progAnon'))}</b>${P.a ? ` <span class="tag">${esc(T('kocFor', {a: P.a}))}</span>` : ''}${P.n ? `<p>${esc(P.n)}</p>` : ''}</div>
+    <button class="btn ghost" data-progkaldir="1">${T('progRemove')}</button></div>`;
+}
+
+// ---------- Uygulama olarak yükle (Android: tek dokunuş, iPhone: adımlar) ----------
+let kurulumOlayi = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); kurulumOlayi = e; yukleBantCiz(); });
+const bagimsiz = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+const iosMu = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const mobilMu = () => iosMu() || /Android/.test(navigator.userAgent);
+function yukleAc(){
+  if (kurulumOlayi){ kurulumOlayi.prompt(); kurulumOlayi.userChoice.finally(() => { kurulumOlayi = null; yukleBantCiz(); }); return; }
+  const adimlar = T(iosMu() ? 'instIos' : 'instAndroid').split('|');
+  ac(T('instTitle'), `<ol class="adimlar">${adimlar.map(a => `<li>${esc(a)}</li>`).join('')}</ol>`);
+}
+function yukleBantCiz(){
+  const el = $('yukleBant'); if (!el) return;
+  const goster = /^https?:$/.test(location.protocol) && !bagimsiz() && !D.ayar.yukleKapat && D.ayar.kurulum && (kurulumOlayi || mobilMu());
+  el.innerHTML = goster ? `<div class="yukle-bant"><span>${T('instTitle')}</span><button class="btn solid" data-yukle="1">${T('instNow')}</button><button class="btn ghost" data-yuklekapat="1">${T('instLater')}</button></div>` : '';
+}
 // ---------- Kurulum sihirbazı ----------
 let W = null, wAdim = 0, wHata = '';
 const HEDEFLER = [['ver','🔥'],['sekil','🏋️'],['koru','⚖️'],['kas','💪'],['al','📈']];
 const odakAd = k => T(k === 'seker' ? 'g_seker' : 'o_' + k);
 const wAdimlar = () => ['dil','ad', ...(W.cins === 'k' ? ['hamile'] : []), 'olcu','hedef','aktivite',
-  ...(!W.hamile && (W.hedef === 'ver' || W.hedef === 'al') ? ['kilo'] : []), 'tercih','alerji','ozet'];
+  ...(!W.hamile && (W.hedef === 'ver' || W.hedef === 'al') ? ['kilo'] : []), 'tercih','alerji','saat','ozet'];
 function sihirbazAc(baslangic = 0){
   W = {...kopya(D.profil), dil: D.ayar.dil || 'tr', alerjiAra: ''};
+  const st = saatSeti(bugunK()); W.saatler = {kahvalti: st.kahvalti, ogle: st.ogle, aksam: st.aksam};
   if (W.cins !== 'k') W.hamile = false;
   // Alerji sorusu: kurulumu bitmiş kullanıcıda mevcut seçim, yeni kullanıcıda boş (seçmesi gerekir)
   W.alerjiVar = (W.alerjiler || []).length ? 'var' : D.ayar.kurulum ? 'yok' : '';
@@ -2293,6 +3278,11 @@ function wCiz(){
     govde = `<div class="opts">${wOpt('walerjivar', 'yok', W.alerjiVar === 'yok', '✅', T('alerjiYok'))}${wOpt('walerjivar', 'var', W.alerjiVar === 'var', '⚠️', T('alerjiVar'))}</div>`
       + (W.alerjiVar === 'var' ? `<div class="wfield" style="margin-top:12px"><input class="wname" id="wAlerjiAra" value="${esc(W.alerjiAra)}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
         <div class="al-sonuc" id="alSonuc"></div><div class="al-secili" id="alSecili"></div>` : '');
+  } else if (ad === 'saat'){
+    baslik = T('wSaatT'); alt = T('wSaatS');
+    if (!W.saatler){ const st = saatSeti(bugunK()); W.saatler = {kahvalti: st.kahvalti, ogle: st.ogle, aksam: st.aksam}; }
+    govde = `<div class="saat-grid">${['kahvalti','ogle','aksam'].map(id => `<div class="wfield" style="margin:0"><label for="ws_${id}">${OGUN_IKON[id]} ${T('m_' + id)}</label><input type="time" id="ws_${id}" data-wsaat="${id}" value="${W.saatler[id]}" step="300"></div>`).join('')}</div>
+      <ul class="saat-onizle" id="wSaatOn"></ul>`;
   } else {
     const h = hedefHesapla(W);
     baslik = T('wSumT', {ad: esc(wHitap())}); alt = T('wSumS');
@@ -2318,7 +3308,7 @@ function wCiz(){
     <div class="wiz-body">${govde}${wHata ? `<div class="wmsg err">${wHata}</div>` : ''}</div>
     <div class="wnav">${ilk ? '' : `<button class="btn ghost" data-wgeri="1">${T('back')}</button>`}<button class="btn ${son ? 'green' : 'solid'}" data-wileri="1">${son ? T('create') : T('next')}</button></div>
   </div>`;
-  wSureYaz(); alListeCiz();
+  wSureYaz(); alListeCiz(); wSaatOnizle();
   $('kurulum').scrollTop = 0;
 }
 // Alerji arama: sonuçlar ve seçilenler (yeniden çizmeden; arama kutusu odakta kalır)
@@ -2336,6 +3326,12 @@ function alListeCiz(){
     ? `<div class="wmsg warn" style="margin-top:10px"><b>🚫 ${T('alerjiSecili')}</b><div class="al-etiketler">${[...sec].map(id => `<button class="al-chip on" data-walerji="${id}">${esc(alerjen(id).ad)} ✕</button>`).join('')}</div></div>`
     : `<div class="hint" style="margin-top:10px">${T('alerjiBos')}</div>`;
 }
+// Saat adımı: ana öğünlere göre ara öğün saatlerinin önizlemesi
+function wSaatOnizle(){
+  const el = $('wSaatOn'); if (!el) return;
+  const s = {...W.saatler, ...araHesapla(W.saatler)};
+  el.innerHTML = ['kahvalti','ogle','ara1','aksam','gece'].map(id => `<li class="${id.startsWith('ara') || id === 'gece' ? 'ara' : ''}"><span>${OGUN_IKON[id]} ${T('m_' + id)}</span><b>${s[id]}</b></li>`).join('');
+}
 // Canlı alanlar: VKİ ve tahmini süre (input yazarken yeniden çizmeden)
 function wSureYaz(){
   const el = $('wSure');
@@ -2348,13 +3344,14 @@ function wDogrula(ad){
   if (ad === 'olcu' && !(W.yas >= 14 && W.yas <= 100 && W.boy >= 120 && W.boy <= 230 && W.kilo >= 30 && W.kilo <= 300)) return T('errBody');
   if (ad === 'hedef' && (!W.hedef || (vki(W) < 18.5 && (W.hedef === 'ver' || W.hedef === 'sekil')))) return W.hedef ? T('warnLow') : T('errGoal');
   if (ad === 'alerji' && !W.alerjiVar) return T('errGoal');
+  if (ad === 'saat' && !(dk(W.saatler.kahvalti) < dk(W.saatler.ogle) && dk(W.saatler.ogle) < dk(W.saatler.aksam))) return T('saatHata');
   if (ad === 'alerji' && W.alerjiVar === 'var' && !(W.alerjiler || []).length) return T('errAlerji');
   if (ad === 'kilo' && ((W.hedef === 'ver' && !(W.hedefKilo < W.kilo && W.hedefKilo >= 30)) || (W.hedef === 'al' && !(W.hedefKilo > W.kilo)))) return T('errTarget');
   return '';
 }
 function wBitir(){
   const h = hedefHesapla(W);
-  const {dil: secilenDil, alerjiAra, alerjiVar, ...profil} = W;
+  const {dil: secilenDil, alerjiAra, alerjiVar, saatler, ...profil} = W;
   profil.ad = profil.ad.trim();
   if (alerjiVar !== 'var') profil.alerjiler = [];
   // Profil düzenlemesinde hamilelik ve alerji değişikliklerini logla
@@ -2366,10 +3363,13 @@ function wBitir(){
   D.profil = {...profil, kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su};
   D.ayar.dil = secilenDil; D.ayar.kurulum = true;
   dil = secilenDil;
-  planYenile(); kaydet();
+  planYenile();
+  saatKaydet(bugunK(), {...saatler, ...araHesapla(saatler)});
+  kaydet();
   aktif = bugunK(); detayAcik = false;
   sihirbazKapat();
   toast('👋 ' + selam());
+  bekleyenProgramYukle();   // linkle gelen program: profil tamamlanınca otomatik yüklenir
 }
 $('kurulum').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || b.disabled) return;
@@ -2383,7 +3383,13 @@ $('kurulum').addEventListener('click', e => {
     wCiz(); return;
   }
   if (ds.wtri){ W.trimester = +ds.wtri; wCiz(); return; }
-  if (ds.walerjivar){ W.alerjiVar = ds.walerjivar; if (W.alerjiVar === 'yok') W.alerjiler = []; wHata = ''; wCiz(); if ($('wAlerjiAra')) $('wAlerjiAra').focus(); return; }
+  if (ds.walerjivar){
+    W.alerjiVar = ds.walerjivar; if (W.alerjiVar === 'yok') W.alerjiler = []; wHata = ''; wCiz();
+    // "Var": arama kutusu ve seçenekler ekranın üstüne gelsin (liste yarım kalmasın)
+    const kutu = $('wAlerjiAra');
+    if (kutu) requestAnimationFrame(() => $('kurulum').scrollTo({top: Math.max(0, kutu.closest('.wfield').offsetTop - 12), behavior:'smooth'}));
+    return;
+  }
   if (ds.walerji){
     const s = new Set(W.alerjiler || []); s.has(ds.walerji) ? s.delete(ds.walerji) : s.add(ds.walerji);
     W.alerjiler = [...s]; wHata = ''; alListeCiz(); return;
@@ -2414,6 +3420,7 @@ $('kurulum').addEventListener('click', e => {
 });
 $('kurulum').addEventListener('input', e => {
   if (e.target.id === 'wAlerjiAra'){ W.alerjiAra = e.target.value; alListeCiz(); return; }
+  if (e.target.dataset.wsaat){ if (/^\d\d:\d\d$/.test(e.target.value)){ W.saatler[e.target.dataset.wsaat] = e.target.value; wHata = ''; wSaatOnizle(); } return; }
   const alan = e.target.dataset.wf; if (!alan) return;
   W[alan] = alan === 'ad' ? e.target.value : Math.max(0, +String(e.target.value).replace(/[,٫]/g, '.') || 0);
   wSureYaz();
@@ -2434,6 +3441,7 @@ function baslat2(){
 }
 D = tamamla(enYeni(lsOku(), gomuluOku()) || varsayilanDurum());
 baslat2();
+adresProgramKontrol();
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
 try { localStorage.setItem(ANAHTAR + '_test', '1'); localStorage.removeItem(ANAHTAR + '_test'); } catch(e){ depoCalisiyor = false; }
 idbOku().then(v => {
@@ -2465,7 +3473,8 @@ if (window.visualViewport){
 }
 document.addEventListener('focusin', e => {
   if (!/^(INPUT|TEXTAREA)$/.test(e.target.tagName) || e.target.type === 'file') return;
-  setTimeout(() => { gorunenAlan(); e.target.scrollIntoView({block:'center', behavior:'smooth'}); }, 350);
+  // Alerji araması: kutu üstte kalsın ki seçenekler klavyenin üstünde görünsün
+  setTimeout(() => { gorunenAlan(); e.target.scrollIntoView({block: e.target.id === 'wAlerjiAra' ? 'start' : 'center', behavior:'smooth'}); }, 350);
 });
 document.addEventListener('focusout', () => setTimeout(gorunenAlan, 100));
 // Gece yarısını geçince "bugün" değişsin

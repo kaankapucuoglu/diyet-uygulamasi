@@ -277,7 +277,7 @@ a.btn{text-decoration:none}
 .uyari h4{font-size:14.5px;margin-bottom:4px}
 .uyari p{font-size:13.5px;line-height:1.55;color:#40506a}
 .sayfalar{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px;font-size:13px;color:var(--muted);font-weight:600}
-.al-sonuc{display:flex;flex-wrap:wrap;gap:6px;max-height:230px;overflow-y:auto;padding:2px}
+.al-sonuc{display:flex;flex-wrap:wrap;gap:6px;max-height:max(200px,calc(var(--vv-h,100vh) - 290px));overflow-y:auto;padding:2px}
 .al-chip{font-size:13.5px;padding:7px 12px;border-radius:99px;background:var(--card);border:1px solid var(--line);font-weight:600;color:#40506a}
 .al-chip.on{background:var(--red-soft);border-color:#f5c2c6;color:#b4232c}
 .al-etiketler{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -314,6 +314,65 @@ body.klavye .toast{display:none}
   background:#172338;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;z-index:80;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .foot{color:var(--muted);font-size:12.5px;text-align:center;margin-top:22px}
+
+/* Öğün gizle / göster, saat düğmesi */
+.ogun-arac{display:flex;justify-content:flex-end;margin:0 0 10px}
+.ogun-arac:empty{display:none}
+.tog-all{min-height:36px;font-size:13px;font-weight:700}
+.meal{container-type:inline-size}
+.meal.kapali .items,.meal.kapali .add-food,.meal.kapali .ogun-not{display:none}
+.meal.kapali .meal-head{border-bottom:0}
+.tog-btn{display:inline-flex;align-items:center;gap:4px;min-height:38px;padding:0 10px;border-radius:10px;font-weight:700;font-size:12.5px;background:var(--blue-soft);color:var(--blue);flex-shrink:0;white-space:nowrap}
+.tog-btn i{font-style:normal;font-size:13px}
+@container (max-width:400px){ .tog-btn .lbl{display:none} .tog-btn{width:38px;justify-content:center;padding:0} }
+.saat-btn{display:inline-flex;align-items:center;gap:3px;font:inherit;font-size:13px;color:var(--blue);font-weight:700;padding:0 4px 0 0;border-radius:6px}
+.saat-btn::after{content:"✎";font-size:11px;opacity:.55}
+.saat-btn:hover{background:var(--blue-soft)}
+.ogun-not{font-size:13px;color:#8a5a0c;background:var(--gold-soft);padding:8px 16px;border-bottom:1px solid #f0f3f8}
+.saat-in{font-size:22px;font-weight:800;text-align:center;height:56px}
+.tool-btn.destek{background:#fff8e8;border-color:#f5dfb0}
+.tool-btn.destek small{color:#8a5a0c}
+/* Destek */
+.kopya-satir{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:#fbfcfe}
+.kopya-satir div{flex:1;min-width:0}
+.kopya-satir small{display:block;font-size:11.5px;color:var(--muted);font-weight:700}
+.kopya-satir b{font-size:15px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+/* Program bandı, uygulama yükle bandı */
+.prog-bant,.yukle-bant{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid #cfe9dc;border-inline-start:4px solid var(--green);border-radius:14px;padding:10px 14px;margin:0 0 12px;box-shadow:var(--shadow)}
+.prog-bant > div{flex:1 1 240px;min-width:0}
+.prog-bant p{font-size:13px;color:#40506a;margin-top:3px;overflow-wrap:anywhere}
+.prog-bant .btn{min-height:36px;font-size:13px}
+.yukle-bant{border-color:#d3e1fd;border-inline-start-color:var(--blue)}
+.yukle-bant span{flex:1 1 200px;font-weight:700;font-size:14px}
+.yukle-bant .btn{min-height:36px;font-size:13px}
+.adimlar{padding-inline-start:22px;line-height:1.7;font-size:15px}
+.tpl-ipucu{flex:1 1 100%;font-size:12.5px;color:var(--muted);line-height:1.5}
+/* Program hazırlama ekranı */
+.koc-in{max-width:980px}
+.koc .card{margin-bottom:4px}
+.koc textarea,.koc-not{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;resize:vertical;color:var(--text);background:#fff}
+.koc-not{border:0;border-top:1px dashed var(--line);border-radius:0;padding:10px 16px;font-size:13.5px;background:#fffdf6}
+.koc .field input[type=time],.field input[type=time]{min-height:40px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0 10px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 10px}
+.koc-check{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-top:4px}
+.koc-check input{width:20px;height:20px}
+.koc-days{margin-bottom:8px}
+.koc-days .day{padding:10px 2px 8px}
+.koc-gun-arac{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.koc-gun-bas{font-size:18px;margin:6px 0 10px}
+.link-alan{width:100%;font:12.5px/1.4 ui-monospace,Consolas,monospace;border:1px solid var(--line);border-radius:10px;padding:8px;margin:10px 0 4px;resize:none;background:#f7f9fc;color:#40506a}
+.koc-nav .btn.ghost{flex:1}
+.link-yapistir{display:flex;gap:8px;margin-top:6px}
+.link-yapistir .search{flex:1;min-width:0}
+.link-yapistir .btn{flex:none}
+.saat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.saat-grid input{width:100%;height:50px;border:1px solid var(--line);border-radius:12px;font-size:19px;font-weight:700;text-align:center;background:#fff;color:var(--text)}
+.saat-onizle{list-style:none;margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 14px}
+.saat-onizle li{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f3f8;font-size:14.5px}
+.saat-onizle li:last-child{border-bottom:0}
+.saat-onizle b{font-variant-numeric:tabular-nums}
+.saat-onizle li.ara{color:var(--muted)}
 
 /* Kurulum sihirbazı */
 .wiz{position:fixed;inset:0;top:var(--vv-top,0px);bottom:auto;height:var(--vv-h,100%);z-index:40;overflow-y:auto;-webkit-overflow-scrolling:touch;
@@ -374,10 +433,20 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
   .gram .val{height:38px}
   .mini{height:38px}
   @container (max-width: 420px){ .item-acts .mini{width:38px} }
-  .top-row .top-btns{grid-template-columns:repeat(6,minmax(0,1fr))}
-  .top-row .top-btns .tool-btn{grid-column:span 2}
-  .top-row .top-btns .tool-btn:nth-child(n+4){grid-column:span 3;flex-direction:row;height:44px;gap:6px}
+  .top-row .top-btns{grid-template-columns:repeat(12,minmax(0,1fr))}
+  .top-row .top-btns .tool-btn{grid-column:span 3}
+  .top-row .top-btns .tool-btn:nth-child(n+5){grid-column:span 4;flex-direction:row;height:44px;gap:6px}
+  .grid4{grid-template-columns:1fr 1fr}
+  .koc-nav .btn{font-size:14px;padding:0 10px}
 }
+/* Tablet: 7 araç düğmesi tek sırada eşit genişlikte (simge üstte, yazı altta) */
+@media (min-width:601px) and (max-width:1180px){
+  .top-row .top-btns{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));width:100%;margin-inline-start:0}
+  .tool-btn{flex-direction:column;gap:2px;height:58px;padding:0 4px}
+  .tool-btn small{white-space:normal;line-height:1.15;text-align:center;font-size:12.5px}
+}
+.koc-nav{flex-wrap:wrap;position:static;box-shadow:none}
+@media (max-width:600px){ .koc-nav .btn.green{flex:1 1 100%;order:-1} }
 @media (max-width:600px){ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px} }
 @media (max-width:600px){ .gunsatir{gap:4px} .gunsatir .nav-btn{width:28px;font-size:16px} .gunsatir .days{gap:4px} }
 @media (max-width:360px){ .days{gap:4px} .day{padding:7px 0 5px} .macros{gap:6px} .crow{font-size:13px} }
@@ -394,13 +463,17 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
         <button class="tool-btn" id="gecmisBtn"><span>📅</span><small id="lGecmis"></small></button>
         <button class="tool-btn" id="logBtn"><span>📋</span><small id="lLog"></small></button>
         <button class="tool-btn" id="ayarBtn"><span>⚙️</span><small id="lAyar"></small></button>
+        <button class="tool-btn" id="kocBtn"><span>👩‍⚕️</span><small id="lKoc"></small></button>
         <button class="tool-btn" id="uyariBtn"><span>⚠️</span><small id="lUyari"></small></button>
         <button class="tool-btn" id="yazBtn"><span>✉️</span><small id="lYaz"></small></button>
+        <button class="tool-btn destek" id="destekBtn"><span>☕</span><small id="lDestek"></small></button>
       </div>
     </div>
     <div class="sub"><span id="altBaslik"></span> <span class="save-chip" id="kayitDurum"></span> <button class="hamile-btn" id="hamileBtn" hidden></button></div>
   </header>
 
+  <div id="yukleBant"></div>
+  <div id="programBant"></div>
   <div class="weeknav" id="haftaNav"></div>
   <div class="gunsatir">
     <button class="nav-btn" data-hafta="-7" aria-label="‹">‹</button>
@@ -408,11 +481,13 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
     <button class="nav-btn" data-hafta="7" aria-label="›">›</button>
   </div>
   <section class="summary" id="ozet"></section>
+  <div class="ogun-arac" id="ogunArac"></div>
   <section class="meals" id="ogunler"></section>
   <div class="under" id="altIslem"></div>
 </div>
 
 <div class="wiz" id="kurulum" hidden></div>
+<div class="wiz koc" id="koc" hidden></div>
 <div class="overlay" id="overlay"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast"></div>
 
