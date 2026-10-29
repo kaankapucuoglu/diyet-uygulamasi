@@ -273,6 +273,7 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 /* Pencere (telefonda alttan açılır) */
 .overlay{position:fixed;inset:0;top:var(--vv-top,0px);bottom:auto;height:var(--vv-h,100%);background:rgba(15,23,42,.42);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
+.overlay{overscroll-behavior:contain}
 /* Pencereler yalnız dikey hareket eder: alttan yukarı açılır, yatay kayma yok */
 html,body{overflow-x:clip}
 .overlay.open .sheet{animation:alttan .22s ease-out}

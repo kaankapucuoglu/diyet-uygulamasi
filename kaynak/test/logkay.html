@@ -1,0 +1,15 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Loglar 10'arlı sayfa + pencere açıkken arka sayfa kilitli, kapanınca aynı yere döner
+localStorage.clear();const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Ayşe',cins:'k',hamile:false,yas:32,boy:166,kilo:72,hedef:'ver',hedefKilo:64,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir();for(let i=0;i<125;i++)logEkle('su',bugunK(),'test '+i);ciz()`);
+  await bekle(200);w.scrollTo(0,600);await bekle(100);const y0=w.scrollY;
+  d.getElementById('ayarBtn').click();d.getElementById('logAc').click();
+  L('kilit: position '+d.body.style.position+' · top '+d.body.style.top+' · sayfa yeri '+Math.round(-parseFloat(d.body.style.top)));
+  L('sayfa 1: '+d.querySelectorAll('#logListe li').length+' satir · '+d.querySelector('.sayfalar span').textContent+' · ilk '+d.querySelector('#logListe li .log-body').textContent.slice(-8));
+  d.querySelector('.sayfalar [data-ls="1"]').click();L('sayfa 2: '+d.querySelectorAll('#logListe li').length+' satir · '+d.querySelector('.sayfalar span').textContent+' · ilk '+d.querySelector('#logListe li .log-body').textContent.slice(-8));
+  w.eval('kapat()');await bekle(100);L('kapaninca: position "'+d.body.style.position+'" · scrollY '+w.scrollY+' (once '+y0+')');
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_logkay',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

@@ -37,9 +37,22 @@ $('destekBtn').addEventListener('click', destekAc);
 function ac(baslik, govde){
   $('sheet').innerHTML = `<div class="sheet-head"><h2>${baslik}</h2><button class="icon-btn" data-kapat="1" aria-label="✕">✕</button></div><div class="sheet-body" id="sbody">${govde || ''}</div>`;
   $('sheet').querySelector('[data-kapat]').onclick = kapat;
-  $('overlay').classList.add('open'); document.body.style.overflow = 'hidden';
+  $('overlay').classList.add('open'); sayfaKilitle();
 }
-function kapat(){ $('overlay').classList.remove('open'); document.body.style.overflow = ''; }
+function kapat(){ $('overlay').classList.remove('open'); kilidiAc(); }
+// Pencere açıkken arkadaki sayfa kaymasın (iPhone'da overflow:hidden yetmez → gövde yerinde sabitlenir)
+let kilitY = null;
+function sayfaKilitle(){
+  if (kilitY !== null) return;
+  kilitY = window.scrollY;
+  Object.assign(document.body.style, {position: 'fixed', top: -kilitY + 'px', left: '0', right: '0', overflow: 'hidden'});
+}
+function kilidiAc(){
+  if (kilitY === null) return;
+  const y = kilitY; kilitY = null;
+  Object.assign(document.body.style, {position: '', top: '', left: '', right: '', overflow: ''});
+  window.scrollTo(0, y);
+}
 
 // ---------- Yemek seç / değiştir / kıyasla ----------
 let SE = null;
@@ -230,7 +243,7 @@ function ozelYemekFormu(){
 
 // ---------- Tüm loglar ----------
 let logFiltre = 'tum', logSayfa = 0;
-const LOG_SAYFA = 50, LOG_PARCA = 10;
+const LOG_SAYFA = 10;
 function loglarAc(){
   ac(T('logsTitle'));
   logSayfa = 0;
@@ -241,23 +254,15 @@ function loglarAc(){
     const sayfaSay = Math.max(1, Math.ceil(liste.length / LOG_SAYFA));
     logSayfa = Math.min(logSayfa, sayfaSay - 1);
     const sayfa = liste.slice(logSayfa * LOG_SAYFA, (logSayfa + 1) * LOG_SAYFA);
-    let gosterilen = Math.min(LOG_PARCA, sayfa.length);
     const f = (id, ad) => `<button class="chip${logFiltre === id ? ' on' : ''}" data-lf="${id}">${ad}</button>`;
     const sayfalar = sayfaSay > 1 ? `<div class="sayfalar">
         <button class="nav-btn" data-ls="${logSayfa - 1}" ${logSayfa === 0 ? 'disabled' : ''} aria-label="‹">‹</button>
         <span>${T('sayfaN', {n: logSayfa + 1, t: sayfaSay, k: liste.length})}</span>
         <button class="nav-btn" data-ls="${logSayfa + 1}" ${logSayfa >= sayfaSay - 1 ? 'disabled' : ''} aria-label="›">›</button></div>` : '';
     $('sbody').innerHTML = `<div class="chips" style="margin-top:0">${f('tum', T('fAll'))}${f('gun', etiket(aktif))}${f('gecmis', T('fPast'))}</div>
-      <ul class="logs" id="logListe">${sayfa.length ? sayfa.slice(0, gosterilen).map(l => logSatir(l)).join('') : `<li class="empty">${T('noRecords')}</li>`}</ul>${sayfalar}`;
+      <ul class="logs" id="logListe">${sayfa.length ? sayfa.map(l => logSatir(l)).join('') : `<li class="empty">${T('noRecords')}</li>`}</ul>${sayfalar}`;
     $('sbody').querySelectorAll('[data-lf]').forEach(b => b.onclick = () => { logFiltre = b.dataset.lf; logSayfa = 0; ciz2(); });
     $('sbody').querySelectorAll('[data-ls]').forEach(b => b.onclick = () => { logSayfa = +b.dataset.ls; ciz2(); $('sbody').scrollTop = 0; });
-    // Aşağı kaydırdıkça sayfanın kalanını 10'ar ekle
-    $('sbody').onscroll = () => {
-      const g = $('sbody');
-      if (gosterilen >= sayfa.length || g.scrollTop + g.clientHeight < g.scrollHeight - 80) return;
-      $('logListe').insertAdjacentHTML('beforeend', sayfa.slice(gosterilen, gosterilen + LOG_PARCA).map(l => logSatir(l)).join(''));
-      gosterilen += LOG_PARCA;
-    };
   };
   ciz2();
 }
