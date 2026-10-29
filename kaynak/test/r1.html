@@ -1,0 +1,13 @@
+<!DOCTYPE html><html><body><iframe id="f" style="width:375px;height:800px"></iframe><pre id="o"></pre><script>
+const U='../../index.html';localStorage.clear();const f=document.getElementById('f');f.src=U;const out=[];const L=x=>out.push(x);
+setTimeout(()=>{const w=f.contentWindow,d=w.document,q=s=>d.querySelector('#kurulum '+s),nx=()=>q('[data-wileri]').click();
+try{nx();const a=q('#wAd');a.value='Ayşe';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="k"]').click();nx();
+const k=q('#w_kilo');k.value=66;k.dispatchEvent(new Event('input',{bubbles:true}));nx();q('[data-whedef="ver"]').click();q('[data-wodak="tansiyon"]').click();nx();nx();nx();q('[data-wpreset="vejetaryen"]').click();nx();nx();
+L(w.eval(`(()=>{const u=profilUygun(D.profil);return D.planlar.map((h,hi)=>'H'+(hi+1)+': '+h.map(g=>{const t=topla(g.flatMap(o=>o.ogeler));return Math.round(t.k)+'/P'+Math.round(t.p)}).join(' ')+' | uygunsuz='+(h.flat().flatMap(o=>o.ogeler).filter(it=>!u(yemek(it.f))).map(it=>it.f).join(',')||'yok')).join(' ## ')+' ## hedef '+D.profil.kcal+' P'+D.profil.protein})()`));
+L('farkli yemek: '+w.eval("D.planlar.map(h=>new Set(h.flat().flatMap(o=>o.ogeler).map(i=>i.f)).size).join(',')+' · ortak H1-H2: '+(()=>{const a=new Set(D.planlar[0].flat().flatMap(o=>o.ogeler).map(i=>i.f));return [...new Set(D.planlar[1].flat().flatMap(o=>o.ogeler).map(i=>i.f))].filter(x=>a.has(x)).length})()"));
+L('hafta no: '+w.eval("[0,7,14,21,28,-7].map(n=>haftaNo(gunEkle(bugunK(),n))+1).join(',')")+' · etiket: '+d.getElementById('haftaNav').innerText.replace(/\s+/g,' '));
+w.eval("secimAc({mod:'ekle',oi:1})");L('liste uygunsuz sayisi: '+w.eval("[...document.querySelectorAll('#flist [data-fid]')].filter(b=>!profilUygun(D.profil)(yemek(b.dataset.fid))).length"));
+const ara=d.getElementById('ara');ara.value='köfte';ara.dispatchEvent(new Event('input'));L('arama köfte: '+[...d.querySelectorAll('#flist .frow b')].map(b=>b.innerText).join(' | '));
+w.eval("kapat();secimAc({mod:'kiyas',oi:0,ii:0});SE.kat='__tumu';listeGorunumu()");L('pill: '+d.querySelector('#flist .pills').innerText.replace(/\s+/g,' ')+' || bilgi: '+d.querySelector('#flist small').innerText);
+}catch(e){L('HATA '+e.stack)}document.getElementById('o').textContent=out.join('\n');},1500);
+</script></body></html>

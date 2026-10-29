@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;background:#ddd">
+<div id="onizle" style="display:flex;gap:16px;padding:16px;align-items:flex-end"></div>
+<pre id="o"></pre>
+<script>
+// İçerik: tabak + yaprak (sağlıklı yemek), çatal & bıçak, altta dambıl (spor)
+const ICERIK = `
+  <g>
+    <circle cx="256" cy="226" r="132" fill="#ffffff"/>
+    <circle cx="256" cy="226" r="100" fill="#e3f5ec"/>
+    <path d="M206 262 C 206 190, 252 154, 318 150 C 318 214, 286 262, 206 262 Z" fill="#16a36b"/>
+    <path d="M214 254 C 244 228, 270 204, 302 166" stroke="#e3f5ec" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <path d="M70 128 v58 a14 14 0 0 0 28 0 v-58 M84 128 v52 M84 200 v122" stroke="#ffffff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M430 128 c-26 18 -28 70 -6 96 l6 0 v98" stroke="#ffffff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff"/>
+    <rect x="160" y="391" width="192" height="18" rx="9" fill="#ffffff"/>
+    <rect x="140" y="362" width="30" height="76" rx="10" fill="#ffffff"/>
+    <rect x="114" y="374" width="24" height="52" rx="9" fill="#ffffff"/>
+    <rect x="342" y="362" width="30" height="76" rx="10" fill="#ffffff"/>
+    <rect x="374" y="374" width="24" height="52" rx="9" fill="#ffffff"/>
+  </g>`;
+const ARKA = `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22c07f"/><stop offset="1" stop-color="#0e7f55"/></linearGradient></defs>`;
+// any: köşeleri yuvarlatılmış; maskable/apple: tam kare zemin, içerik güvenli alana (%80) küçültülmüş
+const svg = tur => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">${ARKA}` +
+  (tur === 'any' ? `<rect width="512" height="512" rx="112" fill="url(#g)"/>${ICERIK}`
+                 : `<rect width="512" height="512" fill="url(#g)"/><g transform="translate(256 256) scale(0.8) translate(-256 -256)">${ICERIK}</g>`) + `</svg>`;
+const ciktilar = [['icon-192.png','any',192],['icon-512.png','any',512],['maskable-512.png','mask',512],['apple-touch-icon.png','mask',180]];
+const sonuc = {'icon.svg': btoa(unescape(encodeURIComponent(svg('any'))))};
+let kalan = ciktilar.length;
+for (const [ad, tur, boy] of ciktilar){
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement('canvas'); c.width = c.height = boy;
+    const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, boy, boy);
+    sonuc[ad] = c.toDataURL('image/png').split(',')[1];
+    const on = new Image(); on.src = c.toDataURL(); on.title = ad; document.getElementById('onizle').appendChild(on);
+    if (--kalan === 0) document.getElementById('o').textContent = 'SONUC' + JSON.stringify(sonuc) + 'BITTI';
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg(tur));
+}
+</script>
+</body></html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><body style="margin:0;display:flex;gap:8px;align-items:flex-start"><iframe id="f" style="width:390px;height:844px;border:0;flex:none"></iframe><iframe id="g" style="width:390px;height:844px;border:0;flex:none"></iframe><pre id="o" style="width:400px;white-space:pre-wrap;font-size:11px"></pre><script>
+localStorage.clear();const U='../../index.html';const f=document.getElementById('f'),g=document.getElementById('g');f.src=U;const out=[];
+const kur=(d)=>{const q=x=>d.querySelector('#kurulum '+x),nx=()=>q('[data-wileri]').click();nx();const a=q('#wAd');a.value='Kaan';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();nx();q('[data-whedef="ver"]').click();nx();nx();nx();nx();nx();};
+setTimeout(()=>{const w=f.contentWindow,d=w.document;try{kur(d);
+w.eval("secimAc({mod:'degis',oi:0,ii:0})");const cips=()=>[...d.querySelectorAll('#kategoriler .chip')].map(b=>b.textContent).join(' · ');
+out.push('degistir acilis: '+cips());d.querySelector('[data-grup]').click();out.push('acinca: '+cips().slice(0,160)+'…');
+d.querySelector('[data-kat="tahil"]').click();out.push('Ekmek sekmesi secili: '+d.querySelector('#kategoriler .chip.on').textContent);
+d.querySelector('[data-grup]').click();out.push('kapatinca: '+cips()+' · secili='+d.querySelector('#kategoriler .chip.on').textContent);
+w.eval("kapat();secimAc({mod:'kiyas',oi:1,ii:0})");out.push('kiyasla acilis: '+cips());w.eval("kapat();secimAc({mod:'ekle',oi:1})");out.push('ekle acilis: '+cips().slice(0,90)+'…');w.eval('kapat()');
+}catch(e){out.push('HATA '+e.stack)}
+g.src=U;setTimeout(()=>{const w2=g.contentWindow,d2=w2.document;try{
+w2.eval("secimAc({mod:'degis',oi:0,ii:0})");Object.defineProperty(w2,'visualViewport',{value:{height:420,width:390,offsetTop:0,addEventListener(){}},configurable:true});
+const ara=d2.getElementById('ara');ara.focus();ara.value='yum';ara.dispatchEvent(new Event('input'));w2.gorunenAlan();
+const s=d2.getElementById('sheet').getBoundingClientRect(),li=d2.querySelector('#flist .frow').getBoundingClientRect(),ar=ara.getBoundingClientRect();
+out.push('klavye: sinif='+d2.body.classList.contains('klavye')+' pencere='+Math.round(s.top)+'..'+Math.round(s.bottom)+' arama='+Math.round(ar.top)+' ilk sonuc ust='+Math.round(li.top)+' (420 altinda gorunur) kart gizli='+(w2.getComputedStyle(d2.querySelector('#sbody .cur')).display==='none')+' cipler gizli='+(w2.getComputedStyle(d2.getElementById('kategoriler')).display==='none'));
+}catch(e){out.push('HATA2 '+e.stack)}document.getElementById('o').textContent=out.join('\n');},1500);},1500);
+</script></body></html>

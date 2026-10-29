@@ -1,0 +1,14 @@
+<!DOCTYPE html><html><body><iframe id="f" style="width:390px;height:800px"></iframe><pre id="o"></pre><script>
+localStorage.clear();const f=document.getElementById('f');f.src='../../index.html';const out=[];
+setTimeout(()=>{const w=f.contentWindow,d=w.document,q=x=>d.querySelector('#kurulum '+x),nx=()=>q('[data-wileri]').click();
+try{nx();const a=q('#wAd');a.value='Kaan';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();nx();q('[data-whedef="koru"]').click();nx();nx();nx();nx();
+for(const id of ['tamekmek','tavuk','yumurta','suzme','elma','levrek','ceviz','salata']){
+  const ogun=w.eval("menuOku(aktif)");let oi=-1,ii=-1;ogun.forEach((o,x)=>o.ogeler.forEach((it,y)=>{if(it.f===id&&oi<0){oi=x;ii=y;}}));
+  if(oi<0){w.eval("menuYaz(aktif)[0].ogeler.push({f:'"+id+"',g:1})");oi=0;ii=w.eval("menuOku(aktif)[0].ogeler.length-1");}
+  w.eval("secimAc({mod:'degis',oi:"+oi+",ii:"+ii+"})");
+  const sek=d.querySelector('#kategoriler .chip.on').textContent;
+  const ilk=[...d.querySelectorAll('#flist .frow b')].slice(0,6).map(b=>b.firstChild.textContent).join(' | ');
+  out.push(w.eval("yemek('"+id+"').ad")+' → ['+sek+'] '+ilk);w.eval('kapat()');}
+w.eval("secimAc({mod:'ekle',oi:0})");out.push('Yemek ekle varsayılan sekme: '+d.querySelector('#kategoriler .chip.on').textContent);
+}catch(e){out.push('HATA '+e.stack)}document.getElementById('o').textContent=out.join('\n');},1500);
+</script></body></html>

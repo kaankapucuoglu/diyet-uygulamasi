@@ -1,0 +1,59 @@
+<!DOCTYPE html><html><body style="margin:0"><div id="kap"></div><pre id="o"></pre><script>
+const U='../../index.html';localStorage.clear();
+const GEN=[375,768,844,1440], DIL=['tr','en','ru','de','ar'];const out=[];const L=x=>out.push(x);
+const kisa=e=>e.tagName.toLowerCase()+(e.id?'#'+e.id:'')+(e.className&&typeof e.className==='string'?'.'+e.className.trim().split(/\s+/).join('.'):'')+' "'+(e.textContent||'').trim().slice(0,28)+'"';
+function denetle(w,kok,etiket){
+  const d=w.document,vw=d.documentElement.clientWidth,sol=d.dir==='rtl'?w.innerWidth-vw:0,sorun=[];
+  const gorunur=e=>{const r=e.getBoundingClientRect();const cs=w.getComputedStyle(e);return r.width>0&&r.height>0&&cs.visibility!=='hidden'&&cs.display!=='none';};
+  const els=[...kok.querySelectorAll('*')].filter(gorunur);
+  // 1) ekran dışı
+  els.forEach(e=>{const r=e.getBoundingClientRect();if(r.right>sol+vw+1||r.left<sol-1)sorun.push('EKRAN DISI '+kisa(e)+' ['+Math.round(r.left)+'..'+Math.round(r.right)+'/'+vw+']');});
+  // 2) yazı kutusundan taşıyor / kesiliyor
+  els.forEach(e=>{if(e.children.length&&e.tagName!=='BUTTON')return;const cs=w.getComputedStyle(e);
+    if(e.scrollWidth>e.clientWidth+1&&e.clientWidth>0&&!['INPUT','TEXTAREA'].includes(e.tagName)){
+      const kesik=cs.textOverflow==='ellipsis'||cs.overflow==='hidden'||cs.overflowX==='hidden';
+      sorun.push((kesik?'KESILMIS ':'TASAN ')+kisa(e)+' ['+e.scrollWidth+'>'+e.clientWidth+']');}});
+  // 3) yan yana kardeş kutuların çakışması
+  els.forEach(p=>{const cs=w.getComputedStyle(p);if(!/flex|grid/.test(cs.display))return;const ch=[...p.children].filter(gorunur).filter(c=>w.getComputedStyle(c).position!=='absolute');
+    for(let i=0;i<ch.length;i++)for(let j=i+1;j<ch.length;j++){const a=ch[i].getBoundingClientRect(),b=ch[j].getBoundingClientRect();
+      const ox=Math.min(a.right,b.right)-Math.max(a.left,b.left),oy=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);
+      if(ox>1&&oy>1&&!ch[j].classList.contains('wnav'))sorun.push('CAKISMA '+kisa(ch[i])+' <> '+kisa(ch[j]));}});
+  // 4) yazı ile kutu: metin içeren öğe ebeveyninin dışına taşıyor mu
+  els.forEach(e=>{if(!e.textContent.trim()||e.children.length)return;const p=e.parentElement;if(!p)return;const pc=w.getComputedStyle(p);if(pc.overflow!=='visible')return;
+    const a=e.getBoundingClientRect(),b=p.getBoundingClientRect();if(a.right>b.right+2||a.left<b.left-2)sorun.push('KUTU DISI '+kisa(e)+' in '+kisa(p));});
+  const tek=[...new Set(sorun)];L(etiket+': '+(tek.length?tek.length+' sorun\n   '+tek.slice(0,12).join('\n   '):'temiz'));
+}
+function bekle(ms){return new Promise(r=>setTimeout(r,ms));}
+async function cerceve(gen){
+  const f=document.createElement('iframe');f.style.cssText='width:'+gen+'px;height:900px;border:0;display:block';document.getElementById('kap').appendChild(f);
+  f.src=U;await bekle(900);const w=f.contentWindow,d=w.document;return {f,w,d};
+}
+(async()=>{try{
+  // kurulumu bir kez tamamla (localStorage paylaşılır)
+  let {w,d}=await cerceve(375);const q=s=>d.querySelector('#kurulum '+s),nx=()=>q('[data-wileri]').click();
+  // Sihirbaz: her dilde tüm adımlar, telefon genişliğinde
+  for(const dl of DIL){w.eval("W={...kopya(D.profil),dil:'"+dl+"',ad:'Maximilian-Alexander',cins:'k',hedef:'ver',odaklar:['seker','tansiyon','kolesterol'],haric:['m'],kilo:88,hedefKilo:80,yas:30,boy:175}");
+    const adimlar=w.eval('wAdimlar()');for(let i=0;i<adimlar.length;i++){w.eval('wAdim='+i+';wHata="";wCiz()');denetle(w,d.getElementById('kurulum'),'375 sihirbaz '+dl+' '+adimlar[i]);}}
+  w.eval("wAdim=wAdimlar().length-1;wCiz()");nx();await bekle(200);
+  for(const gen of GEN){
+    if(gen!==375){({w,d}=await cerceve(gen));}
+    else {({w,d}={w,d});}
+    if(gen!==375)for(const dl of DIL){w.eval("sihirbazAc(0);W={...W,dil:'"+dl+"',ad:'Maximilian-Alexander',cins:'k',hedef:'ver',odaklar:['seker','tansiyon','kolesterol']}");
+      const ad2=w.eval('wAdimlar()');for(let i=0;i<ad2.length;i++){w.eval('wAdim='+i+';wCiz()');denetle(w,d.getElementById('kurulum'),gen+' sihirbaz '+dl+' '+ad2[i]);}w.eval('sihirbazKapat()');}
+    // log ve geçmiş verisi üret
+    w.eval("for(let i=0;i<3;i++){yedimDegis(i);} suDegis(5); miktarAdim(0,0,1); aktif=gunEkle(bugunK(),-1); ogeEkle(1,'levrek',200); yedimDegis(1); aktif=bugunK(); ciz()");
+    for(const dl of DIL){
+      w.eval("D.ayar.dil='"+dl+"';ciz()");
+      denetle(w,d.querySelector('.wrap'),gen+' ana '+dl);
+      // geçmiş gün görünümü
+      w.eval("aktif=gunEkle(bugunK(),-1);detayAcik=true;ciz()");denetle(w,d.querySelector('.wrap'),gen+' gecmis-detay '+dl);w.eval("aktif=bugunK();detayAcik=false;ciz()");
+      w.eval("secimAc({mod:'kiyas',oi:1,ii:0});SE.kat='__tumu';listeGorunumu()");denetle(w,d.getElementById('sheet'),gen+' kiyas-liste '+dl);w.eval('kapat()');
+      const pen=(ac,ad)=>{w.eval(ac);denetle(w,d.getElementById('sheet'),gen+' '+ad+' '+dl);w.eval('kapat()');};
+      pen('ayarlarAc()','ayarlar');pen('gecmisAc()','gecmis');pen('loglarAc()','loglar');
+      pen("secimAc({mod:'ekle',oi:0})",'yemek-ekle');
+      w.eval("secimAc({mod:'kiyas',oi:1,ii:0});SE.sec='levrek';SE.g=150;detayGorunumu()");denetle(w,d.getElementById('sheet'),gen+' kiyas '+dl);w.eval('kapat()');
+      w.eval("secimAc({mod:'ekle',oi:0});ozelYemekFormu()");denetle(w,d.getElementById('sheet'),gen+' ozel-yemek '+dl);w.eval('kapat()');
+    }
+  }
+}catch(e){L('HATA '+e.stack)}document.getElementById('o').textContent=out.join('\n');})();
+</script></body></html>

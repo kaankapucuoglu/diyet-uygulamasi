@@ -1,0 +1,20 @@
+<!DOCTYPE html><html><body style="margin:0"><div id="kap"></div><pre id="o"></pre><script>
+const U='../../index.html';localStorage.clear();
+const GEN=[375,600,768,1024,1280,1440,1700,1920],DIL=['tr','en','ru','de','ar'],out=[];
+const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+(async()=>{try{
+ const f0=document.createElement('iframe');f0.style.cssText='width:375px;height:700px';document.getElementById('kap').appendChild(f0);f0.src=U;await bekle(900);
+ const d0=f0.contentWindow.document,q=s=>d0.querySelector('#kurulum '+s),nx=()=>q('[data-wileri]').click();
+ nx();const n=q('#wAd');n.value='Kaan';n.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();nx();q('[data-whedef="kas"]').click();nx();nx();nx();nx();
+ for(const gen of GEN){const f=document.createElement('iframe');f.style.cssText='width:'+gen+'px;height:500px;border:0';document.getElementById('kap').appendChild(f);f.src=U;await bekle(700);
+  const w=f.contentWindow,d=w.document;
+  for(const dl of DIL){w.eval("D.ayar.dil='"+dl+"';ciz()");
+   const vw=d.documentElement.clientWidth,sol=d.dir==='rtl'?w.innerWidth-vw:0,s=[];
+   const kutular=[d.getElementById('baslik'),d.getElementById('dilBar'),d.querySelector('.top-btns')].map(e=>e.getBoundingClientRect());
+   for(let i=0;i<3;i++)for(let j=i+1;j<3;j++){const a=kutular[i],b=kutular[j];if(Math.min(a.right,b.right)-Math.max(a.left,b.left)>1&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>1)s.push('CAKISMA '+i+'-'+j);}
+   d.querySelectorAll('.top *').forEach(e=>{const r=e.getBoundingClientRect();if(r.width&&(r.right>sol+vw+1||r.left<sol-1))s.push('DISARI '+e.tagName+'.'+e.className);
+     if(!e.children.length&&e.scrollWidth>e.clientWidth+1&&e.clientWidth)s.push('TASAN '+e.tagName+' '+e.textContent.trim().slice(0,20));});
+   const tek=kutular[0].top<kutular[1].bottom&&kutular[1].top<kutular[0].bottom&&kutular[2].top<kutular[0].bottom;
+   out.push(gen+' '+dl+': '+(s.length?[...new Set(s)].join(', '):'temiz')+(tek?' · tek satır':' · satır kırıldı'));}
+ }}catch(e){out.push('HATA '+e.stack)}document.getElementById('o').textContent=out.join('\n');})();
+</script></body></html>

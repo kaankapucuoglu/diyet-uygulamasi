@@ -1,0 +1,15 @@
+<!DOCTYPE html><html><body><iframe id="f" style="width:390px;height:844px"></iframe><pre id="o"></pre><script>
+localStorage.clear();const f=document.getElementById('f');f.src='../../index.html';
+setTimeout(()=>{const w=f.contentWindow,d=w.document;let s='';try{
+const q=x=>d.querySelector('#kurulum '+x);q('[data-wileri]').click();const a=q('#wAd');a.value='Kaan';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();q('[data-wileri]').click();
+// klavye açık gibi: görünen alan 420 px
+Object.defineProperty(w,'visualViewport',{value:{height:420,width:390,offsetTop:0,addEventListener(){}},configurable:true});
+const k=q('#w_kilo');k.focus();w.gorunenAlan();
+const wiz=d.getElementById('kurulum').getBoundingClientRect(),nav=q('.wnav');
+s+='klavye sinifi='+d.body.classList.contains('klavye')+' · kurulum yuksekligi='+Math.round(wiz.height)+' · seritkonum='+w.getComputedStyle(nav).position;
+k.blur();Object.defineProperty(w,'visualViewport',{value:{height:844,width:390,offsetTop:0,addEventListener(){}},configurable:true});w.gorunenAlan();
+const iy=Object.getOwnPropertyDescriptor(w,'innerHeight');Object.defineProperty(w,'innerHeight',{value:420,configurable:true});Object.defineProperty(w,'visualViewport',{value:{height:420,width:390,offsetTop:0,addEventListener(){}},configurable:true});k.focus();w.gorunenAlan();s+=' || android: klavye='+d.body.classList.contains('klavye')+' serit='+w.getComputedStyle(nav).position;k.blur();Object.defineProperty(w,'innerHeight',{value:844,configurable:true});Object.defineProperty(w,'visualViewport',{value:{height:844,width:390,offsetTop:0,addEventListener(){}},configurable:true});w.gorunenAlan();
+s+=' || kapaninca: klavye='+d.body.classList.contains('klavye')+' · serit='+w.getComputedStyle(nav).position+' · yukseklik='+Math.round(d.getElementById('kurulum').getBoundingClientRect().height);
+Object.defineProperty(w,'innerHeight',{value:700,configurable:true});Object.defineProperty(w,'visualViewport',{value:{height:700,width:1024,offsetTop:0,addEventListener(){}},configurable:true});w.gorunenAlan();s+=' || tablet yatay klavyesiz: klavye='+d.body.classList.contains('klavye');
+}catch(e){s+='HATA '+e.stack}document.getElementById('o').textContent=s;},1500);
+</script></body></html>
