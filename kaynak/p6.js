@@ -139,8 +139,8 @@ window.addEventListener('resize', ustHizala);
 function gunleriCiz(){
   const bas = gunEkle(aktif, -haftaGunu(aktif)), son = gunEkle(bas, 6), bugun = bugunK();
   const kisa = k => tarihDen(k).toLocaleDateString(LOC(), {day:'numeric', month:'short'});
-  $('haftaNav').innerHTML = `<div class="lbl">${kisa(bas)} – ${kisa(son)}</div><span class="tag hafta-tag">${T('weekN', {n: haftaNo(aktif) + 1, t: D.planlar.length})}</span>
-    ${aktif !== bugun ? `<button class="today-btn" data-bugun="1">${T('today')}</button>` : ''}`;
+  $('haftaNav').innerHTML = `<button class="nav-btn hafta-ok" data-hafta="-7" aria-label="‹">‹</button><div class="lbl">${kisa(bas)} – ${kisa(son)}</div><span class="tag hafta-tag"><span class="uzun">${T('weekN', {n: haftaNo(aktif) + 1, t: D.planlar.length})}</span><span class="kisa">${T('weekS', {n: haftaNo(aktif) + 1, t: D.planlar.length})}</span></span>
+    ${aktif !== bugun ? `<button class="today-btn" data-bugun="1">${T('today')}</button>` : ''}<button class="nav-btn hafta-ok" data-hafta="7" aria-label="›">›</button>`;
   $('gunler').innerHTML = [0,1,2,3,4,5,6].map(i => {
     const k = gunEkle(bas, i);
     const cls = (k === aktif ? ' active' : '') + (k === bugun ? ' today' : '') + (k < bugun ? ' past' : '');

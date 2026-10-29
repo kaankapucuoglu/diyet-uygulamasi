@@ -288,13 +288,81 @@ async function paketKodla(P){
 }
 async function paketCoz(kod){
   const tur = kod[0], veri = b64oku(kod.slice(1));
-  const ham = tur === 'z' ? await akisla(veri, new DecompressionStream('deflate-raw')) : veri;
+  let ham = veri;
+  if (tur === 'z'){
+    ham = null;
+    if (window.DecompressionStream){ try { ham = await akisla(veri, new DecompressionStream('deflate-raw')); } catch(e){} }
+    if (!ham) ham = inflateRaw(veri);   // eski tarayıcı (iOS < 16.4, eski Samsung Internet)
+  }
   return JSON.parse(new TextDecoder().decode(ham));
+}
+// Saf JS deflate-raw çözücü (RFC 1951): DecompressionStream('deflate-raw') olmayan tarayıcılar için
+const L_TABAN = [3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258];
+const L_EK = [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0];
+const M_TABAN = [1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577];
+const M_EK = [0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
+function inflateRaw(src){
+  let pos = 0, bit = 0, cnt = 0, son = 0;
+  const out = [];
+  const bits = n => {
+    while (cnt < n){ if (pos >= src.length) throw new Error('eksik'); bit |= src[pos++] << cnt; cnt += 8; }
+    const v = bit & ((1 << n) - 1); bit >>>= n; cnt -= n; return v;
+  };
+  const tablo = uz => {
+    const sayi = new Uint16Array(16), sira = new Uint16Array(16), sym = new Uint16Array(uz.length);
+    uz.forEach(l => sayi[l]++); sayi[0] = 0;
+    for (let i = 1; i < 16; i++) sira[i] = sira[i - 1] + sayi[i - 1];
+    uz.forEach((l, i) => { if (l) sym[sira[l]++] = i; });
+    return {sayi, sym};
+  };
+  const coz = t => {
+    let top = 0, cur = 0, len = 0;
+    do { cur = 2 * cur + bits(1); len++; if (len > 15) throw new Error('kod'); top += t.sayi[len]; cur -= t.sayi[len]; } while (cur >= 0);
+    return t.sym[top + cur];
+  };
+  while (!son){
+    son = bits(1);
+    const tip = bits(2);
+    if (tip === 0){
+      bit = 0; cnt = 0;
+      const n = src[pos] | (src[pos + 1] << 8); pos += 4;
+      if (pos + n > src.length) throw new Error('eksik');
+      for (let i = 0; i < n; i++) out.push(src[pos++]);
+      continue;
+    }
+    let lt, mt;
+    if (tip === 1){
+      const uz = new Array(288).fill(8, 0, 144).fill(9, 144, 256).fill(7, 256, 280).fill(8, 280, 288);
+      lt = tablo(uz); mt = tablo(new Array(30).fill(5));
+    } else if (tip === 2){
+      const hlit = bits(5) + 257, hdist = bits(5) + 1, hclen = bits(4) + 4;
+      const SIRA = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15], kl = new Array(19).fill(0);
+      for (let i = 0; i < hclen; i++) kl[SIRA[i]] = bits(3);
+      const kt = tablo(kl), uz = [];
+      while (uz.length < hlit + hdist){
+        const s = coz(kt);
+        if (s < 16) uz.push(s);
+        else if (s === 16){ const p = uz[uz.length - 1]; for (let r = 3 + bits(2); r--;) uz.push(p); }
+        else if (s === 17){ for (let r = 3 + bits(3); r--;) uz.push(0); }
+        else { for (let r = 11 + bits(7); r--;) uz.push(0); }
+      }
+      lt = tablo(uz.slice(0, hlit)); mt = tablo(uz.slice(hlit, hlit + hdist));
+    } else throw new Error('tip');
+    for (;;){
+      const s = coz(lt);
+      if (s < 256){ out.push(s); continue; }
+      if (s === 256) break;
+      const i = s - 257, n = L_TABAN[i] + bits(L_EK[i]), di = coz(mt), m = M_TABAN[di] + bits(M_EK[di]);
+      if (m > out.length) throw new Error('mesafe');
+      for (let k = 0; k < n; k++) out.push(out[out.length - m]);
+    }
+  }
+  return new Uint8Array(out);
 }
 async function kocLinkOlustur(){
   const P = kocPaket();
   if (!P){ toast(T('kocEmpty')); return; }
-  const url = PAYLASIM_TABAN + '#p=' + await paketKodla(P);
+  const kod = await paketKodla(P), url = PAYLASIM_TABAN + '#p=' + kod + '&n=' + kod.length;
   const ad = P.a || '—';
   const mesaj = T('kocShareMsg', {a: ad, u: url});
   $('kocLink').innerHTML = `<div class="card link-kart"><div class="wmsg info" style="margin-top:0">${esc(T('kocLinkReady'))}</div>
@@ -387,9 +455,10 @@ function programSor(P){
     <div class="hint">${esc(T('impInfo', {d: gunSay, m: ogunSay}))}</div>
     ${D.ayar.kurulum ? '' : `<div class="wmsg info">${esc(T('impSetup'))}</div>`}
     <div class="acts"><button class="btn ghost" id="impHayir">${T('impNo')}</button><button class="btn green" id="impEvet">${T('impYes')}</button></div>`);
-  $('impHayir').onclick = () => { kapat(); toast(T('impNot')); };
+  const linkTemizle = () => { if (/^#p=/.test(location.hash)) try { history.replaceState(null, '', location.pathname + location.search); } catch(e){} };
+  $('impHayir').onclick = () => { linkTemizle(); kapat(); toast(T('impNot')); };
   $('impEvet').onclick = () => {
-    kapat();
+    linkTemizle(); kapat();
     if (D.ayar.kurulum) programUygula(P);
     else { try { localStorage.setItem(BEKLEYEN, JSON.stringify(P)); } catch(e){} programBekleyen = P; toast(T('impSetup')); }
   };
@@ -404,11 +473,11 @@ function bekleyenProgramYukle(){
   if (P) programUygula(P);
 }
 async function programLinkiAc(metin){
-  const m = String(metin || '').match(/#p=([A-Za-z0-9_-]+)/);
+  const m = String(metin || '').match(/#p=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
   if (!m) return false;
   let P = null;
-  try { P = programDogrula(await paketCoz(m[1])); } catch(e){}
-  if (!P){ toast(T('impBad')); return true; }
+  if (!m[2] || +m[2] === m[1].length){ try { P = programDogrula(await paketCoz(m[1])); } catch(e){} }
+  if (!P){ ac(T('confirmT'), `<p class="onay-metin">${esc(T('impBad'))}</p><div class="hint">${esc(T('impPasteHint'))}</div><div class="acts"><button class="btn green" data-kapat="1">${T('tamam')}</button></div>`); $('sbody').querySelector('[data-kapat]').onclick = kapat; return true; }
   if (!D.ayar.kurulum && P.l && $('kurulum') && !$('kurulum').hidden && W){ W.dil = P.l; wCiz(); }
   programSor(P);
   return true;
@@ -416,9 +485,7 @@ async function programLinkiAc(metin){
 // Açılışta adres çubuğundaki program linki (# kısmı sunucuya gitmez)
 function adresProgramKontrol(){
   if (!/^#p=/.test(location.hash)) return;
-  const h = location.hash;
-  try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
-  programLinkiAc(h);
+  programLinkiAc(location.hash);
 }
 window.addEventListener('hashchange', adresProgramKontrol);
 

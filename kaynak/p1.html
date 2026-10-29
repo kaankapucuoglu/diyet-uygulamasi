@@ -64,7 +64,8 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 
 /* Hafta ve gün seçimi */
 .weeknav{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;min-height:30px}
-.weeknav .lbl{text-align:center;font-weight:700;font-size:14px}
+.weeknav .lbl{text-align:center;font-weight:700;font-size:14px;white-space:nowrap}
+.weeknav .hafta-tag{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gunsatir{display:flex;align-items:stretch;gap:6px;margin-bottom:10px}
 .tarih-blok{margin:6px 0 4px}
 .gunsatir .days{flex:1;min-width:0;margin:0}
@@ -75,7 +76,9 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .today-btn{font-size:12.5px;font-weight:700;color:var(--blue);background:var(--blue-soft);padding:5px 10px;border-radius:9px}
 .days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:16px}
 .day{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 2px 6px;text-align:center;min-width:0}
-.day b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.weeknav .hafta-ok{display:none}
+.hafta-tag .kisa{display:none}
 .day span{display:block;font-size:11px;color:var(--muted)}
 .day i{display:block;width:6px;height:6px;border-radius:50%;margin:3px auto 0;background:transparent}
 .day i.on{background:var(--green)}
@@ -136,6 +139,7 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .glass.ekstra{border-color:#9fdcc1}
 .glass.ekstra::after{background:linear-gradient(#5fd3a0,var(--green))}
 .water-btns{display:flex;gap:8px}
+.water-btns .btn{white-space:nowrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:5px 14px;border-radius:11px;text-align:center;line-height:1.25;
   font-weight:600;font-size:14px;background:var(--blue-soft);color:var(--blue)}
 .btn.solid{background:var(--blue);color:#fff}
@@ -161,8 +165,10 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .stat.tamam b{color:var(--green)}
 .stat.water{background:var(--blue-soft);border-color:#d3e1fd}
 .stat.hl{background:var(--green-soft);border-color:#bfe8d4}
-.stat-acts{display:flex;align-items:center;gap:6px;margin-top:6px}
-.stat-acts button{width:32px;height:30px;border-radius:8px;background:#fff;border:1px solid #d3e1fd;font-weight:800;color:var(--blue)}
+.stat-acts{display:flex;align-items:center;gap:4px;margin-top:6px}
+.stat-acts span{flex:1;min-width:0;text-align:center;white-space:nowrap;font-size:12.5px}
+.stat-acts button{flex:none}
+.stat-acts button{width:28px;height:30px;border-radius:8px;background:#fff;border:1px solid #d3e1fd;font-weight:800;color:var(--blue)}
 .eaten-list{font-size:13.5px;color:#40506a;margin-top:12px;line-height:1.6}
 .eaten-list b{color:var(--text)}
 
@@ -177,6 +183,16 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .meal-title{flex:1;min-width:0}
 .meal-title b{display:block;font-size:16px;overflow-wrap:anywhere}
 .meal-title span{font-size:13px;color:var(--muted)}
+/* Telefonda öğün başlığı: ad + düğmeler üst satırda yan yana, saat/kalori satırı altta tam genişlikte */
+@media (max-width:600px){
+  .meal-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;column-gap:8px;row-gap:2px;padding:12px 14px}
+  .meal-title{display:contents}
+  .meal-ico{grid-row:1/span 2;align-self:start;width:34px;height:34px;font-size:17px}
+  .meal-title b{grid-column:2;grid-row:1;align-self:center}
+  .meal-title span{grid-column:2/-1;grid-row:2}
+  .meal-head .eat-btn{grid-column:3;grid-row:1}
+  .meal-head .tog-btn{grid-column:4;grid-row:1}
+}
 .eat-btn{min-height:38px;padding:0 12px;border-radius:10px;font-weight:700;font-size:13px;background:#f1f4f9;color:var(--muted);flex-shrink:0;white-space:nowrap}
 .meal.eaten .eat-btn{background:var(--green);color:#fff}
 .items{list-style:none}
@@ -201,6 +217,7 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .mini{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:34px;font-size:12.5px;font-weight:600;padding:0 9px;border-radius:8px;background:#f1f4f9;color:#40506a;white-space:nowrap}
 .mini .mi{font-size:14px;line-height:1}
 /* Kart daralınca (telefon, yakınlaştırma) düğmeler yalnız simge: miktar ve düğmeler aynı satırda kalır */
+@container (max-width: 340px){ .item-ctl{gap:6px} .item-ctl .gram{gap:3px} .item-ctl .gram .adim,.item-acts .mini{width:32px;min-width:32px;height:34px} .item-ctl .gram .val{height:34px} .item-ctl .gram input{min-width:24px} .gram span{padding-inline:2px 5px} .item-acts{gap:4px} }
 @container (max-width: 420px){ .item-acts .mini .lbl{display:none} .item-acts .mini{min-width:36px;padding:0} .item-ctl{flex-wrap:nowrap} .item-ctl .gram{flex:1.4 1 0;max-width:none} .item-acts{flex:1 1 0} }
 .mini.cmp{background:var(--blue-soft);color:var(--blue)}
 .mini.del{background:var(--red-soft);color:var(--red)}
@@ -448,7 +465,7 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 .koc-nav{flex-wrap:wrap;position:static;box-shadow:none}
 @media (max-width:600px){ .koc-nav .btn.green{flex:1 1 100%;order:-1} }
 @media (max-width:600px){ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px} .macros .macro.l{grid-column:1/-1} .water-card{padding:12px 14px} .water-card h3{margin-bottom:4px} .water-head b{font-size:22px} .water-btns .btn{min-height:40px} }
-@media (max-width:600px){ .gunsatir{gap:4px} .gunsatir .nav-btn{width:28px;font-size:16px} .gunsatir .days{gap:4px} }
+@media (max-width:600px){ .gunsatir .nav-btn{display:none} .gunsatir .days{gap:4px} .weeknav{gap:8px} .weeknav .hafta-ok{display:block;width:34px;height:30px;font-size:16px} .hafta-tag .uzun{display:none} .hafta-tag .kisa{display:inline} .stat-acts button{width:28px} .day{padding:7px 0 5px} .day b{font-size:13.5px;letter-spacing:-.01em} .water-btns .btn{font-size:13.5px;padding:5px 10px} }
 @media (max-width:360px){ .days{gap:4px} .day{padding:7px 0 5px} .macros{gap:6px} .crow{font-size:13px} }
 </style>
 </head>

@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><iframe id="f" src="../../index.html" style="width:390px;height:844px"></iframe><script>
+// inflateRaw (saf JS) = DecompressionStream sonucu mu? + &n= uzunluk kontrolü + link adresten cevapta silinir
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);
+setTimeout(async()=>{const w=f.contentWindow;
+try{
+  const ornek=[JSON.stringify(w.eval('D.planlar')), 'a', '', 'ğüşıöç İ — '.repeat(500), JSON.stringify(w.eval('D.profil'))];
+  let rnd='';for(let i=0;i<20000;i++)rnd+=String.fromCharCode(32+Math.floor(Math.random()*90));ornek.push(rnd);
+  for(const s of ornek){const ham=new TextEncoder().encode(s);const z=await w.akisla(ham,new CompressionStream('deflate-raw'));
+    const a=w.inflateRaw(z);L('uzunluk '+ham.length+' -> '+z.length+' esit '+(a.length===ham.length&&a.every((b,i)=>b===ham[i])));}
+  // DecompressionStream yokmuş gibi: paketCoz yine çözmeli
+  const kod=await w.paketKodla({v:1,x:'deneme ğüş'});const DS=w.DecompressionStream;w.DecompressionStream=undefined;
+  L('DS yok cozum: '+JSON.stringify(await w.paketCoz(kod)));w.DecompressionStream=DS;
+  w.eval("D.koc=kocBos();D.koc.a='Test';D.koc.gun[0]={kahvalti:[{f:'yumurta',g:2}]};kocAc()");await w.kocLinkOlustur();
+  const link=w.document.querySelector('#kocLink input, #kocLink textarea')?.value||w.document.getElementById('kocLink').innerText;
+  L('link sonu: '+(link.match(/&n=\d+/)||['YOK'])[0]);
+  const u=link.match(/#p=\S+/)[0];w.eval("$('koc').hidden=true");
+  const kk=u.match(/#p=([^&]+)/)[1];await w.programLinkiAc('#p='+kk.slice(0,-5)+'&n='+kk.length);L('eksik link: '+w.document.querySelector('#sbody .onay-metin').textContent);w.eval('kapat()');
+  w.location.hash=u.replace('#','');await new Promise(r=>setTimeout(r,1500));
+  L('soru: '+!!w.document.getElementById('impEvet')+' · hash duruyor '+/^#p=/.test(w.location.hash));
+  w.document.getElementById('impHayir').click();L('hayir sonrasi hash: "'+w.location.hash+'"');
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_inf',{method:'POST',body:out.join('\n')});},2500);
+</script></body></html>

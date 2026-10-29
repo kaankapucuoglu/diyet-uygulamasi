@@ -64,7 +64,8 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 
 /* Hafta ve gün seçimi */
 .weeknav{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;min-height:30px}
-.weeknav .lbl{text-align:center;font-weight:700;font-size:14px}
+.weeknav .lbl{text-align:center;font-weight:700;font-size:14px;white-space:nowrap}
+.weeknav .hafta-tag{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gunsatir{display:flex;align-items:stretch;gap:6px;margin-bottom:10px}
 .tarih-blok{margin:6px 0 4px}
 .gunsatir .days{flex:1;min-width:0;margin:0}
@@ -75,7 +76,9 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .today-btn{font-size:12.5px;font-weight:700;color:var(--blue);background:var(--blue-soft);padding:5px 10px;border-radius:9px}
 .days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:16px}
 .day{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 2px 6px;text-align:center;min-width:0}
-.day b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.weeknav .hafta-ok{display:none}
+.hafta-tag .kisa{display:none}
 .day span{display:block;font-size:11px;color:var(--muted)}
 .day i{display:block;width:6px;height:6px;border-radius:50%;margin:3px auto 0;background:transparent}
 .day i.on{background:var(--green)}
@@ -136,6 +139,7 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .glass.ekstra{border-color:#9fdcc1}
 .glass.ekstra::after{background:linear-gradient(#5fd3a0,var(--green))}
 .water-btns{display:flex;gap:8px}
+.water-btns .btn{white-space:nowrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:5px 14px;border-radius:11px;text-align:center;line-height:1.25;
   font-weight:600;font-size:14px;background:var(--blue-soft);color:var(--blue)}
 .btn.solid{background:var(--blue);color:#fff}
@@ -161,8 +165,10 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .stat.tamam b{color:var(--green)}
 .stat.water{background:var(--blue-soft);border-color:#d3e1fd}
 .stat.hl{background:var(--green-soft);border-color:#bfe8d4}
-.stat-acts{display:flex;align-items:center;gap:6px;margin-top:6px}
-.stat-acts button{width:32px;height:30px;border-radius:8px;background:#fff;border:1px solid #d3e1fd;font-weight:800;color:var(--blue)}
+.stat-acts{display:flex;align-items:center;gap:4px;margin-top:6px}
+.stat-acts span{flex:1;min-width:0;text-align:center;white-space:nowrap;font-size:12.5px}
+.stat-acts button{flex:none}
+.stat-acts button{width:28px;height:30px;border-radius:8px;background:#fff;border:1px solid #d3e1fd;font-weight:800;color:var(--blue)}
 .eaten-list{font-size:13.5px;color:#40506a;margin-top:12px;line-height:1.6}
 .eaten-list b{color:var(--text)}
 
@@ -177,6 +183,16 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .meal-title{flex:1;min-width:0}
 .meal-title b{display:block;font-size:16px;overflow-wrap:anywhere}
 .meal-title span{font-size:13px;color:var(--muted)}
+/* Telefonda öğün başlığı: ad + düğmeler üst satırda yan yana, saat/kalori satırı altta tam genişlikte */
+@media (max-width:600px){
+  .meal-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;column-gap:8px;row-gap:2px;padding:12px 14px}
+  .meal-title{display:contents}
+  .meal-ico{grid-row:1/span 2;align-self:start;width:34px;height:34px;font-size:17px}
+  .meal-title b{grid-column:2;grid-row:1;align-self:center}
+  .meal-title span{grid-column:2/-1;grid-row:2}
+  .meal-head .eat-btn{grid-column:3;grid-row:1}
+  .meal-head .tog-btn{grid-column:4;grid-row:1}
+}
 .eat-btn{min-height:38px;padding:0 12px;border-radius:10px;font-weight:700;font-size:13px;background:#f1f4f9;color:var(--muted);flex-shrink:0;white-space:nowrap}
 .meal.eaten .eat-btn{background:var(--green);color:#fff}
 .items{list-style:none}
@@ -201,6 +217,7 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .mini{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:34px;font-size:12.5px;font-weight:600;padding:0 9px;border-radius:8px;background:#f1f4f9;color:#40506a;white-space:nowrap}
 .mini .mi{font-size:14px;line-height:1}
 /* Kart daralınca (telefon, yakınlaştırma) düğmeler yalnız simge: miktar ve düğmeler aynı satırda kalır */
+@container (max-width: 340px){ .item-ctl{gap:6px} .item-ctl .gram{gap:3px} .item-ctl .gram .adim,.item-acts .mini{width:32px;min-width:32px;height:34px} .item-ctl .gram .val{height:34px} .item-ctl .gram input{min-width:24px} .gram span{padding-inline:2px 5px} .item-acts{gap:4px} }
 @container (max-width: 420px){ .item-acts .mini .lbl{display:none} .item-acts .mini{min-width:36px;padding:0} .item-ctl{flex-wrap:nowrap} .item-ctl .gram{flex:1.4 1 0;max-width:none} .item-acts{flex:1 1 0} }
 .mini.cmp{background:var(--blue-soft);color:var(--blue)}
 .mini.del{background:var(--red-soft);color:var(--red)}
@@ -448,7 +465,7 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 .koc-nav{flex-wrap:wrap;position:static;box-shadow:none}
 @media (max-width:600px){ .koc-nav .btn.green{flex:1 1 100%;order:-1} }
 @media (max-width:600px){ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px} .macros .macro.l{grid-column:1/-1} .water-card{padding:12px 14px} .water-card h3{margin-bottom:4px} .water-head b{font-size:22px} .water-btns .btn{min-height:40px} }
-@media (max-width:600px){ .gunsatir{gap:4px} .gunsatir .nav-btn{width:28px;font-size:16px} .gunsatir .days{gap:4px} }
+@media (max-width:600px){ .gunsatir .nav-btn{display:none} .gunsatir .days{gap:4px} .weeknav{gap:8px} .weeknav .hafta-ok{display:block;width:34px;height:30px;font-size:16px} .hafta-tag .uzun{display:none} .hafta-tag .kisa{display:inline} .stat-acts button{width:28px} .day{padding:7px 0 5px} .day b{font-size:13.5px;letter-spacing:-.01em} .water-btns .btn{font-size:13.5px;padding:5px 10px} }
 @media (max-width:360px){ .days{gap:4px} .day{padding:7px 0 5px} .macros{gap:6px} .crow{font-size:13px} }
 </style>
 </head>
@@ -991,6 +1008,8 @@ Object.assign(S, {
   instIos:["Safari’de alttaki Paylaş düğmesine (□↑) dokun|Listeyi kaydırıp “Ana Ekrana Ekle”yi seç|Sağ üstte “Ekle”ye dokun. Simge ana ekrana gelir, internetsiz de açılır.","Tap the Share button (□↑) in Safari|Scroll and choose “Add to Home Screen”|Tap “Add”. The icon appears on your home screen and works offline.","Нажмите «Поделиться» (□↑) в Safari|Выберите «На экран “Домой”»|Нажмите «Добавить». Значок появится на экране и будет работать без интернета.","Tippe in Safari auf Teilen (□↑)|Wähle „Zum Home-Bildschirm“|Tippe auf „Hinzufügen“. Das Symbol erscheint und funktioniert offline.","اضغط زر المشاركة (□↑) في سفاري|اختر «إضافة إلى الشاشة الرئيسية»|اضغط «إضافة». ستظهر الأيقونة وتعمل دون إنترنت."],
   instAndroid:["Chrome’da sağ üstteki ⋮ menüsüne dokun|“Uygulamayı yükle” ya da “Ana ekrana ekle”yi seç|“Yükle”ye dokun. Simge ana ekrana gelir, internetsiz de açılır.","Tap the ⋮ menu in Chrome|Choose “Install app” or “Add to Home screen”|Tap “Install”. The icon appears and works offline.","Откройте меню ⋮ в Chrome|Выберите «Установить приложение» или «Добавить на гл. экран»|Нажмите «Установить». Значок появится и будет работать офлайн.","Tippe in Chrome auf ⋮|Wähle „App installieren“ oder „Zum Startbildschirm“|Tippe auf „Installieren“. Das Symbol erscheint und funktioniert offline.","اضغط قائمة ⋮ في كروم|اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»|اضغط «تثبيت». تظهر الأيقونة وتعمل دون إنترنت."],
   instLater:["Daha sonra","Later","Позже","Später","لاحقاً"],
+  tamam:["Tamam","OK","ОК","OK","حسناً"],
+  weekS:["{n}/{t}. hafta","Week {n}/{t}","Нед. {n}/{t}","Woche {n}/{t}","الأسبوع {n}/{t}"],
   sMore:["Diğer","More","Прочее","Weiteres","المزيد"],
   instNow:["Şimdi yükle","Install now","Установить","Jetzt installieren","ثبّت الآن"]
 });
@@ -2069,8 +2088,8 @@ window.addEventListener('resize', ustHizala);
 function gunleriCiz(){
   const bas = gunEkle(aktif, -haftaGunu(aktif)), son = gunEkle(bas, 6), bugun = bugunK();
   const kisa = k => tarihDen(k).toLocaleDateString(LOC(), {day:'numeric', month:'short'});
-  $('haftaNav').innerHTML = `<div class="lbl">${kisa(bas)} – ${kisa(son)}</div><span class="tag hafta-tag">${T('weekN', {n: haftaNo(aktif) + 1, t: D.planlar.length})}</span>
-    ${aktif !== bugun ? `<button class="today-btn" data-bugun="1">${T('today')}</button>` : ''}`;
+  $('haftaNav').innerHTML = `<button class="nav-btn hafta-ok" data-hafta="-7" aria-label="‹">‹</button><div class="lbl">${kisa(bas)} – ${kisa(son)}</div><span class="tag hafta-tag"><span class="uzun">${T('weekN', {n: haftaNo(aktif) + 1, t: D.planlar.length})}</span><span class="kisa">${T('weekS', {n: haftaNo(aktif) + 1, t: D.planlar.length})}</span></span>
+    ${aktif !== bugun ? `<button class="today-btn" data-bugun="1">${T('today')}</button>` : ''}<button class="nav-btn hafta-ok" data-hafta="7" aria-label="›">›</button>`;
   $('gunler').innerHTML = [0,1,2,3,4,5,6].map(i => {
     const k = gunEkle(bas, i);
     const cls = (k === aktif ? ' active' : '') + (k === bugun ? ' today' : '') + (k < bugun ? ' past' : '');
@@ -2995,13 +3014,81 @@ async function paketKodla(P){
 }
 async function paketCoz(kod){
   const tur = kod[0], veri = b64oku(kod.slice(1));
-  const ham = tur === 'z' ? await akisla(veri, new DecompressionStream('deflate-raw')) : veri;
+  let ham = veri;
+  if (tur === 'z'){
+    ham = null;
+    if (window.DecompressionStream){ try { ham = await akisla(veri, new DecompressionStream('deflate-raw')); } catch(e){} }
+    if (!ham) ham = inflateRaw(veri);   // eski tarayıcı (iOS < 16.4, eski Samsung Internet)
+  }
   return JSON.parse(new TextDecoder().decode(ham));
+}
+// Saf JS deflate-raw çözücü (RFC 1951): DecompressionStream('deflate-raw') olmayan tarayıcılar için
+const L_TABAN = [3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258];
+const L_EK = [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0];
+const M_TABAN = [1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577];
+const M_EK = [0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
+function inflateRaw(src){
+  let pos = 0, bit = 0, cnt = 0, son = 0;
+  const out = [];
+  const bits = n => {
+    while (cnt < n){ if (pos >= src.length) throw new Error('eksik'); bit |= src[pos++] << cnt; cnt += 8; }
+    const v = bit & ((1 << n) - 1); bit >>>= n; cnt -= n; return v;
+  };
+  const tablo = uz => {
+    const sayi = new Uint16Array(16), sira = new Uint16Array(16), sym = new Uint16Array(uz.length);
+    uz.forEach(l => sayi[l]++); sayi[0] = 0;
+    for (let i = 1; i < 16; i++) sira[i] = sira[i - 1] + sayi[i - 1];
+    uz.forEach((l, i) => { if (l) sym[sira[l]++] = i; });
+    return {sayi, sym};
+  };
+  const coz = t => {
+    let top = 0, cur = 0, len = 0;
+    do { cur = 2 * cur + bits(1); len++; if (len > 15) throw new Error('kod'); top += t.sayi[len]; cur -= t.sayi[len]; } while (cur >= 0);
+    return t.sym[top + cur];
+  };
+  while (!son){
+    son = bits(1);
+    const tip = bits(2);
+    if (tip === 0){
+      bit = 0; cnt = 0;
+      const n = src[pos] | (src[pos + 1] << 8); pos += 4;
+      if (pos + n > src.length) throw new Error('eksik');
+      for (let i = 0; i < n; i++) out.push(src[pos++]);
+      continue;
+    }
+    let lt, mt;
+    if (tip === 1){
+      const uz = new Array(288).fill(8, 0, 144).fill(9, 144, 256).fill(7, 256, 280).fill(8, 280, 288);
+      lt = tablo(uz); mt = tablo(new Array(30).fill(5));
+    } else if (tip === 2){
+      const hlit = bits(5) + 257, hdist = bits(5) + 1, hclen = bits(4) + 4;
+      const SIRA = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15], kl = new Array(19).fill(0);
+      for (let i = 0; i < hclen; i++) kl[SIRA[i]] = bits(3);
+      const kt = tablo(kl), uz = [];
+      while (uz.length < hlit + hdist){
+        const s = coz(kt);
+        if (s < 16) uz.push(s);
+        else if (s === 16){ const p = uz[uz.length - 1]; for (let r = 3 + bits(2); r--;) uz.push(p); }
+        else if (s === 17){ for (let r = 3 + bits(3); r--;) uz.push(0); }
+        else { for (let r = 11 + bits(7); r--;) uz.push(0); }
+      }
+      lt = tablo(uz.slice(0, hlit)); mt = tablo(uz.slice(hlit, hlit + hdist));
+    } else throw new Error('tip');
+    for (;;){
+      const s = coz(lt);
+      if (s < 256){ out.push(s); continue; }
+      if (s === 256) break;
+      const i = s - 257, n = L_TABAN[i] + bits(L_EK[i]), di = coz(mt), m = M_TABAN[di] + bits(M_EK[di]);
+      if (m > out.length) throw new Error('mesafe');
+      for (let k = 0; k < n; k++) out.push(out[out.length - m]);
+    }
+  }
+  return new Uint8Array(out);
 }
 async function kocLinkOlustur(){
   const P = kocPaket();
   if (!P){ toast(T('kocEmpty')); return; }
-  const url = PAYLASIM_TABAN + '#p=' + await paketKodla(P);
+  const kod = await paketKodla(P), url = PAYLASIM_TABAN + '#p=' + kod + '&n=' + kod.length;
   const ad = P.a || '—';
   const mesaj = T('kocShareMsg', {a: ad, u: url});
   $('kocLink').innerHTML = `<div class="card link-kart"><div class="wmsg info" style="margin-top:0">${esc(T('kocLinkReady'))}</div>
@@ -3094,9 +3181,10 @@ function programSor(P){
     <div class="hint">${esc(T('impInfo', {d: gunSay, m: ogunSay}))}</div>
     ${D.ayar.kurulum ? '' : `<div class="wmsg info">${esc(T('impSetup'))}</div>`}
     <div class="acts"><button class="btn ghost" id="impHayir">${T('impNo')}</button><button class="btn green" id="impEvet">${T('impYes')}</button></div>`);
-  $('impHayir').onclick = () => { kapat(); toast(T('impNot')); };
+  const linkTemizle = () => { if (/^#p=/.test(location.hash)) try { history.replaceState(null, '', location.pathname + location.search); } catch(e){} };
+  $('impHayir').onclick = () => { linkTemizle(); kapat(); toast(T('impNot')); };
   $('impEvet').onclick = () => {
-    kapat();
+    linkTemizle(); kapat();
     if (D.ayar.kurulum) programUygula(P);
     else { try { localStorage.setItem(BEKLEYEN, JSON.stringify(P)); } catch(e){} programBekleyen = P; toast(T('impSetup')); }
   };
@@ -3111,11 +3199,11 @@ function bekleyenProgramYukle(){
   if (P) programUygula(P);
 }
 async function programLinkiAc(metin){
-  const m = String(metin || '').match(/#p=([A-Za-z0-9_-]+)/);
+  const m = String(metin || '').match(/#p=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
   if (!m) return false;
   let P = null;
-  try { P = programDogrula(await paketCoz(m[1])); } catch(e){}
-  if (!P){ toast(T('impBad')); return true; }
+  if (!m[2] || +m[2] === m[1].length){ try { P = programDogrula(await paketCoz(m[1])); } catch(e){} }
+  if (!P){ ac(T('confirmT'), `<p class="onay-metin">${esc(T('impBad'))}</p><div class="hint">${esc(T('impPasteHint'))}</div><div class="acts"><button class="btn green" data-kapat="1">${T('tamam')}</button></div>`); $('sbody').querySelector('[data-kapat]').onclick = kapat; return true; }
   if (!D.ayar.kurulum && P.l && $('kurulum') && !$('kurulum').hidden && W){ W.dil = P.l; wCiz(); }
   programSor(P);
   return true;
@@ -3123,9 +3211,7 @@ async function programLinkiAc(metin){
 // Açılışta adres çubuğundaki program linki (# kısmı sunucuya gitmez)
 function adresProgramKontrol(){
   if (!/^#p=/.test(location.hash)) return;
-  const h = location.hash;
-  try { history.replaceState(null, '', location.pathname + location.search); } catch(e){}
-  programLinkiAc(h);
+  programLinkiAc(location.hash);
 }
 window.addEventListener('hashchange', adresProgramKontrol);
 
