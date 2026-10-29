@@ -17,7 +17,7 @@ try{
   w.eval(`aktif=gunEkle('${pzt}',7);ciz()`);L('gelecek pazartesi kart: '+!!d.querySelector('.tarti-kart'));
   w.eval(`aktif=bugunK();ciz()`);
   // Ayarlar: üst 3 düğme, dil değişince kaydırma korunur
-  w.eval('ayarlarAc()');L('ayar ust: '+[...d.querySelectorAll('.ayar-ust .btn')].map(b=>b.textContent.trim()).join(' | ')+' · program hazirla dugmesi '+!!d.getElementById('kocAcBtn'));
+  d.getElementById('ayarBtn').click();L('ayar dugmesiyle acilinca dil listesi gizli: '+d.getElementById('dilListe').hidden);d.getElementById('dilAc').click();L('dil dugmesi -> acik: '+!d.getElementById('dilListe').hidden);d.getElementById('dilAc').click();L('tekrar -> gizli: '+d.getElementById('dilListe').hidden);L('ayar ust: '+[...d.querySelectorAll('.ayar-ust .btn')].map(b=>b.textContent.trim()).join(' | ')+' · program hazirla dugmesi '+!!d.getElementById('kocAcBtn'));
   L('hedef alanlari: '+[...d.querySelectorAll('#sbody .grid3 .field span')].map(s=>s.textContent).join(', '));
   d.getElementById('dilAc').click();d.getElementById('sbody').scrollTop=0;d.getElementById('sbody').scrollTop=40;const y0=d.getElementById('sbody').scrollTop;
   d.querySelector('#dilListe [data-dil="en"]').click();L('dil en: scroll '+y0+' -> '+d.getElementById('sbody').scrollTop+' · liste acik '+!d.getElementById('dilListe').hidden+' · '+d.querySelector('.sheet-head h2').textContent);

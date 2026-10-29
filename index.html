@@ -2381,7 +2381,7 @@ document.querySelector('.wrap').addEventListener('change', e => {
 });
 $('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') kapat(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
-$('ayarBtn').addEventListener('click', ayarlarAc);
+$('ayarBtn').addEventListener('click', () => ayarlarAc());
 $('uyariBtn').addEventListener('click', uyarilarAc);
 $('hamileBtn').addEventListener('click', hamileDegistir);
 $('kocBtn').addEventListener('click', kocAc);
@@ -2621,7 +2621,8 @@ function dilListesi(sec){
 }
 
 // ---------- Ayarlar ve yedek ----------
-function ayarlarAc(dilAcik){
+function ayarlarAc(dilAcik = false){
+  dilAcik = dilAcik === true;
   const P = D.profil, h = P.hedef ? hedefHesapla(P) : null;
   const alan = k => `<label class="field"><span>${T(HEDEF_ETIKET[k])}</span><input autocomplete="off" autocorrect="off" spellcheck="false" id="p_${k}" type="number" inputmode="numeric" value="${P[k]}"></label>`;
   ac(T('setTitle'), `
