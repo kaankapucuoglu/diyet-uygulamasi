@@ -112,30 +112,28 @@ function dilUygula(){
 }
 function ciz(){
   dilUygula();
+  $('ogunler').style.minHeight = '';
   const P = D.profil;
   document.title = T('app');
   $('ust').textContent = T('eyebrow');
-  $('dilBar').innerHTML = DILLER.map(d => `<button class="lang${d.k === dil ? ' on' : ''}" data-dilsec="${d.k}" title="${d.ad}" aria-pressed="${d.k === dil}"><b>${d.k.toUpperCase()}</b><small>${d.ad}</small></button>`).join('');
   $('baslik').textContent = selam();
-  $('lGecmis').textContent = T('history'); $('lLog').textContent = T('logs'); $('lAyar').textContent = T('settings');
-  $('lUyari').textContent = T('warnBtn'); $('lYaz').textContent = T('fbBtn');
+  $('lAyar').textContent = T('settings'); $('lUyari').textContent = T('warnBtn');
   $('lKoc').textContent = T('kocBtn'); $('lDestek').textContent = T('supBtn');
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
   // Tarih zaten en üstte (saat satırında) yazıyor; burada yalnız hedef özeti
   $('altBaslik').textContent = `${hedef}${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg`;
-  gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); altCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz(); programBantCiz(); yukleBantCiz();
+  gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz(); programBantCiz();
   ustHizala();
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
 function ustHizala(){
   const satir = document.querySelector('.top-row'); if (!satir) return;
-  satir.classList.remove('kirik', 'kirik-dil');
+  satir.classList.remove('kirik');
   const ayniSatir = (a, b) => { const x = a.getBoundingClientRect(), y = b.getBoundingClientRect(); return y.top < x.bottom && y.bottom > x.top; };
-  const h = $('baslik'), dl = $('dilBar'), db = satir.querySelector('.top-btns');
-  // Hepsi tek satıra sığmıyorsa (dil kartları ya da düğmeler alt satıra indiyse) her şeyi sola hizala
-  if (!ayniSatir(h, dl) || !ayniSatir(h, db)) satir.classList.add('kirik', 'kirik-dil');
+  // Düğmeler alt satıra indiyse sola hizala
+  if (!ayniSatir($('baslik'), satir.querySelector('.top-btns'))) satir.classList.add('kirik');
 }
 window.addEventListener('resize', ustHizala);
 function gunleriCiz(){
@@ -190,24 +188,16 @@ function ozetCiz(){
     </div>`;
     return;
   }
-  const plan = topla(menu.flatMap(o => o.ogeler));
   const makro = (cls, ad, a, hedef, enAz = false) => `<div class="macro ${cls}"><small>${ad}</small><b>${yuv(a)}</b><span class="hint"> / <span class="tgt">${hedef}</span> ${T('g')}</span>${cubuk(a, hedef, enAz)}${kalanYazi(a, hedef, T('g'), enAz)}</div>`;
-  // Günün planı hedeflerle yan yana; hedefi aşan değer kırmızı
-  // Plan yaklaşık olduğu için %3'e kadar aşım kırmızı sayılmaz
-  const pHucre = (ad, v, hedef, birim, enAz = false) => `<div class="${hedef && v > hedef * 1.03 ? (enAz ? 'tamam' : 'asti') : ''}"><small>${ad}</small><b>${yuv(v)}</b> <span>/ ${hedef} ${birim}</span></div>`;
   const bardakGoster = Math.max(bardakSay, kay.su);
   $('ozet').innerHTML = `
     <div class="card">
       <h3>${aktif === bugunK() ? T('eatenToday') : T('eaten')}</h3>
       <div class="kcal-big"><b>${yuv(yenen.k)}</b><span>/ <span class="tgt">${P.kcal}</span> ${T('kcal')} · ${T('hedefK')}</span></div>
       ${cubuk(yenen.k, P.kcal)}${kalanYazi(yenen.k, P.kcal, T('kcal'))}
-      <div class="macros">${makro('p', T('protein'), yenen.p, P.protein, true)}${makro('c', T('carbS'), yenen.c, P.karb)}${makro('s', T('sugar'), yenen.s, P.seker)}${makro('y', T('fat'), yenen.y, P.yag)}</div>
-      <div class="plan-box"><h4>${T('dayPlan')} · ${T('hedefK')}</h4><div class="plan-grid">
-        ${pHucre(T('calories'), plan.k, P.kcal, T('kcal'))}${pHucre(T('protein'), plan.p, P.protein, T('g'), true)}${pHucre(T('carbS'), plan.c, P.karb, T('g'))}
-        ${pHucre(T('sugar'), plan.s, P.seker, T('g'))}${pHucre(T('fat'), plan.y, P.yag, T('g'))}${pHucre(T('fiber'), plan.l, P.lif, T('g'), true)}
-      </div></div>
+      <div class="macros">${makro('p', T('protein'), yenen.p, P.protein, true)}${makro('c', T('carbS'), yenen.c, P.karb)}${makro('s', T('sugar'), yenen.s, P.seker)}${makro('y', T('fat'), yenen.y, P.yag)}${makro('l', T('fiber'), yenen.l, P.lif, true)}</div>
     </div>
-    <div class="card">
+    <div class="card water-card">
       <h3>${T('water')}</h3>
       <div class="water-head"><b>${litre(ml)} ${T('L')}</b><span>/ <span class="tgt">${litre(P.su)} ${T('L')}</span> · ${T('glassN', {n: kay.su + '/' + bardakSay})}</span></div>
       ${cubuk(ml, P.su, true)}${kalanYazi(ml, P.su, 'ml', true)}
@@ -265,12 +255,6 @@ function hamileBtnCiz(){
 function saatYaz(){
   const z = new Date();
   $('saat').textContent = `${z.toLocaleDateString(LOC(), {day:'2-digit', month:'2-digit', year:'numeric'})} ${z.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})} ${z.toLocaleDateString(LOC(), {weekday:'long'})}`;
-}
-function altCiz(){
-  const ozel = !!(D.kayit[aktif] && D.kayit[aktif].ogunler), gun = gunUzun(aktif);
-  $('altIslem').innerHTML = `<button class="btn ghost" data-sablon="1">${T('makeDefault', {gun})}</button>`
-    + (ozel ? `<button class="btn ghost" data-sablondan="1">${T('revertDay', {gun})}</button>` : '')
-    + `<div class="tpl-ipucu">${esc(T('tplHint', {gun}))}</div>`;
 }
 
 // ---------- Değişiklik işlemleri (hepsi loglanır) ----------

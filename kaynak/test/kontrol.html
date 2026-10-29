@@ -19,7 +19,7 @@ function denetle(w,kok,etiket){
       const ox=Math.min(a.right,b.right)-Math.max(a.left,b.left),oy=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top);
       if(ox>1&&oy>1&&!ch[j].classList.contains('wnav'))sorun.push('CAKISMA '+kisa(ch[i])+' <> '+kisa(ch[j]));}});
   // 4) yazı ile kutu: metin içeren öğe ebeveyninin dışına taşıyor mu
-  els.forEach(e=>{if(!e.textContent.trim()||e.children.length)return;const p=e.parentElement;if(!p)return;const pc=w.getComputedStyle(p);if(pc.overflow!=='visible')return;
+  els.forEach(e=>{if(!e.textContent.trim()||e.children.length)return;const p=e.parentElement;if(!p)return;const pc=w.getComputedStyle(p);if(pc.overflow!=='visible'||pc.display==='contents')return;
     const a=e.getBoundingClientRect(),b=p.getBoundingClientRect();if(a.right>b.right+2||a.left<b.left-2)sorun.push('KUTU DISI '+kisa(e)+' in '+kisa(p));});
   const tek=[...new Set(sorun)];L(etiket+': '+(tek.length?tek.length+' sorun\n   '+tek.slice(0,12).join('\n   '):'temiz'));
 }
@@ -49,7 +49,7 @@ async function cerceve(gen){
       w.eval("aktif=gunEkle(bugunK(),-1);detayAcik=true;ciz()");denetle(w,d.querySelector('.wrap'),gen+' gecmis-detay '+dl);w.eval("aktif=bugunK();detayAcik=false;ciz()");
       w.eval("secimAc({mod:'kiyas',oi:1,ii:0});SE.kat='__tumu';listeGorunumu()");denetle(w,d.getElementById('sheet'),gen+' kiyas-liste '+dl);w.eval('kapat()');
       const pen=(ac,ad)=>{w.eval(ac);denetle(w,d.getElementById('sheet'),gen+' '+ad+' '+dl);w.eval('kapat()');};
-      pen('ayarlarAc()','ayarlar');pen('gecmisAc()','gecmis');pen('loglarAc()','loglar');
+      pen('ayarlarAc()','ayarlar');pen('loglarAc()','loglar');
       pen("secimAc({mod:'ekle',oi:0})",'yemek-ekle');
       w.eval("secimAc({mod:'kiyas',oi:1,ii:0});SE.sec='levrek';SE.g=150;detayGorunumu()");denetle(w,d.getElementById('sheet'),gen+' kiyas '+dl);w.eval('kapat()');
       w.eval("secimAc({mod:'ekle',oi:0});ozelYemekFormu()");denetle(w,d.getElementById('sheet'),gen+' ozel-yemek '+dl);w.eval('kapat()');

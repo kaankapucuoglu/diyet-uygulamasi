@@ -20,28 +20,6 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.tog){ ogunTogla(ds.tog); return; }
   if (ds.togall !== undefined){ hepsiniTogla(ds.togall === '1'); return; }
   if (ds.progkaldir){ programKaldir(); return; }
-  if (ds.yukle){ yukleAc(); return; }
-  if (ds.yuklekapat){ D.ayar.yukleKapat = true; kaydet(); yukleBantCiz(); return; }
-  if (ds.sablon){
-    const gun = gunUzun(aktif);
-    onayAc(T('confirmTemplate', {gun}), () => {
-      // "Her X": 4 haftalık planın bütün X günlerine uygulanır
-      const menu = menuOku(aktif);
-      D.planlar.forEach(h => { h[haftaGunu(aktif)] = kopya(menu); });
-      logEkle('diger', aktif, T('lTemplate', {gun}));
-      kaydet(); ciz(); toast(T('templateUpdated', {gun}));
-    });
-    return;
-  }
-  if (ds.sablondan){
-    const gun = gunUzun(aktif);
-    onayAc(T('confirmRevert', {gun}), () => {
-      delete D.kayit[aktif].ogunler;
-      logEkle('diger', aktif, T('lRevert', {gun}));
-      kaydet(); ciz();
-    });
-    return;
-  }
 });
 document.querySelector('.wrap').addEventListener('change', e => {
   const t = e.target;
@@ -50,17 +28,10 @@ document.querySelector('.wrap').addEventListener('change', e => {
 $('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') kapat(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
 $('ayarBtn').addEventListener('click', ayarlarAc);
-$('logBtn').addEventListener('click', () => loglarAc());
-$('gecmisBtn').addEventListener('click', gecmisAc);
 $('uyariBtn').addEventListener('click', uyarilarAc);
-$('yazBtn').addEventListener('click', yazAc);
 $('hamileBtn').addEventListener('click', hamileDegistir);
 $('kocBtn').addEventListener('click', kocAc);
 $('destekBtn').addEventListener('click', destekAc);
-$('dilBar').addEventListener('click', e => {
-  const b = e.target.closest('[data-dilsec]'); if (!b || b.dataset.dilsec === dil) return;
-  D.ayar.dil = b.dataset.dilsec; kaydet(); ciz();
-});
 
 function ac(baslik, govde){
   $('sheet').innerHTML = `<div class="sheet-head"><h2>${baslik}</h2><button class="icon-btn" data-kapat="1" aria-label="✕">✕</button></div><div class="sheet-body" id="sbody">${govde || ''}</div>`;
@@ -256,18 +227,6 @@ function ozelYemekFormu(){
   };
 }
 
-// ---------- Geçmiş günler ----------
-function gecmisAc(){
-  const gunler = Object.keys(D.kayit).filter(k => k <= bugunK() && (kayitVar(k) || D.kayit[k].ogunler)).sort().reverse();
-  const satir = k => {
-    const r = kayitOku(k), t = yenenToplam(k), menu = menuOku(k), n = menu.filter(o => r.yendi[o.id]).length;
-    return `<button class="hrow" data-git="${k}"><b>${tarihDen(k).toLocaleDateString(LOC(), {day:'numeric', month:'long'})} ${gunUzun(k)}</b>${k === bugunK() ? ` <span class="tag">${T('today')}</span>` : ''}
-      <small>💧 ${litre(r.su * D.profil.bardak)} ${T('L')} · ${bilgi(t)} · ${T('mealsN', {n, t: menu.length})}</small></button>`;
-  };
-  ac(T('hTitle'), gunler.length ? gunler.map(satir).join('') : `<div class="empty">${T('noHistory')}</div>`);
-  $('sbody').querySelectorAll('[data-git]').forEach(b => b.onclick = () => { aktif = b.dataset.git; detayAcik = false; kapat(); ciz(); window.scrollTo({top:0, behavior:'smooth'}); });
-}
-
 // ---------- Tüm loglar ----------
 let logFiltre = 'tum', logSayfa = 0;
 const LOG_SAYFA = 50, LOG_PARCA = 10;
@@ -330,9 +289,12 @@ function ayarlarAc(){
     <div class="acts" style="margin-top:0"><button class="btn" id="kocAcBtn">👩‍⚕️ ${T('kocBtn')}</button>${D.program ? `<button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button>` : ''}</div>
     <div class="hint" style="margin-top:10px">${T('impPasteHint')}</div>
     <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
-    ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `<button class="btn ghost full" style="margin-top:10px" id="yukleBtn">${T('instBtn')}</button>` : ''}
     <div class="sec">${T('sLang')}</div>
-    ${dilListesi(dil)}
+    <button class="btn full dil-ac" id="dilAc" aria-expanded="false">🌐 ${(DILLER.find(d => d.k === dil) || DILLER[0]).ad} <i>▾</i></button>
+    <div id="dilListe" hidden>${dilListesi(dil)}</div>
+    ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `<div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
+    <div class="sec">${T('sMore')}</div>
+    <div class="acts" style="margin-top:0"><button class="btn" id="logAc">📋 ${T('logs')}</button><button class="btn" id="yazAcBtn">✉️ ${T('fbBtn')}</button></div>
     <div class="sec">${T('sBackup')}</div>
     <div class="tip">${T('backupTip')}</div>
     <div class="acts"><button class="btn" id="yedekIndir">${T('dlBackup')}</button><button class="btn" id="yedekYukle">${T('ulBackup')}</button></div>
@@ -346,7 +308,10 @@ function ayarlarAc(){
   saatFormuBagla();
   $('kocAcBtn').onclick = kocAc;
   if ($('progKaldirBtn')) $('progKaldirBtn').onclick = programKaldir;
-  if ($('yukleBtn')) $('yukleBtn').onclick = yukleAc;
+  if ($('yukleBtn')) $('yukleBtn').onclick = () => { kapat(); yukleAc(); };
+  $('logAc').onclick = () => loglarAc();
+  $('yazAcBtn').onclick = yazAc;
+  $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); if (!l.hidden) l.scrollIntoView({block:'nearest', behavior:'smooth'}); };
   $('linkYukle').onclick = async () => { const v = $('linkYapistir').value; kapat(); if (!(await programLinkiAc(v))) toast(T('impBad')); };
   $('olcuKaydet').onclick = () => {
     const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;

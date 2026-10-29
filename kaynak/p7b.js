@@ -81,12 +81,24 @@ function ogunAracCiz(){
   $('ogunArac').innerHTML = menu.length ? `<button class="btn ghost tog-all" data-togall="${acikVar ? 1 : 0}">${T(acikVar ? 'hideAll' : 'showAll')}</button>` : '';
 }
 function ogunTogla(id){
-  D.ayar.kapali = {...(D.ayar.kapali || {}), [id]: !ogunKapali(id)};
-  kaydet(); ogunleriCiz(); ogunAracCiz();
+  const acilacak = ogunKapali(id);
+  togCiz(() => { const b = $('ogunler').querySelector(`[data-tog="${CSS.escape(id)}"]`); return b && b.closest('.meal'); }, acilacak,
+    () => { D.ayar.kapali = {...(D.ayar.kapali || {}), [id]: !acilacak}; });
 }
 function hepsiniTogla(kapat){
-  D.ayar.hepsiKapali = !!kapat; D.ayar.kapali = {};
-  kaydet(); ogunleriCiz(); ogunAracCiz();
+  togCiz(() => kapat ? $('ogunArac') : $('ogunler').querySelector('.meal'), !kapat,
+    () => { D.ayar.hepsiKapali = !!kapat; D.ayar.kapali = {}; });
+}
+// Açınca: öğün baştan görünecek şekilde kaydır. Gizleyince: ekran yerinde kalsın
+// (sayfa kısalınca tarayıcı kaydırmayı yukarı çekmesin diye listenin alt boşluğu gerektiği kadar korunur)
+function togCiz(hedef, acildi, degistir){
+  const liste = $('ogunler'), once = hedef(), y0 = once ? once.getBoundingClientRect().top : 0;
+  const diger = document.documentElement.scrollHeight - liste.offsetHeight;
+  liste.style.minHeight = acildi ? '' : Math.max(0, Math.ceil(scrollY + innerHeight - diger)) + 'px';
+  degistir(); kaydet(); ogunleriCiz(); ogunAracCiz();
+  const el = hedef(); if (!el) return;
+  if (acildi) window.scrollTo({top: el.getBoundingClientRect().top + scrollY - 8, behavior: 'smooth'});
+  else window.scrollBy(0, el.getBoundingClientRect().top - y0);
 }
 
 // ---------- Kopyalama yardımcısı ----------
@@ -420,17 +432,12 @@ function programBantCiz(){
 
 // ---------- Uygulama olarak yükle (Android: tek dokunuş, iPhone: adımlar) ----------
 let kurulumOlayi = null;
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); kurulumOlayi = e; yukleBantCiz(); });
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); kurulumOlayi = e; });
 const bagimsiz = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
 const iosMu = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const mobilMu = () => iosMu() || /Android/.test(navigator.userAgent);
 function yukleAc(){
-  if (kurulumOlayi){ kurulumOlayi.prompt(); kurulumOlayi.userChoice.finally(() => { kurulumOlayi = null; yukleBantCiz(); }); return; }
+  if (kurulumOlayi){ kurulumOlayi.prompt(); kurulumOlayi.userChoice.finally(() => { kurulumOlayi = null; }); return; }
   const adimlar = T(iosMu() ? 'instIos' : 'instAndroid').split('|');
   ac(T('instTitle'), `<ol class="adimlar">${adimlar.map(a => `<li>${esc(a)}</li>`).join('')}</ol>`);
-}
-function yukleBantCiz(){
-  const el = $('yukleBant'); if (!el) return;
-  const goster = /^https?:$/.test(location.protocol) && !bagimsiz() && !D.ayar.yukleKapat && D.ayar.kurulum && (kurulumOlayi || mobilMu());
-  el.innerHTML = goster ? `<div class="yukle-bant"><span>${T('instTitle')}</span><button class="btn solid" data-yukle="1">${T('instNow')}</button><button class="btn ghost" data-yuklekapat="1">${T('instLater')}</button></div>` : '';
 }

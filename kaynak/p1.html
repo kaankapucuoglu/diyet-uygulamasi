@@ -36,19 +36,14 @@ mark{background:#fff1b8;color:inherit;border-radius:3px;padding:0 1px}
 body.wiz-acik .wrap{display:none}
 
 /* Başlık */
-.top{margin-bottom:10px}
+.top{margin-bottom:10px;display:flex;flex-direction:column}
+.top .tarih-blok{order:2}
+.top .sub{order:4}
 .top-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;margin:4px 0 6px}
 .top-row h1{margin:0;flex:0 1 auto;min-width:0;overflow-wrap:anywhere}
-.top-row .langbar,.top-row .top-btns{margin-inline-start:auto}
-.top-row.kirik-dil .langbar,.top-row.kirik .top-btns{margin-inline-start:0}
+.top-row .top-btns{margin-inline-start:auto}
+.top-row.kirik .top-btns{margin-inline-start:0}
 .eyebrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
-.langbar{display:grid;grid-template-columns:repeat(5,80px);gap:6px}
-.lang{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:46px;border-radius:11px;background:var(--card);border:1px solid var(--line);
-  color:#40506a;box-shadow:var(--shadow);min-width:0;padding:0 2px}
-.lang b{font-size:14px;font-weight:800;line-height:1.1}
-.lang small{font-size:10.5px;font-weight:600;opacity:.8;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lang.on{background:var(--blue);border-color:var(--blue);color:#fff}
-.lang:active{transform:scale(.96)}
 h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin-top:2px}
 .sub{color:var(--muted);font-size:14px;line-height:1.9}
 .sub .save-chip{margin:0;vertical-align:1px;line-height:1.4}
@@ -70,7 +65,8 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 /* Hafta ve gün seçimi */
 .weeknav{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;min-height:30px}
 .weeknav .lbl{text-align:center;font-weight:700;font-size:14px}
-.gunsatir{display:flex;align-items:stretch;gap:6px;margin-bottom:16px}
+.gunsatir{display:flex;align-items:stretch;gap:6px;margin-bottom:10px}
+.tarih-blok{margin:6px 0 4px}
 .gunsatir .days{flex:1;min-width:0;margin:0}
 .gunsatir .nav-btn{height:auto;width:36px;flex:none}
 .nav-btn{width:38px;height:36px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:18px;font-weight:700}
@@ -108,7 +104,7 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .kalan.asti{color:var(--red);font-weight:800}
 .kalan.tamam{color:var(--green);font-weight:800}
 .tgt{color:var(--text)!important;font-weight:800}
-.macros{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+.macros{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,100px),1fr));gap:10px;margin-top:14px}
 .macro small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .macro b{font-size:17px}
 .macro .hint{font-size:13px}
@@ -116,6 +112,7 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .macro.c .bar i.ok{background:var(--gold)}
 .macro.s .bar i.ok{background:var(--purple)}
 .macro.y .bar i.ok{background:#94a3b8}
+.macro.l .bar i.ok{background:#16a34a}
 .plan-box{margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
 .plan-box h4{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,92px),1fr));gap:6px}
@@ -132,14 +129,14 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .water-head b{font-size:26px;font-weight:800}
 .water-head span{color:var(--muted);font-size:14px}
 .water-head .tgt{font-size:18px}
-.glasses{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
-.glass{width:30px;height:38px;border:2px solid #bcd0f5;border-top:0;border-radius:0 0 9px 9px;position:relative;overflow:hidden;background:#fff}
+.glasses{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.glass{flex:1 1 0;min-width:16px;max-width:30px;height:34px;border:2px solid #bcd0f5;border-top:0;border-radius:0 0 9px 9px;position:relative;overflow:hidden;background:#fff}
 .glass::after{content:"";position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#5b8ef5,#2563eb);transition:height .25s}
 .glass.full::after{height:82%}
 .glass.ekstra{border-color:#9fdcc1}
 .glass.ekstra::after{background:linear-gradient(#5fd3a0,var(--green))}
 .water-btns{display:flex;gap:8px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:0 14px;border-radius:11px;
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:5px 14px;border-radius:11px;text-align:center;line-height:1.25;
   font-weight:600;font-size:14px;background:var(--blue-soft);color:var(--blue)}
 .btn.solid{background:var(--blue);color:#fff}
 .btn.green{background:var(--green);color:#fff}
@@ -196,18 +193,20 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .adim:active{background:#d6e4ff}
 .item{container-type:inline-size}
 .item-ctl{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin-top:8px}
-.item-acts{display:flex;gap:5px;flex-wrap:wrap}
+.item-ctl .gram{flex:1 1 170px;max-width:300px}
+.item-ctl .gram .val{flex:1;min-width:0}
+.item-ctl .gram input{flex:1;min-width:34px}
+.item-acts{display:flex;gap:6px;flex:1 1 120px}
+.item-acts .mini{flex:1 1 0}
 .mini{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:34px;font-size:12.5px;font-weight:600;padding:0 9px;border-radius:8px;background:#f1f4f9;color:#40506a;white-space:nowrap}
 .mini .mi{font-size:14px;line-height:1}
 /* Kart daralınca (telefon, yakınlaştırma) düğmeler yalnız simge: miktar ve düğmeler aynı satırda kalır */
-@container (max-width: 420px){ .item-acts .mini .lbl{display:none} .item-acts .mini{width:36px;padding:0} }
+@container (max-width: 420px){ .item-acts .mini .lbl{display:none} .item-acts .mini{min-width:36px;padding:0} .item-ctl{flex-wrap:nowrap} .item-ctl .gram{flex:1.4 1 0;max-width:none} .item-acts{flex:1 1 0} }
 .mini.cmp{background:var(--blue-soft);color:var(--blue)}
 .mini.del{background:var(--red-soft);color:var(--red)}
 .empty{padding:16px;color:var(--muted);font-size:14px;list-style:none}
 .add-food{width:100%;padding:13px;font-weight:700;font-size:14px;color:var(--blue);border-top:1px dashed var(--line)}
 .add-food:active{background:var(--blue-soft)}
-.under{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
-.under .btn{flex:1 1 260px}
 
 /* Loglar */
 .log-card{margin-top:16px}
@@ -318,6 +317,10 @@ body.klavye .toast{display:none}
 /* Öğün gizle / göster, saat düğmesi */
 .ogun-arac{display:flex;justify-content:flex-end;margin:0 0 10px}
 .ogun-arac:empty{display:none}
+.meals{overflow-anchor:none;align-content:start}
+.dil-ac{justify-content:space-between}
+.dil-ac i{font-style:normal;opacity:.6}
+#dilListe{margin-top:8px}
 .tog-all{min-height:36px;font-size:13px;font-weight:700}
 .meal{container-type:inline-size}
 .meal.kapali .items,.meal.kapali .add-food,.meal.kapali .ogun-not{display:none}
@@ -338,15 +341,11 @@ body.klavye .toast{display:none}
 .kopya-satir small{display:block;font-size:11.5px;color:var(--muted);font-weight:700}
 .kopya-satir b{font-size:15px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
 /* Program bandı, uygulama yükle bandı */
-.prog-bant,.yukle-bant{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid #cfe9dc;border-inline-start:4px solid var(--green);border-radius:14px;padding:10px 14px;margin:0 0 12px;box-shadow:var(--shadow)}
+.prog-bant{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid #cfe9dc;border-inline-start:4px solid var(--green);border-radius:14px;padding:10px 14px;margin:0 0 12px;box-shadow:var(--shadow)}
 .prog-bant > div{flex:1 1 240px;min-width:0}
 .prog-bant p{font-size:13px;color:#40506a;margin-top:3px;overflow-wrap:anywhere}
 .prog-bant .btn{min-height:36px;font-size:13px}
-.yukle-bant{border-color:#d3e1fd;border-inline-start-color:var(--blue)}
-.yukle-bant span{flex:1 1 200px;font-weight:700;font-size:14px}
-.yukle-bant .btn{min-height:36px;font-size:13px}
 .adimlar{padding-inline-start:22px;line-height:1.7;font-size:15px}
-.tpl-ipucu{flex:1 1 100%;font-size:12.5px;color:var(--muted);line-height:1.5}
 /* Program hazırlama ekranı */
 .koc-in{max-width:980px}
 .koc .card{margin-bottom:4px}
@@ -355,6 +354,7 @@ body.klavye .toast{display:none}
 .koc .field input[type=time],.field input[type=time]{min-height:40px}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0 10px}
 .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 10px}
+.grid2,.grid3,.grid4{align-items:end}
 .koc-check{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-top:4px}
 .koc-check input{width:20px;height:20px}
 .koc-days{margin-bottom:8px}
@@ -417,10 +417,8 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 @media (max-width:600px){
   .top{gap:12px}
   .top-row{gap:10px}
-  .top-row h1{flex-basis:100%}
-  .langbar{grid-template-columns:repeat(5,minmax(0,1fr));width:100%}
-  .top-row .top-btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;margin-inline-start:0}
-  .tool-btn{flex-direction:column;gap:2px;height:54px;padding:0 4px}
+  .top-row .top-btns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;margin-inline-start:0}
+  .tool-btn{flex-direction:column;justify-content:flex-start;gap:3px;height:60px;padding:9px 4px 0}
   .tool-btn small{font-size:12px;white-space:normal;line-height:1.15;text-align:center;overflow:visible}
   .overlay{align-items:flex-end;padding:0}
   .sheet{max-width:none;border-radius:18px 18px 0 0;max-height:90vh;max-height:90dvh;padding-bottom:env(safe-area-inset-bottom)}
@@ -432,22 +430,24 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
   .gram .adim{width:38px;height:38px}
   .gram .val{height:38px}
   .mini{height:38px}
-  @container (max-width: 420px){ .item-acts .mini{width:38px} }
-  .top-row .top-btns{grid-template-columns:repeat(12,minmax(0,1fr))}
-  .top-row .top-btns .tool-btn{grid-column:span 3}
-  .top-row .top-btns .tool-btn:nth-child(n+5){grid-column:span 4;flex-direction:row;height:44px;gap:6px}
   .grid4{grid-template-columns:1fr 1fr}
   .koc-nav .btn{font-size:14px;padding:0 10px}
 }
-/* Tablet: 7 araç düğmesi tek sırada eşit genişlikte (simge üstte, yazı altta) */
+/* Telefon ve tablet: selamın hemen altında tarih seçici, sonra araç düğmeleri */
+@media (max-width:1180px){
+  .top-row{display:contents}
+  .top-row h1{order:1;margin:4px 0 2px}
+  .top-row .top-btns{order:3;margin:2px 0 4px}
+}
+/* Tablet: 4 araç düğmesi tek sırada eşit genişlikte (simge üstte, yazı altta) */
 @media (min-width:601px) and (max-width:1180px){
-  .top-row .top-btns{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));width:100%;margin-inline-start:0}
-  .tool-btn{flex-direction:column;gap:2px;height:58px;padding:0 4px}
+  .top-row .top-btns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;margin-inline-start:0}
+  .tool-btn{flex-direction:column;justify-content:flex-start;gap:3px;height:60px;padding:10px 4px 0}
   .tool-btn small{white-space:normal;line-height:1.15;text-align:center;font-size:12.5px}
 }
 .koc-nav{flex-wrap:wrap;position:static;box-shadow:none}
 @media (max-width:600px){ .koc-nav .btn.green{flex:1 1 100%;order:-1} }
-@media (max-width:600px){ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px} }
+@media (max-width:600px){ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px} .macros .macro.l{grid-column:1/-1} .water-card{padding:12px 14px} .water-card h3{margin-bottom:4px} .water-head b{font-size:22px} .water-btns .btn{min-height:40px} }
 @media (max-width:600px){ .gunsatir{gap:4px} .gunsatir .nav-btn{width:28px;font-size:16px} .gunsatir .days{gap:4px} }
 @media (max-width:360px){ .days{gap:4px} .day{padding:7px 0 5px} .macros{gap:6px} .crow{font-size:13px} }
 </style>
@@ -458,32 +458,28 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
     <div class="eyebrow"><span id="ust"></span><span class="saat" id="saat"></span></div>
     <div class="top-row">
       <h1 id="baslik"></h1>
-      <nav class="langbar" id="dilBar" aria-label="Language"></nav>
       <div class="top-btns">
-        <button class="tool-btn" id="gecmisBtn"><span>📅</span><small id="lGecmis"></small></button>
-        <button class="tool-btn" id="logBtn"><span>📋</span><small id="lLog"></small></button>
-        <button class="tool-btn" id="ayarBtn"><span>⚙️</span><small id="lAyar"></small></button>
-        <button class="tool-btn" id="kocBtn"><span>👩‍⚕️</span><small id="lKoc"></small></button>
         <button class="tool-btn" id="uyariBtn"><span>⚠️</span><small id="lUyari"></small></button>
-        <button class="tool-btn" id="yazBtn"><span>✉️</span><small id="lYaz"></small></button>
         <button class="tool-btn destek" id="destekBtn"><span>☕</span><small id="lDestek"></small></button>
+        <button class="tool-btn" id="kocBtn"><span>👩‍⚕️</span><small id="lKoc"></small></button>
+        <button class="tool-btn" id="ayarBtn"><span>⚙️</span><small id="lAyar"></small></button>
+      </div>
+    </div>
+    <div class="tarih-blok">
+      <div class="weeknav" id="haftaNav"></div>
+      <div class="gunsatir">
+        <button class="nav-btn" data-hafta="-7" aria-label="‹">‹</button>
+        <nav class="days" id="gunler"></nav>
+        <button class="nav-btn" data-hafta="7" aria-label="›">›</button>
       </div>
     </div>
     <div class="sub"><span id="altBaslik"></span> <span class="save-chip" id="kayitDurum"></span> <button class="hamile-btn" id="hamileBtn" hidden></button></div>
   </header>
 
-  <div id="yukleBant"></div>
   <div id="programBant"></div>
-  <div class="weeknav" id="haftaNav"></div>
-  <div class="gunsatir">
-    <button class="nav-btn" data-hafta="-7" aria-label="‹">‹</button>
-    <nav class="days" id="gunler"></nav>
-    <button class="nav-btn" data-hafta="7" aria-label="›">›</button>
-  </div>
   <section class="summary" id="ozet"></section>
   <div class="ogun-arac" id="ogunArac"></div>
   <section class="meals" id="ogunler"></section>
-  <div class="under" id="altIslem"></div>
 </div>
 
 <div class="wiz" id="kurulum" hidden></div>

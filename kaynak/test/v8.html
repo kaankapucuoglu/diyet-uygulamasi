@@ -35,9 +35,13 @@ try{
   d.querySelector('.day.past')?d.querySelector('.day.past').click():w.eval("aktif=gunEkle(bugunK(),-1);ciz()");
   L('gecmis: ozet '+!!d.querySelector('.past-card')+' · ogun karti '+d.querySelectorAll('.meal').length+' · gizle dugmesi '+d.querySelectorAll('.tog-btn').length+' · ipucu '+!!d.querySelector('.past-card .tip'));
   w.eval('aktif=bugunK();ciz()');
-  // "Her perşembe": tüm haftalara
-  w.eval("menuYaz(aktif)[0].ogeler.push({f:'simit',g:1})");d.querySelector('[data-sablon]').click();d.getElementById('onayEvet').click();
-  L('her X: '+w.eval("D.planlar.map(h=>h[haftaGunu(aktif)][0].ogeler.some(i=>i.f==='simit')).join(',')")+' · ipucu: '+d.querySelector('.tpl-ipucu').textContent.slice(0,50));
+  // Yeni düzen: 4 üst düğme sırası, tarih seçici başlığın altında, alt şablon düğmeleri yok, özet yenen/hedef
+  L('ust: '+[...d.querySelectorAll('.top-btns .tool-btn')].map(b=>b.id).join(',')+' · dilBar '+!!d.getElementById('dilBar')+' · sablon '+!!d.querySelector('[data-sablon]')+' · plan-box '+!!d.querySelector('.plan-box'));
+  L('makrolar: '+[...d.querySelectorAll('.macro')].map(m=>m.querySelector('small').textContent+' '+m.querySelector('b').textContent+m.querySelector('.hint').textContent).join(' | '));
+  { const h=d.getElementById('baslik').getBoundingClientRect(), t=d.querySelector('.tarih-blok').getBoundingClientRect(), u=d.querySelector('.top-btns').getBoundingClientRect(); L('sira: baslik<tarih '+(h.bottom<=t.top+1)+' · tarih<dugmeler(tel) '+(t.bottom<=u.top+1)+' w='+w.innerWidth); }
+  // Ayarlar: dil düğmesi listeyi açar; loglar ve bize yazın burada
+  w.eval('ayarlarAc()');L('ayar dil gizli '+d.getElementById('dilListe').hidden);d.getElementById('dilAc').click();L(' -> acildi '+!d.getElementById('dilListe').hidden+' · loglar '+!!d.getElementById('logAc')+' · yaz '+!!d.getElementById('yazAcBtn'));
+  d.querySelector('#dilListe [data-dil="en"]').click();L('dil en: '+d.getElementById('lAyar').textContent);d.querySelector('#dilListe [data-dil="tr"]').click();w.eval('kapat()');
   // Ayarlar: kilo değişimi
   w.eval('ayarlarAc()');const k0=w.eval('D.profil.kcal');d.getElementById('b_kilo').value='90';d.getElementById('olcuKaydet').click();
   L('kilo 90: kcal '+k0+' -> '+w.eval('D.profil.kcal')+' · onay: '+(d.querySelector('#sbody .onay-metin')||{}).textContent?.slice(0,40));d.getElementById('onayEvet').click();
