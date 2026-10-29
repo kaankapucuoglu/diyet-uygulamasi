@@ -124,6 +124,9 @@ Object.assign(S, {
   tartiKaydet:["Kaydet","Save","Сохранить","Speichern","حفظ"],
   tartiStat:["Kilo","Weight","Вес","Gewicht","الوزن"],
   lTarti:["Haftalık tartı: {b} kg ({f})","Weekly weigh-in: {b} kg ({f})","Взвешивание: {b} кг ({f})","Wiegen: {b} kg ({f})","الوزن الأسبوعي: {b} كغ ({f})"],
+  wSaatHint:["Saate dokunup değiştirebilirsin. Ara öğün saatleri ana öğünlere göre kendiliğinden ayarlanır; istersen onları da değiştir.","Tap a time to change it. Snack times follow your main meals automatically; you can change them too.","Нажмите на время, чтобы изменить. Перекусы подстраиваются под основные приёмы пищи; их тоже можно изменить.","Tippe auf eine Uhrzeit, um sie zu ändern. Snacks richten sich nach den Hauptmahlzeiten; du kannst sie auch ändern.","اضغط على الوقت لتغييره. تُضبط الوجبات الخفيفة تلقائياً حسب الوجبات الرئيسية، ويمكنك تغييرها أيضاً."],
+  tartiUlasti:["🎉 Hedefine ulaştın!","🎉 You reached your goal!","🎉 Цель достигнута!","🎉 Ziel erreicht!","🎉 وصلت إلى هدفك!"],
+  tartiHedefK:["Hedef: {n} kg","Goal: {n} kg","Цель: {n} кг","Ziel: {n} kg","الهدف: {n} كغ"],
   sMore:["Diğer","More","Прочее","Weiteres","المزيد"],
   instNow:["Şimdi yükle","Install now","Установить","Jetzt installieren","ثبّت الآن"]
 });

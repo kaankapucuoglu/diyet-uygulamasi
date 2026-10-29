@@ -1,0 +1,35 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Sihirbaz: cinsiyete göre ölçüler, hedef kilo, seçimde ekran sabit, saat listesi + kuşluk ara öğün; ayarlarda hedef kilo; tartıda hedef durumu
+localStorage.clear();const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document,q=s=>d.querySelector('#kurulum '+s),adim=()=>w.eval('wAdimlar()[wAdim]'),ileri=()=>q('[data-wileri]').click();
+try{
+  ileri();const a=q('#wAd');a.value='Kaan';a.dispatchEvent(new Event('input',{bubbles:true}));
+  q('[data-wcins="e"]').click();L('erkek: '+w.eval('[W.yas,W.boy,W.kilo,W.hedefKilo].join("/")'));
+  q('[data-wcins="k"]').click();L('kadin: '+w.eval('[W.yas,W.boy,W.kilo,W.hedefKilo].join("/")'));
+  q('[data-wcins="e"]').click();ileri();
+  L('adim: '+adim()+' · alanlar '+[...d.querySelectorAll('#kurulum .wfield label')].map(l=>l.textContent).join(', '));
+  const hk=q('#w_hedefKilo');hk.value='77';hk.dispatchEvent(new Event('input',{bubbles:true}));
+  q('[data-wcins]')||0;ileri();L('adim: '+adim());
+  const k=d.getElementById('kurulum');k.scrollTop=250;await bekle(50);const y0=k.scrollTop;q('[data-whedef="ver"]').click();await bekle(50);
+  L('hedef secince scroll: '+y0+' -> '+k.scrollTop+' · hedefKilo '+w.eval('W.hedefKilo'));
+  for(let g=0;g<12&&adim()!=='saat';g++){if(adim()==='alerji'&&!q('[data-walerjivar].on'))q('[data-walerjivar="yok"]').click();ileri();}
+  L('saat: '+[...d.querySelectorAll('#kurulum .saat-satir')].map(r=>r.querySelector('label').textContent.trim()+' '+r.querySelector('input').value).join(' | '));
+  q('[data-wara0]').click();L('ara0 eklendi: '+[...d.querySelectorAll('#kurulum .saat-satir')].map(r=>r.querySelector('label').textContent.trim()+' '+r.querySelector('input').value).join(' | '));
+  const ws=id=>q('#ws_'+id);ws('aksam').value='20:00';ws('aksam').dispatchEvent(new Event('input',{bubbles:true}));
+  L('aksam 20:00 -> ara1 '+ws('ara1').value+' gece '+ws('gece').value);
+  ws('gece').value='22:45';ws('gece').dispatchEvent(new Event('input',{bubbles:true}));ws('aksam').value='19:30';ws('aksam').dispatchEvent(new Event('input',{bubbles:true}));
+  L('gece elle 22:45, aksam 19:30 -> gece '+ws('gece').value+' (22:45 kalmali) ara1 '+ws('ara1').value);
+  const r=[...d.querySelectorAll('#kurulum .saat-satir input')].map(i=>Math.round(i.getBoundingClientRect().right));L('saat kutulari sag kenar: '+[...new Set(r)].join(','));
+  ileri();ileri();L('bitti: kurulum '+w.eval('D.ayar.kurulum')+' · bugun ogunler '+w.eval("menuOku(bugunK()).map(o=>o.id+':'+o.ogeler.map(i=>i.f).join('+')).join(' ')"));
+  L('saatler: '+w.eval("JSON.stringify(saatSeti(bugunK()))")+' · profil ara0 '+w.eval('D.profil.ara0'));
+  L('gun kcal plan '+w.eval("Math.round(topla(menuOku(bugunK()).flatMap(o=>o.ogeler)).k)")+' / hedef '+w.eval('D.profil.kcal'));
+  // Ayarlar: hedef kilo
+  d.getElementById('ayarBtn').click();d.getElementById('b_hedefKilo').value='70';d.getElementById('olcuKaydet').click();if(d.getElementById('onayHayir'))d.getElementById('onayHayir').click();
+  L('ayar hedef kilo: '+w.eval('D.profil.hedefKilo')+' · log '+w.eval('D.log[D.log.length-1].m').slice(0,80));
+  const pzt=w.eval("gunEkle(bugunK(),-haftaGunu(bugunK()))");w.eval(`aktif='${pzt}';ciz()`);
+  L('tarti once: '+d.querySelector('.tarti-bas small').textContent);
+  d.getElementById('tartiIn').value='74';d.querySelector('[data-tarti]').click();L('74: '+d.querySelector('.tarti-bas small').textContent);
+  d.getElementById('tartiIn').value='69,5';d.querySelector('[data-tarti]').click();L('69,5: '+d.querySelector('.tarti-bas small').textContent+' · gecmis stat '+([...d.querySelectorAll('.past-card .stat')].map(s=>s.innerText.replace(/\s+/g,' ')).find(t=>/Kilo/.test(t))||'YOK'));
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_sih2',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

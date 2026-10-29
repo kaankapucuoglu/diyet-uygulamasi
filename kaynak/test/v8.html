@@ -10,7 +10,7 @@ try{
   // ters sıra saat hata vermeli
   const ws=id=>q('#ws_'+id);ws('ogle').value='07:00';ws('ogle').dispatchEvent(new Event('input',{bubbles:true}));nx();L('ters saat hatasi: '+((q('.wmsg.err')||{}).textContent||'YOK'));
   for(const [k,v] of [['kahvalti','07:30'],['ogle','12:30'],['aksam','19:00']]){ws(k).value=v;ws(k).dispatchEvent(new Event('input',{bubbles:true}));}
-  L('onizleme: '+q('#wSaatOn').innerText.replace(/\s+/g,' '));
+  L('saat listesi: '+[...d.querySelectorAll('#kurulum .saat-satir')].map(r=>r.innerText.replace(/\s+/g,' ')+' '+r.querySelector('input').value).join(' | '));
   nx();nx();await bekle(100);
   L('alt baslik (tarih yok): '+d.getElementById('altBaslik').textContent);
   L('saatler bugun: '+w.eval("JSON.stringify(saatSeti(bugunK()))"));

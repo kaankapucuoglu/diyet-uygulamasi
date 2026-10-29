@@ -85,7 +85,7 @@ function ogunTogla(id){
     () => { D.ayar.kapali = {...(D.ayar.kapali || {}), [id]: !acilacak}; });
 }
 function hepsiniTogla(kapat){
-  togCiz(() => kapat ? $('ogunArac') : $('ogunler').querySelector('.meal'), !kapat,
+  togCiz(() => $('ogunArac'), !kapat,
     () => { D.ayar.hepsiKapali = !!kapat; D.ayar.kapali = {}; });
 }
 // Açınca: öğün baştan görünecek şekilde kaydır. Gizleyince: ekran yerinde kalsın

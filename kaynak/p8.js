@@ -6,7 +6,13 @@ const wAdimlar = () => ['dil','ad', ...(W.cins === 'k' ? ['hamile'] : []), 'olcu
   ...(!W.hamile && (W.hedef === 'ver' || W.hedef === 'al') ? ['kilo'] : []), 'tercih','alerji','saat','ozet'];
 function sihirbazAc(baslangic = 0){
   W = {...kopya(D.profil), dil: D.ayar.dil || 'tr', alerjiAra: ''};
-  const st = saatSeti(bugunK()); W.saatler = {kahvalti: st.kahvalti, ogle: st.ogle, aksam: st.aksam};
+  // Saatler: yeni kullanıcıda 07:00 / 12:00 / 19:00, ara öğünler bunlara göre
+  const st = saatSeti(bugunK());
+  W.saatler = D.ayar.kurulum ? {...st} : {kahvalti:'07:00', ogle:'12:00', aksam:'19:00'};
+  if (!D.ayar.kurulum) Object.assign(W.saatler, araHesapla(W.saatler));
+  W.saatElle = {};
+  W.ara0 = !!D.profil.ara0 || (D.ayar.kurulum && menuOku(bugunK()).some(o => o.id === 'ara0'));
+  W.olcuElle = !!D.ayar.kurulum;
   if (W.cins !== 'k') W.hamile = false;
   // Alerji sorusu: kurulumu bitmiş kullanıcıda mevcut seçim, yeni kullanıcıda boş (seçmesi gerekir)
   W.alerjiVar = (W.alerjiler || []).length ? 'var' : D.ayar.kurulum ? 'yok' : '';
@@ -51,7 +57,7 @@ function wCiz(){
       + (W.hamile ? `<div class="wsec">${T('trimQ')}</div><div class="opts">${[1, 2, 3].map(n => wOpt('wtri', n, (W.trimester || 1) === n, '🗓️', T('tri' + n))).join('')}</div><div class="wmsg info">${esc(T('hamileNot'))}</div>` : '');
   } else if (ad === 'olcu'){
     baslik = T('wBodyT'); alt = T('wBodyS');
-    govde = wStepper('yas', 'age', 1) + wStepper('boy', 'height', 1) + wStepper('kilo', 'weight', 0.5)
+    govde = wStepper('yas', 'age', 1) + wStepper('boy', 'height', 1) + wStepper('kilo', 'weight', 0.5) + wStepper('hedefKilo', 'targetW', 0.5)
       + `<div class="wmsg info" id="wVki">${T('bmi')}: <b>${sayi(b)}</b> · ${T(vkiSinif(b))}</div>`;
   } else if (ad === 'hedef'){
     baslik = T('wGoalT'); alt = T('wGoalS');
@@ -83,9 +89,15 @@ function wCiz(){
         <div class="al-sonuc" id="alSonuc"></div><div class="al-secili" id="alSecili"></div>` : '');
   } else if (ad === 'saat'){
     baslik = T('wSaatT'); alt = T('wSaatS');
-    if (!W.saatler){ const st = saatSeti(bugunK()); W.saatler = {kahvalti: st.kahvalti, ogle: st.ogle, aksam: st.aksam}; }
-    govde = `<div class="saat-grid">${['kahvalti','ogle','aksam'].map(id => `<div class="wfield" style="margin:0"><label for="ws_${id}">${OGUN_IKON[id]} ${T('m_' + id)}</label><input type="time" id="ws_${id}" data-wsaat="${id}" value="${W.saatler[id]}" step="300"></div>`).join('')}</div>
-      <ul class="saat-onizle" id="wSaatOn"></ul>`;
+    // Öğünler alt alta, saat sağda; saate dokununca saat seçici açılır
+    if (!W.saatler) W.saatler = {...saatSeti(bugunK())};
+    W.saatler = {...araHesapla(W.saatler), ...W.saatler};
+    if (!W.saatElle) W.saatElle = {};
+    const satir = id => `<div class="saat-satir${['kahvalti','ogle','aksam'].includes(id) ? '' : ' ara'}"><label for="ws_${id}"><span>${OGUN_IKON[id]}</span>${T('m_' + id)}</label><input type="time" id="ws_${id}" data-wsaat="${id}" value="${W.saatler[id]}" step="300"></div>`;
+    govde = `<div class="saat-liste">${satir('kahvalti')}
+      <button class="saat-ek${W.ara0 ? ' on' : ''}" data-wara0="1" aria-pressed="${!!W.ara0}"><span class="kutu">${W.ara0 ? '✓' : ''}</span>${T('kocAra0')}</button>
+      ${W.ara0 ? satir('ara0') : ''}${satir('ogle')}${satir('ara1')}${satir('aksam')}${satir('gece')}</div>
+      <div class="hint" style="margin-top:10px">${T('wSaatHint')}</div>`;
   } else {
     const h = hedefHesapla(W);
     baslik = T('wSumT', {ad: esc(wHitap())}); alt = T('wSumS');
@@ -111,8 +123,14 @@ function wCiz(){
     <div class="wiz-body">${govde}${wHata ? `<div class="wmsg err">${wHata}</div>` : ''}</div>
     <div class="wnav">${ilk ? '' : `<button class="btn ghost" data-wgeri="1">${T('back')}</button>`}<button class="btn ${son ? 'green' : 'solid'}" data-wileri="1">${son ? T('create') : T('next')}</button></div>
   </div>`;
-  wSureYaz(); alListeCiz(); wSaatOnizle();
-  $('kurulum').scrollTop = 0;
+  wSureYaz(); alListeCiz();
+  // Aynı adımda seçim yapınca ekran yerinde kalsın; yeni adımda en üstten başla
+  $('kurulum').scrollTop = wCiz.sonAdim === ad ? wCiz.sonY || 0 : 0;
+  wCiz.sonAdim = ad;
+}
+$('kurulum').addEventListener('scroll', () => { wCiz.sonY = $('kurulum').scrollTop; }, {passive: true});
+function wSaatlerYaz(){
+  for (const id of SAAT_IDLER){ const el = $('ws_' + id); if (el && el.value !== W.saatler[id]) el.value = W.saatler[id]; }
 }
 // Alerji arama: sonuçlar ve seçilenler (yeniden çizmeden; arama kutusu odakta kalır)
 function alListeCiz(){
@@ -129,12 +147,6 @@ function alListeCiz(){
     ? `<div class="wmsg warn" style="margin-top:10px"><b>🚫 ${T('alerjiSecili')}</b><div class="al-etiketler">${[...sec].map(id => `<button class="al-chip on" data-walerji="${id}">${esc(alerjen(id).ad)} ✕</button>`).join('')}</div></div>`
     : `<div class="hint" style="margin-top:10px">${T('alerjiBos')}</div>`;
 }
-// Saat adımı: ana öğünlere göre ara öğün saatlerinin önizlemesi
-function wSaatOnizle(){
-  const el = $('wSaatOn'); if (!el) return;
-  const s = {...W.saatler, ...araHesapla(W.saatler)};
-  el.innerHTML = ['kahvalti','ogle','ara1','aksam','gece'].map(id => `<li class="${id.startsWith('ara') || id === 'gece' ? 'ara' : ''}"><span>${OGUN_IKON[id]} ${T('m_' + id)}</span><b>${s[id]}</b></li>`).join('');
-}
 // Canlı alanlar: VKİ ve tahmini süre (input yazarken yeniden çizmeden)
 function wSureYaz(){
   const el = $('wSure');
@@ -147,14 +159,17 @@ function wDogrula(ad){
   if (ad === 'olcu' && !(W.yas >= 14 && W.yas <= 100 && W.boy >= 120 && W.boy <= 230 && W.kilo >= 30 && W.kilo <= 300)) return T('errBody');
   if (ad === 'hedef' && (!W.hedef || (vki(W) < 18.5 && (W.hedef === 'ver' || W.hedef === 'sekil')))) return W.hedef ? T('warnLow') : T('errGoal');
   if (ad === 'alerji' && !W.alerjiVar) return T('errGoal');
-  if (ad === 'saat' && !(dk(W.saatler.kahvalti) < dk(W.saatler.ogle) && dk(W.saatler.ogle) < dk(W.saatler.aksam))) return T('saatHata');
+  if (ad === 'saat'){
+    const s = W.saatler;
+    if (!(dk(s.kahvalti) < dk(s.ogle) && dk(s.ogle) < dk(s.aksam)) || (W.ara0 && !(dk(s.kahvalti) < dk(s.ara0) && dk(s.ara0) < dk(s.ogle)))) return T('saatHata');
+  }
   if (ad === 'alerji' && W.alerjiVar === 'var' && !(W.alerjiler || []).length) return T('errAlerji');
   if (ad === 'kilo' && ((W.hedef === 'ver' && !(W.hedefKilo < W.kilo && W.hedefKilo >= 30)) || (W.hedef === 'al' && !(W.hedefKilo > W.kilo)))) return T('errTarget');
   return '';
 }
 function wBitir(){
   const h = hedefHesapla(W);
-  const {dil: secilenDil, alerjiAra, alerjiVar, saatler, ...profil} = W;
+  const {dil: secilenDil, alerjiAra, alerjiVar, saatler, saatElle, olcuElle, ...profil} = W;
   profil.ad = profil.ad.trim();
   if (alerjiVar !== 'var') profil.alerjiler = [];
   // Profil düzenlemesinde hamilelik ve alerji değişikliklerini logla
@@ -167,7 +182,7 @@ function wBitir(){
   D.ayar.dil = secilenDil; D.ayar.kurulum = true;
   dil = secilenDil;
   planYenile();
-  saatKaydet(bugunK(), {...saatler, ...araHesapla(saatler)});
+  saatKaydet(bugunK(), {...araHesapla(saatler), ...saatler});
   kaydet();
   aktif = bugunK(); detayAcik = false;
   sihirbazKapat();
@@ -179,7 +194,11 @@ $('kurulum').addEventListener('click', e => {
   const ds = b.dataset;
   if (ds.wkapat){ sihirbazKapat(); return; }
   if (ds.wdil){ W.dil = ds.wdil; wCiz(); return; }
-  if (ds.wcins){ W.cins = ds.wcins; if (W.cins !== 'k') W.hamile = false; wHata = ''; wCiz(); return; }
+  if (ds.wcins){
+    W.cins = ds.wcins; if (W.cins !== 'k') W.hamile = false; wHata = '';
+    if (!W.olcuElle) Object.assign(W, W.cins === 'e' ? {yas:33, boy:180, kilo:80, hedefKilo:75} : {yas:30, boy:160, kilo:65, hedefKilo:60});
+    wCiz(); return;
+  }
   if (ds.whamile){
     W.hamile = ds.whamile === '1';
     if (W.hamile && (W.hedef === 'ver' || W.hedef === 'sekil')) W.hedef = 'koru';   // hamilelikte kilo verme yok
@@ -208,7 +227,9 @@ $('kurulum').addEventListener('click', e => {
   if (ds.whiz){ W.hiz = +ds.whiz; wCiz(); return; }
   if (ds.wpreset){ W.haric = {hepsi:[], vejetaryen:['m','c','f'], vegan:['m','c','f','e','d']}[ds.wpreset]; wCiz(); return; }
   if (ds.wharic){ const h = new Set(W.haric); h.has(ds.wharic) ? h.delete(ds.wharic) : h.add(ds.wharic); W.haric = [...h]; wCiz(); return; }
+  if (ds.wara0){ W.ara0 = !W.ara0; if (W.ara0 && !W.saatElle.ara0) W.saatler.ara0 = araHesapla(W.saatler).ara0; wHata = ''; wCiz(); return; }
   if (ds.wadim){
+    W.olcuElle = true;
     const alan = ds.wadim, yeni = Math.round((+W[alan] + (+ds.yon)) * 2) / 2;
     W[alan] = Math.max(0, yeni); $('w_' + alan).value = sayi(W[alan]); wSureYaz(); return;
   }
@@ -223,10 +244,24 @@ $('kurulum').addEventListener('click', e => {
 });
 $('kurulum').addEventListener('input', e => {
   if (e.target.id === 'wAlerjiAra'){ W.alerjiAra = e.target.value; alListeCiz(); return; }
-  if (e.target.dataset.wsaat){ if (/^\d\d:\d\d$/.test(e.target.value)){ W.saatler[e.target.dataset.wsaat] = e.target.value; wHata = ''; wSaatOnizle(); } return; }
+  if (e.target.dataset.wsaat){
+    const id = e.target.dataset.wsaat;
+    if (!/^\d\d:\d\d$/.test(e.target.value)) return;
+    W.saatler[id] = e.target.value; wHata = '';
+    // Ana öğün değişince elle değiştirilmemiş ara öğünler yeniden hesaplanır
+    if (['kahvalti','ogle','aksam'].includes(id)){ const a = araHesapla(W.saatler); for (const k in a) if (!W.saatElle[k]) W.saatler[k] = a[k]; wSaatlerYaz(); }
+    else W.saatElle[id] = true;
+    return;
+  }
   const alan = e.target.dataset.wf; if (!alan) return;
+  if (alan !== 'ad') W.olcuElle = true;
   W[alan] = alan === 'ad' ? e.target.value : Math.max(0, +String(e.target.value).replace(/[,٫]/g, '.') || 0);
   wSureYaz();
+});
+
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t && t.tagName === 'INPUT' && t.type === 'time' && t.showPicker) try { t.showPicker(); } catch(_){}
 });
 
 // ---------- Başlat ----------

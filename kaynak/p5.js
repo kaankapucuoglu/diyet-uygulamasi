@@ -110,7 +110,7 @@ const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay']);
 const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]],
   [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',25]]];   // sona doğru alerjiye uygun seçenekler
 
-const BOS_PROFIL = {ad:'', cins:'', hamile:false, trimester:1, yas:30, boy:170, kilo:70, hedefKilo:65, hedef:'', odaklar:[], alerjiler:[], aktivite:2, hiz:0.5, haric:[],
+const BOS_PROFIL = {ad:'', cins:'', hamile:false, ara0:false, trimester:1, yas:30, boy:170, kilo:70, hedefKilo:65, hedef:'', odaklar:[], alerjiler:[], aktivite:2, hiz:0.5, haric:[],
   kcal:1800, protein:130, karb:180, seker:55, yag:60, lif:25, su:2500, bardak:250};
 const HEDEF_KEYS = ['kcal','protein','karb','seker','yag','su','bardak'];
 const HEDEF_ETIKET = {kcal:'tKcal', protein:'tProtein', karb:'tCarb', seker:'tSugar', yag:'tFat', su:'tWater', bardak:'tGlass'};
@@ -306,7 +306,26 @@ function profilUygun(p){
   return f => !(f.x || '').split('').some(c => haric.has(c)) && !(f.al || []).some(a => alerji.has(a)) && !(hamile && HAMILE_DISI.has(f.id));
 }
 // 4 haftalık dönen plan: her temel hafta aynı kurallarla profile göre hazırlanır
-const planOlustur = p => TEMEL_HAFTALAR.map(h => haftaOlustur(p, h));
+const planOlustur = p => TEMEL_HAFTALAR.map(h => araOgunEkle(p, haftaOlustur(p, h)));
+// Kuşluk ara öğün isteyene: ikindi ara öğününden bir kalem (tercihen meyve) kahvaltıdan sonraya taşınır, günlük kalori değişmez
+function araOgunEkle(p, hafta){
+  if (!p.ara0) return hafta;
+  const izinli = profilUygun(p);
+  return hafta.map(gun => {
+    if (gun.some(o => o.id === 'ara0')) return gun;
+    const ara1 = gun.find(o => o.id === 'ara1'), ogeler = [];
+    if (ara1 && ara1.ogeler.length > 1){
+      let i = ara1.ogeler.findIndex(it => yemek(it.f).kat === 'meyve');
+      if (i < 0) i = ara1.ogeler.length - 1;
+      ogeler.push(ara1.ogeler.splice(i, 1)[0]);
+    } else {
+      const f = ['elma','mandalina','armut','portakal'].find(id => izinli(yemek(id)));
+      if (f) ogeler.push({f, g: 1});
+    }
+    const ki = gun.findIndex(o => o.id === 'kahvalti');
+    return [...gun.slice(0, ki + 1), {id:'ara0', ad:'Kuşluk Ara Öğün', saat:VARSAYILAN_SAAT.ara0, ico:OGUN_IKON.ara0, ogeler}, ...gun.slice(ki + 1)];
+  });
+}
 function haftaOlustur(p, temel){
   const izinli = profilUygun(p);
   const kullanilan = {};

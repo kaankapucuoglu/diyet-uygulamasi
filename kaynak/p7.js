@@ -286,7 +286,7 @@ function ayarlarAc(dilAcik = false){
       ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
     <div class="acts"><button class="btn solid" id="profilDuzenle">${T('editProfile')}</button><button class="btn" id="alerjiDuzenle">${T('editAlerji')}</button></div>
     <div class="sec">${T('sBody')}</div>
-    <div class="grid3">${[['yas', 'age', 1], ['boy', 'height', 1], ['kilo', 'weight', 0.5]].map(([k, ad]) => `<label class="field"><span>${T(ad)}</span><input autocomplete="off" id="b_${k}" type="text" inputmode="decimal" value="${sayi(P[k])}"></label>`).join('')}</div>
+    <div class="grid3">${[['yas', 'age', 1], ['boy', 'height', 1], ['kilo', 'weight', 0.5], ['hedefKilo', 'targetW', 0.5]].map(([k, ad]) => `<label class="field"><span>${T(ad)}</span><input autocomplete="off" id="b_${k}" type="text" inputmode="decimal" value="${sayi(P[k])}"></label>`).join('')}</div>
     <div class="hint" style="margin:-4px 0 8px">${T('bodyHint')}</div>
     <button class="btn full" id="olcuKaydet">${T('bodySave')}</button>
     <div class="sec">${T('sSaat')}</div>
@@ -319,9 +319,9 @@ function ayarlarAc(dilAcik = false){
   $('linkYukle').onclick = async () => { const v = $('linkYapistir').value; kapat(); if (!(await programLinkiAc(v))) toast(T('impBad')); };
   $('olcuKaydet').onclick = () => {
     const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;
-    const yeni = {yas: Math.round(oku('yas')), boy: Math.round(oku('boy')), kilo: Math.round(oku('kilo') * 2) / 2};
-    if (!(yeni.yas >= 14 && yeni.yas <= 100 && yeni.boy >= 120 && yeni.boy <= 230 && yeni.kilo >= 30 && yeni.kilo <= 300)){ toast(T('errBody')); return; }
-    const degisen = ['yas', 'boy', 'kilo'].filter(k => yeni[k] !== P[k]).map(k => `${T({yas:'age', boy:'height', kilo:'weight'}[k])}: ${sayi(P[k])} → ${sayi(yeni[k])}`);
+    const yeni = {yas: Math.round(oku('yas')), boy: Math.round(oku('boy')), kilo: Math.round(oku('kilo') * 2) / 2, hedefKilo: Math.round(oku('hedefKilo') * 2) / 2};
+    if (!(yeni.yas >= 14 && yeni.yas <= 100 && yeni.boy >= 120 && yeni.boy <= 230 && yeni.kilo >= 30 && yeni.kilo <= 300 && yeni.hedefKilo >= 30 && yeni.hedefKilo <= 300)){ toast(T('errBody')); return; }
+    const degisen = ['yas', 'boy', 'kilo', 'hedefKilo'].filter(k => yeni[k] !== P[k]).map(k => `${T({yas:'age', boy:'height', kilo:'weight', hedefKilo:'targetW'}[k])}: ${sayi(P[k])} → ${sayi(yeni[k])}`);
     if (!degisen.length){ kapat(); return; }
     Object.assign(P, yeni);
     hedefleriYenile();

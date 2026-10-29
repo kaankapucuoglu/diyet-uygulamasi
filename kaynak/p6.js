@@ -167,10 +167,17 @@ const farkKg = (a, b) => { const f = Math.round((a - b) * 10) / 10; return (f > 
 function tartiKarti(){
   if (haftaGunu(aktif) !== 0 || aktif > bugunK()) return '';
   const P = D.profil, v = (D.tartim || {})[aktif], onc = oncekiTartim(aktif);
-  const hedefYazi = v != null && P.hedefKilo && P.hedef && P.hedef !== 'koru' ? ' · ' + T('tartiHedef', {n: sayi(Math.abs(Math.round((v - P.hedefKilo) * 10) / 10))}) : '';
-  const alt = v != null ? (onc != null ? T('tartiFark', {f: farkKg(v, onc)}) : T('tartiIlk')) + hedefYazi : T('tartiHint');
+  const alt = v != null ? (onc != null ? T('tartiFark', {f: farkKg(v, onc)}) : T('tartiIlk')) + (P.hedefKilo ? ' · ' + hedefDurum(v) : '')
+    : T('tartiHint') + (P.hedefKilo ? ' ' + T('tartiHedefK', {n: sayi(P.hedefKilo)}) : '');
   return `<div class="card tarti-kart${v != null ? ' girildi' : ''}"><div class="tarti-bas"><b>${T('tartiT')}</b><small>${esc(alt)}</small></div>
     <div class="tarti-gir"><label class="val"><input id="tartiIn" type="text" inputmode="decimal" autocomplete="off" value="${sayi(v != null ? v : P.kilo)}" aria-label="${esc(T('weight'))}"><span>kg</span></label><button class="btn solid" data-tarti="1">${T('tartiKaydet')}</button></div></div>`;
+}
+// Hedef kiloya göre durum: kilo verenlerde altına inince, alanlarda üstüne çıkınca "ulaştın"
+function hedefDurum(v){
+  const P = D.profil, hk = +P.hedefKilo;
+  const asagi = ['ver', 'sekil'].includes(P.hedef) ? true : ['al', 'kas'].includes(P.hedef) ? false : hk <= v;
+  const ulasti = Math.abs(v - hk) < 0.05 || (asagi ? v <= hk : v >= hk);
+  return ulasti ? T('tartiUlasti') : T('tartiHedef', {n: sayi(Math.abs(Math.round((v - hk) * 10) / 10))});
 }
 // Tartı kaydedilir; en son tartıysa profil kilosu ve hedefler güncellenir (gönderilen programın hedeflerine dokunulmaz)
 function tartiKaydet(){
@@ -203,7 +210,7 @@ function ozetCiz(){
         ${stat(T('sugar'), yuv(yenen.s), T('g'), P.seker)}
         ${stat(T('fat'), yuv(yenen.y), T('g'), P.yag)}
         ${stat(T('fiber'), yuv(yenen.l), T('g'), P.lif, true)}
-        ${tv != null ? `<div class="stat"><small>⚖️ ${T('tartiStat')}</small><b>${sayi(tv)}</b> <span>kg${to != null ? ' (' + farkKg(tv, to) + ')' : ''}</span></div>` : ''}
+        ${tv != null ? `<div class="stat"><small>⚖️ ${T('tartiStat')}</small><b>${sayi(tv)}</b> <span>kg${to != null ? ' (' + farkKg(tv, to) + ')' : ''}</span>${D.profil.hedefKilo ? `<div class="kalan">${esc(hedefDurum(tv))}</div>` : ''}</div>` : ''}
       </div>
       <div class="eaten-list">${yenenOgun.length
         ? `<b>${T('eatenMeals', {n: yenenOgun.length, t: menu.length})}</b> ` + yenenOgun.map(o => esc(ogunEt(aktif, o))).join(' · ')
