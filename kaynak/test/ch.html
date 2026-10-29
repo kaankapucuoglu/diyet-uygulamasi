@@ -1,6 +1,6 @@
 <!DOCTYPE html><html><body style="margin:0;display:flex;gap:8px;align-items:flex-start"><iframe id="f" style="width:390px;height:844px;border:0;flex:none"></iframe><iframe id="g" style="width:390px;height:844px;border:0;flex:none"></iframe><pre id="o" style="width:400px;white-space:pre-wrap;font-size:11px"></pre><script>
 localStorage.clear();const U='../../index.html';const f=document.getElementById('f'),g=document.getElementById('g');f.src=U;const out=[];
-const kur=(d)=>{const q=x=>d.querySelector('#kurulum '+x),nx=()=>q('[data-wileri]').click();nx();const a=q('#wAd');a.value='Kaan';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();nx();q('[data-whedef="ver"]').click();nx();nx();nx();nx();nx();};
+const kur=(d)=>{const q=x=>d.querySelector('#kurulum '+x),nx=()=>{const y=q('[data-walerjivar="yok"]');if(y&&!q('[data-walerjivar].on'))y.click();q('[data-wileri]').click();};nx();const a=q('#wAd');a.value='Kaan';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();nx();q('[data-whedef="ver"]').click();nx();nx();nx();nx();nx();nx();};
 setTimeout(()=>{const w=f.contentWindow,d=w.document;try{kur(d);
 w.eval("secimAc({mod:'degis',oi:0,ii:0})");const cips=()=>[...d.querySelectorAll('#kategoriler .chip')].map(b=>b.textContent).join(' · ');
 out.push('degistir acilis: '+cips());d.querySelector('[data-grup]').click();out.push('acinca: '+cips().slice(0,160)+'…');

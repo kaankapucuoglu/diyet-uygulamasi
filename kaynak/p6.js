@@ -118,12 +118,13 @@ function ciz(){
   $('dilBar').innerHTML = DILLER.map(d => `<button class="lang${d.k === dil ? ' on' : ''}" data-dilsec="${d.k}" title="${d.ad}" aria-pressed="${d.k === dil}"><b>${d.k.toUpperCase()}</b><small>${d.ad}</small></button>`).join('');
   $('baslik').textContent = selam();
   $('lGecmis').textContent = T('history'); $('lLog').textContent = T('logs'); $('lAyar').textContent = T('settings');
+  $('lUyari').textContent = T('warnBtn'); $('lYaz').textContent = T('fbBtn');
   const d = tarihDen(aktif);
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
-  const hedef = P.hedef ? [T('g_' + P.hedef), ...odak].join(' + ') + ' · ' : '';
+  const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
+  const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
   $('altBaslik').textContent = `${gunUzun(aktif)}, ${d.toLocaleDateString(LOC(), {day:'numeric', month:'long', year:'numeric'})} · ${hedef}${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg`;
-  $('dipNot').textContent = T('foot');
-  gunleriCiz(); ozetCiz(); ogunleriCiz(); altCiz(); logKartCiz(); kayitDurumYaz();
+  gunleriCiz(); ozetCiz(); ogunleriCiz(); altCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz();
   ustHizala();
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
@@ -225,14 +226,14 @@ function ogunleriCiz(){
       const f = yemek(it.f);
       const agirlik = f.a ? `≈ ${yuv(gramOf(f, it.g))} ${T('g')} · ` : '';
       return `<li class="item">
-        <div class="item-row">
-          <div class="item-info"><b>${esc(f.ad)}</b><small>${agirlik}${bilgi(besin(it.f, it.g))}</small></div>
+        <div class="item-info"><b>${esc(f.ad)}</b><small>${agirlik}${bilgi(besin(it.f, it.g))}</small></div>
+        <div class="item-ctl">
           <div class="gram"><button class="adim" data-arti="${oi},${ii}" data-yon="-1" aria-label="${T('dec')}">−</button><label class="val"><input autocomplete="off" autocorrect="off" spellcheck="false" type="text" inputmode="decimal" value="${sayi(it.g)}" data-gram="${oi},${ii}" aria-label="${T('amount')}"><span>${birimAd(f)}</span></label><button class="adim" data-arti="${oi},${ii}" data-yon="1" aria-label="${T('inc')}">+</button></div>
-        </div>
-        <div class="item-acts">
-          <button class="mini cmp" data-kiyas="${oi},${ii}">${T('compare')}</button>
-          <button class="mini" data-degis="${oi},${ii}">${T('change')}</button>
-          <button class="mini del" data-sil="${oi},${ii}">${T('remove')}</button>
+          <div class="item-acts">
+            <button class="mini cmp" data-kiyas="${oi},${ii}" title="${esc(T('compare'))}">${ikonlu('compare')}</button>
+            <button class="mini" data-degis="${oi},${ii}" title="${esc(T('change'))}">${ikonlu('change')}</button>
+            <button class="mini del" data-sil="${oi},${ii}" title="${esc(T('remove'))}">${ikonlu('remove')}</button>
+          </div>
         </div>
       </li>`;
     }).join('') : `<li class="empty">${T('noItems')}</li>`;
@@ -247,16 +248,26 @@ function ogunleriCiz(){
     </article>`;
   }).join('');
 }
+// "⇄ Kıyasla" → simge + etiket (dar kartta yalnız simge görünür)
+function ikonlu(k){ const [ik, ...ad] = T(k).split(' '); return `<span class="mi">${ik}</span><span class="lbl">${ad.join(' ')}</span>`; }
+const hamileMi = () => D.profil.cins === 'k' && !!D.profil.hamile;
+// Ana ekrandaki hamilelik düğmesi (yalnız kadın kullanıcılar)
+function hamileBtnCiz(){
+  const b = $('hamileBtn');
+  b.hidden = D.profil.cins !== 'k';
+  b.textContent = hamileMi() ? T('btnHamileDegil') : T('btnHamile');
+  b.classList.toggle('on', hamileMi());
+}
+// Başlığın yanındaki tarih-saat (dakikada bir güncellenir)
+function saatYaz(){
+  const z = new Date();
+  $('saat').textContent = `${z.toLocaleDateString(LOC(), {day:'2-digit', month:'2-digit', year:'numeric'})} ${z.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})} ${z.toLocaleDateString(LOC(), {weekday:'long'})}`;
+}
 function altCiz(){
   if (gecmisMi(aktif) && !detayAcik){ $('altIslem').innerHTML = ''; return; }
   const ozel = !!(D.kayit[aktif] && D.kayit[aktif].ogunler), gun = gunUzun(aktif);
   $('altIslem').innerHTML = `<button class="btn ghost" data-sablon="1">${T('makeDefault', {gun})}</button>`
     + (ozel ? `<button class="btn ghost" data-sablondan="1">${T('revertDay', {gun})}</button>` : '');
-}
-function logKartCiz(){
-  const liste = D.log.filter(l => l.k === aktif).slice(-10).reverse();
-  $('logKart').innerHTML = `<div class="log-head"><h3>${T('logOf', {d: etiket(aktif)})}</h3><button class="mini cmp" data-tumlog="1">${T('allLogs')}</button></div>
-    <ul class="logs">${liste.length ? liste.map(l => logSatir(l, false)).join('') : `<li class="empty" style="padding:8px 0">${T('noDayLogs')}</li>`}</ul>`;
 }
 
 // ---------- Değişiklik işlemleri (hepsi loglanır) ----------

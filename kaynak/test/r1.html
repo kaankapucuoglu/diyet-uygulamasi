@@ -1,6 +1,6 @@
 <!DOCTYPE html><html><body><iframe id="f" style="width:375px;height:800px"></iframe><pre id="o"></pre><script>
 const U='../../index.html';localStorage.clear();const f=document.getElementById('f');f.src=U;const out=[];const L=x=>out.push(x);
-setTimeout(()=>{const w=f.contentWindow,d=w.document,q=s=>d.querySelector('#kurulum '+s),nx=()=>q('[data-wileri]').click();
+setTimeout(()=>{const w=f.contentWindow,d=w.document,q=s=>d.querySelector('#kurulum '+s),nx=()=>{const y=q('[data-walerjivar="yok"]');if(y&&!q('[data-walerjivar].on'))y.click();q('[data-wileri]').click();};
 try{nx();const a=q('#wAd');a.value='Ayşe';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="k"]').click();nx();
 const k=q('#w_kilo');k.value=66;k.dispatchEvent(new Event('input',{bubbles:true}));nx();q('[data-whedef="ver"]').click();q('[data-wodak="tansiyon"]').click();nx();nx();nx();q('[data-wpreset="vejetaryen"]').click();nx();nx();
 L(w.eval(`(()=>{const u=profilUygun(D.profil);return D.planlar.map((h,hi)=>'H'+(hi+1)+': '+h.map(g=>{const t=topla(g.flatMap(o=>o.ogeler));return Math.round(t.k)+'/P'+Math.round(t.p)}).join(' ')+' | uygunsuz='+(h.flat().flatMap(o=>o.ogeler).filter(it=>!u(yemek(it.f))).map(it=>it.f).join(',')||'yok')).join(' ## ')+' ## hedef '+D.profil.kcal+' P'+D.profil.protein})()`));

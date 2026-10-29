@@ -50,9 +50,12 @@ body.wiz-acik .wrap{display:none}
 .lang.on{background:var(--blue);border-color:var(--blue);color:#fff}
 .lang:active{transform:scale(.96)}
 h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin-top:2px}
-.sub-row{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px}
-.sub{color:var(--muted);font-size:14px}
-.sub-row .save-chip{margin-top:0}
+.sub{color:var(--muted);font-size:14px;line-height:1.9}
+.sub .save-chip{margin:0;vertical-align:1px;line-height:1.4}
+.saat{font-size:11.5px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--muted)}
+.hamile-btn{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:99px;background:#fdeef6;color:#b0306f;border:1px solid #f7c6de;vertical-align:1px;line-height:1.4}
+.hamile-btn.on{background:#fff;color:var(--muted);border-color:var(--line)}
+.hamile-btn[hidden]{display:none}
 .top-btns{display:flex;gap:6px}
 .tool-btn{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;min-width:0;height:46px;padding:0 16px;
   border-radius:13px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
@@ -185,14 +188,19 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .item-info{flex:1;min-width:0}
 .item-info b{font-size:15px;display:block;overflow-wrap:anywhere}
 .item-info small{font-size:12.5px;color:var(--muted)}
-.gram{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.gram .val{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:#fafbfd;height:38px}
-.gram input{width:44px;border:0;background:transparent;text-align:end;padding:7px 1px;outline:none;font-weight:700}
+.gram{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.gram .val{display:flex;align-items:center;border:1px solid var(--line);border-radius:9px;background:#fafbfd;height:34px}
+.gram input{width:40px;border:0;background:transparent;text-align:end;padding:7px 1px;outline:none;font-weight:700}
 .gram span{font-size:12.5px;color:var(--muted);padding-inline:3px 7px}
-.adim{width:38px;height:38px;border-radius:10px;font-size:20px;font-weight:700;color:var(--blue);background:var(--blue-soft);flex-shrink:0;touch-action:manipulation}
+.adim{width:34px;height:34px;border-radius:9px;font-size:18px;font-weight:700;color:var(--blue);background:var(--blue-soft);flex-shrink:0;touch-action:manipulation}
 .adim:active{background:#d6e4ff}
-.item-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.mini{font-size:12.5px;font-weight:600;padding:6px 10px;border-radius:8px;background:#f1f4f9;color:#40506a}
+.item{container-type:inline-size}
+.item-ctl{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin-top:8px}
+.item-acts{display:flex;gap:5px;flex-wrap:wrap}
+.mini{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:34px;font-size:12.5px;font-weight:600;padding:0 9px;border-radius:8px;background:#f1f4f9;color:#40506a;white-space:nowrap}
+.mini .mi{font-size:14px;line-height:1}
+/* Kart daralınca (telefon, yakınlaştırma) düğmeler yalnız simge: miktar ve düğmeler aynı satırda kalır */
+@container (max-width: 420px){ .item-acts .mini .lbl{display:none} .item-acts .mini{width:36px;padding:0} }
 .mini.cmp{background:var(--blue-soft);color:var(--blue)}
 .mini.del{background:var(--red-soft);color:var(--red)}
 .empty{padding:16px;color:var(--muted);font-size:14px;list-style:none}
@@ -263,6 +271,16 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .chip.on{background:var(--blue);color:#fff}
 .chip.recent{background:var(--gold-soft);color:var(--gold)}
 .chip.recent.on{background:var(--gold);color:#fff}
+a.btn{text-decoration:none}
+.onay-metin{font-size:15px;line-height:1.55;margin:0 0 6px}
+.uyari{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px;background:#fbfcfe}
+.uyari h4{font-size:14.5px;margin-bottom:4px}
+.uyari p{font-size:13.5px;line-height:1.55;color:#40506a}
+.sayfalar{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px;font-size:13px;color:var(--muted);font-weight:600}
+.al-sonuc{display:flex;flex-wrap:wrap;gap:6px;max-height:230px;overflow-y:auto;padding:2px}
+.al-chip{font-size:13.5px;padding:7px 12px;border-radius:99px;background:var(--card);border:1px solid var(--line);font-weight:600;color:#40506a}
+.al-chip.on{background:var(--red-soft);border-color:#f5c2c6;color:#b4232c}
+.al-etiketler{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip.more{background:transparent;color:var(--blue);border:1px dashed #b9cdf6}
 body.klavye .overlay{padding:0;align-items:flex-start}
 body.klavye .sheet{max-height:100%!important;height:100%;border-radius:0}
@@ -352,11 +370,13 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
   .kcal-big b{font-size:26px}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .log time{min-width:0}
-  .item-info{flex-basis:100%}
-  .gram{gap:12px;margin-top:2px}
-  .gram .adim{width:44px;height:40px}
-  .gram .val{height:40px}
-  .gram input{width:52px}
+  .gram .adim{width:38px;height:38px}
+  .gram .val{height:38px}
+  .mini{height:38px}
+  @container (max-width: 420px){ .item-acts .mini{width:38px} }
+  .top-row .top-btns{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .top-row .top-btns .tool-btn{grid-column:span 2}
+  .top-row .top-btns .tool-btn:nth-child(n+4){grid-column:span 3;flex-direction:row;height:44px;gap:6px}
 }
 @media (max-width:600px){ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px} }
 @media (max-width:600px){ .gunsatir{gap:4px} .gunsatir .nav-btn{width:28px;font-size:16px} .gunsatir .days{gap:4px} }
@@ -366,7 +386,7 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="eyebrow"><span id="ust"></span></div>
+    <div class="eyebrow"><span id="ust"></span><span class="saat" id="saat"></span></div>
     <div class="top-row">
       <h1 id="baslik"></h1>
       <nav class="langbar" id="dilBar" aria-label="Language"></nav>
@@ -374,9 +394,11 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
         <button class="tool-btn" id="gecmisBtn"><span>📅</span><small id="lGecmis"></small></button>
         <button class="tool-btn" id="logBtn"><span>📋</span><small id="lLog"></small></button>
         <button class="tool-btn" id="ayarBtn"><span>⚙️</span><small id="lAyar"></small></button>
+        <button class="tool-btn" id="uyariBtn"><span>⚠️</span><small id="lUyari"></small></button>
+        <button class="tool-btn" id="yazBtn"><span>✉️</span><small id="lYaz"></small></button>
       </div>
     </div>
-    <div class="sub-row"><div class="sub" id="altBaslik"></div><div class="save-chip" id="kayitDurum"></div></div>
+    <div class="sub"><span id="altBaslik"></span> <span class="save-chip" id="kayitDurum"></span> <button class="hamile-btn" id="hamileBtn" hidden></button></div>
   </header>
 
   <div class="weeknav" id="haftaNav"></div>
@@ -388,8 +410,6 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
   <section class="summary" id="ozet"></section>
   <section class="meals" id="ogunler"></section>
   <div class="under" id="altIslem"></div>
-  <section class="card log-card" id="logKart"></section>
-  <div class="foot" id="dipNot"></div>
 </div>
 
 <div class="wiz" id="kurulum" hidden></div>
@@ -576,9 +596,6 @@ const S = {
   resetRec:["Yedim/su kayıtlarını sil","Delete eaten/water records","Удалить записи еды и воды","Ess-/Wassereinträge löschen","احذف سجلات الأكل والماء"],
   cResetMenu:["Haftalık menü profilinize göre yeniden oluşturulur; bugün ve sonrasına ait özel menüler silinir. Geçmiş kayıtlar korunur. Emin misin?","The weekly menu will be rebuilt from your profile; custom menus from today on are removed. Past records are kept. Continue?","Недельное меню будет пересоздано по профилю; меню с сегодняшнего дня удалятся. Прошлые записи сохранятся. Продолжить?","Das Wochenmenü wird aus deinem Profil neu erstellt; eigene Menüs ab heute werden entfernt. Vergangenes bleibt. Fortfahren?","سيُعاد إنشاء القائمة الأسبوعية حسب ملفك وتُحذف القوائم الخاصة من اليوم فصاعداً. تبقى السجلات السابقة. متابعة؟"],
   cResetRec:["Tüm günlerin “yedim”, su ve gün menüsü kayıtları silinecek. Emin misin?","All eaten, water and day-menu records will be deleted. Continue?","Все записи о еде, воде и меню дней будут удалены. Продолжить?","Alle Ess-, Wasser- und Tagesmenü-Einträge werden gelöscht. Fortfahren?","ستُحذف كل سجلات الأكل والماء وقوائم الأيام. متابعة؟"],
-  greetTR:["{ad} {u}, hoş geldiniz!","","","",""],
-  greet:["Hoş geldiniz, {ad}!","Welcome, {ad}!","Добро пожаловать, {ad}!","Willkommen, {ad}!","أهلاً وسهلاً، {ad}!"],
-  greetNo:["Hoş geldiniz!","Welcome!","Добро пожаловать!","Willkommen!","أهلاً وسهلاً!"],
   bey:["Bey","","","",""], hanim:["Hanım","","","",""],
   foot:["Değerler 100 g başına ortalama besin değerleridir. Tüm değişiklikler bu cihazda otomatik kaydedilir. Bu uygulama tıbbi tavsiye yerine geçmez.","Values are average nutrition per 100 g. All changes are saved automatically on this device. This app is not medical advice.","Значения — средняя пищевая ценность на 100 г. Все изменения сохраняются на этом устройстве. Приложение не заменяет консультацию врача.","Werte sind durchschnittliche Nährwerte pro 100 g. Alle Änderungen werden auf diesem Gerät gespeichert. Diese App ersetzt keine ärztliche Beratung.","القيم متوسطات غذائية لكل 100 غ. تُحفظ كل التغييرات تلقائياً على هذا الجهاز. هذا التطبيق لا يغني عن استشارة الطبيب."],
   // Öğünler
@@ -723,6 +740,72 @@ Object.assign(S, {
   warn18:["18 yaş altı için bu plan bir uzman eşliğinde uygulanmalıdır.","Under 18: follow this plan only with professional guidance.","До 18 лет — только под наблюдением специалиста.","Unter 18: nur mit fachlicher Begleitung umsetzen.","لمن هم دون 18 عاماً: يُتبع فقط بإشراف مختص."],
   warnLow:["VKİ’niz zayıf aralığında; kilo vermek ve sıkılaşma önerilmez.","Your BMI is in the underweight range; losing weight isn’t recommended.","ИМТ ниже нормы — худеть не рекомендуется.","Dein BMI liegt im Untergewicht – Abnehmen wird nicht empfohlen.","مؤشر كتلتك في نطاق نقص الوزن؛ لا يُنصح بإنقاص الوزن."]
 });
+// Uyarılar, hamilelik, alerji, geri bildirim, onay penceresi ve log sayfalama metinleri
+Object.assign(S, {
+  greetTR:["{ad} {u}, hoş geldiniz 😊","","","",""],
+  greet:["Hoş geldiniz, {ad} 😊","Welcome, {ad} 😊","Добро пожаловать, {ad} 😊","Willkommen, {ad} 😊","أهلاً وسهلاً، {ad} 😊"],
+  greetNo:["Hoş geldiniz 😊","Welcome 😊","Добро пожаловать 😊","Willkommen 😊","أهلاً وسهلاً 😊"],
+  // Üst düğmeler
+  warnBtn:["Uyarılar","Notices","Важно","Hinweise","تنبيهات"],
+  fbBtn:["Bize yazın","Contact us","Написать нам","Schreib uns","راسلنا"],
+  // Onay penceresi
+  yes:["Evet, onaylıyorum","Yes, confirm","Да, подтверждаю","Ja, bestätigen","نعم، أؤكد"],
+  cancel2:["Vazgeç","Cancel","Отмена","Abbrechen","إلغاء"],
+  confirmT:["Onay","Confirm","Подтверждение","Bestätigung","تأكيد"],
+  // Geri bildirim
+  fbTitle:["✉️ Öneri ve şikâyetleriniz","✉️ Suggestions & feedback","✉️ Предложения и отзывы","✉️ Vorschläge & Feedback","✉️ الاقتراحات والملاحظات"],
+  fbText:["Uygulamayla ilgili önerilerinizi, şikâyetlerinizi ya da hata bildirimlerinizi bize yazın. Mesajınızı okuyup dönüş yapacağız.","Send us your suggestions, complaints or bug reports about the app. We read every message and will get back to you.","Напишите нам предложения, жалобы или сообщения об ошибках. Мы читаем каждое письмо и ответим вам.","Schreib uns Vorschläge, Beschwerden oder Fehlermeldungen zur App. Wir lesen jede Nachricht und melden uns.","أرسل لنا اقتراحاتك أو شكاواك أو بلاغات الأخطاء. نقرأ كل رسالة وسنرد عليك."],
+  fbOpen:["✉️ E-posta uygulamasında yaz","✉️ Write in my e-mail app","✉️ Написать в почтовом приложении","✉️ In meiner E-Mail-App schreiben","✉️ الكتابة في تطبيق البريد"],
+  fbCopy:["📋 Adresi kopyala","📋 Copy address","📋 Скопировать адрес","📋 Adresse kopieren","📋 نسخ العنوان"],
+  fbSubject:["Diyet Listesi: öneri / şikâyet","Diet Plan: feedback","План питания: отзыв","Ernährungsplan: Feedback","الخطة الغذائية: ملاحظات"],
+  fbBody:["Mesajınız:\n\n\n---\nUygulama dili: {dil} · Cihaz: {cihaz}","Your message:\n\n\n---\nApp language: {dil} · Device: {cihaz}","Ваше сообщение:\n\n\n---\nЯзык: {dil} · Устройство: {cihaz}","Deine Nachricht:\n\n\n---\nSprache: {dil} · Gerät: {cihaz}","رسالتك:\n\n\n---\nاللغة: {dil} · الجهاز: {cihaz}"],
+  tCopied:["Adres kopyalandı","Address copied","Адрес скопирован","Adresse kopiert","تم نسخ العنوان"],
+  // Uyarılar
+  warnTitle:["⚠️ Önemli uyarılar","⚠️ Important notices","⚠️ Важная информация","⚠️ Wichtige Hinweise","⚠️ تنبيهات مهمة"],
+  wGenelT:["Öneriler tahminidir","Suggestions are estimates","Рекомендации приблизительны","Empfehlungen sind Schätzungen","الاقتراحات تقديرية"],
+  wGenel:["Bu uygulamadaki kalori ve besin değerleri, internette yayımlanan ortalama gıda verilerine ve uluslararası beslenme kılavuzlarına dayanan tahminlerdir. Gerçek değerler ürüne, markaya, porsiyona ve pişirme şekline göre değişir.","Calorie and nutrient values in this app are estimates based on average food data published online and international nutrition guidelines. Real values vary by product, brand, portion and cooking method.","Калорийность и пищевая ценность в приложении — приблизительные данные из открытых источников и международных рекомендаций. Реальные значения зависят от продукта, марки, порции и способа приготовления.","Kalorien- und Nährwerte in dieser App sind Schätzungen auf Basis öffentlich verfügbarer Durchschnittswerte und internationaler Ernährungsrichtlinien. Tatsächliche Werte hängen von Produkt, Marke, Portion und Zubereitung ab.","قيم السعرات والمغذيات في هذا التطبيق تقديرات تعتمد على متوسط بيانات الأغذية المنشورة على الإنترنت والإرشادات الغذائية الدولية، وتختلف القيم الفعلية حسب المنتج والعلامة والحصة وطريقة الطهي."],
+  wDoktorT:["Doktor ve diyetisyen kontrolü","Doctor & dietitian supervision","Контроль врача и диетолога","Ärztliche & diätologische Kontrolle","إشراف الطبيب وأخصائي التغذية"],
+  wDoktor:["Diyet listesini doktorunuz veya diyetisyeniniz kontrol etmeden uygulamayın. Kronik hastalığınız (diyabet, böbrek, kalp, tiroit vb.), düzenli kullandığınız ilaçlar, 18 yaş altı, emzirme ya da yeme bozukluğu öyküsü varsa mutlaka uzmana danışın.","Do not follow this plan without your doctor's or dietitian's approval. If you have a chronic condition (diabetes, kidney, heart, thyroid, etc.), take regular medication, are under 18, breastfeeding or have a history of eating disorders, always consult a professional.","Не следуйте плану без одобрения врача или диетолога. При хронических заболеваниях (диабет, почки, сердце, щитовидная железа и др.), постоянном приёме лекарств, возрасте до 18 лет, грудном вскармливании или расстройствах пищевого поведения обязательно проконсультируйтесь со специалистом.","Folge diesem Plan nicht ohne Zustimmung deines Arztes oder Ernährungsberaters. Bei chronischen Erkrankungen (Diabetes, Niere, Herz, Schilddrüse usw.), regelmäßiger Medikamenteneinnahme, unter 18, in der Stillzeit oder bei Essstörungen in der Vorgeschichte unbedingt fachlichen Rat einholen.","لا تتبع هذه الخطة دون موافقة طبيبك أو أخصائي التغذية. استشر مختصاً دائماً إذا كان لديك مرض مزمن (السكري أو الكلى أو القلب أو الغدة الدرقية وغيرها) أو تتناول أدوية بانتظام أو كان عمرك أقل من 18 عاماً أو كنتِ مرضعاً أو لديك تاريخ من اضطرابات الأكل."],
+  wSorumT:["Sorumluluk reddi","Disclaimer","Отказ от ответственности","Haftungsausschluss","إخلاء المسؤولية"],
+  wSorum:["Bu uygulama tıbbi tavsiye, teşhis veya tedavi yerine geçmez. Uygulamanın kullanımından doğabilecek doğrudan veya dolaylı hiçbir sonuç için geliştirici yasal sorumluluk kabul etmez. Uygulamayı kullanarak bu koşulları kabul etmiş sayılırsınız.","This app is not a substitute for medical advice, diagnosis or treatment. The developer accepts no legal liability for any direct or indirect consequences of using the app. By using the app you accept these terms.","Приложение не заменяет медицинскую консультацию, диагностику или лечение. Разработчик не несёт юридической ответственности за любые прямые или косвенные последствия его использования. Используя приложение, вы принимаете эти условия.","Diese App ersetzt keine ärztliche Beratung, Diagnose oder Behandlung. Der Entwickler übernimmt keinerlei rechtliche Haftung für direkte oder indirekte Folgen der Nutzung. Mit der Nutzung akzeptierst du diese Bedingungen.","هذا التطبيق لا يغني عن الاستشارة الطبية أو التشخيص أو العلاج، ولا يتحمل المطوّر أي مسؤولية قانونية عن أي نتائج مباشرة أو غير مباشرة لاستخدامه. باستخدامك التطبيق فإنك توافق على هذه الشروط."],
+  wHamileT:["Hamileler için","For pregnant women","Для беременных","Für Schwangere","للحوامل"],
+  wHamile:["Hamilelikte kilo vermeye yönelik diyet uygulanmaz; uygulama hamilelik modunda kaloriyi trimestere göre artırır. Çiğ veya az pişmiş yumurta ve balık, pastörize edilmemiş süt ürünleri, yüksek cıvalı balıklar ve alkol tüketilmemelidir; kafein günde 200 mg'ı (yaklaşık 2 fincan kahve) geçmemelidir. Folik asit, demir, iyot, D vitamini ve omega-3 takviyeleri yalnızca doktor önerisiyle kullanılmalıdır. Menüyü mutlaka kadın doğum uzmanınıza veya diyetisyeninize onaylatın.","No weight-loss diet is applied during pregnancy; in pregnancy mode the app increases calories by trimester. Avoid raw or undercooked eggs and fish, unpasteurised dairy, high-mercury fish and alcohol; keep caffeine under 200 mg a day (about 2 cups of coffee). Take folic acid, iron, iodine, vitamin D and omega-3 supplements only as advised by your doctor. Always have the menu approved by your obstetrician or dietitian.","Во время беременности диеты для похудения не применяются; в режиме беременности приложение увеличивает калорийность по триместрам. Исключите сырые или недоваренные яйца и рыбу, непастеризованные молочные продукты, рыбу с высоким содержанием ртути и алкоголь; кофеин — не более 200 мг в день (около 2 чашек кофе). Фолиевую кислоту, железо, йод, витамин D и омега-3 принимайте только по назначению врача. Обязательно согласуйте меню с акушером-гинекологом или диетологом.","In der Schwangerschaft wird keine Abnehmdiät angewendet; im Schwangerschaftsmodus erhöht die App die Kalorien je nach Trimester. Rohe oder nicht durchgegarte Eier und Fisch, Rohmilchprodukte, quecksilberreiche Fische und Alkohol meiden; Koffein unter 200 mg pro Tag (etwa 2 Tassen Kaffee). Folsäure, Eisen, Jod, Vitamin D und Omega-3 nur nach ärztlicher Empfehlung einnehmen. Lass das Menü unbedingt von deiner Frauenärztin oder Ernährungsfachkraft freigeben.","لا يُطبَّق نظام لإنقاص الوزن أثناء الحمل؛ في وضع الحمل يزيد التطبيق السعرات حسب الثلث. تجنبي البيض والسمك النيء أو غير المطهو جيداً، والألبان غير المبسترة، والأسماك عالية الزئبق، والكحول؛ ولا يتجاوز الكافيين 200 ملغ يومياً (نحو فنجانين من القهوة). لا تتناولي حمض الفوليك والحديد واليود وفيتامين د وأوميغا 3 إلا بتوصية الطبيب. اعرضي القائمة دائماً على طبيبة النساء أو أخصائي التغذية."],
+  wAlerjiT:["Alerjisi olanlar için","For people with allergies","Для людей с аллергией","Für Allergiker","لمن لديهم حساسية"],
+  wAlerji:["Alerji filtresi, yemeklerin bilinen ana içeriklerine göre çalışır; tarif, marka ve hazır ürünlerde gizli içerik ya da çapraz bulaşma olabilir. Her zaman ürün etiketlerini okuyun. Ciddi alerjiniz (anafilaksi riski) varsa doktorunuzun talimatlarına uyun ve yanınızda gerekli ilacı bulundurun. Acil durumda 112'yi arayın.","The allergy filter works on the known main ingredients of each dish; recipes, brands and ready-made products may contain hidden ingredients or cross-contamination. Always read product labels. If you have a severe allergy (risk of anaphylaxis), follow your doctor's instructions and carry your medication. In an emergency call your local emergency number.","Фильтр аллергенов учитывает известные основные ингредиенты блюд; в рецептах, марках и готовых продуктах возможны скрытые компоненты и перекрёстное загрязнение. Всегда читайте этикетки. При тяжёлой аллергии (риск анафилаксии) следуйте указаниям врача и держите лекарство при себе. В экстренной ситуации звоните в службу спасения.","Der Allergiefilter berücksichtigt die bekannten Hauptzutaten der Gerichte; Rezepte, Marken und Fertigprodukte können versteckte Zutaten oder Kreuzkontaminationen enthalten. Lies immer die Etiketten. Bei schweren Allergien (Anaphylaxie-Risiko) folge den Anweisungen deines Arztes und trage dein Notfallmedikament bei dir. Im Notfall den Notruf wählen.","يعمل مرشح الحساسية وفق المكونات الرئيسية المعروفة لكل طبق، وقد تحتوي الوصفات والعلامات التجارية والمنتجات الجاهزة على مكونات خفية أو تلوث متبادل. اقرأ ملصقات المنتجات دائماً. إذا كانت لديك حساسية شديدة (خطر الحساسية المفرطة) فاتبع تعليمات طبيبك واحمل دواءك معك، واتصل بالطوارئ عند الحاجة."],
+  wVeriT:["Verileriniz","Your data","Ваши данные","Deine Daten","بياناتك"],
+  wVeri:["Girdiğiniz bilgiler yalnızca bu cihazda saklanır, hiçbir sunucuya gönderilmez. Cihaz değiştirirken Ayarlar › Yedek bölümünü kullanın.","Everything you enter is stored only on this device and never sent to a server. Use Settings › Backup when changing devices.","Все данные хранятся только на этом устройстве и никуда не отправляются. При смене устройства используйте Настройки › Резервная копия.","Alle Eingaben werden nur auf diesem Gerät gespeichert und nie an einen Server gesendet. Beim Gerätewechsel Einstellungen › Sicherung nutzen.","تُحفظ كل بياناتك على هذا الجهاز فقط ولا تُرسل إلى أي خادم. استخدم الإعدادات › النسخ الاحتياطي عند تغيير الجهاز."],
+  // Hamilelik
+  hamileQ:["Hamile misiniz?","Are you pregnant?","Вы беременны?","Bist du schwanger?","هل أنتِ حامل؟"],
+  hayir:["Hayır","No","Нет","Nein","لا"],
+  evet:["Evet","Yes","Да","Ja","نعم"],
+  trimQ:["Kaçıncı trimesterdesiniz?","Which trimester are you in?","Какой у вас триместр?","In welchem Trimester bist du?","في أي ثلث من الحمل أنتِ؟"],
+  tri1:["1. trimester (0–13. hafta)","1st trimester (weeks 0–13)","1-й триместр (0–13 нед.)","1. Trimester (SSW 0–13)","الثلث الأول (الأسابيع 0–13)"],
+  tri2:["2. trimester (14–27. hafta)","2nd trimester (weeks 14–27)","2-й триместр (14–27 нед.)","2. Trimester (SSW 14–27)","الثلث الثاني (الأسابيع 14–27)"],
+  tri3:["3. trimester (28. hafta ve sonrası)","3rd trimester (week 28+)","3-й триместр (с 28 нед.)","3. Trimester (ab SSW 28)","الثلث الثالث (الأسبوع 28 فما بعد)"],
+  hamileNot:["Hamilelikte kilo vermeye yönelik hedefler uygulanmaz. Menünüz yaşınıza, kilonuza, boyunuza ve alerjilerinize göre hamileliğe uygun hazırlanır; az pişmiş yumurta, ton balığı gibi riskli yiyecekler önerilmez.","Weight-loss goals are not applied during pregnancy. Your menu is prepared for pregnancy based on your age, weight, height and allergies; risky foods such as undercooked eggs or tuna are not suggested.","Во время беременности цели по снижению веса не применяются. Меню составляется для беременности с учётом возраста, веса, роста и аллергий; рискованные продукты (недоваренные яйца, тунец) не предлагаются.","In der Schwangerschaft gelten keine Abnehmziele. Dein Menü wird passend zur Schwangerschaft nach Alter, Gewicht, Größe und Allergien erstellt; riskante Lebensmittel wie nicht durchgegarte Eier oder Thunfisch werden nicht vorgeschlagen.","لا تُطبَّق أهداف إنقاص الوزن أثناء الحمل. تُعدّ قائمتك بما يناسب الحمل حسب عمرك ووزنك وطولك وحساسيتك، ولا تُقترح الأطعمة الخطرة مثل البيض غير المطهو جيداً أو التونة."],
+  btnHamile:["🤰 Hamileyim","🤰 I'm pregnant","🤰 Я беременна","🤰 Ich bin schwanger","🤰 أنا حامل"],
+  btnHamileDegil:["Hamile değilim","I'm not pregnant","Я не беременна","Ich bin nicht schwanger","لست حاملاً"],
+  cHamileOn:["Hamilelik moduna geçilsin mi? Öğünleriniz yaşınıza, kilonuza, boyunuza ve alerjilerinize göre hamileliğe uygun olarak yeniden hazırlanacak; kilo verme hedefi uygulanmayacak.","Switch to pregnancy mode? Your meals will be rebuilt for pregnancy based on your age, weight, height and allergies; no weight-loss target will be applied.","Включить режим беременности? Приёмы пищи будут пересобраны для беременности с учётом возраста, веса, роста и аллергий; цель по снижению веса не применяется.","Schwangerschaftsmodus einschalten? Deine Mahlzeiten werden passend zur Schwangerschaft nach Alter, Gewicht, Größe und Allergien neu erstellt; es gilt kein Abnehmziel.","هل تريدين التبديل إلى وضع الحمل؟ ستُعاد إعداد وجباتك بما يناسب الحمل حسب عمرك ووزنك وطولك وحساسيتك، ولن يُطبَّق هدف إنقاص الوزن."],
+  cHamileOff:["Hamile değilsiniz; artık yaşınıza, kilonuza, boyunuza ve alerjilerinize uygun yemekler listelenecektir. Onaylıyor musunuz?","You are not pregnant; from now on meals suited to your age, weight, height and allergies will be listed. Do you confirm?","Вы не беременны; теперь будут подбираться блюда с учётом вашего возраста, веса, роста и аллергий. Подтверждаете?","Du bist nicht schwanger; ab jetzt werden Gerichte passend zu Alter, Gewicht, Größe und Allergien angezeigt. Bestätigen?","لستِ حاملاً؛ ستُعرض من الآن الأطعمة المناسبة لعمرك ووزنك وطولك وحساسيتك. هل تؤكدين؟"],
+  lHamileOn:["Hamilelik modu açıldı ({t}. trimester); menü hamileliğe uygun yeniden hazırlandı","Pregnancy mode on (trimester {t}); menu rebuilt for pregnancy","Режим беременности включён ({t}-й триместр); меню пересобрано","Schwangerschaftsmodus an ({t}. Trimester); Menü neu erstellt","تم تفعيل وضع الحمل (الثلث {t})؛ أعيد إعداد القائمة"],
+  lHamileOff:["Hamilelik modu kapatıldı; menü profile göre yeniden hazırlandı","Pregnancy mode off; menu rebuilt from profile","Режим беременности выключен; меню пересобрано по профилю","Schwangerschaftsmodus aus; Menü aus Profil neu erstellt","تم إيقاف وضع الحمل؛ أعيد إعداد القائمة حسب الملف"],
+  gHamile:["Hamilelik ({t}. trimester)","Pregnancy (trimester {t})","Беременность ({t}-й триместр)","Schwangerschaft ({t}. Trimester)","الحمل (الثلث {t})"],
+  // Alerji
+  wAlerjiQ:["Alerjiniz var mı?","Do you have any allergies?","Есть ли у вас аллергия?","Hast du Allergien?","هل لديك حساسية؟"],
+  wAlerjiQS:["Seçtiğiniz alerjenleri içeren hiçbir yemek önerilmez.","No dish containing your selected allergens will be suggested.","Блюда с выбранными аллергенами не будут предлагаться.","Gerichte mit deinen gewählten Allergenen werden nie vorgeschlagen.","لن يُقترح أي طبق يحتوي على مسببات الحساسية التي تختارها."],
+  alerjiYok:["Yok","None","Нет","Keine","لا يوجد"],
+  alerjiVar:["Var","Yes, I have","Да, есть","Ja, habe ich","نعم، لدي"],
+  alerjiAra:["Alerjen ara: süt, fıstık, gluten, çilek…","Search allergen: milk, peanut, gluten…","Поиск: молоко, арахис, глютен…","Allergen suchen: Milch, Erdnuss, Gluten…","ابحث: حليب، فول سوداني، غلوتين…"],
+  alerjiSecili:["Şunlara alerjiniz var:","You are allergic to:","У вас аллергия на:","Du bist allergisch gegen:","لديك حساسية تجاه:"],
+  alerjiBos:["Henüz seçim yok. Arama kutusuna yazıp listeden seçin; birden fazla seçebilirsiniz.","Nothing selected yet. Type in the search box and pick from the list; you can choose several.","Пока ничего не выбрано. Введите в поиск и выберите из списка; можно несколько.","Noch nichts gewählt. Tippe ins Suchfeld und wähle aus der Liste; Mehrfachauswahl möglich.","لم تختر شيئاً بعد. اكتب في مربع البحث واختر من القائمة؛ يمكنك اختيار أكثر من عنصر."],
+  errAlerji:["En az bir alerjen seçin ya da “Yok”u işaretleyin.","Select at least one allergen or choose “None”.","Выберите хотя бы один аллерген или отметьте «Нет».","Wähle mindestens ein Allergen oder „Keine“.","اختر مسبب حساسية واحداً على الأقل أو اختر «لا يوجد»."],
+  alerjiLbl:["Alerjiler","Allergies","Аллергии","Allergien","الحساسية"],
+  editAlerji:["🚫 Alerjilerimi düzenle","🚫 Edit my allergies","🚫 Изменить аллергии","🚫 Allergien bearbeiten","🚫 تعديل الحساسية"],
+  lAlerji:["Alerjiler güncellendi: {l}","Allergies updated: {l}","Аллергии обновлены: {l}","Allergien aktualisiert: {l}","تم تحديث الحساسية: {l}"],
+  lProfil:["Profil ve hedef güncellendi; menü yeniden hazırlandı","Profile and goal updated; menu rebuilt","Профиль и цель обновлены; меню пересобрано","Profil und Ziel aktualisiert; Menü neu erstellt","تم تحديث الملف والهدف؛ أعيد إعداد القائمة"],
+  // Log sayfaları
+  sayfaN:["Sayfa {n} / {t} · {k} kayıt","Page {n} / {t} · {k} records","Стр. {n} / {t} · {k} записей","Seite {n} / {t} · {k} Einträge","صفحة {n} / {t} · {k} سجل"]
+});
 // ---------- Yemekler ----------
 // [id, kategori, kcal, protein, karb, yağ, şeker, lif (100 g), varsayılan miktar, 'birim:gram', içerik (m kırmızı et, c tavuk, f balık, e yumurta, d süt), porsiyon notu, arama kelimeleri, tr, en, ru, de, ar]
 const YEMEK_SATIR = [
@@ -742,6 +825,23 @@ const YEMEK_SATIR = [
   ['kofte','et',230,18,6,15,1,0.5,150,'','my','','kırmızı et kıyma','Köfte (ızgara)','Meatballs (grilled)','Котлеты (гриль)','Frikadellen (gegrillt)','كفتة (مشوية)'],
   ['kofte_firin','et',220,18,6,14,1,0.5,150,'','my','','kırmızı et kıyma','Köfte (fırın)','Meatballs (baked)','Котлеты (запечённые)','Frikadellen (Ofen)','كفتة (بالفرن)'],
   ['kofte_tava','et',260,17,7,18,1,0.5,150,'','my','','kırmızı et kıyma kızartma','Köfte (tava)','Meatballs (pan-fried)','Котлеты (жареные)','Frikadellen (gebraten)','كفتة (مقلية)'],
+  ['tavuk_but','et',175,26,0,7.5,0,0,180,'','c','','piliç but ızgara','Tavuk but (ızgara, derisiz)','Chicken thigh (grilled, skinless)','Куриное бедро (гриль, без кожи)','Hähnchenkeule (gegrillt, ohne Haut)','فخذ دجاج (مشوي، بدون جلد)'],
+  ['tavuk_kanat','et',220,27,0,12,0,0,150,'','c','','piliç kanat ızgara','Tavuk kanat (ızgara)','Chicken wings (grilled)','Куриные крылья (гриль)','Hähnchenflügel (gegrillt)','أجنحة دجاج (مشوية)'],
+  ['tavuk_doner','et',190,22,3,10,1,0.3,150,'','cd','','piliç döner yoğurtlu','Tavuk döner','Chicken döner','Куриный донер','Hähnchen-Döner','شاورما دجاج'],
+  ['et_doner','et',250,20,2,18,0.5,0.2,150,'','my','','kırmızı et döner','Et döner','Beef döner','Мясной донер','Fleisch-Döner','شاورما لحم'],
+  ['kavurma','et',280,25,1,20,0.5,0.3,120,'','my','','kırmızı et kavurma','Et kavurma','Braised beef (kavurma)','Жареное мясо (кавурма)','Geschmortes Rindfleisch (Kavurma)','لحم مقلي (قاورما)'],
+  ['pirzola','et',290,25,0,21,0,0,150,'','my','','kuzu kırmızı et ızgara','Kuzu pirzola (ızgara)','Lamb chops (grilled)','Бараньи котлеты на кости (гриль)','Lammkoteletts (gegrillt)','ريش غنم (مشوية)'],
+  ['adana','et',260,17,3,20,1,0.5,150,'','my','','kebap kırmızı et kıyma ızgara','Adana kebap','Adana kebab','Адана-кебаб','Adana-Kebab','كباب أضنة'],
+  ['tavuk_sote','anayemek',140,18,5,5.5,3,1.2,250,'','c','','piliç sote tava sebzeli','Tavuk sote','Chicken sauté with vegetables','Курица соте с овощами','Hähnchen-Sauté mit Gemüse','دجاج سوتيه بالخضار'],
+  ['et_sote','anayemek',170,20,5,8,3,1.2,250,'','m','','kırmızı et sote tava','Et sote','Beef sauté with vegetables','Говядина соте с овощами','Rindfleisch-Sauté mit Gemüse','لحم سوتيه بالخضار'],
+  ['sebzeli_tavuk','anayemek',120,15,5,4.5,3,1.5,250,'','c','','piliç fırın sebzeli','Fırında sebzeli tavuk','Oven-baked chicken with vegetables','Курица, запечённая с овощами','Ofenhähnchen mit Gemüse','دجاج بالخضار في الفرن'],
+  ['tavuklu_pilav','anayemek',165,9,22,4.5,0.3,0.5,300,'','c','','tavuk pilav pirinç','Tavuklu pilav','Chicken with rice pilaf','Плов с курицей','Hähnchen mit Reis-Pilaw','أرز بالدجاج'],
+  ['tas_kebabi','anayemek',150,15,7,7,3,1.5,250,'','m','','kırmızı et yemek patates','Tas kebabı','Beef stew (tas kebabı)','Тас-кебаб (тушёная говядина)','Rindfleisch-Eintopf (Tas Kebabı)','طاس كباب (يخنة لحم)'],
+  ['izmir_kofte','anayemek',160,11,9,9,3,1.5,250,'','my','','köfte kırmızı et fırın patates','İzmir köfte','İzmir meatballs with potatoes','Измир-кёфте с картофелем','İzmir-Köfte mit Kartoffeln','كفتة إزمير بالبطاطس'],
+  ['etli_nohut','anayemek',125,8,13,4.5,2,4,250,'','m','','nohut kırmızı et yemek','Etli nohut','Chickpeas with meat','Нут с мясом','Kichererbsen mit Fleisch','حمص باللحم'],
+  ['tavuk_durum','anayemek',210,14,22,7,2,2.5,200,'','cd','','tavuk dürüm wrap lavaş','Tavuk dürüm (tam buğday)','Chicken wrap (whole wheat)','Шаурма с курицей (цельнозерновая)','Hähnchen-Wrap (Vollkorn)','لفافة دجاج (قمح كامل)'],
+  ['tavuk_salata','salata',110,13,4,4.5,2.5,1.5,250,'','c','','tavuklu salata piliç','Tavuklu salata','Chicken salad','Салат с курицей','Hähnchensalat','سلطة الدجاج'],
+  ['tavuk_corba','corba',45,4,5,1.2,0.5,0.3,250,'','c','kepce:125','piliç şehriye','Tavuk çorbası','Chicken soup','Куриный суп','Hühnersuppe','شوربة الدجاج'],
   ['levrek','balik',124,23.6,0,2.6,0,0,200,'','f','','deniz ürünü','Levrek (ızgara)','Sea bass (grilled)','Сибас (гриль)','Wolfsbarsch (gegrillt)','قاروص (مشوي)'],
   ['levrek_firin','balik',130,23,0,3.5,0,0,200,'','f','','deniz ürünü','Levrek (fırın)','Sea bass (baked)','Сибас (запечённый)','Wolfsbarsch (Ofen)','قاروص (بالفرن)'],
   ['levrek_bug','balik',115,22,1.5,2.5,1,0.3,200,'','f','','deniz ürünü haşlama','Levrek (buğulama)','Sea bass (steamed)','Сибас (на пару)','Wolfsbarsch (gedünstet)','قاروص (على البخار)'],
@@ -860,6 +960,108 @@ const YEMEKLER = YEMEK_SATIR.map(r => {
 });
 // Doktor listesinde olmayanlar: otomatik planda kullanılmaz (aramada seçilebilir)
 const DOKTOR_DISI = new Set(['beyazekmek','pirinc','patates_kizartma','bal','sutlac']);
+// ---------- Alerjenler ----------
+// [id, arama kelimeleri (eş anlamlılar), tr, en, ru, de, ar] — AB'nin 14 ana alerjeni + yaygın besin/baharat hassasiyetleri
+const ALERJEN_SATIR = [
+  ['gluten','gluten çölyak un','Gluten','Gluten','Глютен','Gluten','الغلوتين'],
+  ['bugday','buğday un ekmek makarna bulgur irmik','Buğday','Wheat','Пшеница','Weizen','القمح'],
+  ['cavdar','çavdar','Çavdar','Rye','Рожь','Roggen','الجاودار'],
+  ['yulaf','yulaf','Yulaf','Oats','Овёс','Hafer','الشوفان'],
+  ['pirinc','pirinç','Pirinç','Rice','Рис','Reis','الأرز'],
+  ['sut','süt laktoz peynir yoğurt kazein whey tereyağı kaymak','Süt ve süt ürünleri (laktoz)','Milk & dairy (lactose)','Молоко и молочные продукты (лактоза)','Milch & Milchprodukte (Laktose)','الحليب ومشتقاته (اللاكتوز)'],
+  ['yumurta','yumurta','Yumurta','Egg','Яйца','Ei','البيض'],
+  ['balik','balık levrek somon ton hamsi çipura palamut deniz','Balık','Fish','Рыба','Fisch','السمك'],
+  ['kabuklu','kabuklu deniz ürünü karides midye istakoz yengeç kalamar ahtapot','Kabuklu deniz ürünleri','Shellfish & molluscs','Моллюски и ракообразные','Schalen- & Weichtiere','المحار والقشريات'],
+  ['yerfistigi','yer fıstığı fıstık ezmesi','Yer fıstığı','Peanut','Арахис','Erdnuss','الفول السوداني'],
+  ['kuruyemis','kuruyemiş sert kabuklu ağaç yemişi','Sert kabuklu yemişler (tümü)','Tree nuts (all)','Орехи (все)','Schalenfrüchte (alle)','المكسرات (كلها)'],
+  ['ceviz','ceviz','Ceviz','Walnut','Грецкий орех','Walnuss','الجوز'],
+  ['badem','badem','Badem','Almond','Миндаль','Mandel','اللوز'],
+  ['findik','fındık','Fındık','Hazelnut','Фундук','Haselnuss','البندق'],
+  ['soya','soya tofu edamame','Soya','Soy','Соя','Soja','الصويا'],
+  ['susam','susam tahin','Susam','Sesame','Кунжут','Sesam','السمسم'],
+  ['hardal','hardal','Hardal','Mustard','Горчица','Senf','الخردل'],
+  ['kereviz','kereviz','Kereviz','Celery','Сельдерей','Sellerie','الكرفس'],
+  ['sulfit','sülfit kükürt koruyucu kuru meyve','Sülfit','Sulphites','Сульфиты','Sulfite','الكبريتيت'],
+  ['tavuk','tavuk piliç','Tavuk','Chicken','Курица','Huhn','الدجاج'],
+  ['hindi','hindi','Hindi','Turkey','Индейка','Pute','الديك الرومي'],
+  ['kirmizi','kırmızı et dana kuzu kıyma alfa-gal','Kırmızı et (alfa-gal)','Red meat (alpha-gal)','Красное мясо (альфа-гал)','Rotes Fleisch (Alpha-Gal)','اللحوم الحمراء (ألفا غال)'],
+  ['nohut','nohut leblebi','Nohut','Chickpea','Нут','Kichererbse','الحمص'],
+  ['mercimek','mercimek','Mercimek','Lentil','Чечевица','Linse','العدس'],
+  ['fasulye','fasulye barbunya','Fasulye','Beans','Фасоль','Bohnen','الفاصولياء'],
+  ['bezelye','bezelye','Bezelye','Pea','Горох','Erbse','البازلاء'],
+  ['domates','domates salça','Domates','Tomato','Помидор','Tomate','الطماطم'],
+  ['salatalik','salatalık hıyar','Salatalık','Cucumber','Огурец','Gurke','الخيار'],
+  ['patlican','patlıcan','Patlıcan','Eggplant','Баклажан','Aubergine','الباذنجان'],
+  ['kabak','kabak','Kabak','Zucchini','Кабачок','Zucchini','الكوسا'],
+  ['biber','biber pul biber kırmızı biber paprika','Biber','Pepper (capsicum)','Перец','Paprika','الفلفل'],
+  ['sogan','soğan','Soğan','Onion','Лук','Zwiebel','البصل'],
+  ['sarimsak','sarımsak','Sarımsak','Garlic','Чеснок','Knoblauch','الثوم'],
+  ['ispanak','ıspanak','Ispanak','Spinach','Шпинат','Spinat','السبانخ'],
+  ['brokoli','brokoli','Brokoli','Broccoli','Брокколи','Brokkoli','البروكلي'],
+  ['karnabahar','karnabahar','Karnabahar','Cauliflower','Цветная капуста','Blumenkohl','القرنبيط'],
+  ['patates','patates','Patates','Potato','Картофель','Kartoffel','البطاطس'],
+  ['elma','elma','Elma','Apple','Яблоко','Apfel','التفاح'],
+  ['armut','armut','Armut','Pear','Груша','Birne','الكمثرى'],
+  ['muz','muz','Muz','Banana','Банан','Banane','الموز'],
+  ['narenciye','narenciye portakal mandalina limon greyfurt','Narenciye','Citrus','Цитрусовые','Zitrusfrüchte','الحمضيات'],
+  ['cilek','çilek','Çilek','Strawberry','Клубника','Erdbeere','الفراولة'],
+  ['kayisi','kayısı','Kayısı','Apricot','Абрикос','Aprikose','المشمش'],
+  ['hurma','hurma','Hurma','Date','Финик','Dattel','التمر'],
+  ['uzum','üzüm kuru üzüm','Üzüm','Grape','Виноград','Traube','العنب'],
+  ['zeytin','zeytin zeytinyağı','Zeytin','Olive','Оливки','Olive','الزيتون'],
+  ['kabak_cekirdegi','kabak çekirdeği çekirdek','Kabak çekirdeği','Pumpkin seed','Тыквенные семечки','Kürbiskerne','بذور اليقطين'],
+  ['chia','chia','Chia','Chia','Чиа','Chia','الشيا'],
+  ['keten','keten tohumu','Keten tohumu','Flaxseed','Семена льна','Leinsamen','بذور الكتان'],
+  ['kakao','kakao çikolata','Kakao / çikolata','Cocoa / chocolate','Какао / шоколад','Kakao / Schokolade','الكاكاو / الشوكولاتة'],
+  ['bal','bal arı','Bal','Honey','Мёд','Honig','العسل'],
+  ['kafein','kafein kahve çay','Kafein','Caffeine','Кофеин','Koffein','الكافيين'],
+  ['tarcin','tarçın','Tarçın','Cinnamon','Корица','Zimt','القرفة'],
+  ['kimyon','kimyon','Kimyon','Cumin','Кумин','Kreuzkümmel','الكمون'],
+  ['sumak','sumak','Sumak','Sumac','Сумах','Sumach','السماق'],
+  ['nane','nane','Nane','Mint','Мята','Minze','النعناع']
+];
+const ALERJENLER = ALERJEN_SATIR.map(r => {
+  const a = {id:r[0], e:r[1], n:r.slice(2, 7)};
+  Object.defineProperty(a, 'ad', {get(){ return this.n[DI()] || this.n[0]; }});
+  return a;
+});
+// Yemeklerin bilinen ana içerikleri (alerji filtresi bunlara göre çalışır)
+const YEMEK_ALERJEN = {
+  tavuk:'tavuk', tavuk_hasl:'tavuk', tavuk_firin:'tavuk', tavuk_tava:'tavuk', tavuk_sis:'tavuk,sut,sarimsak,biber',
+  tavuk_kofte:'tavuk,yumurta,gluten,bugday,sogan', tavuk_baget:'tavuk', hindi:'hindi', hindi_hasl:'hindi',
+  biftek:'kirmizi', biftek_tava:'kirmizi', dana_hasl:'kirmizi', dana_sis:'kirmizi,biber,sogan',
+  kofte:'kirmizi,gluten,bugday,yumurta,sogan,kimyon', kofte_firin:'kirmizi,gluten,bugday,yumurta,sogan,kimyon', kofte_tava:'kirmizi,gluten,bugday,yumurta,sogan,kimyon',
+  levrek:'balik', levrek_firin:'balik', levrek_bug:'balik,sogan,domates', cipura:'balik', palamut:'balik', somon_izgara:'balik', somon:'balik', somon_tava:'balik',
+  hamsi:'balik', hamsi_tava:'balik', ton:'balik',
+  yumurta:'yumurta', yumurta_sahanda:'yumurta', yumurta_pose:'yumurta', ybeyaz:'yumurta', omlet:'yumurta,biber,sogan', menemen:'yumurta,domates,biber', cilbir:'yumurta,sut,sarimsak,biber',
+  beyazp:'sut', lor:'sut', kasar:'sut', yogurt:'sut', suzme:'sut', kefir:'sut', sut:'sut', ayran:'sut',
+  cacik:'sut,salatalik,sarimsak,nane', semizotu:'sut,sarimsak', kereviz:'sut,kereviz',
+  mercimek:'mercimek', nohut:'nohut', nohut_salata:'nohut,sogan,kimyon,domates', piyaz:'fasulye,sogan,sumak,domates', fasulye:'fasulye,kirmizi,sogan,domates',
+  yesil_mercimek:'mercimek,sogan', mkofte:'mercimek,gluten,bugday,sogan,nane,biber', nohut_ispanak:'nohut,ispanak,sogan', leblebi:'nohut',
+  tofu:'soya', edamame:'soya', soya_yogurt:'soya', soya_sut:'soya', vegan_protein:'soya',
+  tamekmek:'gluten,bugday', cavdar:'gluten,cavdar,bugday', beyazekmek:'gluten,bugday', lavas:'gluten,bugday', galeta:'gluten,bugday', yulaf:'gluten,yulaf',
+  bulgur:'gluten,bugday', pirinc:'pirinc', tammakarna:'gluten,bugday', makarna:'gluten,bugday', patates:'patates', patates_firin:'patates', patates_kizartma:'patates',
+  tpatates:'patates', patlak:'pirinc', manti:'gluten,bugday,yumurta,sut,kirmizi,sarimsak,sogan', pankek:'gluten,yulaf,yumurta,sut,tarcin',
+  coban:'domates,salatalik,sogan,biber,zeytin', tfasulye:'fasulye,sogan,domates,zeytin', ispanak:'ispanak,sogan,zeytin', ispanak_hasl:'ispanak',
+  ispanak_kiyma:'ispanak,kirmizi,sogan', brokoli:'brokoli', karnabahar:'karnabahar', izgarasebze:'patlican,kabak,biber', firin_sebze:'patlican,kabak,biber,sogan,zeytin',
+  hasl_sebze:'kabak,patates', kabak_kiyma:'kabak,kirmizi,sogan,domates', karniyarik:'patlican,kirmizi,sogan,domates,biber', turlu:'kirmizi,patlican,kabak,biber,domates,sogan',
+  bezelye:'bezelye,kirmizi,sogan', kabak_dolma:'kabak,kirmizi,gluten,bugday,sogan,domates', domates:'domates', salatalik:'salatalik', zeytin:'zeytin',
+  mcorba:'mercimek,sogan', scorba:'patates,sogan,kabak', yayla:'sut,pirinc,yumurta,gluten,bugday,nane',
+  elma:'elma', firin_elma:'elma,tarcin', armut:'armut', muz:'muz', portakal:'narenciye', mandalina:'narenciye', cilek:'cilek',
+  kayisi:'kayisi,sulfit', hurma:'hurma', uzum_kuru:'uzum,sulfit',
+  ceviz:'kuruyemis,ceviz', badem:'kuruyemis,badem', findik:'kuruyemis,findik', kabak_cek:'kabak_cekirdegi', fistikezme:'yerfistigi',
+  chia:'chia', keten:'keten', zeytinyagi:'zeytin',
+  bitter:'kakao,sut,kafein', chia_puding:'chia,sut,kakao', sutlac:'sut,pirinc', bal:'bal', whey:'sut', probar:'sut,soya,kuruyemis,yerfistigi',
+  kahve:'kafein,sut', yesilcay:'kafein',
+  tavuk_but:'tavuk', tavuk_kanat:'tavuk', tavuk_doner:'tavuk,sut,biber,sarimsak', et_doner:'kirmizi,sogan', kavurma:'kirmizi,sogan', pirzola:'kirmizi',
+  adana:'kirmizi,biber,sogan', tavuk_sote:'tavuk,biber,domates,sogan', et_sote:'kirmizi,biber,domates,sogan', sebzeli_tavuk:'tavuk,patates,biber,sogan,domates',
+  tavuklu_pilav:'tavuk,pirinc', tas_kebabi:'kirmizi,sogan,domates,patates', izmir_kofte:'kirmizi,patates,domates,biber,sogan,gluten,bugday,yumurta',
+  etli_nohut:'nohut,kirmizi,sogan,domates', tavuk_durum:'tavuk,gluten,bugday,domates,sut', tavuk_salata:'tavuk,domates,salatalik,zeytin', tavuk_corba:'tavuk,gluten,bugday'
+};
+// Hamilelikte önerilmeyenler: az pişmiş/akışkan yumurta, yüksek cıvalı olabilecek ton balığı, yüksek kafein
+const HAMILE_DISI = new Set(['yumurta_pose', 'yumurta_sahanda', 'cilbir', 'ton', 'yesilcay']);
+YEMEKLER.forEach(f => { f.al = (YEMEK_ALERJEN[f.id] || '').split(',').filter(Boolean); });
+const alerjen = id => ALERJENLER.find(a => a.id === id);
 // ---------- Öğün düzeni ve temel menü ----------
 const ANAHTAR = 'diyet_uygulamasi_v1', ESKI_ANAHTAR = 'kaan_diyet_v2';
 const SURUM = 7;
@@ -969,9 +1171,10 @@ const TERCIH = {
 };
 const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay']);
 // Kalori yetmezse ara öğüne eklenecek besleyici seçenekler (ilk uygun olan)
-const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]], [['badem',30],['galeta',2]]];
+const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]],
+  [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',25]]];   // sona doğru alerjiye uygun seçenekler
 
-const BOS_PROFIL = {ad:'', cins:'', yas:30, boy:170, kilo:70, hedefKilo:65, hedef:'', odaklar:[], aktivite:2, hiz:0.5, haric:[],
+const BOS_PROFIL = {ad:'', cins:'', hamile:false, trimester:1, yas:30, boy:170, kilo:70, hedefKilo:65, hedef:'', odaklar:[], alerjiler:[], aktivite:2, hiz:0.5, haric:[],
   kcal:1800, protein:130, karb:180, seker:55, yag:60, lif:25, su:2500, bardak:250};
 const HEDEF_KEYS = ['kcal','protein','karb','seker','yag','su','bardak'];
 const HEDEF_ETIKET = {kcal:'tKcal', protein:'tProtein', karb:'tCarb', seker:'tSugar', yag:'tFat', su:'tWater', bardak:'tGlass'};
@@ -987,6 +1190,7 @@ function tamamla(x){
   x.profil = {...BOS_PROFIL, ...x.profil};
   if (!x.profil.haric) x.profil.haric = [];
   if (!x.profil.odaklar) x.profil.odaklar = [];
+  if (!x.profil.alerjiler) x.profil.alerjiler = [];
   // Eski tek seçimli "Kan şekeri" hedefi → kilo hedefi + kan şekeri odağı
   if (x.profil.hedef === 'seker'){
     x.profil.hedef = vki(x.profil) >= 25 ? 'ver' : 'koru';
@@ -1110,8 +1314,10 @@ function hedefHesapla(p){
   const bmr = 10 * p.kilo + 6.25 * p.boy - 5 * p.yas + (p.cins === 'k' ? -161 : 5);
   const tdee = bmr * PAL[(p.aktivite || 2) - 1];
   const b = vki(p), od = new Set(p.odaklar || []), seker = od.has('seker');
+  const hamile = p.cins === 'k' && !!p.hamile, tri = p.trimester || 1;
   let kcal = tdee;
-  if (p.hedef === 'ver') kcal = tdee - Math.min(p.hiz * 7700 / 7, tdee * 0.25);
+  if (hamile) kcal = tdee + [0, 340, 450][tri - 1];
+  else if (p.hedef === 'ver') kcal = tdee - Math.min(p.hiz * 7700 / 7, tdee * 0.25);
   else if (p.hedef === 'sekil') kcal = tdee * 0.9;
   else if (p.hedef === 'kas') kcal = tdee * 1.1;
   else if (p.hedef === 'al') kcal = tdee * 1.15;
@@ -1119,7 +1325,7 @@ function hedefHesapla(p){
   kcal = Math.round(Math.max(kcal, Math.min(taban, tdee)) / 50) * 50;
   const refKilo = b > 25 ? 25 * Math.pow(p.boy / 100, 2) : p.kilo;
   const pKg = Math.max(PROTEIN_KG[p.hedef] || 1.2, seker ? 1.3 : 0);
-  const protein = Math.round(Math.min(pKg * refKilo, kcal * 0.35 / 4));
+  const protein = Math.round(Math.min(hamile ? 1.1 * p.kilo + (tri >= 2 ? 25 : 0) : pKg * refKilo, kcal * 0.35 / 4));
   // Kan şekeri: yağ %30, karbonhidrat en çok %40, şeker %10 · Kolesterol: yağ %28'de kalır, doymuş yağlı kalemler menüden çıkar
   const yag = Math.round(kcal * (seker ? 0.30 : 0.28) / 9);
   let karb = Math.round((kcal - protein * 4 - yag * 9) / 4);
@@ -1127,10 +1333,10 @@ function hedefHesapla(p){
   const sekerG = Math.round(kcal * (seker ? 0.10 : 0.13) / 4);
   // Lif: 14 g/1000 kcal; kolesterol ve kan şekerinde en az 30 g (çözünür lif LDL ve kan şekerini düşürür)
   const lif = Math.max(Math.round(kcal / 1000 * 14), od.has('kolesterol') || seker ? 30 : 0);
-  const su = sinirla(Math.round((p.kilo * 35 + (p.aktivite >= 3 ? 500 : 0)) / 250) * 250, 1500, 4000);
+  const su = sinirla(Math.round((p.kilo * 35 + (p.aktivite >= 3 ? 500 : 0) + (hamile ? 300 : 0)) / 250) * 250, 1500, 4000);
   let hafta = 0;
-  if (p.hedef === 'ver' && p.hedefKilo < p.kilo) hafta = Math.ceil((p.kilo - p.hedefKilo) / p.hiz);
-  if (p.hedef === 'al' && p.hedefKilo > p.kilo) hafta = Math.ceil((p.hedefKilo - p.kilo) / 0.35);
+  if (!hamile && p.hedef === 'ver' && p.hedefKilo < p.kilo) hafta = Math.ceil((p.kilo - p.hedefKilo) / p.hiz);
+  if (!hamile && p.hedef === 'al' && p.hedefKilo > p.kilo) hafta = Math.ceil((p.hedefKilo - p.kilo) / 0.35);
   return {bmr:Math.round(bmr), tdee:Math.round(tdee), vki:b, kcal, protein, karb, seker: sekerG, yag, lif, su, hafta};
 }
 
@@ -1160,7 +1366,8 @@ function birlestir(ogeler){
 // Profile uygun mu: yenmeyenler + sağlık odaklarının dışladığı içerik (tansiyon: tuzlu, kolesterol: doymuş yağı yüksek)
 function profilUygun(p){
   const haric = new Set([...(p.haric || []), ...ODAKLAR.filter(([k]) => (p.odaklar || []).includes(k)).map(([, , x]) => x).filter(Boolean)]);
-  return f => !(f.x || '').split('').some(c => haric.has(c));
+  const alerji = new Set(p.alerjiler || []), hamile = p.cins === 'k' && !!p.hamile;
+  return f => !(f.x || '').split('').some(c => haric.has(c)) && !(f.al || []).some(a => alerji.has(a)) && !(hamile && HAMILE_DISI.has(f.id));
 }
 // 4 haftalık dönen plan: her temel hafta aynı kurallarla profile göre hazırlanır
 const planOlustur = p => TEMEL_HAFTALAR.map(h => haftaOlustur(p, h));
@@ -1186,11 +1393,12 @@ function haftaOlustur(p, temel){
       const puan = Math.abs(a1 - b1) * 3 + Math.abs(a2 - b2) + Math.abs(a3 - b3) + katUyum + (kullanilan[y.id] || 0) * 0.12;
       if (puan < enP){ enP = puan; en = y; }
     }
+    if (!en) return null;   // uygun karşılık yok (ör. çok sayıda alerji): kalem çıkarılır
     kullanilan[en.id] = (kullanilan[en.id] || 0) + 1;
     const gram = besin(it.f, it.g).k / (en.k || 1) * 100;
     return {f: en.id, g: yuvarla(en, en.a ? gram / en.a : gram)};
   };
-  const plan = temel.map(gun => OGUN_TANIM.map((o, i) => ({...o, ogeler: birlestir(gun[i].map(([f, g]) => degistir({f, g})))})));
+  const plan = temel.map(gun => OGUN_TANIM.map((o, i) => ({...o, ogeler: birlestir(gun[i].map(([f, g]) => degistir({f, g})).filter(Boolean))})));
   plan.forEach(gun => gunuOlcekle(gun, p, izinli));
   return plan;
 }
@@ -1351,12 +1559,13 @@ function ciz(){
   $('dilBar').innerHTML = DILLER.map(d => `<button class="lang${d.k === dil ? ' on' : ''}" data-dilsec="${d.k}" title="${d.ad}" aria-pressed="${d.k === dil}"><b>${d.k.toUpperCase()}</b><small>${d.ad}</small></button>`).join('');
   $('baslik').textContent = selam();
   $('lGecmis').textContent = T('history'); $('lLog').textContent = T('logs'); $('lAyar').textContent = T('settings');
+  $('lUyari').textContent = T('warnBtn'); $('lYaz').textContent = T('fbBtn');
   const d = tarihDen(aktif);
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
-  const hedef = P.hedef ? [T('g_' + P.hedef), ...odak].join(' + ') + ' · ' : '';
+  const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
+  const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
   $('altBaslik').textContent = `${gunUzun(aktif)}, ${d.toLocaleDateString(LOC(), {day:'numeric', month:'long', year:'numeric'})} · ${hedef}${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg`;
-  $('dipNot').textContent = T('foot');
-  gunleriCiz(); ozetCiz(); ogunleriCiz(); altCiz(); logKartCiz(); kayitDurumYaz();
+  gunleriCiz(); ozetCiz(); ogunleriCiz(); altCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz();
   ustHizala();
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
@@ -1458,14 +1667,14 @@ function ogunleriCiz(){
       const f = yemek(it.f);
       const agirlik = f.a ? `≈ ${yuv(gramOf(f, it.g))} ${T('g')} · ` : '';
       return `<li class="item">
-        <div class="item-row">
-          <div class="item-info"><b>${esc(f.ad)}</b><small>${agirlik}${bilgi(besin(it.f, it.g))}</small></div>
+        <div class="item-info"><b>${esc(f.ad)}</b><small>${agirlik}${bilgi(besin(it.f, it.g))}</small></div>
+        <div class="item-ctl">
           <div class="gram"><button class="adim" data-arti="${oi},${ii}" data-yon="-1" aria-label="${T('dec')}">−</button><label class="val"><input autocomplete="off" autocorrect="off" spellcheck="false" type="text" inputmode="decimal" value="${sayi(it.g)}" data-gram="${oi},${ii}" aria-label="${T('amount')}"><span>${birimAd(f)}</span></label><button class="adim" data-arti="${oi},${ii}" data-yon="1" aria-label="${T('inc')}">+</button></div>
-        </div>
-        <div class="item-acts">
-          <button class="mini cmp" data-kiyas="${oi},${ii}">${T('compare')}</button>
-          <button class="mini" data-degis="${oi},${ii}">${T('change')}</button>
-          <button class="mini del" data-sil="${oi},${ii}">${T('remove')}</button>
+          <div class="item-acts">
+            <button class="mini cmp" data-kiyas="${oi},${ii}" title="${esc(T('compare'))}">${ikonlu('compare')}</button>
+            <button class="mini" data-degis="${oi},${ii}" title="${esc(T('change'))}">${ikonlu('change')}</button>
+            <button class="mini del" data-sil="${oi},${ii}" title="${esc(T('remove'))}">${ikonlu('remove')}</button>
+          </div>
         </div>
       </li>`;
     }).join('') : `<li class="empty">${T('noItems')}</li>`;
@@ -1480,16 +1689,26 @@ function ogunleriCiz(){
     </article>`;
   }).join('');
 }
+// "⇄ Kıyasla" → simge + etiket (dar kartta yalnız simge görünür)
+function ikonlu(k){ const [ik, ...ad] = T(k).split(' '); return `<span class="mi">${ik}</span><span class="lbl">${ad.join(' ')}</span>`; }
+const hamileMi = () => D.profil.cins === 'k' && !!D.profil.hamile;
+// Ana ekrandaki hamilelik düğmesi (yalnız kadın kullanıcılar)
+function hamileBtnCiz(){
+  const b = $('hamileBtn');
+  b.hidden = D.profil.cins !== 'k';
+  b.textContent = hamileMi() ? T('btnHamileDegil') : T('btnHamile');
+  b.classList.toggle('on', hamileMi());
+}
+// Başlığın yanındaki tarih-saat (dakikada bir güncellenir)
+function saatYaz(){
+  const z = new Date();
+  $('saat').textContent = `${z.toLocaleDateString(LOC(), {day:'2-digit', month:'2-digit', year:'numeric'})} ${z.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})} ${z.toLocaleDateString(LOC(), {weekday:'long'})}`;
+}
 function altCiz(){
   if (gecmisMi(aktif) && !detayAcik){ $('altIslem').innerHTML = ''; return; }
   const ozel = !!(D.kayit[aktif] && D.kayit[aktif].ogunler), gun = gunUzun(aktif);
   $('altIslem').innerHTML = `<button class="btn ghost" data-sablon="1">${T('makeDefault', {gun})}</button>`
     + (ozel ? `<button class="btn ghost" data-sablondan="1">${T('revertDay', {gun})}</button>` : '');
-}
-function logKartCiz(){
-  const liste = D.log.filter(l => l.k === aktif).slice(-10).reverse();
-  $('logKart').innerHTML = `<div class="log-head"><h3>${T('logOf', {d: etiket(aktif)})}</h3><button class="mini cmp" data-tumlog="1">${T('allLogs')}</button></div>
-    <ul class="logs">${liste.length ? liste.map(l => logSatir(l, false)).join('') : `<li class="empty" style="padding:8px 0">${T('noDayLogs')}</li>`}</ul>`;
 }
 
 // ---------- Değişiklik işlemleri (hepsi loglanır) ----------
@@ -1584,17 +1803,21 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.tumlog){ loglarAc(); return; }
   if (ds.sablon){
     const gun = gunUzun(aktif);
-    if (!confirm(T('confirmTemplate', {gun}))) return;
-    D.planlar[haftaNo(aktif)][haftaGunu(aktif)] = kopya(menuOku(aktif));
-    logEkle('diger', aktif, T('lTemplate', {gun}));
-    kaydet(); ciz(); toast(T('templateUpdated', {gun})); return;
+    onayAc(T('confirmTemplate', {gun}), () => {
+      D.planlar[haftaNo(aktif)][haftaGunu(aktif)] = kopya(menuOku(aktif));
+      logEkle('diger', aktif, T('lTemplate', {gun}));
+      kaydet(); ciz(); toast(T('templateUpdated', {gun}));
+    });
+    return;
   }
   if (ds.sablondan){
     const gun = gunUzun(aktif);
-    if (!confirm(T('confirmRevert', {gun}))) return;
-    delete D.kayit[aktif].ogunler;
-    logEkle('diger', aktif, T('lRevert', {gun}));
-    kaydet(); ciz(); return;
+    onayAc(T('confirmRevert', {gun}), () => {
+      delete D.kayit[aktif].ogunler;
+      logEkle('diger', aktif, T('lRevert', {gun}));
+      kaydet(); ciz();
+    });
+    return;
   }
 });
 document.querySelector('.wrap').addEventListener('change', e => {
@@ -1606,6 +1829,9 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
 $('ayarBtn').addEventListener('click', ayarlarAc);
 $('logBtn').addEventListener('click', () => loglarAc());
 $('gecmisBtn').addEventListener('click', gecmisAc);
+$('uyariBtn').addEventListener('click', uyarilarAc);
+$('yazBtn').addEventListener('click', yazAc);
+$('hamileBtn').addEventListener('click', hamileDegistir);
 $('dilBar').addEventListener('click', e => {
   const b = e.target.closest('[data-dilsec]'); if (!b || b.dataset.dilsec === dil) return;
   D.ayar.dil = b.dataset.dilsec; kaydet(); ciz();
@@ -1813,17 +2039,35 @@ function gecmisAc(){
 }
 
 // ---------- Tüm loglar ----------
-let logFiltre = 'tum';
+let logFiltre = 'tum', logSayfa = 0;
+const LOG_SAYFA = 50, LOG_PARCA = 10;
 function loglarAc(){
   ac(T('logsTitle'));
+  logSayfa = 0;
   const ciz2 = () => {
     let liste = D.log.slice().reverse();
     if (logFiltre === 'gun') liste = liste.filter(l => l.k === aktif);
     if (logFiltre === 'gecmis') liste = liste.filter(l => l.g);
+    const sayfaSay = Math.max(1, Math.ceil(liste.length / LOG_SAYFA));
+    logSayfa = Math.min(logSayfa, sayfaSay - 1);
+    const sayfa = liste.slice(logSayfa * LOG_SAYFA, (logSayfa + 1) * LOG_SAYFA);
+    let gosterilen = Math.min(LOG_PARCA, sayfa.length);
     const f = (id, ad) => `<button class="chip${logFiltre === id ? ' on' : ''}" data-lf="${id}">${ad}</button>`;
+    const sayfalar = sayfaSay > 1 ? `<div class="sayfalar">
+        <button class="nav-btn" data-ls="${logSayfa - 1}" ${logSayfa === 0 ? 'disabled' : ''} aria-label="‹">‹</button>
+        <span>${T('sayfaN', {n: logSayfa + 1, t: sayfaSay, k: liste.length})}</span>
+        <button class="nav-btn" data-ls="${logSayfa + 1}" ${logSayfa >= sayfaSay - 1 ? 'disabled' : ''} aria-label="›">›</button></div>` : '';
     $('sbody').innerHTML = `<div class="chips" style="margin-top:0">${f('tum', T('fAll'))}${f('gun', etiket(aktif))}${f('gecmis', T('fPast'))}</div>
-      <ul class="logs">${liste.length ? liste.slice(0, 400).map(l => logSatir(l)).join('') : `<li class="empty">${T('noRecords')}</li>`}</ul>`;
-    $('sbody').querySelectorAll('[data-lf]').forEach(b => b.onclick = () => { logFiltre = b.dataset.lf; ciz2(); });
+      <ul class="logs" id="logListe">${sayfa.length ? sayfa.slice(0, gosterilen).map(l => logSatir(l)).join('') : `<li class="empty">${T('noRecords')}</li>`}</ul>${sayfalar}`;
+    $('sbody').querySelectorAll('[data-lf]').forEach(b => b.onclick = () => { logFiltre = b.dataset.lf; logSayfa = 0; ciz2(); });
+    $('sbody').querySelectorAll('[data-ls]').forEach(b => b.onclick = () => { logSayfa = +b.dataset.ls; ciz2(); $('sbody').scrollTop = 0; });
+    // Aşağı kaydırdıkça sayfanın kalanını 10'ar ekle
+    $('sbody').onscroll = () => {
+      const g = $('sbody');
+      if (gosterilen >= sayfa.length || g.scrollTop + g.clientHeight < g.scrollHeight - 80) return;
+      $('logListe').insertAdjacentHTML('beforeend', sayfa.slice(gosterilen, gosterilen + LOG_PARCA).map(l => logSatir(l)).join(''));
+      gosterilen += LOG_PARCA;
+    };
   };
   ciz2();
 }
@@ -1840,8 +2084,9 @@ function ayarlarAc(){
   ac(T('setTitle'), `
     <div class="sec" style="margin-top:0">${T('sProfile')}</div>
     <div class="cur"><b>${esc(P.ad || '—')}</b> · ${P.cins ? T(P.cins === 'k' ? 'female' : 'male') : ''} · ${P.yas} · ${P.boy} cm · ${sayi(P.kilo)} kg${h ? ` · ${T('bmi')} ${sayi(h.vki)}` : ''}<br>
-      <small>${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}</small></div>
-    <button class="btn solid full" id="profilDuzenle">${T('editProfile')}</button>
+      <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
+      ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
+    <div class="acts"><button class="btn solid" id="profilDuzenle">${T('editProfile')}</button><button class="btn" id="alerjiDuzenle">${T('editAlerji')}</button></div>
     <div class="sec">${T('sTargets')}</div>
     <div class="grid2">${HEDEF_KEYS.map(alan).join('')}</div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
@@ -1856,6 +2101,7 @@ function ayarlarAc(){
     <div class="sec">${T('sReset')}</div>
     <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div>`);
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
+  $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
   $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(); });
   $('hedefKaydet').onclick = () => {
     const degisen = [];
@@ -1871,7 +2117,7 @@ function ayarlarAc(){
     r.onload = () => {
       try {
         const v = JSON.parse(r.result);
-        if (!v || v.v !== 2 || !v.plan) throw 0;
+        if (!v || v.v !== 2 || !(v.plan || v.planlar)) throw 0;
         D = tamamla(v);
         logEkle('diger', null, T('lBackup', {f: file.name}));
         kaydet(); kapat(); baslat2();
@@ -1886,13 +2132,10 @@ function ayarlarAc(){
     indir(html, `${dosyaAdi()}_diyet_listesi.html`, 'text/html');
   };
   $('planSifirla').onclick = () => {
-    if (!confirm(T('cResetMenu'))) return;
-    planYenile(); kaydet(); ciz(); kapat(); toast(T('tSaved'));
+    onayAc(T('cResetMenu'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
   };
   $('kayitSifirla').onclick = () => {
-    if (!confirm(T('cResetRec'))) return;
-    D.kayit = {}; logEkle('diger', null, T('lResetRec'));
-    kaydet(); ciz(); kapat(); toast(T('tRecDel'));
+    onayAc(T('cResetRec'), () => { D.kayit = {}; logEkle('diger', null, T('lResetRec')); kaydet(); ciz(); toast(T('tRecDel')); });
   };
 }
 // Profilden haftalık şablonu yeniden üret; bugün ve sonrasının özel menülerini temizle (geçmiş korunur)
@@ -1911,14 +2154,76 @@ function indir(icerik, ad, tip){
   setTimeout(() => URL.revokeObjectURL(url), 3000);
   toast(T('tDownloaded', {f: ad}));
 }
+
+// ---------- Onay penceresi (X, Esc ya da dışarı dokununca kapanır) ----------
+function onayAc(metin, evet, ek = ''){
+  ac(T('confirmT'), `<p class="onay-metin">${esc(metin)}</p>${ek}<div class="acts"><button class="btn ghost" id="onayHayir">${T('cancel2')}</button><button class="btn green" id="onayEvet">${T('yes')}</button></div>`);
+  $('onayHayir').onclick = kapat;
+  $('onayEvet').onclick = () => { kapat(); evet(); };
+}
+
+// ---------- Uyarılar ----------
+function uyarilarAc(){
+  const b = (ik, bas, metin) => `<div class="uyari"><h4>${ik} ${T(bas)}</h4><p>${esc(T(metin))}</p></div>`;
+  ac(T('warnTitle'), b('📊', 'wGenelT', 'wGenel') + b('🩺', 'wDoktorT', 'wDoktor') + b('🤰', 'wHamileT', 'wHamile')
+    + b('🚫', 'wAlerjiT', 'wAlerji') + b('⚖️', 'wSorumT', 'wSorum') + b('🔒', 'wVeriT', 'wVeri'));
+}
+
+// ---------- Bize yazın (öneri / şikâyet) ----------
+const DESTEK_EPOSTA = 'destek@maviplay.com';
+function yazAc(){
+  const cihaz = /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'iOS' : /Android/.test(navigator.userAgent) ? 'Android' : 'PC';
+  const link = `mailto:${DESTEK_EPOSTA}?subject=${encodeURIComponent(T('fbSubject'))}&body=${encodeURIComponent(T('fbBody', {dil: dil.toUpperCase(), cihaz}))}`;
+  ac(T('fbTitle'), `<p class="onay-metin">${esc(T('fbText'))}</p>
+    <div class="cur" style="text-align:center"><b dir="ltr">${DESTEK_EPOSTA}</b></div>
+    <div class="acts"><a class="btn solid" href="${link}">${T('fbOpen')}</a><button class="btn ghost" id="epostaKopya">${T('fbCopy')}</button></div>`);
+  $('epostaKopya').onclick = () => {
+    const bitti = () => toast(T('tCopied'));
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(DESTEK_EPOSTA).then(bitti, () => {});
+    else { const t = document.createElement('textarea'); t.value = DESTEK_EPOSTA; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); bitti(); } catch(e){} t.remove(); }
+  };
+}
+
+// ---------- Hamilelik modu ----------
+function hedefleriYenile(){
+  const h = hedefHesapla(D.profil);
+  Object.assign(D.profil, {kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su});
+}
+function hamileDegistir(){
+  if (hamileMi()){
+    onayAc(T('cHamileOff'), () => {
+      D.profil.hamile = false; hedefleriYenile(); planYenile();
+      logEkle('diger', null, T('lHamileOff'));
+      kaydet(); ciz(); toast(T('tSaved'));
+    });
+    return;
+  }
+  let tri = D.profil.trimester || 1;
+  const secenek = () => `<div class="opts" id="triSec">${[1, 2, 3].map(n => `<button class="opt${n === tri ? ' on' : ''}" data-tri="${n}"><span class="ic">🤰</span><div><b>${T('tri' + n)}</b></div></button>`).join('')}</div>`;
+  onayAc(T('cHamileOn'), () => {
+    D.profil.hamile = true; D.profil.trimester = tri; hedefleriYenile(); planYenile();
+    logEkle('diger', null, T('lHamileOn', {t: tri}));
+    kaydet(); ciz(); toast(T('tSaved'));
+  }, `<div class="wsec">${T('trimQ')}</div>${secenek()}<div class="wmsg info">${esc(T('hamileNot'))}</div>`);
+  $('sbody').addEventListener('click', e => {
+    const b = e.target.closest('[data-tri]'); if (!b) return;
+    tri = +b.dataset.tri;
+    $('triSec').querySelectorAll('[data-tri]').forEach(x => x.classList.toggle('on', +x.dataset.tri === tri));
+  });
+}
 // ---------- Kurulum sihirbazı ----------
 let W = null, wAdim = 0, wHata = '';
 const HEDEFLER = [['ver','🔥'],['sekil','🏋️'],['koru','⚖️'],['kas','💪'],['al','📈']];
 const odakAd = k => T(k === 'seker' ? 'g_seker' : 'o_' + k);
-const wAdimlar = () => ['dil','ad','olcu','hedef','aktivite', ...(W.hedef === 'ver' || W.hedef === 'al' ? ['kilo'] : []), 'tercih','ozet'];
+const wAdimlar = () => ['dil','ad', ...(W.cins === 'k' ? ['hamile'] : []), 'olcu','hedef','aktivite',
+  ...(!W.hamile && (W.hedef === 'ver' || W.hedef === 'al') ? ['kilo'] : []), 'tercih','alerji','ozet'];
 function sihirbazAc(baslangic = 0){
-  W = {...kopya(D.profil), dil: D.ayar.dil || 'tr'};
-  wAdim = baslangic; wHata = '';
+  W = {...kopya(D.profil), dil: D.ayar.dil || 'tr', alerjiAra: ''};
+  if (W.cins !== 'k') W.hamile = false;
+  // Alerji sorusu: kurulumu bitmiş kullanıcıda mevcut seçim, yeni kullanıcıda boş (seçmesi gerekir)
+  W.alerjiVar = (W.alerjiler || []).length ? 'var' : D.ayar.kurulum ? 'yok' : '';
+  wAdim = typeof baslangic === 'string' ? Math.max(0, wAdimlar().indexOf(baslangic)) : baslangic;
+  wHata = '';
   document.body.classList.add('wiz-acik');
   $('kurulum').hidden = false;
   wCiz();
@@ -1952,6 +2257,10 @@ function wCiz(){
       <div class="wsec">${T('gender')}</div>
       <div class="opts">${wOpt('wcins', 'e', W.cins === 'e', '👨', T('male'))}${wOpt('wcins', 'k', W.cins === 'k', '👩', T('female'))}</div>
       <div class="hint" style="margin-top:8px">${T('genderWhy')}</div>`;
+  } else if (ad === 'hamile'){
+    baslik = T('hamileQ'); alt = '';
+    govde = `<div class="opts">${wOpt('whamile', '0', !W.hamile, '🙂', T('hayir'))}${wOpt('whamile', '1', !!W.hamile, '🤰', T('evet'))}</div>`
+      + (W.hamile ? `<div class="wsec">${T('trimQ')}</div><div class="opts">${[1, 2, 3].map(n => wOpt('wtri', n, (W.trimester || 1) === n, '🗓️', T('tri' + n))).join('')}</div><div class="wmsg info">${esc(T('hamileNot'))}</div>` : '');
   } else if (ad === 'olcu'){
     baslik = T('wBodyT'); alt = T('wBodyS');
     govde = wStepper('yas', 'age', 1) + wStepper('boy', 'height', 1) + wStepper('kilo', 'weight', 0.5)
@@ -1959,7 +2268,8 @@ function wCiz(){
   } else if (ad === 'hedef'){
     baslik = T('wGoalT'); alt = T('wGoalS');
     const zayif = b < 18.5;
-    govde = `<div class="opts">${HEDEFLER.map(([k, ic]) => wOpt('whedef', k, W.hedef === k, ic, T('g_' + k), T('gd_' + k), zayif && (k === 'ver' || k === 'sekil'))).join('')}</div>`
+    govde = (W.hamile ? `<div class="wmsg info" style="margin:0 0 12px">${esc(T('hamileNot'))}</div>` : '')
+      + `<div class="opts">${HEDEFLER.map(([k, ic]) => wOpt('whedef', k, W.hedef === k, ic, T('g_' + k), T('gd_' + k), (zayif || W.hamile) && (k === 'ver' || k === 'sekil'))).join('')}</div>`
       + (zayif ? `<div class="wmsg warn">${T('warnLow')}</div>` : '') + (W.yas < 18 ? `<div class="wmsg warn">${T('warn18')}</div>` : '')
       + `<div class="wsec">${T('wOdakT')}</div><div class="hint" style="margin:-2px 0 8px">${T('wOdakS')}</div>`
       + `<div class="opts">${ODAKLAR.map(([k, ic]) => wOpt('wodak', k, (W.odaklar || []).includes(k), ic, odakAd(k), T('od_' + k))).join('')}</div>`;
@@ -1978,6 +2288,11 @@ function wCiz(){
     govde = `<div class="opts">${wOpt('wpreset', 'hepsi', preset === 'hepsi', '🍽️', T('everything'))}${wOpt('wpreset', 'vejetaryen', preset === 'vejetaryen', '🥦', T('vegetarian'))}${wOpt('wpreset', 'vegan', preset === 'vegan', '🌱', T('vegan'))}</div>
       <div class="wsec">${T('dontEat')}</div>
       <div class="opts">${[['m','🥩'],['c','🍗'],['f','🐟'],['e','🥚'],['d','🥛']].map(([x, ic]) => wOpt('wharic', x, h.has(x), ic, T('x_' + x))).join('')}</div>`;
+  } else if (ad === 'alerji'){
+    baslik = T('wAlerjiQ'); alt = T('wAlerjiQS');
+    govde = `<div class="opts">${wOpt('walerjivar', 'yok', W.alerjiVar === 'yok', '✅', T('alerjiYok'))}${wOpt('walerjivar', 'var', W.alerjiVar === 'var', '⚠️', T('alerjiVar'))}</div>`
+      + (W.alerjiVar === 'var' ? `<div class="wfield" style="margin-top:12px"><input class="wname" id="wAlerjiAra" value="${esc(W.alerjiAra)}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
+        <div class="al-sonuc" id="alSonuc"></div><div class="al-secili" id="alSecili"></div>` : '');
   } else {
     const h = hedefHesapla(W);
     baslik = T('wSumT', {ad: esc(wHitap())}); alt = T('wSumS');
@@ -1990,6 +2305,8 @@ function wCiz(){
       </div>
       <div class="wmsg info">${T('goalLbl')}: <b>${T('g_' + W.hedef)}</b> · ${T('a' + W.aktivite)}${h.hafta ? ' · ' + T('weeks', {n: h.hafta}) : ''}</div>
       ${(W.odaklar || []).map(k => `<div class="wmsg info"><b>${ODAKLAR.find(o => o[0] === k)[1]} ${odakAd(k)}:</b> ${T('od_' + k)}</div>`).join('')}
+      ${W.hamile ? `<div class="wmsg info"><b>🤰 ${T('gHamile', {t: W.trimester || 1})}:</b> ${esc(T('hamileNot'))}</div>` : ''}
+      ${(W.alerjiler || []).length ? `<div class="wmsg warn"><b>🚫 ${T('alerjiSecili')}</b> ${W.alerjiler.map(a => esc(alerjen(a).ad)).join(', ')}</div>` : ''}
       <details class="method"><summary>${T('method')}</summary><ul>${T('methodTxt').split('|').concat(T('methodOdak')).map(s => `<li>${esc(s)}</li>`).join('')}</ul></details>
       <div class="wmsg warn">${T('disclaimer')}</div>`;
   }
@@ -2001,8 +2318,23 @@ function wCiz(){
     <div class="wiz-body">${govde}${wHata ? `<div class="wmsg err">${wHata}</div>` : ''}</div>
     <div class="wnav">${ilk ? '' : `<button class="btn ghost" data-wgeri="1">${T('back')}</button>`}<button class="btn ${son ? 'green' : 'solid'}" data-wileri="1">${son ? T('create') : T('next')}</button></div>
   </div>`;
-  wSureYaz();
+  wSureYaz(); alListeCiz();
   $('kurulum').scrollTop = 0;
+}
+// Alerji arama: sonuçlar ve seçilenler (yeniden çizmeden; arama kutusu odakta kalır)
+function alListeCiz(){
+  const sonuc = $('alSonuc'); if (!sonuc) return;
+  const q = (W.alerjiAra || '').trim(), sec = new Set(W.alerjiler || []);
+  let liste = ALERJENLER;
+  if (q){
+    const A = aramaHazirla(q);
+    liste = ALERJENLER.filter(a => { const metin = `${a.ad} ${a.n.join(' ')} ${a.e}`; return A.alternatifler.some(k => k.every(r => r.test(metin))); });
+  }
+  sonuc.innerHTML = liste.length ? liste.map(a => `<button class="al-chip${sec.has(a.id) ? ' on' : ''}" data-walerji="${a.id}">${sec.has(a.id) ? '✓ ' : ''}${esc(a.ad)}</button>`).join('')
+    : `<div class="hint">${T('noResult').split('.')[0]}.</div>`;
+  $('alSecili').innerHTML = sec.size
+    ? `<div class="wmsg warn" style="margin-top:10px"><b>🚫 ${T('alerjiSecili')}</b><div class="al-etiketler">${[...sec].map(id => `<button class="al-chip on" data-walerji="${id}">${esc(alerjen(id).ad)} ✕</button>`).join('')}</div></div>`
+    : `<div class="hint" style="margin-top:10px">${T('alerjiBos')}</div>`;
 }
 // Canlı alanlar: VKİ ve tahmini süre (input yazarken yeniden çizmeden)
 function wSureYaz(){
@@ -2015,13 +2347,22 @@ function wDogrula(ad){
   if (ad === 'ad' && (!W.ad.trim() || !W.cins)) return T('errName');
   if (ad === 'olcu' && !(W.yas >= 14 && W.yas <= 100 && W.boy >= 120 && W.boy <= 230 && W.kilo >= 30 && W.kilo <= 300)) return T('errBody');
   if (ad === 'hedef' && (!W.hedef || (vki(W) < 18.5 && (W.hedef === 'ver' || W.hedef === 'sekil')))) return W.hedef ? T('warnLow') : T('errGoal');
+  if (ad === 'alerji' && !W.alerjiVar) return T('errGoal');
+  if (ad === 'alerji' && W.alerjiVar === 'var' && !(W.alerjiler || []).length) return T('errAlerji');
   if (ad === 'kilo' && ((W.hedef === 'ver' && !(W.hedefKilo < W.kilo && W.hedefKilo >= 30)) || (W.hedef === 'al' && !(W.hedefKilo > W.kilo)))) return T('errTarget');
   return '';
 }
 function wBitir(){
   const h = hedefHesapla(W);
-  const {dil: secilenDil, ...profil} = W;
+  const {dil: secilenDil, alerjiAra, alerjiVar, ...profil} = W;
   profil.ad = profil.ad.trim();
+  if (alerjiVar !== 'var') profil.alerjiler = [];
+  // Profil düzenlemesinde hamilelik ve alerji değişikliklerini logla
+  if (D.ayar.kurulum){
+    const eski = D.profil, adlar = l => l.map(a => alerjen(a).ad).join(', ') || T('alerjiYok');
+    if ([...eski.alerjiler || []].sort().join() !== [...profil.alerjiler].sort().join()) logEkle('diger', null, T('lAlerji', {l: adlar(profil.alerjiler)}));
+    if (!!eski.hamile !== !!profil.hamile) logEkle('diger', null, profil.hamile ? T('lHamileOn', {t: profil.trimester || 1}) : T('lHamileOff'));
+  }
   D.profil = {...profil, kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su};
   D.ayar.dil = secilenDil; D.ayar.kurulum = true;
   dil = secilenDil;
@@ -2035,7 +2376,18 @@ $('kurulum').addEventListener('click', e => {
   const ds = b.dataset;
   if (ds.wkapat){ sihirbazKapat(); return; }
   if (ds.wdil){ W.dil = ds.wdil; wCiz(); return; }
-  if (ds.wcins){ W.cins = ds.wcins; wHata = ''; wCiz(); return; }
+  if (ds.wcins){ W.cins = ds.wcins; if (W.cins !== 'k') W.hamile = false; wHata = ''; wCiz(); return; }
+  if (ds.whamile){
+    W.hamile = ds.whamile === '1';
+    if (W.hamile && (W.hedef === 'ver' || W.hedef === 'sekil')) W.hedef = 'koru';   // hamilelikte kilo verme yok
+    wCiz(); return;
+  }
+  if (ds.wtri){ W.trimester = +ds.wtri; wCiz(); return; }
+  if (ds.walerjivar){ W.alerjiVar = ds.walerjivar; if (W.alerjiVar === 'yok') W.alerjiler = []; wHata = ''; wCiz(); if ($('wAlerjiAra')) $('wAlerjiAra').focus(); return; }
+  if (ds.walerji){
+    const s = new Set(W.alerjiler || []); s.has(ds.walerji) ? s.delete(ds.walerji) : s.add(ds.walerji);
+    W.alerjiler = [...s]; wHata = ''; alListeCiz(); return;
+  }
   if (ds.whedef){
     W.hedef = ds.whedef; wHata = '';
     if (W.hedef === 'ver' && !(W.hedefKilo < W.kilo)) W.hedefKilo = Math.round(Math.max(W.kilo - 5, 18.5 * Math.pow(W.boy / 100, 2)));
@@ -2061,6 +2413,7 @@ $('kurulum').addEventListener('click', e => {
   }
 });
 $('kurulum').addEventListener('input', e => {
+  if (e.target.id === 'wAlerjiAra'){ W.alerjiAra = e.target.value; alListeCiz(); return; }
   const alan = e.target.dataset.wf; if (!alan) return;
   W[alan] = alan === 'ad' ? e.target.value : Math.max(0, +String(e.target.value).replace(/[,٫]/g, '.') || 0);
   wSureYaz();
@@ -2116,7 +2469,10 @@ document.addEventListener('focusin', e => {
 });
 document.addEventListener('focusout', () => setTimeout(gorunenAlan, 100));
 // Gece yarısını geçince "bugün" değişsin
-setInterval(() => { if (!document.hidden && $('kurulum').hidden) gunleriCiz(); }, 60000);
+// Dakika başında: tarih-saat ve gece yarısında "bugün"
+(function dakika(){
+  setTimeout(() => { if (D.ayar.kurulum) saatYaz(); if (!document.hidden && $('kurulum').hidden) gunleriCiz(); dakika(); }, 60000 - Date.now() % 60000 + 50);
+})();
 </script>
 </body>
 </html>

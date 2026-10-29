@@ -2,10 +2,15 @@
 let W = null, wAdim = 0, wHata = '';
 const HEDEFLER = [['ver','🔥'],['sekil','🏋️'],['koru','⚖️'],['kas','💪'],['al','📈']];
 const odakAd = k => T(k === 'seker' ? 'g_seker' : 'o_' + k);
-const wAdimlar = () => ['dil','ad','olcu','hedef','aktivite', ...(W.hedef === 'ver' || W.hedef === 'al' ? ['kilo'] : []), 'tercih','ozet'];
+const wAdimlar = () => ['dil','ad', ...(W.cins === 'k' ? ['hamile'] : []), 'olcu','hedef','aktivite',
+  ...(!W.hamile && (W.hedef === 'ver' || W.hedef === 'al') ? ['kilo'] : []), 'tercih','alerji','ozet'];
 function sihirbazAc(baslangic = 0){
-  W = {...kopya(D.profil), dil: D.ayar.dil || 'tr'};
-  wAdim = baslangic; wHata = '';
+  W = {...kopya(D.profil), dil: D.ayar.dil || 'tr', alerjiAra: ''};
+  if (W.cins !== 'k') W.hamile = false;
+  // Alerji sorusu: kurulumu bitmiş kullanıcıda mevcut seçim, yeni kullanıcıda boş (seçmesi gerekir)
+  W.alerjiVar = (W.alerjiler || []).length ? 'var' : D.ayar.kurulum ? 'yok' : '';
+  wAdim = typeof baslangic === 'string' ? Math.max(0, wAdimlar().indexOf(baslangic)) : baslangic;
+  wHata = '';
   document.body.classList.add('wiz-acik');
   $('kurulum').hidden = false;
   wCiz();
@@ -39,6 +44,10 @@ function wCiz(){
       <div class="wsec">${T('gender')}</div>
       <div class="opts">${wOpt('wcins', 'e', W.cins === 'e', '👨', T('male'))}${wOpt('wcins', 'k', W.cins === 'k', '👩', T('female'))}</div>
       <div class="hint" style="margin-top:8px">${T('genderWhy')}</div>`;
+  } else if (ad === 'hamile'){
+    baslik = T('hamileQ'); alt = '';
+    govde = `<div class="opts">${wOpt('whamile', '0', !W.hamile, '🙂', T('hayir'))}${wOpt('whamile', '1', !!W.hamile, '🤰', T('evet'))}</div>`
+      + (W.hamile ? `<div class="wsec">${T('trimQ')}</div><div class="opts">${[1, 2, 3].map(n => wOpt('wtri', n, (W.trimester || 1) === n, '🗓️', T('tri' + n))).join('')}</div><div class="wmsg info">${esc(T('hamileNot'))}</div>` : '');
   } else if (ad === 'olcu'){
     baslik = T('wBodyT'); alt = T('wBodyS');
     govde = wStepper('yas', 'age', 1) + wStepper('boy', 'height', 1) + wStepper('kilo', 'weight', 0.5)
@@ -46,7 +55,8 @@ function wCiz(){
   } else if (ad === 'hedef'){
     baslik = T('wGoalT'); alt = T('wGoalS');
     const zayif = b < 18.5;
-    govde = `<div class="opts">${HEDEFLER.map(([k, ic]) => wOpt('whedef', k, W.hedef === k, ic, T('g_' + k), T('gd_' + k), zayif && (k === 'ver' || k === 'sekil'))).join('')}</div>`
+    govde = (W.hamile ? `<div class="wmsg info" style="margin:0 0 12px">${esc(T('hamileNot'))}</div>` : '')
+      + `<div class="opts">${HEDEFLER.map(([k, ic]) => wOpt('whedef', k, W.hedef === k, ic, T('g_' + k), T('gd_' + k), (zayif || W.hamile) && (k === 'ver' || k === 'sekil'))).join('')}</div>`
       + (zayif ? `<div class="wmsg warn">${T('warnLow')}</div>` : '') + (W.yas < 18 ? `<div class="wmsg warn">${T('warn18')}</div>` : '')
       + `<div class="wsec">${T('wOdakT')}</div><div class="hint" style="margin:-2px 0 8px">${T('wOdakS')}</div>`
       + `<div class="opts">${ODAKLAR.map(([k, ic]) => wOpt('wodak', k, (W.odaklar || []).includes(k), ic, odakAd(k), T('od_' + k))).join('')}</div>`;
@@ -65,6 +75,11 @@ function wCiz(){
     govde = `<div class="opts">${wOpt('wpreset', 'hepsi', preset === 'hepsi', '🍽️', T('everything'))}${wOpt('wpreset', 'vejetaryen', preset === 'vejetaryen', '🥦', T('vegetarian'))}${wOpt('wpreset', 'vegan', preset === 'vegan', '🌱', T('vegan'))}</div>
       <div class="wsec">${T('dontEat')}</div>
       <div class="opts">${[['m','🥩'],['c','🍗'],['f','🐟'],['e','🥚'],['d','🥛']].map(([x, ic]) => wOpt('wharic', x, h.has(x), ic, T('x_' + x))).join('')}</div>`;
+  } else if (ad === 'alerji'){
+    baslik = T('wAlerjiQ'); alt = T('wAlerjiQS');
+    govde = `<div class="opts">${wOpt('walerjivar', 'yok', W.alerjiVar === 'yok', '✅', T('alerjiYok'))}${wOpt('walerjivar', 'var', W.alerjiVar === 'var', '⚠️', T('alerjiVar'))}</div>`
+      + (W.alerjiVar === 'var' ? `<div class="wfield" style="margin-top:12px"><input class="wname" id="wAlerjiAra" value="${esc(W.alerjiAra)}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"></div>
+        <div class="al-sonuc" id="alSonuc"></div><div class="al-secili" id="alSecili"></div>` : '');
   } else {
     const h = hedefHesapla(W);
     baslik = T('wSumT', {ad: esc(wHitap())}); alt = T('wSumS');
@@ -77,6 +92,8 @@ function wCiz(){
       </div>
       <div class="wmsg info">${T('goalLbl')}: <b>${T('g_' + W.hedef)}</b> · ${T('a' + W.aktivite)}${h.hafta ? ' · ' + T('weeks', {n: h.hafta}) : ''}</div>
       ${(W.odaklar || []).map(k => `<div class="wmsg info"><b>${ODAKLAR.find(o => o[0] === k)[1]} ${odakAd(k)}:</b> ${T('od_' + k)}</div>`).join('')}
+      ${W.hamile ? `<div class="wmsg info"><b>🤰 ${T('gHamile', {t: W.trimester || 1})}:</b> ${esc(T('hamileNot'))}</div>` : ''}
+      ${(W.alerjiler || []).length ? `<div class="wmsg warn"><b>🚫 ${T('alerjiSecili')}</b> ${W.alerjiler.map(a => esc(alerjen(a).ad)).join(', ')}</div>` : ''}
       <details class="method"><summary>${T('method')}</summary><ul>${T('methodTxt').split('|').concat(T('methodOdak')).map(s => `<li>${esc(s)}</li>`).join('')}</ul></details>
       <div class="wmsg warn">${T('disclaimer')}</div>`;
   }
@@ -88,8 +105,23 @@ function wCiz(){
     <div class="wiz-body">${govde}${wHata ? `<div class="wmsg err">${wHata}</div>` : ''}</div>
     <div class="wnav">${ilk ? '' : `<button class="btn ghost" data-wgeri="1">${T('back')}</button>`}<button class="btn ${son ? 'green' : 'solid'}" data-wileri="1">${son ? T('create') : T('next')}</button></div>
   </div>`;
-  wSureYaz();
+  wSureYaz(); alListeCiz();
   $('kurulum').scrollTop = 0;
+}
+// Alerji arama: sonuçlar ve seçilenler (yeniden çizmeden; arama kutusu odakta kalır)
+function alListeCiz(){
+  const sonuc = $('alSonuc'); if (!sonuc) return;
+  const q = (W.alerjiAra || '').trim(), sec = new Set(W.alerjiler || []);
+  let liste = ALERJENLER;
+  if (q){
+    const A = aramaHazirla(q);
+    liste = ALERJENLER.filter(a => { const metin = `${a.ad} ${a.n.join(' ')} ${a.e}`; return A.alternatifler.some(k => k.every(r => r.test(metin))); });
+  }
+  sonuc.innerHTML = liste.length ? liste.map(a => `<button class="al-chip${sec.has(a.id) ? ' on' : ''}" data-walerji="${a.id}">${sec.has(a.id) ? '✓ ' : ''}${esc(a.ad)}</button>`).join('')
+    : `<div class="hint">${T('noResult').split('.')[0]}.</div>`;
+  $('alSecili').innerHTML = sec.size
+    ? `<div class="wmsg warn" style="margin-top:10px"><b>🚫 ${T('alerjiSecili')}</b><div class="al-etiketler">${[...sec].map(id => `<button class="al-chip on" data-walerji="${id}">${esc(alerjen(id).ad)} ✕</button>`).join('')}</div></div>`
+    : `<div class="hint" style="margin-top:10px">${T('alerjiBos')}</div>`;
 }
 // Canlı alanlar: VKİ ve tahmini süre (input yazarken yeniden çizmeden)
 function wSureYaz(){
@@ -102,13 +134,22 @@ function wDogrula(ad){
   if (ad === 'ad' && (!W.ad.trim() || !W.cins)) return T('errName');
   if (ad === 'olcu' && !(W.yas >= 14 && W.yas <= 100 && W.boy >= 120 && W.boy <= 230 && W.kilo >= 30 && W.kilo <= 300)) return T('errBody');
   if (ad === 'hedef' && (!W.hedef || (vki(W) < 18.5 && (W.hedef === 'ver' || W.hedef === 'sekil')))) return W.hedef ? T('warnLow') : T('errGoal');
+  if (ad === 'alerji' && !W.alerjiVar) return T('errGoal');
+  if (ad === 'alerji' && W.alerjiVar === 'var' && !(W.alerjiler || []).length) return T('errAlerji');
   if (ad === 'kilo' && ((W.hedef === 'ver' && !(W.hedefKilo < W.kilo && W.hedefKilo >= 30)) || (W.hedef === 'al' && !(W.hedefKilo > W.kilo)))) return T('errTarget');
   return '';
 }
 function wBitir(){
   const h = hedefHesapla(W);
-  const {dil: secilenDil, ...profil} = W;
+  const {dil: secilenDil, alerjiAra, alerjiVar, ...profil} = W;
   profil.ad = profil.ad.trim();
+  if (alerjiVar !== 'var') profil.alerjiler = [];
+  // Profil düzenlemesinde hamilelik ve alerji değişikliklerini logla
+  if (D.ayar.kurulum){
+    const eski = D.profil, adlar = l => l.map(a => alerjen(a).ad).join(', ') || T('alerjiYok');
+    if ([...eski.alerjiler || []].sort().join() !== [...profil.alerjiler].sort().join()) logEkle('diger', null, T('lAlerji', {l: adlar(profil.alerjiler)}));
+    if (!!eski.hamile !== !!profil.hamile) logEkle('diger', null, profil.hamile ? T('lHamileOn', {t: profil.trimester || 1}) : T('lHamileOff'));
+  }
   D.profil = {...profil, kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su};
   D.ayar.dil = secilenDil; D.ayar.kurulum = true;
   dil = secilenDil;
@@ -122,7 +163,18 @@ $('kurulum').addEventListener('click', e => {
   const ds = b.dataset;
   if (ds.wkapat){ sihirbazKapat(); return; }
   if (ds.wdil){ W.dil = ds.wdil; wCiz(); return; }
-  if (ds.wcins){ W.cins = ds.wcins; wHata = ''; wCiz(); return; }
+  if (ds.wcins){ W.cins = ds.wcins; if (W.cins !== 'k') W.hamile = false; wHata = ''; wCiz(); return; }
+  if (ds.whamile){
+    W.hamile = ds.whamile === '1';
+    if (W.hamile && (W.hedef === 'ver' || W.hedef === 'sekil')) W.hedef = 'koru';   // hamilelikte kilo verme yok
+    wCiz(); return;
+  }
+  if (ds.wtri){ W.trimester = +ds.wtri; wCiz(); return; }
+  if (ds.walerjivar){ W.alerjiVar = ds.walerjivar; if (W.alerjiVar === 'yok') W.alerjiler = []; wHata = ''; wCiz(); if ($('wAlerjiAra')) $('wAlerjiAra').focus(); return; }
+  if (ds.walerji){
+    const s = new Set(W.alerjiler || []); s.has(ds.walerji) ? s.delete(ds.walerji) : s.add(ds.walerji);
+    W.alerjiler = [...s]; wHata = ''; alListeCiz(); return;
+  }
   if (ds.whedef){
     W.hedef = ds.whedef; wHata = '';
     if (W.hedef === 'ver' && !(W.hedefKilo < W.kilo)) W.hedefKilo = Math.round(Math.max(W.kilo - 5, 18.5 * Math.pow(W.boy / 100, 2)));
@@ -148,6 +200,7 @@ $('kurulum').addEventListener('click', e => {
   }
 });
 $('kurulum').addEventListener('input', e => {
+  if (e.target.id === 'wAlerjiAra'){ W.alerjiAra = e.target.value; alListeCiz(); return; }
   const alan = e.target.dataset.wf; if (!alan) return;
   W[alan] = alan === 'ad' ? e.target.value : Math.max(0, +String(e.target.value).replace(/[,٫]/g, '.') || 0);
   wSureYaz();
@@ -203,7 +256,10 @@ document.addEventListener('focusin', e => {
 });
 document.addEventListener('focusout', () => setTimeout(gorunenAlan, 100));
 // Gece yarısını geçince "bugün" değişsin
-setInterval(() => { if (!document.hidden && $('kurulum').hidden) gunleriCiz(); }, 60000);
+// Dakika başında: tarih-saat ve gece yarısında "bugün"
+(function dakika(){
+  setTimeout(() => { if (D.ayar.kurulum) saatYaz(); if (!document.hidden && $('kurulum').hidden) gunleriCiz(); dakika(); }, 60000 - Date.now() % 60000 + 50);
+})();
 </script>
 </body>
 </html>

@@ -107,9 +107,10 @@ const TERCIH = {
 };
 const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay']);
 // Kalori yetmezse ara öğüne eklenecek besleyici seçenekler (ilk uygun olan)
-const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]], [['badem',30],['galeta',2]]];
+const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]],
+  [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',25]]];   // sona doğru alerjiye uygun seçenekler
 
-const BOS_PROFIL = {ad:'', cins:'', yas:30, boy:170, kilo:70, hedefKilo:65, hedef:'', odaklar:[], aktivite:2, hiz:0.5, haric:[],
+const BOS_PROFIL = {ad:'', cins:'', hamile:false, trimester:1, yas:30, boy:170, kilo:70, hedefKilo:65, hedef:'', odaklar:[], alerjiler:[], aktivite:2, hiz:0.5, haric:[],
   kcal:1800, protein:130, karb:180, seker:55, yag:60, lif:25, su:2500, bardak:250};
 const HEDEF_KEYS = ['kcal','protein','karb','seker','yag','su','bardak'];
 const HEDEF_ETIKET = {kcal:'tKcal', protein:'tProtein', karb:'tCarb', seker:'tSugar', yag:'tFat', su:'tWater', bardak:'tGlass'};
@@ -125,6 +126,7 @@ function tamamla(x){
   x.profil = {...BOS_PROFIL, ...x.profil};
   if (!x.profil.haric) x.profil.haric = [];
   if (!x.profil.odaklar) x.profil.odaklar = [];
+  if (!x.profil.alerjiler) x.profil.alerjiler = [];
   // Eski tek seçimli "Kan şekeri" hedefi → kilo hedefi + kan şekeri odağı
   if (x.profil.hedef === 'seker'){
     x.profil.hedef = vki(x.profil) >= 25 ? 'ver' : 'koru';
@@ -248,8 +250,10 @@ function hedefHesapla(p){
   const bmr = 10 * p.kilo + 6.25 * p.boy - 5 * p.yas + (p.cins === 'k' ? -161 : 5);
   const tdee = bmr * PAL[(p.aktivite || 2) - 1];
   const b = vki(p), od = new Set(p.odaklar || []), seker = od.has('seker');
+  const hamile = p.cins === 'k' && !!p.hamile, tri = p.trimester || 1;
   let kcal = tdee;
-  if (p.hedef === 'ver') kcal = tdee - Math.min(p.hiz * 7700 / 7, tdee * 0.25);
+  if (hamile) kcal = tdee + [0, 340, 450][tri - 1];
+  else if (p.hedef === 'ver') kcal = tdee - Math.min(p.hiz * 7700 / 7, tdee * 0.25);
   else if (p.hedef === 'sekil') kcal = tdee * 0.9;
   else if (p.hedef === 'kas') kcal = tdee * 1.1;
   else if (p.hedef === 'al') kcal = tdee * 1.15;
@@ -257,7 +261,7 @@ function hedefHesapla(p){
   kcal = Math.round(Math.max(kcal, Math.min(taban, tdee)) / 50) * 50;
   const refKilo = b > 25 ? 25 * Math.pow(p.boy / 100, 2) : p.kilo;
   const pKg = Math.max(PROTEIN_KG[p.hedef] || 1.2, seker ? 1.3 : 0);
-  const protein = Math.round(Math.min(pKg * refKilo, kcal * 0.35 / 4));
+  const protein = Math.round(Math.min(hamile ? 1.1 * p.kilo + (tri >= 2 ? 25 : 0) : pKg * refKilo, kcal * 0.35 / 4));
   // Kan şekeri: yağ %30, karbonhidrat en çok %40, şeker %10 · Kolesterol: yağ %28'de kalır, doymuş yağlı kalemler menüden çıkar
   const yag = Math.round(kcal * (seker ? 0.30 : 0.28) / 9);
   let karb = Math.round((kcal - protein * 4 - yag * 9) / 4);
@@ -265,10 +269,10 @@ function hedefHesapla(p){
   const sekerG = Math.round(kcal * (seker ? 0.10 : 0.13) / 4);
   // Lif: 14 g/1000 kcal; kolesterol ve kan şekerinde en az 30 g (çözünür lif LDL ve kan şekerini düşürür)
   const lif = Math.max(Math.round(kcal / 1000 * 14), od.has('kolesterol') || seker ? 30 : 0);
-  const su = sinirla(Math.round((p.kilo * 35 + (p.aktivite >= 3 ? 500 : 0)) / 250) * 250, 1500, 4000);
+  const su = sinirla(Math.round((p.kilo * 35 + (p.aktivite >= 3 ? 500 : 0) + (hamile ? 300 : 0)) / 250) * 250, 1500, 4000);
   let hafta = 0;
-  if (p.hedef === 'ver' && p.hedefKilo < p.kilo) hafta = Math.ceil((p.kilo - p.hedefKilo) / p.hiz);
-  if (p.hedef === 'al' && p.hedefKilo > p.kilo) hafta = Math.ceil((p.hedefKilo - p.kilo) / 0.35);
+  if (!hamile && p.hedef === 'ver' && p.hedefKilo < p.kilo) hafta = Math.ceil((p.kilo - p.hedefKilo) / p.hiz);
+  if (!hamile && p.hedef === 'al' && p.hedefKilo > p.kilo) hafta = Math.ceil((p.hedefKilo - p.kilo) / 0.35);
   return {bmr:Math.round(bmr), tdee:Math.round(tdee), vki:b, kcal, protein, karb, seker: sekerG, yag, lif, su, hafta};
 }
 
@@ -298,7 +302,8 @@ function birlestir(ogeler){
 // Profile uygun mu: yenmeyenler + sağlık odaklarının dışladığı içerik (tansiyon: tuzlu, kolesterol: doymuş yağı yüksek)
 function profilUygun(p){
   const haric = new Set([...(p.haric || []), ...ODAKLAR.filter(([k]) => (p.odaklar || []).includes(k)).map(([, , x]) => x).filter(Boolean)]);
-  return f => !(f.x || '').split('').some(c => haric.has(c));
+  const alerji = new Set(p.alerjiler || []), hamile = p.cins === 'k' && !!p.hamile;
+  return f => !(f.x || '').split('').some(c => haric.has(c)) && !(f.al || []).some(a => alerji.has(a)) && !(hamile && HAMILE_DISI.has(f.id));
 }
 // 4 haftalık dönen plan: her temel hafta aynı kurallarla profile göre hazırlanır
 const planOlustur = p => TEMEL_HAFTALAR.map(h => haftaOlustur(p, h));
@@ -324,11 +329,12 @@ function haftaOlustur(p, temel){
       const puan = Math.abs(a1 - b1) * 3 + Math.abs(a2 - b2) + Math.abs(a3 - b3) + katUyum + (kullanilan[y.id] || 0) * 0.12;
       if (puan < enP){ enP = puan; en = y; }
     }
+    if (!en) return null;   // uygun karşılık yok (ör. çok sayıda alerji): kalem çıkarılır
     kullanilan[en.id] = (kullanilan[en.id] || 0) + 1;
     const gram = besin(it.f, it.g).k / (en.k || 1) * 100;
     return {f: en.id, g: yuvarla(en, en.a ? gram / en.a : gram)};
   };
-  const plan = temel.map(gun => OGUN_TANIM.map((o, i) => ({...o, ogeler: birlestir(gun[i].map(([f, g]) => degistir({f, g})))})));
+  const plan = temel.map(gun => OGUN_TANIM.map((o, i) => ({...o, ogeler: birlestir(gun[i].map(([f, g]) => degistir({f, g})).filter(Boolean))})));
   plan.forEach(gun => gunuOlcekle(gun, p, izinli));
   return plan;
 }

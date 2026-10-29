@@ -18,17 +18,21 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.tumlog){ loglarAc(); return; }
   if (ds.sablon){
     const gun = gunUzun(aktif);
-    if (!confirm(T('confirmTemplate', {gun}))) return;
-    D.planlar[haftaNo(aktif)][haftaGunu(aktif)] = kopya(menuOku(aktif));
-    logEkle('diger', aktif, T('lTemplate', {gun}));
-    kaydet(); ciz(); toast(T('templateUpdated', {gun})); return;
+    onayAc(T('confirmTemplate', {gun}), () => {
+      D.planlar[haftaNo(aktif)][haftaGunu(aktif)] = kopya(menuOku(aktif));
+      logEkle('diger', aktif, T('lTemplate', {gun}));
+      kaydet(); ciz(); toast(T('templateUpdated', {gun}));
+    });
+    return;
   }
   if (ds.sablondan){
     const gun = gunUzun(aktif);
-    if (!confirm(T('confirmRevert', {gun}))) return;
-    delete D.kayit[aktif].ogunler;
-    logEkle('diger', aktif, T('lRevert', {gun}));
-    kaydet(); ciz(); return;
+    onayAc(T('confirmRevert', {gun}), () => {
+      delete D.kayit[aktif].ogunler;
+      logEkle('diger', aktif, T('lRevert', {gun}));
+      kaydet(); ciz();
+    });
+    return;
   }
 });
 document.querySelector('.wrap').addEventListener('change', e => {
@@ -40,6 +44,9 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
 $('ayarBtn').addEventListener('click', ayarlarAc);
 $('logBtn').addEventListener('click', () => loglarAc());
 $('gecmisBtn').addEventListener('click', gecmisAc);
+$('uyariBtn').addEventListener('click', uyarilarAc);
+$('yazBtn').addEventListener('click', yazAc);
+$('hamileBtn').addEventListener('click', hamileDegistir);
 $('dilBar').addEventListener('click', e => {
   const b = e.target.closest('[data-dilsec]'); if (!b || b.dataset.dilsec === dil) return;
   D.ayar.dil = b.dataset.dilsec; kaydet(); ciz();
@@ -247,17 +254,35 @@ function gecmisAc(){
 }
 
 // ---------- Tüm loglar ----------
-let logFiltre = 'tum';
+let logFiltre = 'tum', logSayfa = 0;
+const LOG_SAYFA = 50, LOG_PARCA = 10;
 function loglarAc(){
   ac(T('logsTitle'));
+  logSayfa = 0;
   const ciz2 = () => {
     let liste = D.log.slice().reverse();
     if (logFiltre === 'gun') liste = liste.filter(l => l.k === aktif);
     if (logFiltre === 'gecmis') liste = liste.filter(l => l.g);
+    const sayfaSay = Math.max(1, Math.ceil(liste.length / LOG_SAYFA));
+    logSayfa = Math.min(logSayfa, sayfaSay - 1);
+    const sayfa = liste.slice(logSayfa * LOG_SAYFA, (logSayfa + 1) * LOG_SAYFA);
+    let gosterilen = Math.min(LOG_PARCA, sayfa.length);
     const f = (id, ad) => `<button class="chip${logFiltre === id ? ' on' : ''}" data-lf="${id}">${ad}</button>`;
+    const sayfalar = sayfaSay > 1 ? `<div class="sayfalar">
+        <button class="nav-btn" data-ls="${logSayfa - 1}" ${logSayfa === 0 ? 'disabled' : ''} aria-label="‹">‹</button>
+        <span>${T('sayfaN', {n: logSayfa + 1, t: sayfaSay, k: liste.length})}</span>
+        <button class="nav-btn" data-ls="${logSayfa + 1}" ${logSayfa >= sayfaSay - 1 ? 'disabled' : ''} aria-label="›">›</button></div>` : '';
     $('sbody').innerHTML = `<div class="chips" style="margin-top:0">${f('tum', T('fAll'))}${f('gun', etiket(aktif))}${f('gecmis', T('fPast'))}</div>
-      <ul class="logs">${liste.length ? liste.slice(0, 400).map(l => logSatir(l)).join('') : `<li class="empty">${T('noRecords')}</li>`}</ul>`;
-    $('sbody').querySelectorAll('[data-lf]').forEach(b => b.onclick = () => { logFiltre = b.dataset.lf; ciz2(); });
+      <ul class="logs" id="logListe">${sayfa.length ? sayfa.slice(0, gosterilen).map(l => logSatir(l)).join('') : `<li class="empty">${T('noRecords')}</li>`}</ul>${sayfalar}`;
+    $('sbody').querySelectorAll('[data-lf]').forEach(b => b.onclick = () => { logFiltre = b.dataset.lf; logSayfa = 0; ciz2(); });
+    $('sbody').querySelectorAll('[data-ls]').forEach(b => b.onclick = () => { logSayfa = +b.dataset.ls; ciz2(); $('sbody').scrollTop = 0; });
+    // Aşağı kaydırdıkça sayfanın kalanını 10'ar ekle
+    $('sbody').onscroll = () => {
+      const g = $('sbody');
+      if (gosterilen >= sayfa.length || g.scrollTop + g.clientHeight < g.scrollHeight - 80) return;
+      $('logListe').insertAdjacentHTML('beforeend', sayfa.slice(gosterilen, gosterilen + LOG_PARCA).map(l => logSatir(l)).join(''));
+      gosterilen += LOG_PARCA;
+    };
   };
   ciz2();
 }
@@ -274,8 +299,9 @@ function ayarlarAc(){
   ac(T('setTitle'), `
     <div class="sec" style="margin-top:0">${T('sProfile')}</div>
     <div class="cur"><b>${esc(P.ad || '—')}</b> · ${P.cins ? T(P.cins === 'k' ? 'female' : 'male') : ''} · ${P.yas} · ${P.boy} cm · ${sayi(P.kilo)} kg${h ? ` · ${T('bmi')} ${sayi(h.vki)}` : ''}<br>
-      <small>${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}</small></div>
-    <button class="btn solid full" id="profilDuzenle">${T('editProfile')}</button>
+      <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
+      ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
+    <div class="acts"><button class="btn solid" id="profilDuzenle">${T('editProfile')}</button><button class="btn" id="alerjiDuzenle">${T('editAlerji')}</button></div>
     <div class="sec">${T('sTargets')}</div>
     <div class="grid2">${HEDEF_KEYS.map(alan).join('')}</div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
@@ -290,6 +316,7 @@ function ayarlarAc(){
     <div class="sec">${T('sReset')}</div>
     <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div>`);
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
+  $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
   $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(); });
   $('hedefKaydet').onclick = () => {
     const degisen = [];
@@ -305,7 +332,7 @@ function ayarlarAc(){
     r.onload = () => {
       try {
         const v = JSON.parse(r.result);
-        if (!v || v.v !== 2 || !v.plan) throw 0;
+        if (!v || v.v !== 2 || !(v.plan || v.planlar)) throw 0;
         D = tamamla(v);
         logEkle('diger', null, T('lBackup', {f: file.name}));
         kaydet(); kapat(); baslat2();
@@ -320,13 +347,10 @@ function ayarlarAc(){
     indir(html, `${dosyaAdi()}_diyet_listesi.html`, 'text/html');
   };
   $('planSifirla').onclick = () => {
-    if (!confirm(T('cResetMenu'))) return;
-    planYenile(); kaydet(); ciz(); kapat(); toast(T('tSaved'));
+    onayAc(T('cResetMenu'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
   };
   $('kayitSifirla').onclick = () => {
-    if (!confirm(T('cResetRec'))) return;
-    D.kayit = {}; logEkle('diger', null, T('lResetRec'));
-    kaydet(); ciz(); kapat(); toast(T('tRecDel'));
+    onayAc(T('cResetRec'), () => { D.kayit = {}; logEkle('diger', null, T('lResetRec')); kaydet(); ciz(); toast(T('tRecDel')); });
   };
 }
 // Profilden haftalık şablonu yeniden üret; bugün ve sonrasının özel menülerini temizle (geçmiş korunur)
@@ -344,4 +368,61 @@ function indir(icerik, ad, tip){
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 3000);
   toast(T('tDownloaded', {f: ad}));
+}
+
+// ---------- Onay penceresi (X, Esc ya da dışarı dokununca kapanır) ----------
+function onayAc(metin, evet, ek = ''){
+  ac(T('confirmT'), `<p class="onay-metin">${esc(metin)}</p>${ek}<div class="acts"><button class="btn ghost" id="onayHayir">${T('cancel2')}</button><button class="btn green" id="onayEvet">${T('yes')}</button></div>`);
+  $('onayHayir').onclick = kapat;
+  $('onayEvet').onclick = () => { kapat(); evet(); };
+}
+
+// ---------- Uyarılar ----------
+function uyarilarAc(){
+  const b = (ik, bas, metin) => `<div class="uyari"><h4>${ik} ${T(bas)}</h4><p>${esc(T(metin))}</p></div>`;
+  ac(T('warnTitle'), b('📊', 'wGenelT', 'wGenel') + b('🩺', 'wDoktorT', 'wDoktor') + b('🤰', 'wHamileT', 'wHamile')
+    + b('🚫', 'wAlerjiT', 'wAlerji') + b('⚖️', 'wSorumT', 'wSorum') + b('🔒', 'wVeriT', 'wVeri'));
+}
+
+// ---------- Bize yazın (öneri / şikâyet) ----------
+const DESTEK_EPOSTA = 'destek@maviplay.com';
+function yazAc(){
+  const cihaz = /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'iOS' : /Android/.test(navigator.userAgent) ? 'Android' : 'PC';
+  const link = `mailto:${DESTEK_EPOSTA}?subject=${encodeURIComponent(T('fbSubject'))}&body=${encodeURIComponent(T('fbBody', {dil: dil.toUpperCase(), cihaz}))}`;
+  ac(T('fbTitle'), `<p class="onay-metin">${esc(T('fbText'))}</p>
+    <div class="cur" style="text-align:center"><b dir="ltr">${DESTEK_EPOSTA}</b></div>
+    <div class="acts"><a class="btn solid" href="${link}">${T('fbOpen')}</a><button class="btn ghost" id="epostaKopya">${T('fbCopy')}</button></div>`);
+  $('epostaKopya').onclick = () => {
+    const bitti = () => toast(T('tCopied'));
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(DESTEK_EPOSTA).then(bitti, () => {});
+    else { const t = document.createElement('textarea'); t.value = DESTEK_EPOSTA; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); bitti(); } catch(e){} t.remove(); }
+  };
+}
+
+// ---------- Hamilelik modu ----------
+function hedefleriYenile(){
+  const h = hedefHesapla(D.profil);
+  Object.assign(D.profil, {kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su});
+}
+function hamileDegistir(){
+  if (hamileMi()){
+    onayAc(T('cHamileOff'), () => {
+      D.profil.hamile = false; hedefleriYenile(); planYenile();
+      logEkle('diger', null, T('lHamileOff'));
+      kaydet(); ciz(); toast(T('tSaved'));
+    });
+    return;
+  }
+  let tri = D.profil.trimester || 1;
+  const secenek = () => `<div class="opts" id="triSec">${[1, 2, 3].map(n => `<button class="opt${n === tri ? ' on' : ''}" data-tri="${n}"><span class="ic">🤰</span><div><b>${T('tri' + n)}</b></div></button>`).join('')}</div>`;
+  onayAc(T('cHamileOn'), () => {
+    D.profil.hamile = true; D.profil.trimester = tri; hedefleriYenile(); planYenile();
+    logEkle('diger', null, T('lHamileOn', {t: tri}));
+    kaydet(); ciz(); toast(T('tSaved'));
+  }, `<div class="wsec">${T('trimQ')}</div>${secenek()}<div class="wmsg info">${esc(T('hamileNot'))}</div>`);
+  $('sbody').addEventListener('click', e => {
+    const b = e.target.closest('[data-tri]'); if (!b) return;
+    tri = +b.dataset.tri;
+    $('triSec').querySelectorAll('[data-tri]').forEach(x => x.classList.toggle('on', +x.dataset.tri === tri));
+  });
 }

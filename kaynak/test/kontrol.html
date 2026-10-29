@@ -30,7 +30,7 @@ async function cerceve(gen){
 }
 (async()=>{try{
   // kurulumu bir kez tamamla (localStorage paylaşılır)
-  let {w,d}=await cerceve(375);const q=s=>d.querySelector('#kurulum '+s),nx=()=>q('[data-wileri]').click();
+  let {w,d}=await cerceve(375);const q=s=>d.querySelector('#kurulum '+s),nx=()=>{const y=q('[data-walerjivar="yok"]');if(y&&!q('[data-walerjivar].on'))y.click();q('[data-wileri]').click();};
   // Sihirbaz: her dilde tüm adımlar, telefon genişliğinde
   for(const dl of DIL){w.eval("W={...kopya(D.profil),dil:'"+dl+"',ad:'Maximilian-Alexander',cins:'k',hedef:'ver',odaklar:['seker','tansiyon','kolesterol'],haric:['m'],kilo:88,hedefKilo:80,yas:30,boy:175}");
     const adimlar=w.eval('wAdimlar()');for(let i=0;i<adimlar.length;i++){w.eval('wAdim='+i+';wHata="";wCiz()');denetle(w,d.getElementById('kurulum'),'375 sihirbaz '+dl+' '+adimlar[i]);}}

@@ -1,0 +1,12 @@
+<!DOCTYPE html><html><body><iframe id="f" src="../../index.html" style="width:390px;height:700px"></iframe><pre id="o"></pre><script>
+localStorage.clear();const f=document.getElementById('f');const out=[];
+setTimeout(()=>{const w=f.contentWindow;try{
+const profiller=[["hamile+süt+gluten+fıstık",{cins:'k',hamile:true,trimester:2,yas:30,boy:165,kilo:68,hedef:'koru',aktivite:2,odaklar:[],haric:[],alerjiler:['sut','yerfistigi','gluten']}],
+ ["Kaan kas",{cins:'e',yas:30,boy:180,kilo:78,hedef:'kas',aktivite:4,odaklar:[],haric:[],alerjiler:[]}],
+ ["vegan+kuruyemiş",{cins:'k',yas:28,boy:165,kilo:62,hedef:'ver',hiz:0.5,hedefKilo:57,aktivite:2,odaklar:[],haric:['m','c','f','e','d'],alerjiler:['kuruyemis','yerfistigi']}],
+ ["erkek kilo ver + tansiyon",{cins:'e',yas:45,boy:175,kilo:95,hedef:'ver',hiz:0.5,hedefKilo:85,aktivite:2,odaklar:['tansiyon'],haric:[],alerjiler:[]}]];
+for(const [ad,p] of profiller){w.eval("var __p="+JSON.stringify(p)+";Object.assign(__p,hedefHesapla(Object.assign({...BOS_PROFIL},__p)));__p=Object.assign({...BOS_PROFIL},__p);");
+ const r=w.eval("(()=>{const pl=planOlustur(__p),u=profilUygun(__p);const g=pl.flat().map(d=>topla(d.flatMap(o=>o.ogeler)).k);const bad=pl.flat(2).flatMap(o=>o.ogeler).filter(it=>!u(yemek(it.f))).length;return 'hedef '+__p.kcal+' · gun min '+Math.round(Math.min(...g))+' max '+Math.round(Math.max(...g))+' · ±%5 disi gun '+g.filter(k=>Math.abs(k-__p.kcal)>__p.kcal*0.05).length+'/28 · uygunsuz '+bad})()");
+ out.push(ad+': '+r);}
+}catch(e){out.push('HATA '+e.stack)}document.getElementById('o').textContent=out.join('\n');},1200);
+</script></body></html>

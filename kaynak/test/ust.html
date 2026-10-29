@@ -4,8 +4,8 @@ const GEN=[375,600,768,1024,1280,1440,1700,1920],DIL=['tr','en','ru','de','ar'],
 const bekle=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{try{
  const f0=document.createElement('iframe');f0.style.cssText='width:375px;height:700px';document.getElementById('kap').appendChild(f0);f0.src=U;await bekle(900);
- const d0=f0.contentWindow.document,q=s=>d0.querySelector('#kurulum '+s),nx=()=>q('[data-wileri]').click();
- nx();const n=q('#wAd');n.value='Kaan';n.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();nx();q('[data-whedef="kas"]').click();nx();nx();nx();nx();
+ const d0=f0.contentWindow.document,q=s=>d0.querySelector('#kurulum '+s),nx=()=>{const y=q('[data-walerjivar="yok"]');if(y&&!q('[data-walerjivar].on'))y.click();q('[data-wileri]').click();};
+ nx();const n=q('#wAd');n.value='Kaan';n.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();nx();q('[data-whedef="kas"]').click();nx();nx();nx();nx();nx();
  for(const gen of GEN){const f=document.createElement('iframe');f.style.cssText='width:'+gen+'px;height:500px;border:0';document.getElementById('kap').appendChild(f);f.src=U;await bekle(700);
   const w=f.contentWindow,d=w.document;
   for(const dl of DIL){w.eval("D.ayar.dil='"+dl+"';ciz()");

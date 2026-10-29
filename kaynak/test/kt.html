@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><body><iframe id="f" style="width:390px;height:800px"></iframe><pre id="o"></pre><script>
 localStorage.clear();const f=document.getElementById('f');f.src='../../index.html';const out=[];
-setTimeout(()=>{const w=f.contentWindow,d=w.document,q=x=>d.querySelector('#kurulum '+x),nx=()=>q('[data-wileri]').click();
-try{nx();const a=q('#wAd');a.value='Kaan';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();nx();q('[data-whedef="ver"]').click();nx();nx();nx();nx();nx();
+setTimeout(()=>{const w=f.contentWindow,d=w.document,q=x=>d.querySelector('#kurulum '+x),nx=()=>{const y=q('[data-walerjivar="yok"]');if(y&&!q('[data-walerjivar].on'))y.click();q('[data-wileri]').click();};
+try{nx();const a=q('#wAd');a.value='Kaan';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="e"]').click();nx();nx();q('[data-whedef="ver"]').click();nx();nx();nx();nx();nx();nx();
 out.push(w.eval("KAT_SIRA.filter(k=>YEMEKLER.some(y=>y.kat===k)).map(k=>katAd(k)+': '+YEMEKLER.filter(y=>y.kat===k).map(y=>y.ad).join(', ')).join(' ## ')"));
 out.push('kategorisiz: '+(w.eval("YEMEKLER.filter(y=>!KAT_SIRA.includes(y.kat)).map(y=>y.id).join(',')")||'yok'));
 out.push('plan: '+w.eval("D.planlar.map(h=>h.map(g=>Math.round(topla(g.flatMap(o=>o.ogeler)).k)).join('/')).join(' | ')")+' hedef '+w.eval('D.profil.kcal'));

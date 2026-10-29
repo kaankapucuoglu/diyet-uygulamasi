@@ -1,0 +1,39 @@
+<!DOCTYPE html><html><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><pre id="o"></pre><script>
+localStorage.clear();const f=document.getElementById('f');const out=[];const L=x=>out.push(x);
+setTimeout(()=>{const w=f.contentWindow,d=w.document,q=s=>d.querySelector('#kurulum '+s),nx=()=>{const y=q('[data-walerjivar="yok"]');if(y&&!q('[data-walerjivar].on'))y.click();q('[data-wileri]').click();},adim=()=>w.eval('wAdimlar()[wAdim]');
+try{nx();const a=q('#wAd');a.value='Ayşe';a.dispatchEvent(new Event('input',{bubbles:true}));q('[data-wcins="k"]').click();nx();
+L('adimlar: '+w.eval('wAdimlar().join(",")')+' · simdi: '+adim());
+q('[data-whamile="1"]').click();q('[data-wtri="2"]').click();nx();
+for(const [k,v] of [['yas',30],['boy',165],['kilo',68]]){const i=q('#w_'+k);i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}));}nx();
+L('hedef adimi ver kapali: '+q('[data-whedef="ver"]').disabled+' · secili: '+w.eval('W.hedef'));q('[data-whedef="koru"]').click();nx();nx();
+L('adim: '+adim());nx();L('adim: '+adim());
+nx();L('alerji secmeden ileri hatasi: '+(q('.wmsg.err')||{}).textContent);
+q('[data-walerjivar="var"]').click();const ara=q('#wAlerjiAra');
+const yaz=t=>{ara.value=t;ara.dispatchEvent(new Event('input',{bubbles:true}));return [...q('#alSonuc').querySelectorAll('.al-chip')].map(b=>b.textContent);};
+L('ara "sut": '+yaz('sut').join(' | '));q('#alSonuc [data-walerji="sut"]').click();
+L('ara "FISTIK": '+yaz('FISTIK').join(' | '));q('#alSonuc [data-walerji="yerfistigi"]').click();
+L('ara "çölyak": '+yaz('çölyak').join(' | '));q('#alSonuc [data-walerji="gluten"]').click();yaz('');
+L('secili: '+q('#alSecili').innerText.replace(/\s+/g,' '));nx();
+L('ozet: '+[...q('.wiz-body').querySelectorAll('.wmsg')].map(m=>m.innerText.replace(/\s+/g,' ').slice(0,90)).join(' || '));
+L('hedefler: '+w.eval("(()=>{const h=hedefHesapla(W);return 'kcal '+h.kcal+' (tdee '+h.tdee+') P '+h.protein+' su '+h.su})()"));nx();
+L('baslik: '+d.getElementById('baslik').textContent+' | saat: '+d.getElementById('saat').textContent+' | alt: '+d.getElementById('altBaslik').textContent+' | buton: '+d.getElementById('hamileBtn').textContent);
+L('plan uygunsuz: '+(w.eval("D.planlar.flat(2).flatMap(o=>o.ogeler).filter(it=>{const f=yemek(it.f);return f.al.some(a=>['sut','yerfistigi','gluten'].includes(a))||HAMILE_DISI.has(f.id)}).map(it=>it.f).join(',')")||'yok'));
+L('plan kcal: '+w.eval("D.planlar[0].map(g=>Math.round(topla(g.flatMap(o=>o.ogeler)).k)).join('/')")+' hedef '+w.eval('D.profil.kcal'));
+// Satır düzeni: miktar ve düğmeler aynı satırda mı
+const it=d.querySelector('.item'),g=it.querySelector('.gram').getBoundingClientRect(),ac=it.querySelector('.item-acts').getBoundingClientRect();
+L('satir: gram ust '+Math.round(g.top)+' / dugmeler ust '+Math.round(ac.top)+' · dugme yazisi gorunur: '+(w.getComputedStyle(it.querySelector('.mini .lbl')).display!=='none'));
+// Hamile değilim
+d.getElementById('hamileBtn').click();L('onay: '+d.querySelector('#sbody .onay-metin').textContent.slice(0,70));d.getElementById('onayEvet').click();
+L('sonra buton: '+d.getElementById('hamileBtn').textContent+' · kcal '+w.eval('D.profil.kcal')+' · alt: '+d.getElementById('altBaslik').textContent.slice(0,60));
+// Loglar: 125 kayıt
+w.eval("for(let i=0;i<125;i++)logEkle('su',bugunK(),'test '+i)");d.getElementById('logBtn').click();
+const sb=d.getElementById('sbody');L('log ilk: '+d.querySelectorAll('#logListe .log').length+' · '+(d.querySelector('.sayfalar')||{}).innerText);
+sb.scrollTop=sb.scrollHeight;sb.onscroll();L('kaydirinca: '+d.querySelectorAll('#logListe .log').length);
+d.querySelector('[data-ls="1"]').click();L('2. sayfa: '+d.querySelector('.sayfalar').innerText.replace(/\s+/g,' ')+' · ilk satir: '+d.querySelector('#logListe .log-body').innerText.slice(0,40));
+d.getElementById('overlay').click();L('disari tiklayinca kapali: '+!d.getElementById('overlay').classList.contains('open'));
+L('loglarda hamile/alerji: '+w.eval("D.log.filter(l=>/Hamile|alerji|Alerji/.test(l.m)).map(l=>l.m).join(' | ')"));
+d.getElementById('uyariBtn').click();L('uyarilar: '+[...d.querySelectorAll('.uyari h4')].map(h=>h.textContent).join(' · '));w.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}));d.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}));L('esc ile kapali: '+!d.getElementById('overlay').classList.contains('open'));
+d.getElementById('yazBtn').click();L('bize yazin: '+d.querySelector('#sbody a.btn').getAttribute('href').slice(0,60));d.querySelector('#sheet [data-kapat]').click();
+L('alt log karti yok: '+!d.getElementById('logKart')+' · dipnot yok: '+!d.getElementById('dipNot'));
+}catch(e){L('HATA '+e.stack)}document.getElementById('o').textContent=out.join('\n');},1500);
+</script></body></html>
