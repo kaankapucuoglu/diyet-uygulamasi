@@ -513,6 +513,7 @@ const S = {
   pCompare:["{o} · Kıyasla","{o} · Compare","{o} · Сравнить","{o} · Vergleichen","{o} · مقارنة"],
   current:["Şu anki seçim","Current choice","Текущий выбор","Aktuelle Wahl","الاختيار الحالي"],
   searchPh:["Ara: tavuk haşlama · balık|yumurta","Search: chicken boiled · fish|egg","Поиск: курица отварная · рыба|яйцо","Suche: Hähnchen gekocht · Fisch|Ei","ابحث: دجاج مسلوق · سمك|بيض"],
+  similar:["🔁 Benzerleri","🔁 Similar","🔁 Похожие","🔁 Ähnliche","🔁 مشابهة"],
   recent:["⭐ Son Seçilenler","⭐ Recent","⭐ Недавние","⭐ Zuletzt gewählt","⭐ الأخيرة"],
   results:["“{q}” için {n} sonuç","{n} results for “{q}”","Найдено: {n} («{q}»)","{n} Treffer für „{q}“","{n} نتيجة لـ «{q}»"],
   noResult:["Sonuç yok. Daha kısa yaz ya da “|” ile seçenek ekle (ör. levrek|çipura).","No results. Try a shorter word or add options with “|” (e.g. salmon|tuna).","Ничего не найдено. Сократите запрос или добавьте варианты через «|» (лосось|тунец).","Keine Treffer. Kürzer suchen oder mit „|“ Alternativen angeben (Lachs|Thunfisch).","لا نتائج. جرّب كلمة أقصر أو أضف خيارات بـ «|» (سلمون|تونة)."],
@@ -581,18 +582,22 @@ const S = {
   m_aksam:["Akşam Yemeği","Dinner","Ужин","Abendessen","العشاء"],
   m_gece:["Gece Ara Öğün","Evening snack","Вечерний перекус","Abendsnack","وجبة خفيفة مسائية"],
   // Kategoriler
-  k_et:["Tavuk & Et","Poultry & Meat","Птица и мясо","Geflügel & Fleisch","دواجن ولحوم"],
-  k_balik:["Balık","Fish","Рыба","Fisch","أسماك"],
+  k_et:["Et & Tavuk","Meat & Poultry","Мясо и птица","Fleisch & Geflügel","لحوم ودواجن"],
+  k_balik:["Balık & Deniz Ürünü","Fish & Seafood","Рыба и морепродукты","Fisch & Meeresfrüchte","أسماك ومأكولات بحرية"],
   k_yumurta:["Yumurta","Eggs","Яйца","Eier","بيض"],
-  k_sut:["Süt Ürünü","Dairy","Молочные","Milchprodukte","ألبان"],
+  k_sut:["Süt Ürünü & Peynir","Dairy & Cheese","Молочные продукты и сыр","Milchprodukte & Käse","ألبان وأجبان"],
+  k_bitkisel:["Bitkisel Protein (Vegan)","Plant Protein (Vegan)","Растительный белок (веган)","Pflanzliches Protein (vegan)","بروتين نباتي (نباتي صرف)"],
   k_baklagil:["Baklagil","Legumes","Бобовые","Hülsenfrüchte","بقوليات"],
-  k_bitkisel:["Bitkisel Protein","Plant protein","Растительный белок","Pflanzliches Protein","بروتين نباتي"],
-  k_tahil:["Tahıl & Ekmek","Grains & Bread","Крупы и хлеб","Getreide & Brot","حبوب وخبز"],
-  k_sebze:["Sebze & Salata","Vegetables & Salads","Овощи и салаты","Gemüse & Salate","خضار وسلطات"],
+  k_anayemek:["Ana Yemek & Zeytinyağlı","Main Dishes & Stews","Основные блюда и рагу","Hauptgerichte & Eintöpfe","أطباق رئيسية ويخنات"],
+  k_salata:["Salata & Meze","Salads & Meze","Салаты и закуски","Salate & Meze","سلطات ومقبلات"],
+  k_sebze:["Sebze","Vegetables","Овощи","Gemüse","خضار"],
+  k_tahil:["Ekmek & Kahvaltılık Tahıl","Bread & Breakfast Grains","Хлеб и злаки к завтраку","Brot & Frühstücksgetreide","خبز وحبوب الإفطار"],
+  k_pilav:["Pilav, Makarna & Patates","Rice, Pasta & Potatoes","Крупы, макароны и картофель","Reis, Nudeln & Kartoffeln","أرز ومعكرونة وبطاطس"],
   k_corba:["Çorba","Soups","Супы","Suppen","شوربات"],
-  k_meyve:["Meyve","Fruit","Фрукты","Obst","فواكه"],
-  k_kuruyemis:["Kuruyemiş & Tohum","Nuts & Seeds","Орехи и семена","Nüsse & Samen","مكسرات وبذور"],
-  k_atistirmalik:["Atıştırmalık & İçecek","Snacks & Drinks","Перекусы и напитки","Snacks & Getränke","وجبات خفيفة ومشروبات"],
+  k_meyve:["Meyve & Kuru Meyve","Fruit & Dried Fruit","Фрукты и сухофрукты","Obst & Trockenobst","فواكه وفواكه مجففة"],
+  k_kuruyemis:["Kuruyemiş, Zeytin & Yağ","Nuts, Olives & Oils","Орехи, оливки и масла","Nüsse, Oliven & Öle","مكسرات وزيتون وزيوت"],
+  k_atistirmalik:["Atıştırmalık & Tatlı","Snacks & Sweets","Перекусы и сладости","Snacks & Süßes","وجبات خفيفة وحلويات"],
+  k_icecek:["İçecek","Drinks","Напитки","Getränke","مشروبات"],
   k_ozel:["Kendi Yemeklerim","My foods","Мои продукты","Meine Lebensmittel","أطعمتي"],
   all:["Tümü","All","Все","Alle","الكل"],
   // Birimler ve porsiyon notları
@@ -756,18 +761,18 @@ const YEMEK_SATIR = [
   ['kefir','sut',52,3.3,4,2,4,0,250,'','d','bardak:250','içecek','Kefir','Kefir','Кефир','Kefir','كفير'],
   ['sut','sut',46,3.3,4.8,1.5,4.8,0,200,'','d','bardak:200','içecek','Süt (yarım yağlı)','Milk (semi-skimmed)','Молоко (полужирное)','Milch (fettarm)','حليب (نصف دسم)'],
   ['ayran','sut',37,1.8,2.7,1.9,2.7,0,250,'','dt','bardak:250','içecek yoğurt','Ayran','Ayran (yogurt drink)','Айран','Ayran (Joghurtgetränk)','عيران (لبن)'],
-  ['cacik','sut',40,2.5,3.5,1.8,3,0.3,150,'','d','','yoğurt salatalık','Cacık','Cacık (yogurt & cucumber)','Джаджик (йогурт с огурцом)','Cacık (Joghurt mit Gurke)','جاجيك (زبادي بالخيار)'],
-  ['semizotu','sut',50,3,4,2.5,3,1,150,'','d','','yoğurt sebze salata','Yoğurtlu semizotu','Purslane with yogurt','Портулак с йогуртом','Portulak mit Joghurt','بقلة بالزبادي'],
-  ['kereviz','sut',60,3,6,2.5,4,2,150,'','d','','yoğurt sebze salata','Yoğurtlu kereviz salatası','Celeriac salad with yogurt','Салат из сельдерея с йогуртом','Selleriesalat mit Joghurt','سلطة كرفس بالزبادي'],
+  ['cacik','salata',40,2.5,3.5,1.8,3,0.3,150,'','d','','yoğurt salatalık','Cacık','Cacık (yogurt & cucumber)','Джаджик (йогурт с огурцом)','Cacık (Joghurt mit Gurke)','جاجيك (زبادي بالخيار)'],
+  ['semizotu','salata',50,3,4,2.5,3,1,150,'','d','','yoğurt sebze salata','Yoğurtlu semizotu','Purslane with yogurt','Портулак с йогуртом','Portulak mit Joghurt','بقلة بالزبادي'],
+  ['kereviz','salata',60,3,6,2.5,4,2,150,'','d','','yoğurt sebze salata','Yoğurtlu kereviz salatası','Celeriac salad with yogurt','Салат из сельдерея с йогуртом','Selleriesalat mit Joghurt','سلطة كرفس بالزبادي'],
   ['mercimek','baklagil',116,9,20,0.4,1.8,8,150,'','','','haşlanmış','Kırmızı mercimek (haşlama)','Red lentils (boiled)','Красная чечевица (отварная)','Rote Linsen (gekocht)','عدس أحمر (مسلوق)'],
   ['nohut','baklagil',164,8.9,27,2.6,4.8,7.6,100,'','','yk:15','haşlanmış','Nohut (haşlama)','Chickpeas (boiled)','Нут (отварной)','Kichererbsen (gekocht)','حمص (مسلوق)'],
-  ['nohut_salata','baklagil',140,6.5,19,4.5,3.5,6,150,'','','','salata','Nohut salatası (kimyonlu)','Chickpea salad (cumin)','Салат из нута (с кумином)','Kichererbsensalat (Kreuzkümmel)','سلطة حمص بالكمون'],
-  ['piyaz','baklagil',120,6.5,16,3.5,2,6,150,'','','','fasulye salata','Piyaz (sumaklı)','Piyaz (white bean salad, sumac)','Пияз (салат из фасоли)','Piyaz (Bohnensalat mit Sumach)','بياز (سلطة فاصولياء بالسماق)'],
-  ['fasulye','baklagil',120,7,14,4,2,5,250,'','m','','fasulye yemek et','Etli kuru fasulye','White bean stew with meat','Фасоль с мясом','Weiße Bohnen mit Fleisch','فاصولياء بيضاء باللحم'],
-  ['yesil_mercimek','baklagil',105,7,15,2,1.5,6,250,'','','','yemek','Yeşil mercimek yemeği','Green lentil stew','Тушёная зелёная чечевица','Grüner Linseneintopf','يخنة العدس الأخضر'],
-  ['mkofte','baklagil',160,6,28,3,1.5,5,4,'adet:30','','','köfte sıkım bulgur','Mercimek köftesi','Lentil patties','Чечевичные котлетки','Linsenbällchen','كفتة العدس'],
-  ['nohut_ispanak','baklagil',90,5,11,3,1.5,4,250,'','','','sebze yemek','Nohutlu ıspanak','Spinach with chickpeas','Шпинат с нутом','Spinat mit Kichererbsen','سبانخ بالحمص'],
-  ['leblebi','baklagil',360,22,58,5,2,12,30,'','t','cay:40','atıştırmalık','Leblebi','Roasted chickpeas','Жареный нут (леблеби)','Geröstete Kichererbsen','قضامة (حمص محمص)'],
+  ['nohut_salata','salata',140,6.5,19,4.5,3.5,6,150,'','','','salata','Nohut salatası (kimyonlu)','Chickpea salad (cumin)','Салат из нута (с кумином)','Kichererbsensalat (Kreuzkümmel)','سلطة حمص بالكمون'],
+  ['piyaz','salata',120,6.5,16,3.5,2,6,150,'','','','fasulye salata','Piyaz (sumaklı)','Piyaz (white bean salad, sumac)','Пияз (салат из фасоли)','Piyaz (Bohnensalat mit Sumach)','بياز (سلطة فاصولياء بالسماق)'],
+  ['fasulye','anayemek',120,7,14,4,2,5,250,'','m','','fasulye yemek et','Etli kuru fasulye','White bean stew with meat','Фасоль с мясом','Weiße Bohnen mit Fleisch','فاصولياء بيضاء باللحم'],
+  ['yesil_mercimek','anayemek',105,7,15,2,1.5,6,250,'','','','yemek','Yeşil mercimek yemeği','Green lentil stew','Тушёная зелёная чечевица','Grüner Linseneintopf','يخنة العدس الأخضر'],
+  ['mkofte','anayemek',160,6,28,3,1.5,5,4,'adet:30','','','köfte sıkım bulgur','Mercimek köftesi','Lentil patties','Чечевичные котлетки','Linsenbällchen','كفتة العدس'],
+  ['nohut_ispanak','anayemek',90,5,11,3,1.5,4,250,'','','','sebze yemek','Nohutlu ıspanak','Spinach with chickpeas','Шпинат с нутом','Spinat mit Kichererbsen','سبانخ بالحمص'],
+  ['leblebi','atistirmalik',360,22,58,5,2,12,30,'','t','cay:40','atıştırmalık','Leblebi','Roasted chickpeas','Жареный нут (леблеби)','Geröstete Kichererbsen','قضامة (حمص محمص)'],
   ['tofu','bitkisel',144,15.8,3.5,8.7,0.6,2.3,150,'','','','soya vegan','Tofu (ızgara)','Tofu (grilled)','Тофу (гриль)','Tofu (gegrillt)','توفو (مشوي)'],
   ['edamame','bitkisel',121,11.9,8.9,5.2,2.2,5.2,100,'','','','soya fasulyesi vegan','Edamame (haşlama)','Edamame (boiled)','Эдамаме (отварные)','Edamame (gekocht)','إدامامي (مسلوق)'],
   ['soya_yogurt','bitkisel',60,4,4,3,2,0.5,150,'','','','vegan yoğurt','Soya yoğurdu (sade)','Soy yogurt (plain)','Соевый йогурт','Sojajoghurt (natur)','زبادي الصويا (سادة)'],
@@ -779,37 +784,37 @@ const YEMEK_SATIR = [
   ['lavas','tahil',290,10,52,5,2,7,0.5,'adet:60','','','dürüm ekmek','Tam buğday lavaş','Whole-wheat lavash','Цельнозерновой лаваш','Vollkorn-Lavash','خبز لافاش (قمح كامل)'],
   ['galeta','tahil',400,13,70,6,3,10,1,'adet:10','','','kraker','Kepekli galeta','Wholegrain crispbread','Цельнозерновые хлебцы','Vollkorn-Knäckebrot','خبز محمص بالنخالة'],
   ['yulaf','tahil',389,17,66,7,1,10,30,'','','yk:10','kahvaltı','Yulaf ezmesi','Rolled oats','Овсяные хлопья','Haferflocken','شوفان'],
-  ['bulgur','tahil',120,3.5,21,2.5,0.3,4,150,'','','servis:50','pilav','Bulgur pilavı','Bulgur pilaf','Плов из булгура','Bulgur-Pilaw','برغل مطبوخ'],
-  ['pirinc','tahil',155,2.8,28,3.5,0.1,0.4,150,'','','servis:50','pilav','Pirinç pilavı','Rice pilaf','Рисовый плов','Reis-Pilaw','أرز مطبوخ'],
-  ['kinoa','tahil',120,4.4,21,1.9,0.9,2.8,100,'','','','tabule haşlanmış','Kinoa (haşlama)','Quinoa (boiled)','Киноа (отварная)','Quinoa (gekocht)','كينوا (مسلوقة)'],
-  ['tammakarna','tahil',124,5.3,25,0.5,0.8,3.5,150,'','','','tam buğday haşlanmış','Kepekli makarna (haşlama)','Whole-wheat pasta (boiled)','Цельнозерновые макароны','Vollkornnudeln (gekocht)','معكرونة قمح كامل (مسلوقة)'],
-  ['makarna','tahil',158,5.8,31,0.9,0.6,1.8,150,'','','','haşlanmış','Makarna (haşlama)','Pasta (boiled)','Макароны (отварные)','Nudeln (gekocht)','معكرونة (مسلوقة)'],
-  ['patates','tahil',87,1.9,20,0.1,0.9,1.8,150,'','','','haşlanmış','Patates (haşlama)','Potato (boiled)','Картофель (отварной)','Kartoffeln (gekocht)','بطاطس (مسلوقة)'],
-  ['patates_firin','tahil',93,2.5,21,0.1,1.2,2.2,150,'','','','','Patates (fırın)','Potato (baked)','Картофель (запечённый)','Kartoffeln (Ofen)','بطاطس (بالفرن)'],
-  ['patates_kizartma','tahil',312,3.4,41,15,0.3,3.8,100,'','y','','tava','Patates kızartması','French fries','Картофель фри','Pommes frites','بطاطس مقلية'],
-  ['tpatates','tahil',90,2,21,0.2,6.5,3.3,150,'','','','','Tatlı patates (fırın)','Sweet potato (baked)','Батат (запечённый)','Süßkartoffel (Ofen)','بطاطا حلوة (بالفرن)'],
+  ['bulgur','pilav',120,3.5,21,2.5,0.3,4,150,'','','servis:50','pilav','Bulgur pilavı','Bulgur pilaf','Плов из булгура','Bulgur-Pilaw','برغل مطبوخ'],
+  ['pirinc','pilav',155,2.8,28,3.5,0.1,0.4,150,'','','servis:50','pilav','Pirinç pilavı','Rice pilaf','Рисовый плов','Reis-Pilaw','أرز مطبوخ'],
+  ['kinoa','pilav',120,4.4,21,1.9,0.9,2.8,100,'','','','tabule haşlanmış','Kinoa (haşlama)','Quinoa (boiled)','Киноа (отварная)','Quinoa (gekocht)','كينوا (مسلوقة)'],
+  ['tammakarna','pilav',124,5.3,25,0.5,0.8,3.5,150,'','','','tam buğday haşlanmış','Kepekli makarna (haşlama)','Whole-wheat pasta (boiled)','Цельнозерновые макароны','Vollkornnudeln (gekocht)','معكرونة قمح كامل (مسلوقة)'],
+  ['makarna','pilav',158,5.8,31,0.9,0.6,1.8,150,'','','','haşlanmış','Makarna (haşlama)','Pasta (boiled)','Макароны (отварные)','Nudeln (gekocht)','معكرونة (مسلوقة)'],
+  ['patates','pilav',87,1.9,20,0.1,0.9,1.8,150,'','','','haşlanmış','Patates (haşlama)','Potato (boiled)','Картофель (отварной)','Kartoffeln (gekocht)','بطاطس (مسلوقة)'],
+  ['patates_firin','pilav',93,2.5,21,0.1,1.2,2.2,150,'','','','','Patates (fırın)','Potato (baked)','Картофель (запечённый)','Kartoffeln (Ofen)','بطاطس (بالفرن)'],
+  ['patates_kizartma','pilav',312,3.4,41,15,0.3,3.8,100,'','y','','tava','Patates kızartması','French fries','Картофель фри','Pommes frites','بطاطس مقلية'],
+  ['tpatates','pilav',90,2,21,0.2,6.5,3.3,150,'','','','','Tatlı patates (fırın)','Sweet potato (baked)','Батат (запечённый)','Süßkartoffel (Ofen)','بطاطا حلوة (بالفرن)'],
   ['patlak','tahil',387,8,81,2.8,0.9,4,2,'adet:9','','','kraker','Pirinç patlağı','Rice cake','Рисовый хлебец','Reiswaffel','كعك الأرز المنفوخ'],
-  ['manti','tahil',190,8,26,6,3,1.5,250,'','mdy','','hamur','Yoğurtlu mantı','Manti (dumplings with yogurt)','Манты с йогуртом','Manti (Teigtaschen mit Joghurt)','مانتي بالزبادي'],
+  ['manti','anayemek',190,8,26,6,3,1.5,250,'','mdy','','hamur','Yoğurtlu mantı','Manti (dumplings with yogurt)','Манты с йогуртом','Manti (Teigtaschen mit Joghurt)','مانتي بالزبادي'],
   ['pankek','tahil',190,9,24,6,2,3,150,'','ed','','kahvaltı yumurta tava','Yulaflı pankek (şekersiz)','Oat pancakes (no sugar)','Овсяные панкейки (без сахара)','Haferpfannkuchen (ohne Zucker)','بان كيك الشوفان (بدون سكر)'],
-  ['salata','sebze',20,1,3.5,0.2,2.5,1.5,150,'','','','yeşillik marul roka','Mevsim salata (yağsız)','Mixed green salad (no oil)','Овощной салат (без масла)','Gemischter Salat (ohne Öl)','سلطة خضراء (بدون زيت)'],
-  ['coban','sebze',45,1,4.5,2.7,3,1.3,150,'','','','domates salatalık','Çoban salata (1 tk zeytinyağı)','Shepherd salad (1 tsp olive oil)','Пастуший салат (1 ч. л. масла)','Hirtensalat (1 TL Olivenöl)','سلطة الراعي (ملعقة صغيرة زيت زيتون)'],
-  ['tfasulye','sebze',75,2,8,4,3,3,200,'','','','yemek','Zeytinyağlı taze fasulye','Green beans in olive oil','Стручковая фасоль в оливковом масле','Grüne Bohnen in Olivenöl','فاصولياء خضراء بزيت الزيتون'],
-  ['ispanak','sebze',70,3,5,4,1.5,2.5,200,'','','','yemek','Ispanak (zeytinyağlı)','Spinach in olive oil','Шпинат в оливковом масле','Spinat in Olivenöl','سبانخ بزيت الزيتون'],
+  ['salata','salata',20,1,3.5,0.2,2.5,1.5,150,'','','','yeşillik marul roka','Mevsim salata (yağsız)','Mixed green salad (no oil)','Овощной салат (без масла)','Gemischter Salat (ohne Öl)','سلطة خضراء (بدون زيت)'],
+  ['coban','salata',45,1,4.5,2.7,3,1.3,150,'','','','domates salatalık','Çoban salata (1 tk zeytinyağı)','Shepherd salad (1 tsp olive oil)','Пастуший салат (1 ч. л. масла)','Hirtensalat (1 TL Olivenöl)','سلطة الراعي (ملعقة صغيرة زيت زيتون)'],
+  ['tfasulye','anayemek',75,2,8,4,3,3,200,'','','','yemek','Zeytinyağlı taze fasulye','Green beans in olive oil','Стручковая фасоль в оливковом масле','Grüne Bohnen in Olivenöl','فاصولياء خضراء بزيت الزيتون'],
+  ['ispanak','anayemek',70,3,5,4,1.5,2.5,200,'','','','yemek','Ispanak (zeytinyağlı)','Spinach in olive oil','Шпинат в оливковом масле','Spinat in Olivenöl','سبانخ بزيت الزيتون'],
   ['ispanak_hasl','sebze',23,2.9,3.6,0.4,0.4,2.2,150,'','','','haşlanmış','Ispanak (haşlama)','Spinach (boiled)','Шпинат (отварной)','Spinat (gekocht)','سبانخ (مسلوقة)'],
-  ['ispanak_kiyma','sebze',85,6,5,4.5,1,2.5,250,'','m','','yemek et','Kıymalı ıspanak','Spinach with minced meat','Шпинат с фаршем','Spinat mit Hackfleisch','سبانخ باللحم المفروم'],
+  ['ispanak_kiyma','anayemek',85,6,5,4.5,1,2.5,250,'','m','','yemek et','Kıymalı ıspanak','Spinach with minced meat','Шпинат с фаршем','Spinat mit Hackfleisch','سبانخ باللحم المفروم'],
   ['brokoli','sebze',35,2.4,7,0.4,1.4,3.3,150,'','','','haşlanmış buğulama','Brokoli (haşlama)','Broccoli (boiled)','Брокколи (отварная)','Brokkoli (gekocht)','بروكلي (مسلوق)'],
   ['karnabahar','sebze',23,1.8,4.1,0.5,2,2.3,150,'','','','haşlanmış','Karnabahar (haşlama)','Cauliflower (boiled)','Цветная капуста (отварная)','Blumenkohl (gekocht)','قرنبيط (مسلوق)'],
   ['izgarasebze','sebze',50,1.5,7,2,4,2.5,200,'','','','kabak patlıcan biber','Izgara sebze','Grilled vegetables','Овощи гриль','Gegrilltes Gemüse','خضار مشوية'],
   ['firin_sebze','sebze',55,1.5,7,2.5,4,2.5,200,'','','','kabak patlıcan biber','Fırın sebze','Roasted vegetables','Запечённые овощи','Ofengemüse','خضار بالفرن'],
   ['hasl_sebze','sebze',30,1.5,5.5,0.3,2.5,2.5,200,'','','','haşlama havuç kabak','Haşlanmış sebze','Boiled vegetables','Отварные овощи','Gekochtes Gemüse','خضار مسلوقة'],
-  ['kabak_kiyma','sebze',70,4.5,5,3.5,2.5,1.5,250,'','m','','yemek et','Kıymalı kabak yemeği','Zucchini with minced meat','Кабачки с фаршем','Zucchini mit Hackfleisch','كوسا باللحم المفروم'],
-  ['karniyarik','sebze',95,5,6,6,3.5,3,250,'','my','','patlıcan kıyma','Karnıyarık (fırın)','Stuffed eggplant (baked)','Карныярык (баклажан с фаршем)','Karnıyarık (gefüllte Aubergine)','باذنجان محشي باللحم (بالفرن)'],
-  ['turlu','sebze',80,5,6,4,3,2.5,250,'','m','','yemek','Etli türlü','Vegetable stew with meat','Овощное рагу с мясом','Gemüseeintopf mit Fleisch','يخنة خضار باللحم'],
-  ['bezelye','sebze',95,6.5,9,4,3,3.5,250,'','m','','yemek','Etli bezelye','Peas with meat','Горошек с мясом','Erbsen mit Fleisch','بازلاء باللحم'],
-  ['kabak_dolma','sebze',95,5,10,3.5,2.5,1.5,3,'adet:70','m','','dolma','Kabak dolması (kıymalı)','Stuffed zucchini (with meat)','Фаршированные кабачки','Gefüllte Zucchini (mit Fleisch)','كوسا محشي باللحم'],
+  ['kabak_kiyma','anayemek',70,4.5,5,3.5,2.5,1.5,250,'','m','','yemek et','Kıymalı kabak yemeği','Zucchini with minced meat','Кабачки с фаршем','Zucchini mit Hackfleisch','كوسا باللحم المفروم'],
+  ['karniyarik','anayemek',95,5,6,6,3.5,3,250,'','my','','patlıcan kıyma','Karnıyarık (fırın)','Stuffed eggplant (baked)','Карныярык (баклажан с фаршем)','Karnıyarık (gefüllte Aubergine)','باذنجان محشي باللحم (بالفرن)'],
+  ['turlu','anayemek',80,5,6,4,3,2.5,250,'','m','','yemek','Etli türlü','Vegetable stew with meat','Овощное рагу с мясом','Gemüseeintopf mit Fleisch','يخنة خضار باللحم'],
+  ['bezelye','anayemek',95,6.5,9,4,3,3.5,250,'','m','','yemek','Etli bezelye','Peas with meat','Горошек с мясом','Erbsen mit Fleisch','بازلاء باللحم'],
+  ['kabak_dolma','anayemek',95,5,10,3.5,2.5,1.5,3,'adet:70','m','','dolma','Kabak dolması (kıymalı)','Stuffed zucchini (with meat)','Фаршированные кабачки','Gefüllte Zucchini (mit Fleisch)','كوسا محشي باللحم'],
   ['domates','sebze',18,0.9,3.9,0.2,2.6,1.2,100,'','','','','Domates','Tomato','Помидор','Tomate','طماطم'],
   ['salatalik','sebze',15,0.7,3.6,0.1,1.7,0.5,100,'','','','','Salatalık','Cucumber','Огурец','Gurke','خيار'],
-  ['zeytin','sebze',130,1,4,13,0.5,3,5,'adet:4','t','','kahvaltı','Zeytin','Olives','Оливки','Oliven','زيتون'],
+  ['zeytin','kuruyemis',130,1,4,13,0.5,3,5,'adet:4','t','','kahvaltı','Zeytin','Olives','Оливки','Oliven','زيتون'],
   ['mcorba','corba',56,3.2,8.5,1.2,1.5,2,250,'','','kepce:125','','Mercimek çorbası (unsuz)','Lentil soup (no flour)','Чечевичный суп (без муки)','Linsensuppe (ohne Mehl)','شوربة عدس (بدون دقيق)'],
   ['scorba','corba',35,1.2,5.5,1,2.5,1.2,250,'','','kepce:125','','Sebze çorbası (unsuz)','Vegetable soup (no flour)','Овощной суп (без муки)','Gemüsesuppe (ohne Mehl)','شوربة خضار (بدون دقيق)'],
   ['yayla','corba',55,2.5,7,2,2.5,0.3,250,'','dt','kepce:125','yoğurt','Yayla çorbası','Yogurt soup (yayla)','Суп яйла (йогуртовый)','Joghurtsuppe (Yayla)','شوربة الزبادي'],
@@ -837,8 +842,8 @@ const YEMEK_SATIR = [
   ['bal','atistirmalik',304,0.3,82,0,82,0,10,'','','tk:7','tatlı','Bal','Honey','Мёд','Honig','عسل'],
   ['whey','atistirmalik',400,80,8,6,5,0,1,'olcek:30','d','','protein tozu','Whey protein tozu','Whey protein powder','Сывороточный протеин','Whey-Proteinpulver','بروتين مصل اللبن'],
   ['probar','atistirmalik',350,30,35,10,15,5,1,'adet:50','d','','','Protein bar','Protein bar','Протеиновый батончик','Proteinriegel','لوح بروتين'],
-  ['kahve','atistirmalik',15,1,1.5,0.5,1.5,0,1,'fincan:200','d','','içecek','Sütlü filtre kahve (şekersiz)','Filter coffee with milk (no sugar)','Фильтр-кофе с молоком','Filterkaffee mit Milch','قهوة مفلترة بالحليب (بدون سكر)'],
-  ['yesilcay','atistirmalik',1,0,0.2,0,0,0,1,'fincan:200','','','içecek bitki çayı','Yeşil çay','Green tea','Зелёный чай','Grüner Tee','شاي أخضر']
+  ['kahve','icecek',15,1,1.5,0.5,1.5,0,1,'fincan:200','d','','içecek','Sütlü filtre kahve (şekersiz)','Filter coffee with milk (no sugar)','Фильтр-кофе с молоком','Filterkaffee mit Milch','قهوة مفلترة بالحليب (بدون سكر)'],
+  ['yesilcay','icecek',1,0,0.2,0,0,0,1,'fincan:200','','','içecek bitki çayı','Yeşil çay','Green tea','Зелёный чай','Grüner Tee','شاي أخضر']
 ];
 const YEMEKLER = YEMEK_SATIR.map(r => {
   const [birim, bg] = r[9] ? r[9].split(':') : ['', 0];
@@ -1129,7 +1134,7 @@ function rol(f){
   const ps = f.p * 4 / f.k, cs = f.c * 4 / f.k, ys = f.y * 9 / f.k;
   if (['et','balik','yumurta','bitkisel'].includes(f.kat) || ps >= 0.4) return 'P';
   if (ys >= 0.6) return 'Y';
-  if (cs >= 0.5 && ['tahil','meyve','baklagil'].includes(f.kat)) return 'K';
+  if (cs >= 0.5 && ['tahil','pilav','meyve','baklagil','anayemek'].includes(f.kat)) return 'K';
   return 'S';
 }
 // Miktarı birime göre yuvarla: yumurta tam adet, diğer adetler 0,5'lik (ekmek en çok 3 dilim); gram 30 altı 5'lik, üstü 10'luk
@@ -1205,7 +1210,7 @@ function gunuOlcekle(gun, p, izinli){
     kAyarla();
   }
   // 5) Şeker sınırı aşılıyorsa şekerli kalemleri (meyve, süt ürünü, tatlı) azalt, kaloriyi tahılla geri tamamla
-  const sekerli = f => !['sebze','corba'].includes(f.kat) && f.k && f.s * 4 / f.k >= 0.2;
+  const sekerli = f => !['sebze','salata','corba'].includes(f.kat) && f.k && f.s * 4 / f.k >= 0.2;
   const sToplam = topla(hepsi().filter(it => sekerli(yemek(it.f)))).s;
   if (top().s > p.seker * 1.05 && sToplam > 0){
     const k = sinirla(1 - (top().s - p.seker) / sToplam, 0.5, 1);
@@ -1214,7 +1219,7 @@ function gunuOlcekle(gun, p, izinli){
   }
   // 6) Hâlâ fazlaysa sebze dışındaki sabit kalemleri (karışık yemek, süt ürünü) biraz azalt
   if (tumu() > p.kcal * 1.07){
-    const azalt = f => rol(f) === 'S' && f.kat !== 'sebze';
+    const azalt = f => rol(f) === 'S' && !['sebze','salata'].includes(f.kat);
     const kS = topla(hepsi().filter(it => azalt(yemek(it.f)))).k;
     if (kS > 0){ const k = sinirla((kS + p.kcal - tumu()) / kS, 0.7, 1); gun.forEach(o => o.ogeler.forEach(it => { const f = yemek(it.f); if (azalt(f)) it.g = yuvarla(f, it.g * k); })); }
   }
@@ -1608,13 +1613,34 @@ function kapat(){ $('overlay').classList.remove('open'); document.body.style.ove
 
 // ---------- Yemek seç / değiştir / kıyasla ----------
 let SE = null;
-const SON = '__son', TUMU = '__tumu';
+const SON = '__son', TUMU = '__tumu', BENZER = '__benzer';
+// Değiştir/Kıyasla için benzer yemekler: aynı tür (ad/etiket ortak kelime, ör. "ekmek") önce, sonra aynı gruptaki besin değeri en yakınlar
+// Türü değil niteliği/pişirmeyi anlatan kelimeler benzerlikte sayılmaz (ör. "tam buğday" ekmekle makarnayı eşleştirmesin)
+const NITELIK = new Set(['tam','bugday','kepekli','haslama','haslanmis','izgara','firin','tava','yarim','yagli','sekersiz','tuzsuz','sade','light','kahvalti','yemek','yemegi','zeytinyagli','yogurtlu','kimyonlu','sumakli','derisiz','suzulmus','bugulama']);
+const KAT_SIRA = ['et','balik','yumurta','sut','bitkisel','baklagil','anayemek','salata','sebze','tahil','pilav','corba','meyve','kuruyemis','atistirmalik','icecek','ozel'];
+const GRUP = {et:'protein', balik:'protein', yumurta:'protein', bitkisel:'protein'};
+function benzerler(fid){
+  const f = yemek(fid), uygun = profilUygun(D.profil);
+  const sade = t => t.toLocaleLowerCase('tr-TR').replace(/[çğıöşüâû]/g, c => KATLA[c] || c);
+  const kelimeler = y => new Set(sade(`${(y.n || [y.ad])[0]} ${y.e || ''}`).split(/[^a-z0-9]+/).filter(w => w.length > 2 && !NITELIK.has(w)));
+  const kf = kelimeler(f), grup = y => GRUP[y.kat] || y.kat;
+  const oz = y => { const k = y.k || 1; return [y.p * 4 / k, y.c * 4 / k, y.y * 9 / k]; };
+  const [a1, a2, a3] = oz(f);
+  return tumYemekler().filter(y => y.id !== f.id && uygun(y)).map(y => {
+    const ortak = [...kelimeler(y)].filter(w => kf.has(w)).length;
+    if (!ortak && grup(y) !== grup(f)) return null;
+    const [b1, b2, b3] = oz(y);
+    const puan = Math.abs(a1 - b1) * 2 + Math.abs(a2 - b2) + Math.abs(a3 - b3) - ortak * 0.9 + (y.kat === f.kat ? 0 : 0.8) - (f.b && y.b === f.b ? 0.8 : 0) + (DOKTOR_DISI.has(y.id) ? 0.5 : 0);   // aynı birim (ör. dilim) öne
+    return [y.id, puan];
+  }).filter(Boolean).sort((a, b) => a[1] - b[1]).slice(0, 20).map(([id]) => id);
+}
 function secimAc(opts){
   const ogun = menuOku(aktif)[opts.oi];
   SE = {...opts, ogunId: ogun.id, q:'', sec:null, g:0};
   SE.son = sonSecilenler(ogun.id).filter(f => profilUygun(D.profil)(yemek(f)));
-  SE.kat = SE.son.length ? SON : TUMU;
   SE.mevcut = SE.ii !== undefined ? {...ogun.ogeler[SE.ii]} : null;
+  SE.benzer = SE.mevcut ? benzerler(SE.mevcut.f) : [];
+  SE.kat = SE.benzer.length ? BENZER : SE.son.length ? SON : TUMU;   // değiştir/kıyasla: benzerleri; ekle: son seçilenler
   const baslik = T({ekle:'pAdd', degis:'pChange', kiyas:'pCompare'}[SE.mod], {o: ogunAd(ogun)});
   ac(esc(baslik) + (gecmisMi(aktif) ? ` <span class="tag">${etiket(aktif)}</span>` : ''));
   listeGorunumu();
@@ -1648,9 +1674,9 @@ function listeGorunumu(){
 }
 function kategoriCiz(){
   const uygun = profilUygun(D.profil);
-  const katlar = (SE.son.length ? [SON] : []).concat([TUMU, ...new Set(tumYemekler().filter(uygun).map(f => f.kat))]);
-  const ad = k => k === SON ? T('recent') : k === TUMU ? T('all') : katAd(k);
-  $('kategoriler').innerHTML = katlar.map(k => `<button class="chip${k === SON ? ' recent' : ''}${k === SE.kat ? ' on' : ''}" data-kat="${esc(k)}">${esc(ad(k))}</button>`).join('');
+  const katlar = (SE.benzer.length ? [BENZER] : []).concat(SE.son.length ? [SON] : []).concat([TUMU, ...[...new Set(tumYemekler().filter(uygun).map(f => f.kat))].sort((a, b) => KAT_SIRA.indexOf(a) - KAT_SIRA.indexOf(b))]);
+  const ad = k => k === BENZER ? T('similar') : k === SON ? T('recent') : k === TUMU ? T('all') : katAd(k);
+  $('kategoriler').innerHTML = katlar.map(k => `<button class="chip${k === SON || k === BENZER ? ' recent' : ''}${k === SE.kat ? ' on' : ''}" data-kat="${esc(k)}">${esc(ad(k))}</button>`).join('');
   $('kategoriler').querySelectorAll('[data-kat]').forEach(b => b.onclick = () => { SE.kat = b.dataset.kat; kategoriCiz(); listeCiz(); });
 }
 function listeCiz(){
@@ -1664,7 +1690,7 @@ function listeCiz(){
     $('bulunan').textContent = T('results', {q, n: liste.length});
   } else {
     // Öneri listelerinde profile uymayanlar (yemedikleri, sağlık odağına aykırı) gösterilmez
-    liste = (SE.kat === SON ? SE.son.map(yemek) : tumYemekler().filter(f => SE.kat === TUMU || f.kat === SE.kat)).filter(uygun);
+    liste = (SE.kat === BENZER ? SE.benzer.map(yemek) : SE.kat === SON ? SE.son.map(yemek) : tumYemekler().filter(f => SE.kat === TUMU || f.kat === SE.kat)).filter(uygun);
     $('bulunan').textContent = '';
   }
   const sayac = D.son[SE.ogunId] || {};
