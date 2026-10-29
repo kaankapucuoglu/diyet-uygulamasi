@@ -201,7 +201,7 @@ function kayitDurumYaz(){
   const el = $('kayitDurum');
   if (!depoCalisiyor){ el.className = 'save-chip warn'; el.textContent = T('storageWarn'); return; }
   el.className = 'save-chip';
-  el.textContent = kayitZamani ? T('saved', {t: kayitZamani.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})}) : T('autosave');
+  el.textContent = T('autosave');
 }
 const enYeni = (...a) => a.filter(x => x && x.v === 2 && (x.plan || x.planlar)).sort((p, q) => (q.guncel || 0) - (p.guncel || 0))[0] || null;
 

@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Haftalık tartı: pazartesi kartı, kayıt, profil kilosu, log, geçmiş özet; dil değişince Ayarlar yerinde; destek 200
+localStorage.clear();const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Ayşe',cins:'k',hamile:false,yas:32,boy:166,kilo:72,hedef:'ver',hedefKilo:64,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir()`);
+  const pzt=w.eval("gunEkle(bugunK(),-haftaGunu(bugunK()))");
+  L('bugun kart: '+!!d.querySelector('.tarti-kart')+' (bugun pazartesi mi '+w.eval('haftaGunu(bugunK())===0')+')');
+  w.eval(`aktif='${pzt}';ciz()`);L('pazartesi kart: '+!!d.querySelector('.tarti-kart')+' · ipucu '+d.querySelector('.tarti-bas small').textContent);
+  d.getElementById('tartiIn').value='71,5';d.querySelector('[data-tarti]').click();
+  L('kayit: '+w.eval('JSON.stringify(D.tartim)')+' · profil kilo '+w.eval('D.profil.kilo')+' · kcal '+w.eval('D.profil.kcal')+' · alt '+d.querySelector('.tarti-bas small').textContent);
+  L('log: '+w.eval('D.log[D.log.length-1].m'));
+  L('gecmis stat: '+([...d.querySelectorAll('.past-card .stat')].map(s=>s.innerText.replace(/\s+/g,' ')).find(t=>/Kilo/.test(t))||'YOK'));
+  w.eval(`aktif=gunEkle('${pzt}',-7);ciz()`);d.getElementById('tartiIn').value='72,3';d.querySelector('[data-tarti]').click();
+  L('onceki hafta: profil kilo '+w.eval('D.profil.kilo')+' (71,5 kalmali)');
+  w.eval(`aktif='${pzt}';ciz()`);L('fark: '+d.querySelector('.tarti-bas small').textContent);
+  w.eval(`aktif=gunEkle('${pzt}',7);ciz()`);L('gelecek pazartesi kart: '+!!d.querySelector('.tarti-kart'));
+  w.eval(`aktif=bugunK();ciz()`);
+  // Ayarlar: üst 3 düğme, dil değişince kaydırma korunur
+  w.eval('ayarlarAc()');L('ayar ust: '+[...d.querySelectorAll('.ayar-ust .btn')].map(b=>b.textContent.trim()).join(' | ')+' · program hazirla dugmesi '+!!d.getElementById('kocAcBtn'));
+  L('hedef alanlari: '+[...d.querySelectorAll('#sbody .grid3 .field span')].map(s=>s.textContent).join(', '));
+  d.getElementById('dilAc').click();d.getElementById('sbody').scrollTop=0;d.getElementById('sbody').scrollTop=40;const y0=d.getElementById('sbody').scrollTop;
+  d.querySelector('#dilListe [data-dil="en"]').click();L('dil en: scroll '+y0+' -> '+d.getElementById('sbody').scrollTop+' · liste acik '+!d.getElementById('dilListe').hidden+' · '+d.querySelector('.sheet-head h2').textContent);
+  d.querySelector('#dilListe [data-dil="tr"]').click();
+  d.getElementById('p_bardak').value='300';d.getElementById('p_su').value='3000';d.getElementById('hedefKaydet').click();L('bardak/su: '+w.eval('D.profil.bardak+"/"+D.profil.su'));
+  L('yatay tasma (ayarlar): '+(()=>{w.eval('ayarlarAc()');const b=d.getElementById('sbody');return b.scrollWidth+' / '+b.clientWidth;})());w.eval('kapat()');
+  w.eval('destekAc()');L('destek: '+d.getElementById('tutarIn').value+' · secili '+d.querySelector('#sbody .chip.on').textContent);w.eval('kapat()');
+  L('kayit yazisi: '+d.getElementById('kayitDurum').textContent);
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_tarti',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

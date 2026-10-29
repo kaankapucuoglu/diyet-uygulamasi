@@ -66,8 +66,8 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .weeknav{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;min-height:30px}
 .weeknav .lbl{text-align:center;font-weight:700;font-size:14px;white-space:nowrap}
 .weeknav .hafta-tag{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gunsatir{display:flex;align-items:stretch;gap:6px;margin-bottom:10px}
-.tarih-blok{margin:6px 0 4px}
+.gunsatir{display:flex;align-items:stretch;gap:6px;margin-bottom:4px}
+.tarih-blok{margin:2px 0 0}
 .gunsatir .days{flex:1;min-width:0;margin:0}
 .gunsatir .nav-btn{height:auto;width:36px;flex:none}
 .nav-btn{width:38px;height:36px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:18px;font-weight:700}
@@ -273,10 +273,40 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 /* Pencere (telefonda alttan açılır) */
 .overlay{position:fixed;inset:0;top:var(--vv-top,0px);bottom:auto;height:var(--vv-h,100%);background:rgba(15,23,42,.42);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
+/* Pencereler yalnız dikey hareket eder: alttan yukarı açılır, yatay kayma yok */
+html,body{overflow-x:clip}
+.overlay.open .sheet{animation:alttan .22s ease-out}
+.wiz:not([hidden]){animation:alttan .22s ease-out}
+@keyframes alttan{from{transform:translateY(28px);opacity:0}to{transform:none;opacity:1}}
+.field input,.field textarea{min-width:0;max-width:100%}
+.field input[type=time]{-webkit-appearance:none;appearance:none;padding-inline:8px}
+.grid2>*,.grid3>*,.grid4>*{min-width:0}
+.ayar-ust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.ayar-ust .btn{padding:4px;gap:4px;font-size:13px;letter-spacing:-.01em}
+@media (max-width:400px){ .ayar-ust .btn{font-size:12.5px} }
+.ikili{display:flex;align-items:center;gap:4px}
+.ikili input{flex:1;min-width:0}
+.ikili b{color:var(--muted)}
+.ikili{gap:0;border:1px solid var(--line);border-radius:10px;background:#fff;padding:0 2px}
+.field .ikili input{border:0;border-radius:0;padding:9px 0;text-align:center;letter-spacing:-.02em;background:transparent}
+@media (max-width:600px){ .grid3 input[type=time]::-webkit-calendar-picker-indicator{display:none} .grid3 input[type=time]{text-align:center;padding-inline:4px} }
+.ikili #p_su{flex:1.35}
+.ikili b{flex:none}
+.sub .hedef-yazi{display:block;line-height:1.5}
+.sub .hedef-yazi::after{content:none}
+.tarti-kart{grid-column:1/-1;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:12px 16px;border-color:#f5dfb0;background:#fffaf0}
+.tarti-kart.girildi{border-color:#bfe8d4;background:var(--green-soft)}
+.tarti-bas{flex:1 1 180px;min-width:0}
+.tarti-bas b{display:block;font-size:15px}
+.tarti-bas small{font-size:12.5px;color:var(--muted)}
+.tarti-gir{display:flex;gap:8px;align-items:center}
+.tarti-gir .val{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:#fff;height:42px;padding-inline:10px 8px}
+.tarti-gir input{width:56px;border:0;outline:none;text-align:end;font-weight:800;font-size:17px;background:transparent}
+.tarti-gir .val span{color:var(--muted);font-size:13px;margin-inline-start:3px}
 .sheet{background:var(--card);width:100%;max-width:600px;max-height:86vh;max-height:86dvh;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.25)}
 .sheet-head{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
 .sheet-head h2{font-size:17px;flex:1;min-width:0}
-.sheet-body{padding:14px 16px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.sheet-body{padding:14px 16px;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .cur{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px}
 .cur small{color:var(--muted);font-size:12px;display:block}
 .cur b{font-size:15px}
@@ -369,7 +399,7 @@ body.klavye .toast{display:none}
 .koc textarea,.koc-not{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;resize:vertical;color:var(--text);background:#fff}
 .koc-not{border:0;border-top:1px dashed var(--line);border-radius:0;padding:10px 16px;font-size:13.5px;background:#fffdf6}
 .koc .field input[type=time],.field input[type=time]{min-height:40px}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0 10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 8px}
 .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 10px}
 .grid2,.grid3,.grid4{align-items:end}
 .koc-check{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-top:4px}
@@ -432,7 +462,7 @@ details.method summary{cursor:pointer;font-weight:700;font-size:14px}
 details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:#40506a;line-height:1.55}
 
 @media (max-width:600px){
-  .top{gap:12px}
+  .top{gap:6px}
   .top-row{gap:10px}
   .top-row .top-btns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;margin-inline-start:0}
   .tool-btn{flex-direction:column;justify-content:flex-start;gap:3px;height:60px;padding:9px 4px 0}
@@ -453,8 +483,8 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 /* Telefon ve tablet: selamın hemen altında tarih seçici, sonra araç düğmeleri */
 @media (max-width:1180px){
   .top-row{display:contents}
-  .top-row h1{order:1;margin:4px 0 2px}
-  .top-row .top-btns{order:3;margin:2px 0 4px}
+  .top-row h1{order:1;margin:0}
+  .top-row .top-btns{order:3;margin:0}
 }
 /* Tablet: 4 araç düğmesi tek sırada eşit genişlikte (simge üstte, yazı altta) */
 @media (min-width:601px) and (max-width:1180px){
@@ -464,7 +494,7 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 }
 .koc-nav{flex-wrap:wrap;position:static;box-shadow:none}
 @media (max-width:600px){ .koc-nav .btn.green{flex:1 1 100%;order:-1} }
-@media (max-width:600px){ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px} .macros .macro.l{grid-column:1/-1} .water-card{padding:12px 14px} .water-card h3{margin-bottom:4px} .water-head b{font-size:22px} .water-btns .btn{min-height:40px} }
+@media (max-width:600px){ .macros{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 10px} .macro b{font-size:16px} .macro .hint{font-size:12px} .water-card{padding:12px 14px} .water-card h3{margin-bottom:4px} .water-head b{font-size:22px} .water-btns .btn{min-height:40px} }
 @media (max-width:600px){ .gunsatir .nav-btn{display:none} .gunsatir .days{gap:4px} .weeknav{gap:8px} .weeknav .hafta-ok{display:block;width:34px;height:30px;font-size:16px} .hafta-tag .uzun{display:none} .hafta-tag .kisa{display:inline} .stat-acts button{width:28px} .day{padding:7px 0 5px} .day b{font-size:13.5px;letter-spacing:-.01em} .water-btns .btn{font-size:13.5px;padding:5px 10px} }
 @media (max-width:360px){ .days{gap:4px} .day{padding:7px 0 5px} .macros{gap:6px} .crow{font-size:13px} }
 </style>

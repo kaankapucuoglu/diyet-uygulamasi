@@ -16,7 +16,7 @@ const S = {
   app:["Diyet Listesi","Diet Plan","План питания","Ernährungsplan","خطة غذائية"],
   eyebrow:["Kişisel diyet planı","Personal diet plan","Персональный план питания","Persönlicher Ernährungsplan","خطة غذائية شخصية"],
   saved:["✓ Kaydedildi {t}","✓ Saved {t}","✓ Сохранено {t}","✓ Gespeichert {t}","✓ تم الحفظ {t}"],
-  autosave:["✓ Otomatik kayıt açık","✓ Auto-save on","✓ Автосохранение включено","✓ Automatisches Speichern an","✓ الحفظ التلقائي مفعّل"],
+  autosave:["✓ Kayıt açık","✓ Saving on","✓ Сохранение вкл.","✓ Speichern an","✓ الحفظ مفعّل"],
   storageWarn:["⚠ Bu açılışta kayıt tutulamıyor · Ayarlar › Yedek","⚠ Data can’t be saved here · Settings › Backup","⚠ Здесь нельзя сохранить данные · Настройки › Копия","⚠ Speichern hier nicht möglich · Einstellungen › Sicherung","⚠ لا يمكن الحفظ هنا · الإعدادات › النسخ الاحتياطي"],
   history:["Geçmiş","History","История","Verlauf","الأيام السابقة"],
   logs:["Loglar","Logs","Журнал","Protokoll","سجل العمليات"],

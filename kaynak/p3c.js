@@ -104,7 +104,7 @@ Object.assign(S, {
   cProgRemove:["Gönderilen program kaldırılacak ve önceki planın geri gelecek. Emin misin?","The received plan will be removed and your previous plan restored. Continue?","Присланный план будет удалён, вернётся прежний. Продолжить?","Der erhaltene Plan wird entfernt und dein vorheriger Plan wiederhergestellt. Fortfahren?","ستتم إزالة الخطة المرسلة واستعادة خطتك السابقة. متابعة؟"],
   lProgRemove:["Gönderilen program kaldırıldı","Received plan removed","Присланный план удалён","Erhaltener Plan entfernt","تمت إزالة الخطة المرسلة"],
   impPaste:["🔗 Program linki yapıştır","🔗 Paste plan link","🔗 Вставить ссылку на план","🔗 Plan-Link einfügen","🔗 لصق رابط الخطة"],
-  impPasteHint:["Uygulamayı ana ekrandan açıyorsan ve link tarayıcıda açıldıysa, linki buraya yapıştır.","If you use the app from your home screen and the link opened in the browser, paste it here.","Если вы открываете приложение с главного экрана, а ссылка открылась в браузере, вставьте её сюда.","Wenn du die App vom Startbildschirm nutzt und der Link im Browser geöffnet wurde, füge ihn hier ein.","إذا كنت تفتح التطبيق من الشاشة الرئيسية وفُتح الرابط في المتصفح، الصقه هنا."],
+  impPasteHint:["Size gönderilen program linki açılınca program yüklenmediyse: linki kopyalayın, aşağıdaki kutuya yapıştırın ve “Yükle”ye basın. (iPhone’da uygulamayı ana ekrandaki simgeden kullanıyorsanız, WhatsApp’taki link Safari’de açılır ve program uygulamaya gelmez; bu durumda linki buraya yapıştırın.)","If a plan link sent to you didn’t load the plan: copy the link, paste it into the box below and tap “Load”. (On iPhone, if you use the app from the home-screen icon, links from WhatsApp open in Safari and the plan doesn’t reach the app — paste the link here instead.)","Если присланная ссылка не загрузила план: скопируйте её, вставьте в поле ниже и нажмите «Загрузить». (На iPhone, если вы открываете приложение со значка на экране «Домой», ссылка из WhatsApp открывается в Safari и план не попадает в приложение — вставьте её сюда.)","Wenn ein zugesandter Plan-Link den Plan nicht geladen hat: Link kopieren, unten einfügen und „Laden“ tippen. (Auf dem iPhone öffnen sich WhatsApp-Links in Safari, nicht in der App vom Home-Bildschirm — dann den Link hier einfügen.)","إذا لم يُحمِّل رابط الخطة المرسل إليك الخطة: انسخ الرابط والصقه في المربع أدناه واضغط «تحميل». (على آيفون، إذا كنت تستخدم التطبيق من أيقونة الشاشة الرئيسية، يُفتح رابط واتساب في سفاري ولا تصل الخطة إلى التطبيق — الصق الرابط هنا.)"],
   impPasteBtn:["Yükle","Load","Загрузить","Laden","تحميل"],
   // Uygulama olarak yükle
   instBtn:["📲 Uygulama olarak yükle","📲 Install as app","📲 Установить как приложение","📲 Als App installieren","📲 التثبيت كتطبيق"],
@@ -113,7 +113,17 @@ Object.assign(S, {
   instAndroid:["Chrome’da sağ üstteki ⋮ menüsüne dokun|“Uygulamayı yükle” ya da “Ana ekrana ekle”yi seç|“Yükle”ye dokun. Simge ana ekrana gelir, internetsiz de açılır.","Tap the ⋮ menu in Chrome|Choose “Install app” or “Add to Home screen”|Tap “Install”. The icon appears and works offline.","Откройте меню ⋮ в Chrome|Выберите «Установить приложение» или «Добавить на гл. экран»|Нажмите «Установить». Значок появится и будет работать офлайн.","Tippe in Chrome auf ⋮|Wähle „App installieren“ oder „Zum Startbildschirm“|Tippe auf „Installieren“. Das Symbol erscheint und funktioniert offline.","اضغط قائمة ⋮ في كروم|اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»|اضغط «تثبيت». تظهر الأيقونة وتعمل دون إنترنت."],
   instLater:["Daha sonra","Later","Позже","Später","لاحقاً"],
   tamam:["Tamam","OK","ОК","OK","حسناً"],
-  weekS:["{n}/{t}. hafta","Week {n}/{t}","Нед. {n}/{t}","Woche {n}/{t}","الأسبوع {n}/{t}"],
+  weekS:["Hafta {n}/{t}","Week {n}/{t}","Нед. {n}/{t}","Woche {n}/{t}","الأسبوع {n}/{t}"],
+  sProg:["Size gönderilen program","Plan sent to you","Присланный план","Zugesandter Plan","الخطة المرسلة إليك"],
+  bardakSu:["Bardak / Su (ml)","Glass / Water (ml)","Стакан / Вода (мл)","Glas / Wasser (ml)","الكوب / الماء (مل)"],
+  tartiT:["⚖️ Haftalık tartı","⚖️ Weekly weigh-in","⚖️ Еженедельное взвешивание","⚖️ Wöchentliches Wiegen","⚖️ الوزن الأسبوعي"],
+  tartiHint:["Her pazartesi kilonu gir; plana uydukça değişimi takip et.","Enter your weight every Monday and track your progress.","Вводите вес каждый понедельник и следите за изменениями.","Trag jeden Montag dein Gewicht ein und verfolge die Veränderung.","أدخل وزنك كل يوم اثنين وتابع التغيّر."],
+  tartiFark:["Önceki tartıya göre {f} kg","{f} kg vs. previous weigh-in","{f} кг к прошлому взвешиванию","{f} kg zum letzten Wiegen","{f} كغ مقارنة بالوزن السابق"],
+  tartiIlk:["İlk tartın","Your first weigh-in","Первое взвешивание","Dein erstes Wiegen","أول وزن لك"],
+  tartiHedef:["Hedefe {n} kg kaldı","{n} kg to goal","До цели {n} кг","Noch {n} kg bis zum Ziel","تبقّى {n} كغ للهدف"],
+  tartiKaydet:["Kaydet","Save","Сохранить","Speichern","حفظ"],
+  tartiStat:["Kilo","Weight","Вес","Gewicht","الوزن"],
+  lTarti:["Haftalık tartı: {b} kg ({f})","Weekly weigh-in: {b} kg ({f})","Взвешивание: {b} кг ({f})","Wiegen: {b} kg ({f})","الوزن الأسبوعي: {b} كغ ({f})"],
   sMore:["Diğer","More","Прочее","Weiteres","المزيد"],
   instNow:["Şimdi yükle","Install now","Установить","Jetzt installieren","ثبّت الآن"]
 });

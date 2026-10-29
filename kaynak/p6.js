@@ -123,7 +123,7 @@ function ciz(){
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
   // Tarih zaten en üstte (saat satırında) yazıyor; burada yalnız hedef özeti
-  $('altBaslik').textContent = `${hedef}${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg`;
+  $('altBaslik').innerHTML = `${hedef ? `<span class="hedef-yazi">${esc(hedef.replace(/ · $/, ''))}</span> ` : ''}<span class="olcu-yazi">${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg</span>`;
   gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz(); programBantCiz();
   ustHizala();
 }
@@ -160,6 +160,28 @@ function kalanYazi(v, hedef, birim, enAz = false){
   const n = yuv(v - hedef) + ' ' + birim;
   return enAz ? `<div class="kalan tamam">${T('reached', {n})}</div>` : `<div class="kalan asti">${T('over', {n})}</div>`;
 }
+// ---------- Haftalık tartı (her pazartesi) ----------
+const tartimlar = () => Object.entries(D.tartim || {}).sort((a, b) => a[0] < b[0] ? -1 : 1);
+function oncekiTartim(k){ const t = tartimlar().filter(([g]) => g < k); return t.length ? t[t.length - 1][1] : null; }
+const farkKg = (a, b) => { const f = Math.round((a - b) * 10) / 10; return (f > 0 ? '+' : f < 0 ? '−' : '±') + sayi(Math.abs(f)); };
+function tartiKarti(){
+  if (haftaGunu(aktif) !== 0 || aktif > bugunK()) return '';
+  const P = D.profil, v = (D.tartim || {})[aktif], onc = oncekiTartim(aktif);
+  const hedefYazi = v != null && P.hedefKilo && P.hedef && P.hedef !== 'koru' ? ' · ' + T('tartiHedef', {n: sayi(Math.abs(Math.round((v - P.hedefKilo) * 10) / 10))}) : '';
+  const alt = v != null ? (onc != null ? T('tartiFark', {f: farkKg(v, onc)}) : T('tartiIlk')) + hedefYazi : T('tartiHint');
+  return `<div class="card tarti-kart${v != null ? ' girildi' : ''}"><div class="tarti-bas"><b>${T('tartiT')}</b><small>${esc(alt)}</small></div>
+    <div class="tarti-gir"><label class="val"><input id="tartiIn" type="text" inputmode="decimal" autocomplete="off" value="${sayi(v != null ? v : P.kilo)}" aria-label="${esc(T('weight'))}"><span>kg</span></label><button class="btn solid" data-tarti="1">${T('tartiKaydet')}</button></div></div>`;
+}
+// Tartı kaydedilir; en son tartıysa profil kilosu ve hedefler güncellenir (gönderilen programın hedeflerine dokunulmaz)
+function tartiKaydet(){
+  const kg = Math.round(+String($('tartiIn').value).replace(/[,٫]/g, '.') * 10) / 10;
+  if (!(kg >= 30 && kg <= 300)){ toast(T('errBody')); return; }
+  const P = D.profil, onc = oncekiTartim(aktif);
+  (D.tartim || (D.tartim = {}))[aktif] = kg;
+  if (tartimlar().pop()[0] === aktif && kg !== P.kilo){ P.kilo = kg; if (!D.program && P.hedef) hedefleriYenile(); }
+  logEkle('diger', aktif, T('lTarti', {b: sayi(kg), f: onc != null ? farkKg(kg, onc) + ' kg' : T('tartiIlk')}));
+  kaydet(); ciz(); toast(T('tSaved'));
+}
 function ozetCiz(){
   const P = D.profil, kay = kayitOku(aktif), menu = menuOku(aktif), yenen = yenenToplam(aktif);
   const bardakSay = Math.ceil(P.su / P.bardak), ml = kay.su * P.bardak;
@@ -169,7 +191,8 @@ function ozetCiz(){
       const asti = hedef && deger > hedef;
       return `<div class="stat${asti ? (enAz ? ' tamam' : ' asti') : ''}"><small>${ad}</small><b>${deger}</b> <span>${birim}${hedef ? ' / ' + hedef : ''}</span>${asti ? `<div class="kalan ${enAz ? 'tamam' : 'asti'}">${enAz ? '✓ ' : ''}+${deger - hedef} ${birim}</div>` : ''}</div>`;
     };
-    $('ozet').innerHTML = `<div class="card past-card">
+    const tv = (D.tartim || {})[aktif], to = tv != null ? oncekiTartim(aktif) : null;
+    $('ozet').innerHTML = tartiKarti() + `<div class="card past-card">
       <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span></div>
       <div class="stats">
         <div class="stat water"><small>💧 ${T('water')}</small><b>${litre(ml)}</b> <span>${T('L')} / ${litre(P.su)}</span>
@@ -180,6 +203,7 @@ function ozetCiz(){
         ${stat(T('sugar'), yuv(yenen.s), T('g'), P.seker)}
         ${stat(T('fat'), yuv(yenen.y), T('g'), P.yag)}
         ${stat(T('fiber'), yuv(yenen.l), T('g'), P.lif, true)}
+        ${tv != null ? `<div class="stat"><small>⚖️ ${T('tartiStat')}</small><b>${sayi(tv)}</b> <span>kg${to != null ? ' (' + farkKg(tv, to) + ')' : ''}</span></div>` : ''}
       </div>
       <div class="eaten-list">${yenenOgun.length
         ? `<b>${T('eatenMeals', {n: yenenOgun.length, t: menu.length})}</b> ` + yenenOgun.map(o => esc(ogunEt(aktif, o))).join(' · ')
@@ -190,7 +214,7 @@ function ozetCiz(){
   }
   const makro = (cls, ad, a, hedef, enAz = false) => `<div class="macro ${cls}"><small>${ad}</small><b>${yuv(a)}</b><span class="hint"> / <span class="tgt">${hedef}</span> ${T('g')}</span>${cubuk(a, hedef, enAz)}${kalanYazi(a, hedef, T('g'), enAz)}</div>`;
   const bardakGoster = Math.max(bardakSay, kay.su);
-  $('ozet').innerHTML = `
+  $('ozet').innerHTML = tartiKarti() + `
     <div class="card">
       <h3>${aktif === bugunK() ? T('eatenToday') : T('eaten')}</h3>
       <div class="kcal-big"><b>${yuv(yenen.k)}</b><span>/ <span class="tgt">${P.kcal}</span> ${T('kcal')} · ${T('hedefK')}</span></div>

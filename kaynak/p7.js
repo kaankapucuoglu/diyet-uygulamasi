@@ -18,6 +18,7 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.tumlog){ loglarAc(); return; }
   if (ds.saat !== undefined){ saatDuzenle(+ds.saat); return; }
   if (ds.tog){ ogunTogla(ds.tog); return; }
+  if (ds.tarti){ tartiKaydet(); return; }
   if (ds.togall !== undefined){ hepsiniTogla(ds.togall === '1'); return; }
   if (ds.progkaldir){ programKaldir(); return; }
 });
@@ -267,11 +268,13 @@ function dilListesi(sec){
 }
 
 // ---------- Ayarlar ve yedek ----------
-function ayarlarAc(){
+function ayarlarAc(dilAcik){
   const P = D.profil, h = P.hedef ? hedefHesapla(P) : null;
   const alan = k => `<label class="field"><span>${T(HEDEF_ETIKET[k])}</span><input autocomplete="off" autocorrect="off" spellcheck="false" id="p_${k}" type="number" inputmode="numeric" value="${P[k]}"></label>`;
   ac(T('setTitle'), `
-    <div class="sec" style="margin-top:0">${T('sProfile')}</div>
+    <div class="ayar-ust"><button class="btn" id="logAc">📋 ${T('logs')}</button><button class="btn" id="yazAcBtn">✉️ ${T('fbBtn')}</button><button class="btn dil-ac" id="dilAc" aria-expanded="${!!dilAcik}">🌐 ${dil.toUpperCase()} <i>▾</i></button></div>
+    <div id="dilListe" ${dilAcik ? '' : 'hidden'}>${dilListesi(dil)}</div>
+    <div class="sec">${T('sProfile')}</div>
     <div class="cur"><b>${esc(P.ad || '—')}</b> · ${P.cins ? T(P.cins === 'k' ? 'female' : 'male') : ''} · ${P.yas} · ${P.boy} cm · ${sayi(P.kilo)} kg${h ? ` · ${T('bmi')} ${sayi(h.vki)}` : ''}<br>
       <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
       ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
@@ -283,18 +286,14 @@ function ayarlarAc(){
     <div class="sec">${T('sSaat')}</div>
     ${saatFormu()}
     <div class="sec">${T('sTargets')}</div>
-    <div class="grid2">${HEDEF_KEYS.map(alan).join('')}</div>
+    <div class="grid3">${HEDEF_KEYS.filter(k => k !== 'su' && k !== 'bardak').map(alan).join('')}
+      <label class="field"><span>${T('bardakSu')}</span><div class="ikili"><input autocomplete="off" id="p_bardak" type="text" inputmode="numeric" value="${P.bardak}" aria-label="${esc(T('tGlass'))}"><b>/</b><input autocomplete="off" id="p_su" type="text" inputmode="numeric" value="${P.su}" aria-label="${esc(T('tWater'))}"></div></label></div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
-    <div class="sec">${T('kocBtn')}</div>
-    <div class="acts" style="margin-top:0"><button class="btn" id="kocAcBtn">👩‍⚕️ ${T('kocBtn')}</button>${D.program ? `<button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button>` : ''}</div>
-    <div class="hint" style="margin-top:10px">${T('impPasteHint')}</div>
+    <div class="sec">${T('sProg')}</div>
+    ${D.program ? `<div class="acts" style="margin-top:0;margin-bottom:8px"><button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button></div>` : ''}
+    <div class="hint">${esc(T('impPasteHint'))}</div>
     <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
-    <div class="sec">${T('sLang')}</div>
-    <button class="btn full dil-ac" id="dilAc" aria-expanded="false">🌐 ${(DILLER.find(d => d.k === dil) || DILLER[0]).ad} <i>▾</i></button>
-    <div id="dilListe" hidden>${dilListesi(dil)}</div>
     ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `<div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
-    <div class="sec">${T('sMore')}</div>
-    <div class="acts" style="margin-top:0"><button class="btn" id="logAc">📋 ${T('logs')}</button><button class="btn" id="yazAcBtn">✉️ ${T('fbBtn')}</button></div>
     <div class="sec">${T('sBackup')}</div>
     <div class="tip">${T('backupTip')}</div>
     <div class="acts"><button class="btn" id="yedekIndir">${T('dlBackup')}</button><button class="btn" id="yedekYukle">${T('ulBackup')}</button></div>
@@ -306,12 +305,11 @@ function ayarlarAc(){
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
   $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
   saatFormuBagla();
-  $('kocAcBtn').onclick = kocAc;
   if ($('progKaldirBtn')) $('progKaldirBtn').onclick = programKaldir;
   if ($('yukleBtn')) $('yukleBtn').onclick = () => { kapat(); yukleAc(); };
   $('logAc').onclick = () => loglarAc();
   $('yazAcBtn').onclick = yazAc;
-  $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); if (!l.hidden) l.scrollIntoView({block:'nearest', behavior:'smooth'}); };
+  $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); };
   $('linkYukle').onclick = async () => { const v = $('linkYapistir').value; kapat(); if (!(await programLinkiAc(v))) toast(T('impBad')); };
   $('olcuKaydet').onclick = () => {
     const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;
@@ -326,7 +324,7 @@ function ayarlarAc(){
     // Gönderilen program varsa planı bozma; yoksa yeni hedeflere göre planı yeniden hazırlamayı sor
     if (!D.program) onayAc(T('cBodyPlan'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
   };
-  $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(); });
+  $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { const y = $('sbody').scrollTop; D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(true); $('sbody').scrollTop = y; });
   $('hedefKaydet').onclick = () => {
     const degisen = [];
     HEDEF_KEYS.forEach(k => { const v = Math.max(0, Math.round(+$('p_' + k).value)) || P[k]; if (v !== P[k]) degisen.push(`${T(HEDEF_ETIKET[k])}: ${P[k]} → ${v}`); P[k] = v; });

@@ -54,7 +54,6 @@ function saatFormu(){
   const s = saatSeti(bugunK()), ara0 = menuOku(bugunK()).some(o => o.id === 'ara0');
   const alan = (id, ad) => `<label class="field"><span>${ad}</span><input type="time" id="st_${id}" value="${s[id]}" step="300"></label>`;
   return `<div class="grid3">${alan('kahvalti', T('m_kahvalti'))}${alan('ogle', T('m_ogle'))}${alan('aksam', T('m_aksam'))}</div>
-    <div class="hint" style="margin:-2px 0 6px">${T('saatAra')}</div>
     <div class="grid3">${ara0 ? alan('ara0', T('m_ara0')) : ''}${alan('ara1', T('m_ara1'))}${alan('gece', T('m_gece'))}</div>
     <div class="acts" style="margin-top:4px"><button class="btn ghost" id="saatOto">${T('saatOto')}</button><button class="btn" id="saatKaydetBtn">${T('saatKaydet')}</button></div>
     <div class="hint" style="margin-top:6px">${T('saatHint')}</div>`;
@@ -111,7 +110,7 @@ function kopyala(metin, mesaj){
 
 // ---------- Destek ol ----------
 const DESTEK = {iban:'TR37 0015 7000 0000 0091 2185 43', ad:'Kaan Kapucuoğlu', banka:'Npara'};
-let destekTutar = 100;
+let destekTutar = 200;
 function destekAc(){
   const satir = (k, ad, deger, ltr = true) => `<div class="kopya-satir"><div><small>${ad}</small><b${ltr ? ' dir="ltr"' : ''}>${esc(deger)}</b></div><button class="mini" data-kopya="${k}">📋 ${T('supCopy')}</button></div>`;
   const ciz2 = () => {
@@ -125,7 +124,7 @@ function destekAc(){
       <button class="btn solid full" style="margin-top:10px" data-kopya="hepsi">${T('supCopyAll')}</button>
       <div class="tip" style="margin-top:12px">${esc(T('supHow'))}</div>
       <div class="hint" style="margin-top:8px">${esc(T('supForeign'))}</div>`;
-    $('tutarIn').addEventListener('change', e => { destekTutar = sinirla(Math.round(+String(e.target.value).replace(/\D/g, '')) || 100, 10, 100000); ciz2(); });
+    $('tutarIn').addEventListener('change', e => { destekTutar = sinirla(Math.round(+String(e.target.value).replace(/\D/g, '')) || 200, 10, 100000); ciz2(); });
   };
   ac(T('supTitle'));
   ciz2();

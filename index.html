@@ -66,8 +66,8 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .weeknav{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;min-height:30px}
 .weeknav .lbl{text-align:center;font-weight:700;font-size:14px;white-space:nowrap}
 .weeknav .hafta-tag{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gunsatir{display:flex;align-items:stretch;gap:6px;margin-bottom:10px}
-.tarih-blok{margin:6px 0 4px}
+.gunsatir{display:flex;align-items:stretch;gap:6px;margin-bottom:4px}
+.tarih-blok{margin:2px 0 0}
 .gunsatir .days{flex:1;min-width:0;margin:0}
 .gunsatir .nav-btn{height:auto;width:36px;flex:none}
 .nav-btn{width:38px;height:36px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:18px;font-weight:700}
@@ -273,10 +273,40 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 /* Pencere (telefonda alttan açılır) */
 .overlay{position:fixed;inset:0;top:var(--vv-top,0px);bottom:auto;height:var(--vv-h,100%);background:rgba(15,23,42,.42);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
+/* Pencereler yalnız dikey hareket eder: alttan yukarı açılır, yatay kayma yok */
+html,body{overflow-x:clip}
+.overlay.open .sheet{animation:alttan .22s ease-out}
+.wiz:not([hidden]){animation:alttan .22s ease-out}
+@keyframes alttan{from{transform:translateY(28px);opacity:0}to{transform:none;opacity:1}}
+.field input,.field textarea{min-width:0;max-width:100%}
+.field input[type=time]{-webkit-appearance:none;appearance:none;padding-inline:8px}
+.grid2>*,.grid3>*,.grid4>*{min-width:0}
+.ayar-ust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.ayar-ust .btn{padding:4px;gap:4px;font-size:13px;letter-spacing:-.01em}
+@media (max-width:400px){ .ayar-ust .btn{font-size:12.5px} }
+.ikili{display:flex;align-items:center;gap:4px}
+.ikili input{flex:1;min-width:0}
+.ikili b{color:var(--muted)}
+.ikili{gap:0;border:1px solid var(--line);border-radius:10px;background:#fff;padding:0 2px}
+.field .ikili input{border:0;border-radius:0;padding:9px 0;text-align:center;letter-spacing:-.02em;background:transparent}
+@media (max-width:600px){ .grid3 input[type=time]::-webkit-calendar-picker-indicator{display:none} .grid3 input[type=time]{text-align:center;padding-inline:4px} }
+.ikili #p_su{flex:1.35}
+.ikili b{flex:none}
+.sub .hedef-yazi{display:block;line-height:1.5}
+.sub .hedef-yazi::after{content:none}
+.tarti-kart{grid-column:1/-1;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:12px 16px;border-color:#f5dfb0;background:#fffaf0}
+.tarti-kart.girildi{border-color:#bfe8d4;background:var(--green-soft)}
+.tarti-bas{flex:1 1 180px;min-width:0}
+.tarti-bas b{display:block;font-size:15px}
+.tarti-bas small{font-size:12.5px;color:var(--muted)}
+.tarti-gir{display:flex;gap:8px;align-items:center}
+.tarti-gir .val{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:#fff;height:42px;padding-inline:10px 8px}
+.tarti-gir input{width:56px;border:0;outline:none;text-align:end;font-weight:800;font-size:17px;background:transparent}
+.tarti-gir .val span{color:var(--muted);font-size:13px;margin-inline-start:3px}
 .sheet{background:var(--card);width:100%;max-width:600px;max-height:86vh;max-height:86dvh;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.25)}
 .sheet-head{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
 .sheet-head h2{font-size:17px;flex:1;min-width:0}
-.sheet-body{padding:14px 16px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.sheet-body{padding:14px 16px;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .cur{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px}
 .cur small{color:var(--muted);font-size:12px;display:block}
 .cur b{font-size:15px}
@@ -369,7 +399,7 @@ body.klavye .toast{display:none}
 .koc textarea,.koc-not{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;resize:vertical;color:var(--text);background:#fff}
 .koc-not{border:0;border-top:1px dashed var(--line);border-radius:0;padding:10px 16px;font-size:13.5px;background:#fffdf6}
 .koc .field input[type=time],.field input[type=time]{min-height:40px}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0 10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 8px}
 .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 10px}
 .grid2,.grid3,.grid4{align-items:end}
 .koc-check{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin-top:4px}
@@ -432,7 +462,7 @@ details.method summary{cursor:pointer;font-weight:700;font-size:14px}
 details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:#40506a;line-height:1.55}
 
 @media (max-width:600px){
-  .top{gap:12px}
+  .top{gap:6px}
   .top-row{gap:10px}
   .top-row .top-btns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;margin-inline-start:0}
   .tool-btn{flex-direction:column;justify-content:flex-start;gap:3px;height:60px;padding:9px 4px 0}
@@ -453,8 +483,8 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 /* Telefon ve tablet: selamın hemen altında tarih seçici, sonra araç düğmeleri */
 @media (max-width:1180px){
   .top-row{display:contents}
-  .top-row h1{order:1;margin:4px 0 2px}
-  .top-row .top-btns{order:3;margin:2px 0 4px}
+  .top-row h1{order:1;margin:0}
+  .top-row .top-btns{order:3;margin:0}
 }
 /* Tablet: 4 araç düğmesi tek sırada eşit genişlikte (simge üstte, yazı altta) */
 @media (min-width:601px) and (max-width:1180px){
@@ -464,7 +494,7 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 }
 .koc-nav{flex-wrap:wrap;position:static;box-shadow:none}
 @media (max-width:600px){ .koc-nav .btn.green{flex:1 1 100%;order:-1} }
-@media (max-width:600px){ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px} .macros .macro.l{grid-column:1/-1} .water-card{padding:12px 14px} .water-card h3{margin-bottom:4px} .water-head b{font-size:22px} .water-btns .btn{min-height:40px} }
+@media (max-width:600px){ .macros{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 10px} .macro b{font-size:16px} .macro .hint{font-size:12px} .water-card{padding:12px 14px} .water-card h3{margin-bottom:4px} .water-head b{font-size:22px} .water-btns .btn{min-height:40px} }
 @media (max-width:600px){ .gunsatir .nav-btn{display:none} .gunsatir .days{gap:4px} .weeknav{gap:8px} .weeknav .hafta-ok{display:block;width:34px;height:30px;font-size:16px} .hafta-tag .uzun{display:none} .hafta-tag .kisa{display:inline} .stat-acts button{width:28px} .day{padding:7px 0 5px} .day b{font-size:13.5px;letter-spacing:-.01em} .water-btns .btn{font-size:13.5px;padding:5px 10px} }
 @media (max-width:360px){ .days{gap:4px} .day{padding:7px 0 5px} .macros{gap:6px} .crow{font-size:13px} }
 </style>
@@ -526,7 +556,7 @@ const S = {
   app:["Diyet Listesi","Diet Plan","План питания","Ernährungsplan","خطة غذائية"],
   eyebrow:["Kişisel diyet planı","Personal diet plan","Персональный план питания","Persönlicher Ernährungsplan","خطة غذائية شخصية"],
   saved:["✓ Kaydedildi {t}","✓ Saved {t}","✓ Сохранено {t}","✓ Gespeichert {t}","✓ تم الحفظ {t}"],
-  autosave:["✓ Otomatik kayıt açık","✓ Auto-save on","✓ Автосохранение включено","✓ Automatisches Speichern an","✓ الحفظ التلقائي مفعّل"],
+  autosave:["✓ Kayıt açık","✓ Saving on","✓ Сохранение вкл.","✓ Speichern an","✓ الحفظ مفعّل"],
   storageWarn:["⚠ Bu açılışta kayıt tutulamıyor · Ayarlar › Yedek","⚠ Data can’t be saved here · Settings › Backup","⚠ Здесь нельзя сохранить данные · Настройки › Копия","⚠ Speichern hier nicht möglich · Einstellungen › Sicherung","⚠ لا يمكن الحفظ هنا · الإعدادات › النسخ الاحتياطي"],
   history:["Geçmiş","History","История","Verlauf","الأيام السابقة"],
   logs:["Loglar","Logs","Журнал","Protokoll","سجل العمليات"],
@@ -1000,7 +1030,7 @@ Object.assign(S, {
   cProgRemove:["Gönderilen program kaldırılacak ve önceki planın geri gelecek. Emin misin?","The received plan will be removed and your previous plan restored. Continue?","Присланный план будет удалён, вернётся прежний. Продолжить?","Der erhaltene Plan wird entfernt und dein vorheriger Plan wiederhergestellt. Fortfahren?","ستتم إزالة الخطة المرسلة واستعادة خطتك السابقة. متابعة؟"],
   lProgRemove:["Gönderilen program kaldırıldı","Received plan removed","Присланный план удалён","Erhaltener Plan entfernt","تمت إزالة الخطة المرسلة"],
   impPaste:["🔗 Program linki yapıştır","🔗 Paste plan link","🔗 Вставить ссылку на план","🔗 Plan-Link einfügen","🔗 لصق رابط الخطة"],
-  impPasteHint:["Uygulamayı ana ekrandan açıyorsan ve link tarayıcıda açıldıysa, linki buraya yapıştır.","If you use the app from your home screen and the link opened in the browser, paste it here.","Если вы открываете приложение с главного экрана, а ссылка открылась в браузере, вставьте её сюда.","Wenn du die App vom Startbildschirm nutzt und der Link im Browser geöffnet wurde, füge ihn hier ein.","إذا كنت تفتح التطبيق من الشاشة الرئيسية وفُتح الرابط في المتصفح، الصقه هنا."],
+  impPasteHint:["Size gönderilen program linki açılınca program yüklenmediyse: linki kopyalayın, aşağıdaki kutuya yapıştırın ve “Yükle”ye basın. (iPhone’da uygulamayı ana ekrandaki simgeden kullanıyorsanız, WhatsApp’taki link Safari’de açılır ve program uygulamaya gelmez; bu durumda linki buraya yapıştırın.)","If a plan link sent to you didn’t load the plan: copy the link, paste it into the box below and tap “Load”. (On iPhone, if you use the app from the home-screen icon, links from WhatsApp open in Safari and the plan doesn’t reach the app — paste the link here instead.)","Если присланная ссылка не загрузила план: скопируйте её, вставьте в поле ниже и нажмите «Загрузить». (На iPhone, если вы открываете приложение со значка на экране «Домой», ссылка из WhatsApp открывается в Safari и план не попадает в приложение — вставьте её сюда.)","Wenn ein zugesandter Plan-Link den Plan nicht geladen hat: Link kopieren, unten einfügen und „Laden“ tippen. (Auf dem iPhone öffnen sich WhatsApp-Links in Safari, nicht in der App vom Home-Bildschirm — dann den Link hier einfügen.)","إذا لم يُحمِّل رابط الخطة المرسل إليك الخطة: انسخ الرابط والصقه في المربع أدناه واضغط «تحميل». (على آيفون، إذا كنت تستخدم التطبيق من أيقونة الشاشة الرئيسية، يُفتح رابط واتساب في سفاري ولا تصل الخطة إلى التطبيق — الصق الرابط هنا.)"],
   impPasteBtn:["Yükle","Load","Загрузить","Laden","تحميل"],
   // Uygulama olarak yükle
   instBtn:["📲 Uygulama olarak yükle","📲 Install as app","📲 Установить как приложение","📲 Als App installieren","📲 التثبيت كتطبيق"],
@@ -1009,7 +1039,17 @@ Object.assign(S, {
   instAndroid:["Chrome’da sağ üstteki ⋮ menüsüne dokun|“Uygulamayı yükle” ya da “Ana ekrana ekle”yi seç|“Yükle”ye dokun. Simge ana ekrana gelir, internetsiz de açılır.","Tap the ⋮ menu in Chrome|Choose “Install app” or “Add to Home screen”|Tap “Install”. The icon appears and works offline.","Откройте меню ⋮ в Chrome|Выберите «Установить приложение» или «Добавить на гл. экран»|Нажмите «Установить». Значок появится и будет работать офлайн.","Tippe in Chrome auf ⋮|Wähle „App installieren“ oder „Zum Startbildschirm“|Tippe auf „Installieren“. Das Symbol erscheint und funktioniert offline.","اضغط قائمة ⋮ في كروم|اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»|اضغط «تثبيت». تظهر الأيقونة وتعمل دون إنترنت."],
   instLater:["Daha sonra","Later","Позже","Später","لاحقاً"],
   tamam:["Tamam","OK","ОК","OK","حسناً"],
-  weekS:["{n}/{t}. hafta","Week {n}/{t}","Нед. {n}/{t}","Woche {n}/{t}","الأسبوع {n}/{t}"],
+  weekS:["Hafta {n}/{t}","Week {n}/{t}","Нед. {n}/{t}","Woche {n}/{t}","الأسبوع {n}/{t}"],
+  sProg:["Size gönderilen program","Plan sent to you","Присланный план","Zugesandter Plan","الخطة المرسلة إليك"],
+  bardakSu:["Bardak / Su (ml)","Glass / Water (ml)","Стакан / Вода (мл)","Glas / Wasser (ml)","الكوب / الماء (مل)"],
+  tartiT:["⚖️ Haftalık tartı","⚖️ Weekly weigh-in","⚖️ Еженедельное взвешивание","⚖️ Wöchentliches Wiegen","⚖️ الوزن الأسبوعي"],
+  tartiHint:["Her pazartesi kilonu gir; plana uydukça değişimi takip et.","Enter your weight every Monday and track your progress.","Вводите вес каждый понедельник и следите за изменениями.","Trag jeden Montag dein Gewicht ein und verfolge die Veränderung.","أدخل وزنك كل يوم اثنين وتابع التغيّر."],
+  tartiFark:["Önceki tartıya göre {f} kg","{f} kg vs. previous weigh-in","{f} кг к прошлому взвешиванию","{f} kg zum letzten Wiegen","{f} كغ مقارنة بالوزن السابق"],
+  tartiIlk:["İlk tartın","Your first weigh-in","Первое взвешивание","Dein erstes Wiegen","أول وزن لك"],
+  tartiHedef:["Hedefe {n} kg kaldı","{n} kg to goal","До цели {n} кг","Noch {n} kg bis zum Ziel","تبقّى {n} كغ للهدف"],
+  tartiKaydet:["Kaydet","Save","Сохранить","Speichern","حفظ"],
+  tartiStat:["Kilo","Weight","Вес","Gewicht","الوزن"],
+  lTarti:["Haftalık tartı: {b} kg ({f})","Weekly weigh-in: {b} kg ({f})","Взвешивание: {b} кг ({f})","Wiegen: {b} kg ({f})","الوزن الأسبوعي: {b} كغ ({f})"],
   sMore:["Diğer","More","Прочее","Weiteres","المزيد"],
   instNow:["Şimdi yükle","Install now","Установить","Jetzt installieren","ثبّت الآن"]
 });
@@ -1773,7 +1813,7 @@ function kayitDurumYaz(){
   const el = $('kayitDurum');
   if (!depoCalisiyor){ el.className = 'save-chip warn'; el.textContent = T('storageWarn'); return; }
   el.className = 'save-chip';
-  el.textContent = kayitZamani ? T('saved', {t: kayitZamani.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})}) : T('autosave');
+  el.textContent = T('autosave');
 }
 const enYeni = (...a) => a.filter(x => x && x.v === 2 && (x.plan || x.planlar)).sort((p, q) => (q.guncel || 0) - (p.guncel || 0))[0] || null;
 
@@ -2072,7 +2112,7 @@ function ciz(){
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
   // Tarih zaten en üstte (saat satırında) yazıyor; burada yalnız hedef özeti
-  $('altBaslik').textContent = `${hedef}${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg`;
+  $('altBaslik').innerHTML = `${hedef ? `<span class="hedef-yazi">${esc(hedef.replace(/ · $/, ''))}</span> ` : ''}<span class="olcu-yazi">${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg</span>`;
   gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz(); programBantCiz();
   ustHizala();
 }
@@ -2109,6 +2149,28 @@ function kalanYazi(v, hedef, birim, enAz = false){
   const n = yuv(v - hedef) + ' ' + birim;
   return enAz ? `<div class="kalan tamam">${T('reached', {n})}</div>` : `<div class="kalan asti">${T('over', {n})}</div>`;
 }
+// ---------- Haftalık tartı (her pazartesi) ----------
+const tartimlar = () => Object.entries(D.tartim || {}).sort((a, b) => a[0] < b[0] ? -1 : 1);
+function oncekiTartim(k){ const t = tartimlar().filter(([g]) => g < k); return t.length ? t[t.length - 1][1] : null; }
+const farkKg = (a, b) => { const f = Math.round((a - b) * 10) / 10; return (f > 0 ? '+' : f < 0 ? '−' : '±') + sayi(Math.abs(f)); };
+function tartiKarti(){
+  if (haftaGunu(aktif) !== 0 || aktif > bugunK()) return '';
+  const P = D.profil, v = (D.tartim || {})[aktif], onc = oncekiTartim(aktif);
+  const hedefYazi = v != null && P.hedefKilo && P.hedef && P.hedef !== 'koru' ? ' · ' + T('tartiHedef', {n: sayi(Math.abs(Math.round((v - P.hedefKilo) * 10) / 10))}) : '';
+  const alt = v != null ? (onc != null ? T('tartiFark', {f: farkKg(v, onc)}) : T('tartiIlk')) + hedefYazi : T('tartiHint');
+  return `<div class="card tarti-kart${v != null ? ' girildi' : ''}"><div class="tarti-bas"><b>${T('tartiT')}</b><small>${esc(alt)}</small></div>
+    <div class="tarti-gir"><label class="val"><input id="tartiIn" type="text" inputmode="decimal" autocomplete="off" value="${sayi(v != null ? v : P.kilo)}" aria-label="${esc(T('weight'))}"><span>kg</span></label><button class="btn solid" data-tarti="1">${T('tartiKaydet')}</button></div></div>`;
+}
+// Tartı kaydedilir; en son tartıysa profil kilosu ve hedefler güncellenir (gönderilen programın hedeflerine dokunulmaz)
+function tartiKaydet(){
+  const kg = Math.round(+String($('tartiIn').value).replace(/[,٫]/g, '.') * 10) / 10;
+  if (!(kg >= 30 && kg <= 300)){ toast(T('errBody')); return; }
+  const P = D.profil, onc = oncekiTartim(aktif);
+  (D.tartim || (D.tartim = {}))[aktif] = kg;
+  if (tartimlar().pop()[0] === aktif && kg !== P.kilo){ P.kilo = kg; if (!D.program && P.hedef) hedefleriYenile(); }
+  logEkle('diger', aktif, T('lTarti', {b: sayi(kg), f: onc != null ? farkKg(kg, onc) + ' kg' : T('tartiIlk')}));
+  kaydet(); ciz(); toast(T('tSaved'));
+}
 function ozetCiz(){
   const P = D.profil, kay = kayitOku(aktif), menu = menuOku(aktif), yenen = yenenToplam(aktif);
   const bardakSay = Math.ceil(P.su / P.bardak), ml = kay.su * P.bardak;
@@ -2118,7 +2180,8 @@ function ozetCiz(){
       const asti = hedef && deger > hedef;
       return `<div class="stat${asti ? (enAz ? ' tamam' : ' asti') : ''}"><small>${ad}</small><b>${deger}</b> <span>${birim}${hedef ? ' / ' + hedef : ''}</span>${asti ? `<div class="kalan ${enAz ? 'tamam' : 'asti'}">${enAz ? '✓ ' : ''}+${deger - hedef} ${birim}</div>` : ''}</div>`;
     };
-    $('ozet').innerHTML = `<div class="card past-card">
+    const tv = (D.tartim || {})[aktif], to = tv != null ? oncekiTartim(aktif) : null;
+    $('ozet').innerHTML = tartiKarti() + `<div class="card past-card">
       <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span></div>
       <div class="stats">
         <div class="stat water"><small>💧 ${T('water')}</small><b>${litre(ml)}</b> <span>${T('L')} / ${litre(P.su)}</span>
@@ -2129,6 +2192,7 @@ function ozetCiz(){
         ${stat(T('sugar'), yuv(yenen.s), T('g'), P.seker)}
         ${stat(T('fat'), yuv(yenen.y), T('g'), P.yag)}
         ${stat(T('fiber'), yuv(yenen.l), T('g'), P.lif, true)}
+        ${tv != null ? `<div class="stat"><small>⚖️ ${T('tartiStat')}</small><b>${sayi(tv)}</b> <span>kg${to != null ? ' (' + farkKg(tv, to) + ')' : ''}</span></div>` : ''}
       </div>
       <div class="eaten-list">${yenenOgun.length
         ? `<b>${T('eatenMeals', {n: yenenOgun.length, t: menu.length})}</b> ` + yenenOgun.map(o => esc(ogunEt(aktif, o))).join(' · ')
@@ -2139,7 +2203,7 @@ function ozetCiz(){
   }
   const makro = (cls, ad, a, hedef, enAz = false) => `<div class="macro ${cls}"><small>${ad}</small><b>${yuv(a)}</b><span class="hint"> / <span class="tgt">${hedef}</span> ${T('g')}</span>${cubuk(a, hedef, enAz)}${kalanYazi(a, hedef, T('g'), enAz)}</div>`;
   const bardakGoster = Math.max(bardakSay, kay.su);
-  $('ozet').innerHTML = `
+  $('ozet').innerHTML = tartiKarti() + `
     <div class="card">
       <h3>${aktif === bugunK() ? T('eatenToday') : T('eaten')}</h3>
       <div class="kcal-big"><b>${yuv(yenen.k)}</b><span>/ <span class="tgt">${P.kcal}</span> ${T('kcal')} · ${T('hedefK')}</span></div>
@@ -2307,6 +2371,7 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.tumlog){ loglarAc(); return; }
   if (ds.saat !== undefined){ saatDuzenle(+ds.saat); return; }
   if (ds.tog){ ogunTogla(ds.tog); return; }
+  if (ds.tarti){ tartiKaydet(); return; }
   if (ds.togall !== undefined){ hepsiniTogla(ds.togall === '1'); return; }
   if (ds.progkaldir){ programKaldir(); return; }
 });
@@ -2556,11 +2621,13 @@ function dilListesi(sec){
 }
 
 // ---------- Ayarlar ve yedek ----------
-function ayarlarAc(){
+function ayarlarAc(dilAcik){
   const P = D.profil, h = P.hedef ? hedefHesapla(P) : null;
   const alan = k => `<label class="field"><span>${T(HEDEF_ETIKET[k])}</span><input autocomplete="off" autocorrect="off" spellcheck="false" id="p_${k}" type="number" inputmode="numeric" value="${P[k]}"></label>`;
   ac(T('setTitle'), `
-    <div class="sec" style="margin-top:0">${T('sProfile')}</div>
+    <div class="ayar-ust"><button class="btn" id="logAc">📋 ${T('logs')}</button><button class="btn" id="yazAcBtn">✉️ ${T('fbBtn')}</button><button class="btn dil-ac" id="dilAc" aria-expanded="${!!dilAcik}">🌐 ${dil.toUpperCase()} <i>▾</i></button></div>
+    <div id="dilListe" ${dilAcik ? '' : 'hidden'}>${dilListesi(dil)}</div>
+    <div class="sec">${T('sProfile')}</div>
     <div class="cur"><b>${esc(P.ad || '—')}</b> · ${P.cins ? T(P.cins === 'k' ? 'female' : 'male') : ''} · ${P.yas} · ${P.boy} cm · ${sayi(P.kilo)} kg${h ? ` · ${T('bmi')} ${sayi(h.vki)}` : ''}<br>
       <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
       ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
@@ -2572,18 +2639,14 @@ function ayarlarAc(){
     <div class="sec">${T('sSaat')}</div>
     ${saatFormu()}
     <div class="sec">${T('sTargets')}</div>
-    <div class="grid2">${HEDEF_KEYS.map(alan).join('')}</div>
+    <div class="grid3">${HEDEF_KEYS.filter(k => k !== 'su' && k !== 'bardak').map(alan).join('')}
+      <label class="field"><span>${T('bardakSu')}</span><div class="ikili"><input autocomplete="off" id="p_bardak" type="text" inputmode="numeric" value="${P.bardak}" aria-label="${esc(T('tGlass'))}"><b>/</b><input autocomplete="off" id="p_su" type="text" inputmode="numeric" value="${P.su}" aria-label="${esc(T('tWater'))}"></div></label></div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
-    <div class="sec">${T('kocBtn')}</div>
-    <div class="acts" style="margin-top:0"><button class="btn" id="kocAcBtn">👩‍⚕️ ${T('kocBtn')}</button>${D.program ? `<button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button>` : ''}</div>
-    <div class="hint" style="margin-top:10px">${T('impPasteHint')}</div>
+    <div class="sec">${T('sProg')}</div>
+    ${D.program ? `<div class="acts" style="margin-top:0;margin-bottom:8px"><button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button></div>` : ''}
+    <div class="hint">${esc(T('impPasteHint'))}</div>
     <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
-    <div class="sec">${T('sLang')}</div>
-    <button class="btn full dil-ac" id="dilAc" aria-expanded="false">🌐 ${(DILLER.find(d => d.k === dil) || DILLER[0]).ad} <i>▾</i></button>
-    <div id="dilListe" hidden>${dilListesi(dil)}</div>
     ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `<div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
-    <div class="sec">${T('sMore')}</div>
-    <div class="acts" style="margin-top:0"><button class="btn" id="logAc">📋 ${T('logs')}</button><button class="btn" id="yazAcBtn">✉️ ${T('fbBtn')}</button></div>
     <div class="sec">${T('sBackup')}</div>
     <div class="tip">${T('backupTip')}</div>
     <div class="acts"><button class="btn" id="yedekIndir">${T('dlBackup')}</button><button class="btn" id="yedekYukle">${T('ulBackup')}</button></div>
@@ -2595,12 +2658,11 @@ function ayarlarAc(){
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
   $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
   saatFormuBagla();
-  $('kocAcBtn').onclick = kocAc;
   if ($('progKaldirBtn')) $('progKaldirBtn').onclick = programKaldir;
   if ($('yukleBtn')) $('yukleBtn').onclick = () => { kapat(); yukleAc(); };
   $('logAc').onclick = () => loglarAc();
   $('yazAcBtn').onclick = yazAc;
-  $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); if (!l.hidden) l.scrollIntoView({block:'nearest', behavior:'smooth'}); };
+  $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); };
   $('linkYukle').onclick = async () => { const v = $('linkYapistir').value; kapat(); if (!(await programLinkiAc(v))) toast(T('impBad')); };
   $('olcuKaydet').onclick = () => {
     const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;
@@ -2615,7 +2677,7 @@ function ayarlarAc(){
     // Gönderilen program varsa planı bozma; yoksa yeni hedeflere göre planı yeniden hazırlamayı sor
     if (!D.program) onayAc(T('cBodyPlan'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
   };
-  $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(); });
+  $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { const y = $('sbody').scrollTop; D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(true); $('sbody').scrollTop = y; });
   $('hedefKaydet').onclick = () => {
     const degisen = [];
     HEDEF_KEYS.forEach(k => { const v = Math.max(0, Math.round(+$('p_' + k).value)) || P[k]; if (v !== P[k]) degisen.push(`${T(HEDEF_ETIKET[k])}: ${P[k]} → ${v}`); P[k] = v; });
@@ -2780,7 +2842,6 @@ function saatFormu(){
   const s = saatSeti(bugunK()), ara0 = menuOku(bugunK()).some(o => o.id === 'ara0');
   const alan = (id, ad) => `<label class="field"><span>${ad}</span><input type="time" id="st_${id}" value="${s[id]}" step="300"></label>`;
   return `<div class="grid3">${alan('kahvalti', T('m_kahvalti'))}${alan('ogle', T('m_ogle'))}${alan('aksam', T('m_aksam'))}</div>
-    <div class="hint" style="margin:-2px 0 6px">${T('saatAra')}</div>
     <div class="grid3">${ara0 ? alan('ara0', T('m_ara0')) : ''}${alan('ara1', T('m_ara1'))}${alan('gece', T('m_gece'))}</div>
     <div class="acts" style="margin-top:4px"><button class="btn ghost" id="saatOto">${T('saatOto')}</button><button class="btn" id="saatKaydetBtn">${T('saatKaydet')}</button></div>
     <div class="hint" style="margin-top:6px">${T('saatHint')}</div>`;
@@ -2837,7 +2898,7 @@ function kopyala(metin, mesaj){
 
 // ---------- Destek ol ----------
 const DESTEK = {iban:'TR37 0015 7000 0000 0091 2185 43', ad:'Kaan Kapucuoğlu', banka:'Npara'};
-let destekTutar = 100;
+let destekTutar = 200;
 function destekAc(){
   const satir = (k, ad, deger, ltr = true) => `<div class="kopya-satir"><div><small>${ad}</small><b${ltr ? ' dir="ltr"' : ''}>${esc(deger)}</b></div><button class="mini" data-kopya="${k}">📋 ${T('supCopy')}</button></div>`;
   const ciz2 = () => {
@@ -2851,7 +2912,7 @@ function destekAc(){
       <button class="btn solid full" style="margin-top:10px" data-kopya="hepsi">${T('supCopyAll')}</button>
       <div class="tip" style="margin-top:12px">${esc(T('supHow'))}</div>
       <div class="hint" style="margin-top:8px">${esc(T('supForeign'))}</div>`;
-    $('tutarIn').addEventListener('change', e => { destekTutar = sinirla(Math.round(+String(e.target.value).replace(/\D/g, '')) || 100, 10, 100000); ciz2(); });
+    $('tutarIn').addEventListener('change', e => { destekTutar = sinirla(Math.round(+String(e.target.value).replace(/\D/g, '')) || 200, 10, 100000); ciz2(); });
   };
   ac(T('supTitle'));
   ciz2();
