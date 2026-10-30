@@ -6,7 +6,7 @@ try{
   w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Ayşe',cins:'k',hamile:false,yas:32,boy:166,kilo:72,hedef:'ver',hedefKilo:64,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir()`);
   L('titre: '+d.getElementById('destekBtn').classList.contains('titre')+' · animasyon '+w.getComputedStyle(d.getElementById('destekBtn')).animationName);
   w.eval("destekHatirlat('2026-10-30')");await bekle(2800);L('cuma hatirlatma: '+d.getElementById('overlay').classList.contains('open'));
-  w.eval("destekHatirlat('2026-11-01')");await bekle(2800);L('pazar hatirlatma: '+d.getElementById('overlay').classList.contains('open')+' · '+(d.querySelector('#sbody .onay-metin')||{}).textContent);
+  w.eval("destekHatirlat('2026-11-01')");await bekle(2800);L('pazar hatirlatma: '+d.getElementById('overlay').classList.contains('open')+' · destek oldum yok '+!d.getElementById('hatVerdim')+' · '+(d.querySelector('#sbody .onay-metin')||{}).textContent);
   d.getElementById('hatSonra').click();w.eval("destekHatirlat('2026-11-01')");await bekle(2800);L('ayni pazar tekrar: '+d.getElementById('overlay').classList.contains('open'));
   w.eval("destekHatirlat('2026-11-08')");await bekle(2800);L('sonraki pazar: '+d.getElementById('overlay').classList.contains('open'));
   d.getElementById('hatDestek').click();L('destek ac: tutar '+d.getElementById('tutarIn').value+' · verdim dugmesi '+!!d.querySelector('[data-verdim]'));

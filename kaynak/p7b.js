@@ -118,11 +118,9 @@ function destekHatirlat(bugun = bugunK()){
     if ($('overlay').classList.contains('open') || !$('kurulum').hidden || !$('koc').hidden) return;
     D.ayar.destekHatirlatma = bugun; kaydet();
     ac('☕ ' + T('supRemT'), `<p class="onay-metin">${esc(T('supRemText'))}</p>
-      <div class="acts"><button class="btn ghost" id="hatSonra">${T('instLater')}</button><button class="btn solid" id="hatDestek">☕ ${T('supBtn')}</button></div>
-      <button class="btn ghost full" style="margin-top:8px" id="hatVerdim">${T('supDone')}</button>`);
+      <div class="acts"><button class="btn ghost" id="hatSonra">${T('instLater')}</button><button class="btn solid" id="hatDestek">☕ ${T('supBtn')}</button></div>`);
     $('hatSonra').onclick = kapat;
     $('hatDestek').onclick = destekAc;
-    $('hatVerdim').onclick = () => { kapat(); destekVerildi(); };
   }, 2500);
 }
 const DESTEK = {iban:'TR37 0015 7000 0000 0091 2185 43', ad:'Kaan Kapucuoğlu', banka:'Npara'};
