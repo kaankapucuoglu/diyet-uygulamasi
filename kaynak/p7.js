@@ -416,7 +416,9 @@ function onayAc(metin, evet, ek = ''){
 function uyarilarAc(){
   const b = (ik, bas, metin) => `<div class="uyari"><h4>${ik} ${T(bas)}</h4><p>${esc(T(metin))}</p></div>`;
   ac(T('warnTitle'), b('📊', 'wGenelT', 'wGenel') + b('🩺', 'wDoktorT', 'wDoktor') + b('🤰', 'wHamileT', 'wHamile')
-    + b('🚫', 'wAlerjiT', 'wAlerji') + b('⚖️', 'wSorumT', 'wSorum') + b('🔒', 'wVeriT', 'wVeri'));
+    + b('🚫', 'wAlerjiT', 'wAlerji') + b('⚖️', 'wSorumT', 'wSorum') + b('🔒', 'wVeriT', 'wVeri')
+    // Kullanım koşulları ve gizlilik: maviplay.com/diyet (TR + EN)
+    + `<div class="acts"><a class="btn ghost" href="https://maviplay.com/diyet/kosullar" target="_blank" rel="noopener">${T('termsLink')}</a><a class="btn ghost" href="https://maviplay.com/diyet/gizlilik" target="_blank" rel="noopener">${T('privLink')}</a></div>`);
 }
 
 // ---------- Bize yazın (öneri / şikâyet) ----------

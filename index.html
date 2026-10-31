@@ -1209,6 +1209,8 @@ Object.assign(S, {
   tur13:["Profil, kilo/boy, hedefler, öğün saatleri ve yedek burada. 📋 Loglar’da yaptığın her değişikliğin kaydı, ✉️ Bize yazın’da öneri ve şikâyet adresi var.", "Profile, weight/height, targets, meal times and backup are here. 📋 Logs keep a record of every change you make; ✉️ Write to us has our address for feedback.", "Здесь профиль, вес/рост, цели, время приёмов и резервная копия. В 📋 Журнале — запись каждого изменения, в ✉️ Напишите нам — адрес для отзывов.", "Hier findest du Profil, Gewicht/Größe, Ziele, Essenszeiten und Sicherung. 📋 Protokoll zeigt jede Änderung, ✉️ Schreib uns die Adresse für Feedback.", "هنا الملف الشخصي والوزن/الطول والأهداف وأوقات الوجبات والنسخ الاحتياطي. في 📋 السجلات سجلّ لكل تغيير، وفي ✉️ راسلنا عنوان الاقتراحات والشكاوى."],
   tur14T:["🎉 Hazırsın!", "🎉 You’re all set!", "🎉 Готово!", "🎉 Los geht’s!", "🎉 أنت جاهز!"],
   tur14:["Afiyet olsun! Bu turu istediğin zaman Ayarlar → “Kullanım turu” ile yeniden açabilirsin.", "Enjoy your meals! You can reopen this tour any time in Settings → “App tour”.", "Приятного аппетита! Тур можно открыть снова в Настройки → «Обзор приложения».", "Guten Appetit! Die Tour kannst du jederzeit unter Einstellungen → „App-Tour“ erneut öffnen.", "بالهناء والشفاء! يمكنك إعادة فتح هذه الجولة في أي وقت من الإعدادات ← «جولة في التطبيق»."],
+  termsLink:["📄 Kullanım koşulları", "📄 Terms of use", "📄 Условия использования", "📄 Nutzungsbedingungen", "📄 شروط الاستخدام"],
+  privLink:["🔒 Gizlilik politikası", "🔒 Privacy policy", "🔒 Конфиденциальность", "🔒 Datenschutz", "🔒 سياسة الخصوصية"],
   rpBad:["Paylaşım linki açılamadı (eksik ya da bozuk kopyalanmış olabilir).","The shared link couldn’t be opened (it may be incomplete or broken).","Не удалось открыть ссылку (возможно, она скопирована не полностью).","Der Link konnte nicht geöffnet werden (evtl. unvollständig kopiert).","تعذّر فتح الرابط (ربما نُسخ ناقصاً أو تالفاً)."]
 });
 // ---------- Ek yemekler: Türk mutfağı, kahvaltılık, hamur işi, tatlı, kuruyemiş ve kurutulmuş meyveler ----------
@@ -2987,7 +2989,9 @@ function onayAc(metin, evet, ek = ''){
 function uyarilarAc(){
   const b = (ik, bas, metin) => `<div class="uyari"><h4>${ik} ${T(bas)}</h4><p>${esc(T(metin))}</p></div>`;
   ac(T('warnTitle'), b('📊', 'wGenelT', 'wGenel') + b('🩺', 'wDoktorT', 'wDoktor') + b('🤰', 'wHamileT', 'wHamile')
-    + b('🚫', 'wAlerjiT', 'wAlerji') + b('⚖️', 'wSorumT', 'wSorum') + b('🔒', 'wVeriT', 'wVeri'));
+    + b('🚫', 'wAlerjiT', 'wAlerji') + b('⚖️', 'wSorumT', 'wSorum') + b('🔒', 'wVeriT', 'wVeri')
+    // Kullanım koşulları ve gizlilik: maviplay.com/diyet (TR + EN)
+    + `<div class="acts"><a class="btn ghost" href="https://maviplay.com/diyet/kosullar" target="_blank" rel="noopener">${T('termsLink')}</a><a class="btn ghost" href="https://maviplay.com/diyet/gizlilik" target="_blank" rel="noopener">${T('privLink')}</a></div>`);
 }
 
 // ---------- Bize yazın (öneri / şikâyet) ----------
