@@ -55,6 +55,12 @@ h1 em{font-style:normal;color:var(--green2)}
 .phone{width:min(250px,44vw);border-radius:34px;padding:9px;background:#0f1a2c;box-shadow:0 30px 60px rgba(19,32,54,.25)}
 .phone img,.phone video{display:block;border-radius:26px;width:100%;height:auto;aspect-ratio:390/844;object-fit:cover;object-position:top;background:#eef2f7}
 .phone.b{transform:translateY(-34px)}
+.phone.vid{position:relative}
+.vbtn{position:absolute;right:16px;bottom:16px;width:44px;height:44px;border-radius:50%;border:0;padding:0;cursor:pointer;display:grid;place-items:center;color:#fff;background:rgba(15,26,44,.78);box-shadow:0 4px 14px rgba(15,26,44,.3)}
+.vbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.vbtn .i-play{display:none;fill:currentColor;stroke:none}
+.phone.dur .vbtn .i-play{display:block}.phone.dur .vbtn .i-pause{display:none}
+.vbtn:focus-visible{outline:3px solid var(--green2);outline-offset:2px}
 /* Bölümler */
 section{padding:64px 0}
 .sec-head{max-width:720px;margin-bottom:30px}
@@ -145,9 +151,9 @@ footer .sp{margin-inline-start:auto}
       <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span data-t="f4"></span></span>
     </div>
   </div>
-  <div class="shots" aria-hidden="true">
+  <div class="shots">
     <div class="phone"><img src="/img/tel-ogun.png" alt="" width="390" height="844" loading="eager"></div>
-    <div class="phone b"><video src="/img/kullanim.mp4" poster="/img/kullanim.jpg" width="600" height="1298" autoplay muted loop playsinline preload="auto"></video></div>
+    <div class="phone b vid dur"><video src="/img/kullanim.mp4?v=2" poster="/img/kullanim.jpg?v=2" width="600" height="1298" muted loop playsinline preload="none" aria-label="Diyet Listesi kullanım videosu (52 sn)"></video><button class="vbtn" type="button" aria-label="Videoyu oynat"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14"/><path class="i-play" d="M7 4.5 19.5 12 7 19.5z"/></svg></button></div>
   </div>
 </div></div>
 
@@ -352,8 +358,17 @@ function yukle(){
 document.getElementById('installBtn').addEventListener('click', yukle);
 document.querySelectorAll('.js-install').forEach(b => b.addEventListener('click', yukle));
 if (matchMedia('(display-mode: standalone)').matches) location.replace('/app/');
-// Hareket azaltma açıksa kullanım videosu kendiliğinden oynamaz
-if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelectorAll('video[autoplay]').forEach(v => { v.removeAttribute('autoplay'); v.pause(); v.controls = true; });
+// Kullanım videosu: ekrandayken oynar, dışındayken durur; hareket azaltma açıksa kendiliğinden oynamaz
+document.querySelectorAll('.phone.vid').forEach(k => {
+  const v = k.querySelector('video'), b = k.querySelector('.vbtn');
+  let elle = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const durum = () => { k.classList.toggle('dur', v.paused); b.setAttribute('aria-label', v.paused ? 'Videoyu oynat' : 'Videoyu duraklat'); };
+  const oynat = () => v.play().catch(() => {});
+  v.addEventListener('play', durum); v.addEventListener('pause', durum);
+  b.addEventListener('click', () => { if (v.paused) { elle = false; oynat(); } else { elle = true; v.pause(); } });
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { if (!elle) oynat(); } else v.pause(); }), {threshold: 0.3}).observe(v);
+  else if (!elle) oynat();
+});
 uygula();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 </script>
