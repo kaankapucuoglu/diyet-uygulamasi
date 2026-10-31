@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Çeşitlilik + Sporcu & Takviye: kategori çipi ve sayısı, aramalar, takviye ekleme (ölçek), taşınan ürünler, süzgeçler, içecek kümesi, 5 dil
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+const ok=(k,m)=>L((k?'OK   ':'HATA ')+m);
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Kaan',cins:'e',hamile:false,yas:28,boy:182,kilo:82,hedef:'kas',hedefKilo:86,hiz:0.5,aktivite:3,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.turGoruldu=true;D.ayar.hepsiKapali=false;D.ayar.kapali={};ciz()`);
+  await bekle(400);
+  ok(w.eval('YEMEKLER.length')>=820,'yemek sayisi '+w.eval('YEMEKLER.length'));
+  const say=w.eval(`(()=>{const s={};YEMEKLER.forEach(f=>s[f.kat]=(s[f.kat]||0)+1);return JSON.stringify(s)})()`);L('     kategoriler: '+say);
+  ok(Object.values(JSON.parse(say)).every(n=>n>=13),'her kategoride en az 13 cesit');
+  const oi=w.eval(`menuOku(aktif).findIndex(o=>o.id==='ogle')`);
+  w.eval(`secimAc({mod:'ekle',oi:${oi}})`);await bekle(200);
+  const grup=d.querySelector('#kategoriler [data-grup]');if(grup){grup.click();await bekle(100);}
+  const chip=d.querySelector('#kategoriler [data-kat="sporcu"]');
+  ok(!!chip,'Sporcu cipi: '+(chip?chip.textContent:'YOK'));
+  if(chip){chip.click();await bekle(150);}
+  const n=d.querySelectorAll('#flist [data-fid]').length;ok(n>=30,'Sporcu grubunda '+n+' urun; ilk 6: '+[...d.querySelectorAll('#flist [data-fid] b')].slice(0,6).map(b=>b.textContent).join(' | '));
+  const ara=async q=>{const a=d.getElementById('ara');a.value=q;a.dispatchEvent(new w.Event('input'));await bekle(120);return [...d.querySelectorAll('#flist [data-fid]')];};
+  for(const [q,en] of [['protein tozu',5],['whey',3],['kreatin',1],['bcaa',1],['sporcu',30],['takviye',8],['yulaf sütü',1],['skyr',1],['cottage',1],['ananas',1],['tiramisu',1],
+    ['basmati',1],['fava',1],['kemik suyu',1],['kuşkonmaz',1],['air fryer',2],['fit tabak',3],['bira',1],['lüfer',1],['tempeh',1],['omega',1],['enerji',4]]){
+    const r=await ara(q);ok(r.length>=en,`ara "${q}": ${r.length} sonuc (beklenen >= ${en}) · ilk: ${r.slice(0,3).map(b=>b.querySelector('b').textContent).join(' | ')}`);
+  }
+  // Kreatin ekle: ölçek birimi, 0 kcal
+  let r=await ara('kreatin');let b=r.find(x=>x.dataset.fid==='kreatin');ok(!!b,'kreatin aramada');
+  if(b){b.click();await bekle(150);
+    const birim=d.getElementById('birimYazi')?d.getElementById('birimYazi').textContent:'';ok(/ölçek/.test(birim),'kreatin birimi: '+birim);
+    d.getElementById('onay').click();await bekle(300);
+    ok(w.eval(`menuOku(aktif)[${oi}].ogeler.some(x=>x.f==='kreatin')`),'kreatin ogle ogunune eklendi');
+  }
+  ok(Math.round(w.eval(`besin('whey_izolat',1).k`))===111,'whey izolat 1 olcek (30 g) = '+Math.round(w.eval(`besin('whey_izolat',1).k`))+' kcal');
+  // Taşınanlar ve listeler
+  ok(w.eval(`['whey','vegan_protein','probar','protein_puding','protein_shake'].every(i=>yemek(i).kat==='sporcu')`),'whey/vegan_protein/probar/protein_puding/protein_shake -> sporcu');
+  ok(w.eval(`SIVI.has('protein_sut')&&SIVI.has('sporcu_icecegi')&&SIVI.has('badem_sutu')&&SIVI.has('americano')`),'yeni icecekler SIVI kumesinde');
+  ok(w.eval(`DOKTOR_DISI.has('kreatin')&&DOKTOR_DISI.has('pre_workout')&&DOKTOR_DISI.has('bira')&&!DOKTOR_DISI.has('whey_izolat')`),'planda kullanilmayan: takviyeler + alkol; whey izolat planda kullanilabilir');
+  // Süzgeçler
+  ok(w.eval(`HAMILE_DISI.has('kreatin')&&HAMILE_DISI.has('pre_workout')&&HAMILE_DISI.has('fume_somon')&&HAMILE_DISI.has('bira')`),'hamilelik disi: kreatin, pre-workout, fume somon, alkol');
+  ok(!w.eval(`profilUygun({...D.profil,haric:['d']})(yemek('whey_izolat'))`),'sut urunu yemeyen: whey izolat gizli');
+  ok(w.eval(`profilUygun({...D.profil,haric:['d']})(yemek('badem_sutu'))`),'sut urunu yemeyen: badem sutu gorunur');
+  ok(!w.eval(`profilUygun({...D.profil,alerjiler:['gluten']})(yemek('yulaf_sutu'))`),'gluten alerjisi: yulaf sutu gizli');
+  ok(!w.eval(`profilUygun({...D.profil,alerjiler:['sut']})(yemek('kazein'))`),'sut alerjisi: kazein gizli');
+  // Dil
+  for(const [i,dl] of [[1,'en'],[2,'ru'],[3,'de'],[4,'ar']]) L(`     ${dl}: `+w.eval(`yemek('kreatin').n[${i}]+' · '+yemek('whey_izolat').n[${i}]+' · '+(S.k_sporcu[${i}])`));
+  // Plan yeniden oluşturulunca hata yok, gün toplamı makul, takviye otomatik eklenmez
+  w.eval(`planYenile&&planYenile()`);await bekle(300);
+  const kcal=w.eval(`menuOku(aktif).reduce((t,o)=>t+o.ogeler.reduce((s,x)=>s+besin(x.f,x.g).k,0),0)`);ok(kcal>1200&&kcal<4500,'plan yenilendi, gunluk kcal '+Math.round(kcal));
+  const ek=w.eval(`menuOku(aktif).flatMap(o=>o.ogeler.map(x=>x.f)).filter(i=>DOKTOR_DISI.has(i))`);ok(!ek.length,'planda takviye/alkol yok '+ek.join(','));
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_sporcu',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

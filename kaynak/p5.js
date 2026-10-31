@@ -105,7 +105,10 @@ const TERCIH = {
   yumurta:['tofu'], ybeyaz:['tofu'], omlet:['tofu'], menemen:['tofu'], cilbir:['tofu'], pankek:['yulaf'],
   yogurt:['soya_yogurt'], suzme:['soya_yogurt'], kefir:['soya_sut'], sut:['soya_sut'], cacik:['soya_yogurt'], semizotu:['salata'], kereviz:['salata']
 };
-const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay','smoothie','protein_shake','cappuccino','salep','limonata','kola','kola_zero']);
+const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay','smoothie','protein_shake','cappuccino','salep','limonata','kola','kola_zero',
+  'sut_yagsiz','laktozsuz_sut','keci_sutu','ayran_light','badem_sutu','yulaf_sutu','hindistan_sutu','pirinc_sutu','americano','espresso','iced_latte','mocha','matcha_latte','chai_latte',
+  'sicak_cikolata','nar_suyu','havuc_suyu','meyve_suyu_paket','yesil_smoothie','milkshake','kombucha','boza','meyveli_soda','ice_tea','enerji_icecegi','enerji_zero','bira','kirmizi_sarap','beyaz_sarap','raki',
+  'protein_sut','sporcu_icecegi']);
 // Kalori yetmezse ara öğüne eklenecek besleyici seçenekler (ilk uygun olan)
 const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]],
   [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',25]]];   // sona doğru alerjiye uygun seçenekler
