@@ -79,6 +79,21 @@ function sablon(k){
 function miktarHatirla(ogunId, f, g){ (D.miktar || (D.miktar = {}))[ogunId] = {...(D.miktar[ogunId] || {}), [f]: g}; }
 const menuOku = k => (D.kayit[k] && D.kayit[k].ogunler) || sablon(k);
 function menuYaz(k){ const r = kayitAl(k); if (!r.ogunler) r.ogunler = kopya(sablon(k)); return r.ogunler; }
+// Plan/program değişince bugün ve sonrasının özel menüsü silinir; bugün "yedim" denmiş öğünler olduğu gibi kalır
+function menuleriTemizle(saatDe = false){
+  const bugun = bugunK();
+  for (const [k, r] of Object.entries(D.kayit)){
+    if (k < bugun) continue;
+    if (saatDe) delete r.saat;
+    if (!r.ogunler) continue;
+    const yenen = r.ogunler.filter(o => r.yendi[o.id]);
+    delete r.ogunler;
+    if (k !== bugun || !yenen.length) continue;
+    const yeni = sablon(k).map(o => kopya(yenen.find(y => y.id === o.id) || o));
+    yenen.forEach(y => { if (!yeni.some(o => o.id === y.id)) yeni.push(kopya(y)); });
+    r.ogunler = yeni;
+  }
+}
 const yenenToplam = k => { const r = kayitOku(k); return topla(menuOku(k).filter(o => r.yendi[o.id]).flatMap(o => o.ogeler)); };
 const kayitVar = k => { const r = D.kayit[k]; return !!r && (r.su > 0 || Object.values(r.yendi).some(Boolean)); };
 
@@ -110,7 +125,24 @@ function dilUygula(){
   document.documentElement.lang = dil;
   document.documentElement.dir = RTL() ? 'rtl' : 'ltr';
 }
+// Yerinde çizim: basılan düğmenin kartı ekranda aynı yerde kalır (+, kaldır, yedim… sonrası sayfa kaymasın)
+let capaEl = null;
+function capaAl(){
+  const el = capaEl; capaEl = null;
+  const kart = el && el.isConnected && kilitY === null && el.closest('.meal, .card'); if (!kart) return null;
+  const grup = kart.classList.contains('meal') ? '#ogunler .meal' : '.wrap .card';
+  return {grup, i: [...document.querySelectorAll(grup)].indexOf(kart), y: kart.getBoundingClientRect().top};
+}
+function capaUygula(c){
+  const kart = c.i >= 0 && document.querySelectorAll(c.grup)[c.i]; if (!kart) return;
+  const hedef = Math.round(kart.getBoundingClientRect().top + scrollY - c.y);
+  // Sayfa kısaldıysa (yemek kaldırıldı) altta boşluk bırak; yoksa tarayıcı sayfayı yukarı çeker
+  const liste = $('ogunler'), eksik = hedef + innerHeight - document.documentElement.scrollHeight;
+  if (eksik > 0) liste.style.minHeight = liste.offsetHeight + eksik + 'px';
+  if (Math.abs(scrollY - hedef) > 1) window.scrollTo(0, hedef);
+}
 function ciz(){
+  const capa = capaAl();
   dilUygula();
   $('ogunler').style.minHeight = '';
   const P = D.profil;
@@ -127,6 +159,7 @@ function ciz(){
   $('altBaslik').innerHTML = `${hedef ? `<span class="hedef-yazi">${esc(hedef.replace(/ · $/, ''))}</span> ` : ''}<span class="olcu-yazi">${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg</span>`;
   gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz(); programBantCiz();
   ustHizala();
+  if (capa){ capaUygula(capa); requestAnimationFrame(() => capaUygula(capa)); }
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
 function ustHizala(){
@@ -201,7 +234,7 @@ function ozetCiz(){
     };
     const tv = (D.tartim || {})[aktif], to = tv != null ? oncekiTartim(aktif) : null;
     $('ozet').innerHTML = tartiKarti() + `<div class="card past-card">
-      <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span></div>
+      <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span><button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}" aria-label="${esc(T('shTitle'))}">${ikonlu('shBtn')}</button></div>
       <div class="stats">
         <div class="stat water"><small>💧 ${T('water')}</small><b>${litre(ml)}</b> <span>${T('L')} / ${litre(P.su)}</span>
           <div class="stat-acts"><button data-su="-1" aria-label="${T('dec')}">−</button><span>${T('glassN', {n: kay.su})}</span><button data-su="1" aria-label="${T('inc')}">+</button></div></div>
@@ -224,7 +257,7 @@ function ozetCiz(){
   const bardakGoster = Math.max(bardakSay, kay.su);
   $('ozet').innerHTML = tartiKarti() + `
     <div class="card">
-      <h3>${aktif === bugunK() ? T('eatenToday') : T('eaten')}</h3>
+      <div class="kart-bas"><h3>${aktif === bugunK() ? T('eatenToday') : T('eaten')}</h3>${aktif === bugunK() ? `<button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}">${T('shBtn')}</button>` : ''}</div>
       <div class="kcal-big"><b>${yuv(yenen.k)}</b><span>/ <span class="tgt">${P.kcal}</span> ${T('kcal')} · ${T('hedefK')}</span></div>
       ${cubuk(yenen.k, P.kcal)}${kalanYazi(yenen.k, P.kcal, T('kcal'))}
       <div class="macros">${makro('p', T('protein'), yenen.p, P.protein, true)}${makro('c', T('carbS'), yenen.c, P.karb)}${makro('s', T('sugar'), yenen.s, P.seker)}${makro('y', T('fat'), yenen.y, P.yag)}${makro('l', T('fiber'), yenen.l, P.lif, true)}</div>
@@ -263,7 +296,7 @@ function ogunleriCiz(){
     return `<article class="card meal${yendi ? ' eaten' : ''}${kapali ? ' kapali' : ''}">
       <div class="meal-head">
         <div class="meal-ico">${o.ico || OGUN_IKON[o.id] || '🍽️'}</div>
-        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span><button class="saat-btn" data-saat="${oi}" title="${esc(T('saatEdit'))}" aria-label="${esc(T('saatEdit'))}">${ogunSaati(aktif, o)}</button> · ${yuv(t.k)} ${T('kcal')} · ${T('aP')} ${yuv(t.p)} ${T('g')} · ${T('aS')} ${yuv(t.s)} ${T('g')}</span></div>
+        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span class="ogun-alt"><button class="saat-btn" data-saat="${oi}" title="${esc(T('saatEdit'))}" aria-label="${esc(T('saatEdit'))}">${ogunSaati(aktif, o)}</button><i>· ${yuv(t.k)} ${T('kcal')}</i>${[['p','aP'],['s','aS'],['y','aY'],['l','aL']].map(([a, ad]) => `<i>· ${T(ad)} ${yuv(t[a])} ${T('g')}</i>`).join('')}</span></div>
         <button class="eat-btn" data-yedim="${oi}">${yendi ? T('ateDone') : (gecmis ? T('notEaten') : T('ate'))}</button>
         <button class="tog-btn" data-tog="${esc(o.id)}" aria-expanded="${!kapali}" title="${esc(T(kapali ? 'showMeal' : 'hideMeal'))}"><i>${kapali ? '▾' : '▴'}</i><span class="lbl">${T(kapali ? 'showMeal' : 'hideMeal')}</span></button>
       </div>

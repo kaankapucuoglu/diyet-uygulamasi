@@ -4,28 +4,45 @@
 <div id="onizle" style="display:flex;gap:16px;padding:16px;align-items:flex-end"></div>
 <pre id="o"></pre>
 <script>
-// İçerik: tabak + yaprak (sağlıklı yemek), çatal & bıçak, altta dambıl (spor)
+// v2 (31.10.2026): zümrüt zemin + kalori halkası (sarı→turuncu) + renkli sağlıklı kase (yaprak, domates, avokado, portakal)
+// Dosya adları diyet-*: eski önbellekteki simge kalmasın, Android yüklü uygulamanın simgesi de güncellensin
 const ICERIK = `
   <g>
-    <circle cx="256" cy="226" r="132" fill="#ffffff"/>
-    <circle cx="256" cy="226" r="100" fill="#e3f5ec"/>
-    <path d="M206 262 C 206 190, 252 154, 318 150 C 318 214, 286 262, 206 262 Z" fill="#16a36b"/>
-    <path d="M214 254 C 244 228, 270 204, 302 166" stroke="#e3f5ec" stroke-width="9" stroke-linecap="round" fill="none"/>
-    <path d="M70 128 v58 a14 14 0 0 0 28 0 v-58 M84 128 v52 M84 200 v122" stroke="#ffffff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <path d="M430 128 c-26 18 -28 70 -6 96 l6 0 v98" stroke="#ffffff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff"/>
-    <rect x="160" y="391" width="192" height="18" rx="9" fill="#ffffff"/>
-    <rect x="140" y="362" width="30" height="76" rx="10" fill="#ffffff"/>
-    <rect x="114" y="374" width="24" height="52" rx="9" fill="#ffffff"/>
-    <rect x="342" y="362" width="30" height="76" rx="10" fill="#ffffff"/>
-    <rect x="374" y="374" width="24" height="52" rx="9" fill="#ffffff"/>
+    <circle cx="256" cy="256" r="168" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="30"/>
+    <path d="M256 88 A168 168 0 1 1 88.4 268" fill="none" stroke="url(#halka)" stroke-width="30" stroke-linecap="round"/>
+    <circle cx="256" cy="88" r="7" fill="#fff6d6"/>
+    <!-- kasenin içindekiler (biraz büyük ve yukarıda: küçük boyda da seçilsin) -->
+    <g transform="translate(256 262) scale(1.12) translate(-256 -274)">
+    <path d="M168 262 C 160 206, 196 168, 244 166 C 246 214, 214 252, 168 262 Z" fill="#2fd27f"/>
+    <path d="M176 254 C 196 230, 214 206, 236 178" stroke="#bff5d6" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <circle cx="304" cy="214" r="44" fill="#ff4f5e"/>
+    <circle cx="304" cy="214" r="31" fill="#ff7a83"/>
+    <path d="M304 186 v56 M276 214 h56 M284 194 l40 40 M324 194 l-40 40" stroke="#ff4f5e" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="304" cy="214" r="7" fill="#ffd1d5"/>
+    <ellipse cx="236" cy="236" rx="38" ry="30" fill="#7cc242" transform="rotate(-18 236 236)"/>
+    <ellipse cx="236" cy="236" rx="27" ry="20" fill="#d9f2a6" transform="rotate(-18 236 236)"/>
+    <circle cx="236" cy="238" r="12" fill="#8a5a2b"/>
+    <path d="M318 262 a46 46 0 0 1 92 0 z" fill="#ffb020"/>
+    <path d="M327 262 a37 37 0 0 1 74 0 z" fill="#ffd56b"/>
+    <path d="M364 262 v-33 M364 262 l-24 -22 M364 262 l24 -22" stroke="#ffb020" stroke-width="4.5" stroke-linecap="round"/>
+    </g>
+    <!-- kase -->
+    <path d="M140 258 H372 A116 116 0 0 1 140 258 Z" fill="#ffffff"/>
+    <path d="M140 258 H372" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
+    <path d="M166 290 A96 96 0 0 0 216 344" stroke="#d6f3e5" stroke-width="10" stroke-linecap="round" fill="none"/>
+    <rect x="216" y="372" width="80" height="14" rx="7" fill="#ffffff" fill-opacity=".9"/>
   </g>`;
-const ARKA = `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22c07f"/><stop offset="1" stop-color="#0e7f55"/></linearGradient></defs>`;
+const ARKA = `<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34e3a0"/><stop offset=".55" stop-color="#0fa06c"/><stop offset="1" stop-color="#065c45"/></linearGradient>
+  <linearGradient id="halka" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe066"/><stop offset="1" stop-color="#ff7a2f"/></linearGradient>
+  <radialGradient id="isik" cx=".28" cy=".2" r=".7"><stop offset="0" stop-color="#ffffff" stop-opacity=".32"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+</defs>`;
 // any: köşeleri yuvarlatılmış; maskable/apple: tam kare zemin, içerik güvenli alana (%80) küçültülmüş
 const svg = tur => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">${ARKA}` +
-  (tur === 'any' ? `<rect width="512" height="512" rx="112" fill="url(#g)"/>${ICERIK}`
-                 : `<rect width="512" height="512" fill="url(#g)"/><g transform="translate(256 256) scale(0.8) translate(-256 -256)">${ICERIK}</g>`) + `</svg>`;
-const ciktilar = [['icon-192.png','any',192],['icon-512.png','any',512],['maskable-512.png','mask',512],['apple-touch-icon.png','mask',180]];
-const sonuc = {'icon.svg': btoa(unescape(encodeURIComponent(svg('any'))))};
+  (tur === 'any' ? `<rect width="512" height="512" rx="112" fill="url(#g)"/><rect width="512" height="512" rx="112" fill="url(#isik)"/>${ICERIK}`
+                 : `<rect width="512" height="512" fill="url(#g)"/><rect width="512" height="512" fill="url(#isik)"/><g transform="translate(256 256) scale(0.8) translate(-256 -256)">${ICERIK}</g>`) + `</svg>`;
+const ciktilar = [['diyet-192.png','any',192],['diyet-512.png','any',512],['diyet-maskable-512.png','mask',512],['diyet-apple-180.png','mask',180]];
+const sonuc = {'diyet.svg': btoa(unescape(encodeURIComponent(svg('any'))))};
 let kalan = ciktilar.length;
 for (const [ad, tur, boy] of ciktilar){
   const img = new Image();
@@ -33,7 +50,7 @@ for (const [ad, tur, boy] of ciktilar){
     const c = document.createElement('canvas'); c.width = c.height = boy;
     const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, boy, boy);
     sonuc[ad] = c.toDataURL('image/png').split(',')[1];
-    const on = new Image(); on.src = c.toDataURL(); on.title = ad; document.getElementById('onizle').appendChild(on);
+    const on = new Image(); on.src = c.toDataURL(); on.title = ad; on.style.width = Math.min(boy, 256) + 'px'; document.getElementById('onizle').appendChild(on);
     if (--kalan === 0) document.getElementById('o').textContent = 'SONUC' + JSON.stringify(sonuc) + 'BITTI';
   };
   img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg(tur));

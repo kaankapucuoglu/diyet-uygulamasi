@@ -3,6 +3,7 @@ const cift = s => s.split(',').map(Number);
 document.querySelector('.wrap').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const ds = b.dataset;
+  capaEl = !ds.tog && b.closest('#ogunler, #ozet') ? b : null;
   if (ds.tarih){ aktif = ds.tarih; detayAcik = false; ciz(); return; }
   if (ds.hafta){ aktif = gunEkle(aktif, +ds.hafta); detayAcik = false; ciz(); return; }
   if (ds.bugun){ aktif = bugunK(); detayAcik = false; ciz(); return; }
@@ -21,10 +22,11 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.tarti){ tartiKaydet(); return; }
   if (ds.togall !== undefined){ hepsiniTogla(ds.togall === '1'); return; }
   if (ds.progkaldir){ programKaldir(); return; }
+  if (ds.paylas){ yenenPaylasAc(aktif); return; }
 });
 document.querySelector('.wrap').addEventListener('change', e => {
   const t = e.target;
-  if (t.dataset.gram){ const [oi, ii] = cift(t.dataset.gram); miktarDegis(oi, ii, t.value); }
+  if (t.dataset.gram){ const [oi, ii] = cift(t.dataset.gram); capaEl = t; miktarDegis(oi, ii, t.value); }
 });
 $('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') kapat(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
@@ -34,10 +36,21 @@ $('hamileBtn').addEventListener('click', hamileDegistir);
 $('kocBtn').addEventListener('click', kocAc);
 $('destekBtn').addEventListener('click', destekAc);
 
+let geriFn = null, acSayac = 0;
 function ac(baslik, govde){
-  $('sheet').innerHTML = `<div class="sheet-head"><h2>${baslik}</h2><button class="icon-btn" data-kapat="1" aria-label="✕">✕</button></div><div class="sheet-body" id="sbody">${govde || ''}</div>`;
+  $('sheet').innerHTML = `<div class="sheet-head"><button class="geri-btn" id="sheetGeri" hidden><span class="ok">‹</span>${T('back')}</button><h2>${baslik}</h2><button class="icon-btn" data-kapat="1" aria-label="✕">✕</button></div><div class="sheet-body" id="sbody">${govde || ''}</div>`;
   $('sheet').querySelector('[data-kapat]').onclick = kapat;
+  $('sheetGeri').onclick = () => { if (geriFn) geriFn(); };
+  geriFn = null; acSayac++;
   $('overlay').classList.add('open'); sayfaKilitle();
+}
+// Sol üstteki "‹ Geri": fn verilirse görünür (null → gizli)
+function geriAyarla(fn){ geriFn = fn || null; if ($('sheetGeri')) $('sheetGeri').hidden = !geriFn; }
+// Pencere içinden açılan pencere: Geri, önceki pencereyi aynı kaydırma yerinde yeniden açar
+async function icinden(geriAc, yeniAc){
+  const y = $('sbody') ? $('sbody').scrollTop : 0, n = acSayac;
+  await yeniAc();
+  if (acSayac !== n && $('overlay').classList.contains('open')) geriAyarla(() => { geriAc(); $('sbody').scrollTop = y; });
 }
 function kapat(){ $('overlay').classList.remove('open'); kilidiAc(); }
 // Pencere açıkken arkadaki sayfa kaymasın (iPhone'da overflow:hidden yetmez → gövde yerinde sabitlenir)
@@ -115,21 +128,26 @@ function listeGorunumu(){
     <button class="btn ghost full" style="margin-top:12px" id="ozelEkle">${T('addCustom')}</button>`;
   $('ara').addEventListener('input', e => { SE.q = e.target.value; listeCiz(); });
   $('ozelEkle').addEventListener('click', ozelYemekFormu);
+  // Klavye açıkken sonuca/gruba dokununca arama kutusu odağı bırakmasın: liste kaymaz, ilk dokunuş tutar
+  $('sbody').onmousedown = e => { if (document.activeElement && document.activeElement.id === 'ara' && e.target.closest('.frow, .chip')) e.preventDefault(); };
+  geriAyarla(null);
   kategoriCiz(); listeCiz();
 }
 function kategoriCiz(){
   const uygun = SE.uygun;
   const katlar = (SE.benzer.length ? [BENZER] : []).concat(SE.son.length ? [SON] : []).concat([TUMU, ...[...new Set(tumYemekler().filter(uygun).map(f => f.kat))].sort((a, b) => KAT_SIRA.indexOf(a) - KAT_SIRA.indexOf(b))]);
   const ad = k => k === BENZER ? T('similar') : k === SON ? T('recent') : k === TUMU ? T('all') : katAd(k);
-  const daralt = SE.benzer.length > 0;   // değiştir/kıyasla modunda gruplar başta kapalı
-  const gorunen = daralt && !SE.tumGruplar ? [BENZER] : katlar;
+  // Gruplar başta kapalı: değiştir/kıyasla'da Benzerleri, ekle'de Önerilenler + "Diğer grupları göster"
+  const ana = SE.benzer.length ? BENZER : SE.son.length ? SON : null, daralt = !!ana;
+  const gorunen = daralt && !SE.tumGruplar ? [ana] : katlar;
   $('kategoriler').innerHTML = gorunen.map(k => `<button class="chip${k === SON || k === BENZER ? ' recent' : ''}${k === SE.kat ? ' on' : ''}" data-kat="${esc(k)}">${esc(ad(k))}</button>`).join('')
     + (daralt ? `<button class="chip more" data-grup="1">${T(SE.tumGruplar ? 'lessGroups' : 'moreGroups')}</button>` : '');
-  $('kategoriler').querySelectorAll('[data-kat]').forEach(b => b.onclick = () => { SE.kat = b.dataset.kat; kategoriCiz(); listeCiz(); });
+  // Gruba dokununca arama temizlenir (yoksa liste arama sonucunda kalıyordu)
+  $('kategoriler').querySelectorAll('[data-kat]').forEach(b => b.onclick = () => { SE.kat = b.dataset.kat; if (SE.q){ SE.q = ''; $('ara').value = ''; } kategoriCiz(); listeCiz(); });
   const g = $('kategoriler').querySelector('[data-grup]');
   if (g) g.onclick = () => {
     SE.tumGruplar = !SE.tumGruplar;
-    if (!SE.tumGruplar && SE.kat !== BENZER){ SE.kat = BENZER; listeCiz(); }   // kapatınca benzerlere dön
+    if (!SE.tumGruplar && SE.kat !== ana){ SE.kat = ana; listeCiz(); }   // kapatınca ana listeye dön
     kategoriCiz();
   };
 }
@@ -157,7 +175,7 @@ function listeCiz(){
     const ip = ipucu(f);
     return `<li><button class="frow" data-fid="${f.id}"><b>${isaretle(f.ad, A)}${n}</b><small>100 ${T('g')}: ${f.k} ${T('kcal')} · ${T('aP')} ${sayi(f.p)} · ${T('aK')} ${sayi(f.c)} · ${T('aS')} ${sayi(f.s)} · ${T('aY')} ${sayi(f.y)}${ip ? ' · ' + esc(ip) : ''}</small>${alt}</button></li>`;
   }).join('') : `<li class="empty">${T('noResult')}</li>`;
-  $('flist').querySelectorAll('[data-fid]').forEach(b => b.onclick = () => { SE.sec = b.dataset.fid; SE.g = esdegerMiktar(SE.sec); detayGorunumu(); });
+  $('flist').querySelectorAll('[data-fid]').forEach(b => b.onclick = () => { if ($('ara')) $('ara').blur(); SE.sec = b.dataset.fid; SE.g = esdegerMiktar(SE.sec); detayGorunumu(); });
 }
 function kiyasKarti(eskiF, eskiM, yeniF, yeniM){
   const eski = besin(eskiF.id, eskiM), yeni = besin(yeniF.id, yeniM);
@@ -208,10 +226,12 @@ function detayGorunumu(){
     SE.g = Math.max(0, Math.round((SE.g + yon * a) * 2) / 2); $('gramIn').value = sayi(SE.g); yenile();
   });
   $('geri').onclick = listeGorunumu;
+  geriAyarla(listeGorunumu);
   if ($('kapatBtn')) $('kapatBtn').onclick = kapat;
   $('onay').onclick = () => {
     if (!(SE.g > 0)){ toast(T('tZero')); return; }
     kapat();
+    if (!SE.sonra) capaEl = $('ogunler').querySelectorAll('.meal')[SE.oi] || null;   // eklenen öğün ekranda yerinde kalsın
     if (SE.sonra) SE.sonra(SE.sec, SE.g);
     else if (SE.mod === 'ekle') ogeEkle(SE.oi, SE.sec, SE.g); else ogeDegis(SE.oi, SE.ii, SE.sec, SE.g);
   };
@@ -229,6 +249,7 @@ function ozelYemekFormu(){
     </div>
     <div class="acts"><button class="btn ghost" id="geri">${T('cancel')}</button><button class="btn green" id="oKaydet">${T('save')}</button></div>`;
   $('geri').onclick = listeGorunumu;
+  geriAyarla(listeGorunumu);
   $('oKaydet').onclick = () => {
     const ad = $('oAd').value.trim(); if (!ad){ toast(T('tName')); return; }
     const n = id => Math.max(0, +String($(id).value).replace(/[,٫]/g, '.') || 0);
@@ -280,6 +301,7 @@ function ayarlarAc(dilAcik = false){
   ac(T('setTitle'), `
     <div class="ayar-ust"><button class="btn" id="logAc">📋 ${T('logs')}</button><button class="btn" id="yazAcBtn">✉️ ${T('fbBtn')}</button><button class="btn dil-ac" id="dilAc" aria-expanded="${!!dilAcik}">🌐 ${dil.toUpperCase()} <i>▾</i></button></div>
     <div id="dilListe" ${dilAcik ? '' : 'hidden'}>${dilListesi(dil)}</div>
+    <button class="btn ghost full" style="margin-top:8px" id="turAc">🧭 ${T('tourBtn')}</button>
     <div class="sec">${T('sProfile')}</div>
     <div class="cur"><b>${esc(P.ad || '—')}</b> · ${P.cins ? T(P.cins === 'k' ? 'female' : 'male') : ''} · ${P.yas} · ${P.boy} cm · ${sayi(P.kilo)} kg${h ? ` · ${T('bmi')} ${sayi(h.vki)}` : ''}<br>
       <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
@@ -311,12 +333,13 @@ function ayarlarAc(dilAcik = false){
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
   $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
   saatFormuBagla();
-  if ($('progKaldirBtn')) $('progKaldirBtn').onclick = programKaldir;
-  if ($('yukleBtn')) $('yukleBtn').onclick = () => { kapat(); yukleAc(); };
-  $('logAc').onclick = () => loglarAc();
-  $('yazAcBtn').onclick = yazAc;
+  if ($('progKaldirBtn')) $('progKaldirBtn').onclick = () => icinden(ayarlarAc, programKaldir);
+  if ($('yukleBtn')) $('yukleBtn').onclick = () => icinden(ayarlarAc, yukleAc);
+  $('logAc').onclick = () => icinden(ayarlarAc, loglarAc);
+  $('yazAcBtn').onclick = () => icinden(ayarlarAc, yazAc);
+  $('turAc').onclick = () => { kapat(); turBaslat(); };
   $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); };
-  $('linkYukle').onclick = async () => { const v = $('linkYapistir').value; kapat(); if (!(await programLinkiAc(v))) toast(T('impBad')); };
+  $('linkYukle').onclick = () => icinden(ayarlarAc, async () => { if (!(await programLinkiAc($('linkYapistir').value))) toast(T('impBad')); });
   $('olcuKaydet').onclick = () => {
     const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;
     const yeni = {yas: Math.round(oku('yas')), boy: Math.round(oku('boy')), kilo: Math.round(oku('kilo') * 2) / 2, hedefKilo: Math.round(oku('hedefKilo') * 2) / 2};
@@ -326,9 +349,10 @@ function ayarlarAc(dilAcik = false){
     Object.assign(P, yeni);
     hedefleriYenile();
     logEkle('diger', null, T('lBody', {l: degisen.join(', ')}));
-    kaydet(); ciz(); kapat(); toast(T('tSaved'));
+    kaydet(); ciz(); toast(T('tSaved'));
     // Gönderilen program varsa planı bozma; yoksa yeni hedeflere göre planı yeniden hazırlamayı sor
-    if (!D.program) onayAc(T('cBodyPlan'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
+    if (D.program) kapat();
+    else icinden(ayarlarAc, () => onayAc(T('cBodyPlan'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); }));
   };
   $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { const y = $('sbody').scrollTop; D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(true); $('sbody').scrollTop = y; });
   $('hedefKaydet').onclick = () => {
@@ -359,19 +383,17 @@ function ayarlarAc(dilAcik = false){
     const html = KAYNAK.replace(/(<script type="application\/json" id="gomuluVeri">)[\s\S]*?(<\/script>)/, (_, a, b) => a + veri + b);
     indir(html, `${dosyaAdi()}_diyet_listesi.html`, 'text/html');
   };
-  $('planSifirla').onclick = () => {
-    onayAc(T('cResetMenu'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
-  };
-  $('kayitSifirla').onclick = () => {
-    onayAc(T('cResetRec'), () => { D.kayit = {}; logEkle('diger', null, T('lResetRec')); kaydet(); ciz(); toast(T('tRecDel')); });
-  };
+  $('planSifirla').onclick = () => icinden(ayarlarAc, () =>
+    onayAc(T('cResetMenu'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); }));
+  $('kayitSifirla').onclick = () => icinden(ayarlarAc, () =>
+    onayAc(T('cResetRec'), () => { D.kayit = {}; logEkle('diger', null, T('lResetRec')); kaydet(); ciz(); toast(T('tRecDel')); }));
 }
 // Profilden haftalık şablonu yeniden üret; bugün ve sonrasının özel menülerini temizle (geçmiş korunur)
 function planYenile(){
   D.planlar = planOlustur(D.profil);
   D.planBaslangic = gunEkle(bugunK(), -haftaGunu(bugunK()));   // bu hafta = 1. hafta
   D.miktar = {};   // yeni planda eski miktar tercihleri geçersiz
-  for (const k of Object.keys(D.kayit)) if (k >= bugunK()) delete D.kayit[k].ogunler;
+  menuleriTemizle();
   logEkle('diger', null, T('lPlan', {h: T('g_' + D.profil.hedef), k: D.profil.kcal, p: D.profil.protein}));
 }
 const dosyaAdi = () => (D.profil.ad || 'diyet').toLocaleLowerCase('tr-TR').replace(/[çğıöşü]/g, c => KATLA[c]).replace(/[^a-z0-9]+/g, '_') || 'diyet';
@@ -386,7 +408,7 @@ function indir(icerik, ad, tip){
 // ---------- Onay penceresi (X, Esc ya da dışarı dokununca kapanır) ----------
 function onayAc(metin, evet, ek = ''){
   ac(T('confirmT'), `<p class="onay-metin">${esc(metin)}</p>${ek}<div class="acts"><button class="btn ghost" id="onayHayir">${T('cancel2')}</button><button class="btn green" id="onayEvet">${T('yes')}</button></div>`);
-  $('onayHayir').onclick = kapat;
+  $('onayHayir').onclick = () => { if (geriFn) geriFn(); else kapat(); };
   $('onayEvet').onclick = () => { kapat(); evet(); };
 }
 

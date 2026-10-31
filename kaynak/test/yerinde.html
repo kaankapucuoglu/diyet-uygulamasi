@@ -1,0 +1,33 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// + / − / Kaldır / Yedim / su: basılan kart ekranda yerinde kalmalı (sayfa yukarı kaymamalı)
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Kaan',cins:'e',hamile:false,yas:33,boy:180,kilo:80,hedef:'kas',hedefKilo:84,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.hepsiKapali=false;D.ayar.kapali={};ciz()`);
+  await bekle(400);
+  const kart=i=>d.querySelectorAll('#ogunler .meal')[i];
+  const dene=async(ad,i,sec,hedefY)=>{
+    w.scrollTo(0,kart(i).getBoundingClientRect().top+w.scrollY-hedefY);await bekle(80);
+    const y0=Math.round(kart(i).getBoundingClientRect().top),s0=Math.round(w.scrollY);
+    const b=kart(i).querySelector(sec);if(!b){L(ad+': dugme yok');return;}
+    b.click();await bekle(150);
+    const y1=Math.round(kart(i).getBoundingClientRect().top),s1=Math.round(w.scrollY);
+    L(`${y1===y0?'OK  ':'KAYDI'} ${ad} (ogun ${i}): kart ust ${y0} -> ${y1} · scrollY ${s0} -> ${s1}`);
+  };
+  const n=d.querySelectorAll('#ogunler .meal').length;L('ogun sayisi '+n+' · sayfa yuksekligi '+d.documentElement.scrollHeight);
+  await dene('+ (kahvalti 1. yemek)',0,'[data-yon="1"]',120);
+  await dene('- (kahvalti 1. yemek)',0,'[data-yon="-1"]',120);
+  await dene('+ (ogle)',2,'[data-yon="1"]',60);
+  await dene('Kaldir (ogle)',2,'[data-sil]',60);
+  await dene('Yedim (aksam)',n-2,'[data-yedim]',100);
+  await dene('+ (son ogun)',n-1,'[data-yon="1"]',300);
+  await dene('Kaldir (son ogun)',n-1,'[data-sil]',300);
+  // sayfanın en altındayken kaldır
+  w.scrollTo(0,d.documentElement.scrollHeight);await bekle(80);
+  await dene('Kaldir (en altta, son ogun)',n-1,'[data-sil]',Math.round(kart(n-1).getBoundingClientRect().top));
+  // bir öğün gizliyken + (min-height sıfırlanınca sayfa kısalıyordu)
+  kart(1).querySelector('.tog-btn').click();await bekle(200);
+  await dene('+ (1 ogun gizliyken, son ogun)',n-1,'[data-yon="1"]',300);
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_yerinde',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

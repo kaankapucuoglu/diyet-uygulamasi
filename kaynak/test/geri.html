@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Pencere içi Geri, ekle grupları, arama dokunuşu, yediklerimi paylaş, gün geçişi, plan yenilemede yenen öğünler
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+const ok=(ad,kosul,ek='')=>L((kosul?'OK   ':'HATA ')+ad+(ek?' · '+ek:''));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;const $=id=>d.getElementById(id);
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Kaan',cins:'e',hamile:false,yas:33,boy:180,kilo:80,hedef:'kas',hedefKilo:84,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'07:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.destekVerdi=true;kapat()`);
+  await bekle(300);
+  const baslik=()=>d.querySelector('.sheet-head h2').textContent, geri=()=>$('sheetGeri');
+  // Ayarlar → Loglar → Geri
+  w.ayarlarAc();ok('Ayarlar ust seviye: Geri gizli',geri().hidden);
+  $('sbody').scrollTop=400;$('logAc').click();await bekle(50);
+  ok('Loglar acildi + Geri gorunur',/log/i.test(baslik())&&!geri().hidden,baslik());
+  geri().click();await bekle(50);ok('Geri → Ayarlar (kaydirma korunur)',!!$('logAc')&&geri().hidden,'scrollTop '+$('sbody').scrollTop);
+  $('yazAcBtn').click();await bekle(50);ok('Bize yazin + Geri',!geri().hidden,baslik());geri().click();await bekle(50);ok('→ Ayarlar',!!$('logAc'));
+  $('kayitSifirla').click();await bekle(50);ok('Kayit sifirla onayi + Geri',!geri().hidden&&!!$('onayHayir'));
+  $('onayHayir').click();await bekle(50);ok('Vazgec → Ayarlar',!!$('logAc'));
+  $('planSifirla').click();await bekle(50);geri().click();await bekle(50);ok('Plan sifirla Geri → Ayarlar',!!$('logAc'));
+  w.kapat();
+  // Ekle: Onerilenler + Diger gruplari goster
+  w.secimAc({mod:'ekle',oi:0});
+  let chips=[...d.querySelectorAll('#kategoriler .chip')].map(c=>c.textContent);
+  ok('Ekle gruplar kapali',chips.length===2,chips.join(' | '));
+  d.querySelector('[data-grup]').click();chips=[...d.querySelectorAll('#kategoriler .chip')];ok('Diger gruplari goster → acildi',chips.length>10,chips.length+' cip');
+  d.querySelector('[data-grup]').click();ok('Gizle → kapandi',d.querySelectorAll('#kategoriler .chip').length===2);
+  // Arama: patates → kizartma; odak varken mousedown engellenir (liste kaymaz), tek tikla detay
+  const a=$('ara');a.focus();a.value='patates';a.dispatchEvent(new Event('input'));
+  const row=[...d.querySelectorAll('.frow')].find(b=>/kızartma/i.test(b.textContent));ok('patates aramasi kizartma buldu',!!row);
+  const md=new MouseEvent('mousedown',{bubbles:true,cancelable:true});row.dispatchEvent(md);ok('mousedown engellendi (odak kalir)',md.defaultPrevented&&d.activeElement===a);
+  ok('aramada gruplar gorunur',getComputedStyle($('kategoriler')).display!=='none');
+  row.click();await bekle(50);ok('tek tikla Ogune ekle',!!$('onay')&&!geri().hidden,$('onay')&&$('onay').textContent);
+  geri().click();await bekle(50);ok('Geri → liste',!!$('ara')&&geri().hidden);
+  // Gruba dokununca arama temizlenir
+  $('ara').value='patates';$('ara').dispatchEvent(new Event('input'));d.querySelector('#kategoriler [data-kat]').click();ok('grup secince arama temizlendi',$('ara').value==='');
+  w.kapat();
+  // Paylas: yedim yoksa uyari, yedim varsa link → rapor
+  ok('Bugun kartinda Paylas dugmesi',!!d.querySelector('#ozet .kart-bas [data-paylas]'));
+  w.yedimDegis(0);w.yedimDegis(2);await bekle(50);
+  await w.eval('yenenPaylasAc(aktif)');await bekle(100);
+  ok('Paylas penceresi',!!$('shKopya'),d.querySelector('#sbody .cur b').textContent);
+  const Y=w.eval('yenenPaketi(aktif)');const kod=await w.paketKodla(Y);const url='#y='+kod+'&n='+kod.length;
+  L('     link uzunlugu '+(w.eval('PAYLASIM_TABAN').length+url.length)+' karakter');
+  await w.yenenLinkiAc(url);await bekle(100);
+  const rp=$('rapor');ok('Rapor acildi',!!rp&&d.body.classList.contains('rapor-acik'));
+  ok('Raporda 2 ogun tablosu',d.querySelectorAll('.rp-ogun').length===2,[...d.querySelectorAll('.rp-ogun h2')].map(h=>h.textContent.replace(/\s+/g,' ')).join(' / '));
+  ok('Yenmeyen ogunler satiri',!!d.querySelector('.rp-yenmeyen'));
+  const tasma=[...rp.querySelectorAll('*')].filter(e=>e.getBoundingClientRect().right>d.documentElement.clientWidth+1).length;ok('Rapor yatay tasma yok',tasma===0,tasma+' oge');
+  $('rpKapat').click();ok('Rapor kapandi',!$('rapor')&&!d.body.classList.contains('rapor-acik'));
+  await w.yenenLinkiAc('#y=zbozuk&n=99');ok('Bozuk link: rapor acilmaz',!$('rapor'));
+  // Gecmis gun: Gecmis kayit etiketi + Paylas
+  w.eval("aktif=gunEkle(bugunK(),-1);ciz()");const ph=d.querySelector('.past-head');
+  ok('Gecmis: etiket basliga yakin, paylas en sagda',!!ph.querySelector('.tag')&&!!ph.querySelector('[data-paylas]'),'tag x '+Math.round(ph.querySelector('.tag').getBoundingClientRect().left)+' · paylas sag '+Math.round(ph.querySelector('[data-paylas]').getBoundingClientRect().right));
+  w.eval("aktif=bugunK();ciz()");
+  // Plan yenile: bugunku yenen ogun icerigi korunur
+  const once=JSON.stringify(w.eval('menuOku(aktif)')[0].ogeler);w.planYenile();const sonra=JSON.stringify(w.eval('menuOku(aktif)')[0].ogeler);
+  ok('Plan yenilenince yenen kahvalti ayni kaldi',once===sonra);
+  ok('Yenmeyen ogun yeni plandan',!!w.eval('menuOku(aktif)')[1]);
+  // Gun gecisi: sayfa dunden acik kalmis gibi
+  w.eval("sonBugun=gunEkle(bugunK(),-1);aktif=sonBugun;gunKontrol()");ok('Gece yarisi sonrasi aktif bugune gecti',w.eval('aktif===bugunK()'));
+  // Baska sekme daha yeni kaydetti
+  const v=JSON.parse(w.localStorage.getItem('diyet_uygulamasi_v1'));v.guncel=Date.now()+5000;v.profil.ad='Yeni';w.localStorage.setItem('diyet_uygulamasi_v1',JSON.stringify(v));
+  w.depoTazele();ok('Daha yeni depo alindi',w.eval('D.profil.ad')==='Yeni');
+  // Baslik tek satir
+  const ab=$('altBaslik').getBoundingClientRect(),ch=$('kayitDurum').getBoundingClientRect();ok('Hedef · kcal · kg + Kayit acik tek satir',Math.abs(ab.top-ch.top)<8&&ab.height<30,d.querySelector('.sub').textContent.replace(/\s+/g,' ').trim());
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_geri',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

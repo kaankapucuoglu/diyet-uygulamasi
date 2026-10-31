@@ -188,6 +188,7 @@ function wBitir(){
   sihirbazKapat();
   toast('👋 ' + selam());
   bekleyenProgramYukle();   // linkle gelen program: profil tamamlanınca otomatik yüklenir
+  turKontrol();
 }
 $('kurulum').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || b.disabled) return;
@@ -281,14 +282,38 @@ D = tamamla(enYeni(lsOku(), gomuluOku()) || varsayilanDurum());
 baslat2();
 adresProgramKontrol();
 destekHatirlat();
+turKontrol();
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
 try { localStorage.setItem(ANAHTAR + '_test', '1'); localStorage.removeItem(ANAHTAR + '_test'); } catch(e){ depoCalisiyor = false; }
 idbOku().then(v => {
   const yeni = enYeni(v, D);
   if (yeni && yeni !== D && (yeni.guncel || 0) > (D.guncel || 0)){ D = tamamla(yeni); if ($('kurulum').hidden) baslat2(); }
 });
-// Sayfa arka plana atılınca son hali yaz
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && D.guncel) { try { localStorage.setItem(ANAHTAR, JSON.stringify(D)); } catch(e){} } });
+// Başka sekme/pencere daha yeni kaydettiyse onu al (eski sekme yeni kaydı ezmesin)
+function depoOku(){ try { return JSON.parse(localStorage.getItem(ANAHTAR) || 'null'); } catch(e){ return null; } }
+function depoTazele(){
+  const v = depoOku();
+  if (!v || !((v.guncel || 0) > (D.guncel || 0)) || !enYeni(v)) return;
+  D = tamamla(v);
+  if ($('kurulum').hidden && !$('overlay').classList.contains('open')) ciz();
+}
+window.addEventListener('storage', e => { if (e.key === ANAHTAR) depoTazele(); });
+// Gece yarısı / arka plandan dönüş: "bugün" açıksa yeni güne geç (yoksa yapılan kayıt önceki güne yazılırdı)
+let sonBugun = bugunK();
+function gunKontrol(){
+  const b = bugunK();
+  if (b === sonBugun || !D.ayar.kurulum || !$('kurulum').hidden || $('overlay').classList.contains('open')) return;
+  if (aktif === sonBugun){ aktif = b; detayAcik = false; }
+  sonBugun = b; ciz();
+}
+// Sayfa arka plana atılınca son hali yaz (depodaki daha yeniyse dokunma); öne gelince tazele
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden'){
+    const v = depoOku();
+    if (D.guncel && !(v && (v.guncel || 0) > D.guncel)) try { localStorage.setItem(ANAHTAR, JSON.stringify(D)); } catch(e){}
+  } else { depoTazele(); gunKontrol(); }
+});
+window.addEventListener('pageshow', e => { if (e.persisted){ depoTazele(); gunKontrol(); } });
 // Çevrimdışı çalışma: web adresinden açıldıysa uygulama dosyalarını telefona kaydet (dosyadan açılınca çalışmaz, gerek de yok)
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
 // Telefon klavyesi: görünen alanı ölç, klavye açıksa işaretle, odaklanan alanı ortaya kaydır
@@ -319,7 +344,7 @@ document.addEventListener('focusout', () => setTimeout(gorunenAlan, 100));
 // Gece yarısını geçince "bugün" değişsin
 // Dakika başında: tarih-saat ve gece yarısında "bugün"
 (function dakika(){
-  setTimeout(() => { if (D.ayar.kurulum) saatYaz(); if (!document.hidden && $('kurulum').hidden) gunleriCiz(); dakika(); }, 60000 - Date.now() % 60000 + 50);
+  setTimeout(() => { if (D.ayar.kurulum) saatYaz(); if (!document.hidden && $('kurulum').hidden){ gunleriCiz(); gunKontrol(); } dakika(); }, 60000 - Date.now() % 60000 + 50);
 })();
 </script>
 </body>

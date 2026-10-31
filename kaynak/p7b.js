@@ -115,13 +115,16 @@ function destekVerildi(){ D.ayar.destekVerdi = true; kaydet(); ciz(); toast(T('s
 function destekHatirlat(bugun = bugunK()){
   if (!D.ayar.kurulum || D.ayar.destekVerdi || haftaGunu(bugun) !== 6 || D.ayar.destekHatirlatma === bugun) return;
   setTimeout(() => {
-    if ($('overlay').classList.contains('open') || !$('kurulum').hidden || !$('koc').hidden) return;
+    if ($('overlay').classList.contains('open') || !$('kurulum').hidden || !$('koc').hidden || $('tur') || $('rapor')) return;
     D.ayar.destekHatirlatma = bugun; kaydet();
-    ac('☕ ' + T('supRemT'), `<p class="onay-metin">${esc(T('supRemText'))}</p>
-      <div class="acts"><button class="btn ghost" id="hatSonra">${T('instLater')}</button><button class="btn solid" id="hatDestek">☕ ${T('supBtn')}</button></div>`);
-    $('hatSonra').onclick = kapat;
-    $('hatDestek').onclick = destekAc;
+    hatirlatmaAc();
   }, 2500);
+}
+function hatirlatmaAc(){
+  ac('☕ ' + T('supRemT'), `<p class="onay-metin">${esc(T('supRemText'))}</p>
+    <div class="acts"><button class="btn ghost" id="hatSonra">${T('instLater')}</button><button class="btn solid" id="hatDestek">☕ ${T('supBtn')}</button></div>`);
+  $('hatSonra').onclick = kapat;
+  $('hatDestek').onclick = () => icinden(hatirlatmaAc, destekAc);
 }
 const DESTEK = {iban:'TR37 0015 7000 0000 0091 2185 43', ad:'Kaan Kapucuoğlu', banka:'Npara'};
 let destekTutar = 200;
@@ -438,7 +441,7 @@ function programUygula(P){
   D.planlar = [hafta];
   D.planBaslangic = gunEkle(bugun, -haftaGunu(bugun));
   D.miktar = {};
-  for (const k of Object.keys(D.kayit)) if (k >= bugun){ delete D.kayit[k].ogunler; delete D.kayit[k].saat; }
+  menuleriTemizle(true);
   saatKaydet(bugun, Object.fromEntries(P.o));
   if (P.t.kcal) D.profil.kcal = P.t.kcal;
   if (P.t.protein) D.profil.protein = P.t.protein;
@@ -454,7 +457,7 @@ function programKaldir(){
     const o = D.oncekiPlan;
     if (o && o.planlar && o.planlar.length){ D.planlar = o.planlar; D.planBaslangic = o.planBaslangic; D.miktar = o.miktar || {}; }
     else D.planlar = planOlustur(D.profil);
-    for (const k of Object.keys(D.kayit)) if (k >= bugunK()) delete D.kayit[k].ogunler;
+    menuleriTemizle();
     hedefleriYenile();
     D.program = null; D.oncekiPlan = null;
     logEkle('diger', null, T('lProgRemove'));
@@ -471,7 +474,7 @@ function programSor(P){
     ${D.ayar.kurulum ? '' : `<div class="wmsg info">${esc(T('impSetup'))}</div>`}
     <div class="acts"><button class="btn ghost" id="impHayir">${T('impNo')}</button><button class="btn green" id="impEvet">${T('impYes')}</button></div>`);
   const linkTemizle = () => { if (/^#p=/.test(location.hash)) try { history.replaceState(null, '', location.pathname + location.search); } catch(e){} };
-  $('impHayir').onclick = () => { linkTemizle(); kapat(); toast(T('impNot')); };
+  $('impHayir').onclick = () => { linkTemizle(); if (geriFn) geriFn(); else kapat(); toast(T('impNot')); };
   $('impEvet').onclick = () => {
     linkTemizle(); kapat();
     if (D.ayar.kurulum) programUygula(P);
@@ -488,6 +491,7 @@ function bekleyenProgramYukle(){
   if (P) programUygula(P);
 }
 async function programLinkiAc(metin){
+  if (/#y=/.test(String(metin || ''))) return yenenLinkiAc(metin);   // yapıştırılan "yediklerim" linki
   const m = String(metin || '').match(/#p=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
   if (!m) return false;
   let P = null;
@@ -499,6 +503,7 @@ async function programLinkiAc(metin){
 }
 // Açılışta adres çubuğundaki program linki (# kısmı sunucuya gitmez)
 function adresProgramKontrol(){
+  if (/^#y=/.test(location.hash)){ yenenLinkiAc(location.hash); return; }
   if (!/^#p=/.test(location.hash)) return;
   programLinkiAc(location.hash);
 }
@@ -523,3 +528,139 @@ function yukleAc(){
   const adimlar = T(iosMu() ? 'instIos' : 'instAndroid').split('|');
   ac(T('instTitle'), `<ol class="adimlar">${adimlar.map(a => `<li>${esc(a)}</li>`).join('')}</ol>`);
 }
+
+// ---------- Yediklerimi paylaş: günün yenen öğünleri (saat, yemek, miktar, besin) linkin içinde ----------
+// Link: …/app/#y=<sıkıştırılmış>&n=<uzunluk>; açan kişi belge görünümünde görür, "PDF olarak kaydet" ile PDF alır (sunucuya veri gitmez)
+function yenenPaketi(k){
+  const r = kayitOku(k), P = D.profil, v = Math.round;
+  return {v:1, a: P.ad || '', d: k, l: dil, h: [P.kcal, P.protein, P.karb, P.seker, P.yag, P.lif], su: [r.su * P.bardak, P.su],
+    o: menuOku(k).map(o => [ogunAd(o), ogunSaati(k, o), r.yendi[o.id] ? 1 : 0, r.yendi[o.id] ? o.ogeler.map(it => {
+      const f = yemek(it.f), b = besin(it.f, it.g);
+      return [f.ad, miktarYazi(f, it.g), v(b.k), v(b.p), v(b.c), v(b.s), v(b.y), v(b.l)];
+    }) : []])};
+}
+async function yenenPaylasAc(k){
+  const Y = yenenPaketi(k), yenen = Y.o.filter(o => o[2]);
+  if (!yenen.length){ toast(T('shNone')); return; }
+  const kod = await paketKodla(Y), url = PAYLASIM_TABAN + '#y=' + kod + '&n=' + kod.length;
+  const baslik = (Y.a ? Y.a + ' · ' : '') + T('shText', {d: etiket(k)});
+  ac(T('shTitle'), `<div class="cur"><b>${esc(etiket(k))} · ${T('shMeals', {n: yenen.length})} · ${yuv(yenenToplam(k).k)} ${T('kcal')}</b><br>
+      <small>${yenen.map(o => esc(o[1] + ' ' + o[0])).join(' · ')}</small></div>
+    <div class="hint" style="margin:10px 0 4px">${esc(T('shInfo'))}</div>
+    <div class="acts">${navigator.share ? `<button class="btn solid" id="shGonder">${T('shSend')}</button>` : ''}<button class="btn" id="shKopya">${T('shCopy')}</button></div>
+    <button class="btn ghost full" style="margin-top:8px" id="shOnizle">${T('shPreview')}</button>`);
+  if ($('shGonder')) $('shGonder').onclick = () => navigator.share({title: baslik, text: baslik, url}).catch(() => {});
+  $('shKopya').onclick = () => kopyala(url);
+  $('shOnizle').onclick = () => yenenRaporAc(Y);
+}
+async function yenenLinkiAc(metin){
+  const m = String(metin || '').match(/#y=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
+  if (!m) return false;
+  let Y = null;
+  if (!m[2] || +m[2] === m[1].length){
+    try { Y = await paketCoz(m[1]); } catch(e){}
+    if (!Y || Y.v !== 1 || !Array.isArray(Y.o) || !/^\d{4}-\d\d-\d\d$/.test(Y.d)) Y = null;
+  }
+  if (!Y){ if (/^#y=/.test(location.hash)) raporLinkTemizle(); toast(T('rpBad')); return true; }
+  yenenRaporAc(Y);
+  return true;
+}
+const raporLinkTemizle = () => { try { history.replaceState(null, '', location.pathname + location.search); } catch(e){} };
+// Belge görünümü (A4 sayfa); yazdırma/PDF'te yalnız bu sayfa çıkar
+function yenenRaporAc(Y){
+  kapat();
+  if ($('rapor')) $('rapor').remove();
+  const dil0 = dil; if (!D.ayar.kurulum && DILLER.some(d => d.k === Y.l)) dil = Y.l;   // kurulumsuz alıcı: gönderenin dili
+  const n = x => Math.round(+x || 0), top = [0, 0, 0, 0, 0, 0];
+  const yenen = Y.o.filter(o => o[2] && Array.isArray(o[3])), yenmeyen = Y.o.filter(o => !o[2]);
+  yenen.forEach(o => o[3].forEach(it => { for (let i = 0; i < 6; i++) top[i] += n(it[2 + i]); }));
+  const h = Array.isArray(Y.h) ? Y.h : [], ad = [T('calories'), T('protein'), T('carb'), T('sugar'), T('fat'), T('fiber')];
+  const birim = i => i ? T('g') : T('kcal'), kisa = [T('kcal'), T('protein'), T('carbS'), T('sugar'), T('fat'), T('fiber')];
+  const tarih = tarihDen(Y.d).toLocaleDateString(LOC(), {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const su = Array.isArray(Y.su) ? Y.su : [0, 0];
+  const kutu = (baslik, deger, hedef, b) => `<div class="rp-kutu"><small>${baslik}</small><b>${deger}</b> <span>${b}${hedef ? ' / ' + hedef : ''}</span></div>`;
+  const html = `<div class="rapor" id="rapor" translate="no" dir="${RTL() ? 'rtl' : 'ltr'}">
+    <div class="rapor-arac"><button class="btn solid" id="rpPdf">${T('rpPdf')}</button><button class="btn ghost" id="rpKapat">✕ ${T('rpClose')}</button></div>
+    <article class="rapor-sayfa">
+      <header class="rp-bas"><div><small>🥗 ${T('rpTitle')}</small><h1>${esc(String(Y.a || '').slice(0, 40)) || '—'}</h1><p>${esc(tarih)}</p></div></header>
+      <section class="rp-ozet">${ad.map((a, i) => kutu(a, n(top[i]), n(h[i]), birim(i))).join('')}${kutu('💧 ' + T('water'), litre(n(su[0])), n(su[1]) ? litre(n(su[1])) : '', T('L'))}</section>
+      ${yenen.map(o => {
+        const t = [0, 0, 0, 0, 0, 0]; o[3].forEach(it => { for (let i = 0; i < 6; i++) t[i] += n(it[2 + i]); });
+        return `<section class="rp-ogun"><h2><span class="rp-saat">${esc(String(o[1] || ''))}</span>${esc(String(o[0] || ''))}<em>${t[0]} ${T('kcal')}</em></h2>
+          <table><thead><tr><th>${T('rpFood')}</th>${kisa.map(k => `<th>${k}</th>`).join('')}</tr></thead>
+          <tbody>${o[3].map(it => `<tr><td><b>${esc(String(it[0] || ''))}</b><small>${esc(String(it[1] || ''))}</small></td>${[2, 3, 4, 5, 6, 7].map(i => `<td data-l="${kisa[i - 2]}">${n(it[i])}</td>`).join('')}</tr>`).join('')}</tbody>
+          <tfoot><tr><td>${T('rpMealTotal')}</td>${t.map((x, j) => `<td data-l="${kisa[j]}">${x}</td>`).join('')}</tr></tfoot></table></section>`;
+      }).join('')}
+      ${yenmeyen.length ? `<p class="rp-yenmeyen"><b>${T('rpNotEaten')}:</b> ${yenmeyen.map(o => esc(String(o[1] || '') + ' ' + String(o[0] || ''))).join(' · ')}</p>` : ''}
+      <footer class="rp-alt">${T('rpFooter')} · diyet.maviplay.com</footer>
+    </article></div>`;
+  dil = dil0;
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.body.classList.add('rapor-acik');
+  const baslik0 = document.title;
+  document.title = `${String(Y.a || '').slice(0, 40)} ${Y.d}`.trim();   // PDF dosya adı
+  $('rapor').scrollTop = 0;
+  $('rpPdf').onclick = () => window.print();
+  $('rpKapat').onclick = () => {
+    $('rapor').remove(); document.body.classList.remove('rapor-acik'); document.title = baslik0;
+    if (/^#y=/.test(location.hash)) raporLinkTemizle();
+  };
+}
+
+// ---------- Kullanım turu: ilk açılışta bir kez (Geç ile atlanır, bir daha çıkmaz); Ayarlar → Kullanım turu ile yeniden ----------
+// [hedef seçici (yoksa ortada kart), metin no]; hedefi ekranda olmayan adım atlanır (ör. öğünler gizliyse)
+const TUR = [[null, 1], ['#gunler', 2], ['.top-btns', 3], ['#ozet .card', 4], ['#ozet [data-paylas]', 5], ['#ozet .water-card', 6],
+  ['#ogunler .meal .meal-head', 7], ['#ogunler .item .gram', 8], ['#ogunler [data-kiyas]', 9], ['#ogunler [data-degis]', 10],
+  ['#ogunler [data-sil]', 11], ['#ogunler .add-food', 12], ['#ayarBtn', 13], [null, 14]];
+let turAdim = -1;
+const turHedef = i => TUR[i][0] ? [...document.querySelectorAll(TUR[i][0])].find(e => e.getClientRects().length) || null : null;
+function turKontrol(){
+  if (D.ayar.turGoruldu || !D.ayar.kurulum) return;
+  setTimeout(() => {
+    if (D.ayar.turGoruldu || $('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[py]=/.test(location.hash)) return;
+    turBaslat();
+  }, 900);
+}
+function turBaslat(){
+  kapat();
+  if (aktif !== bugunK()){ aktif = bugunK(); ciz(); }
+  if ($('tur')) $('tur').remove();
+  document.body.insertAdjacentHTML('beforeend', `<div class="tur" id="tur"><div class="tur-isik" id="turIsik"></div>
+    <div class="tur-kart" id="turKart" role="dialog" aria-modal="true" aria-live="polite"><small id="turNo"></small><h3 id="turBas"></h3><p id="turMetin"></p>
+    <div class="tur-dug"><button class="btn ghost" id="turGec">${T('tourSkip')}</button><span></span><button class="btn ghost" id="turGeri">‹ ${T('back')}</button><button class="btn solid" id="turIleri"></button></div></div></div>`);
+  $('turGec').onclick = turBitir;
+  $('turGeri').onclick = () => turGit(turAdim - 1, -1);
+  $('turIleri').onclick = () => turAdim >= TUR.length - 1 ? turBitir() : turGit(turAdim + 1, 1);
+  turGit(0, 1);
+}
+function turGit(i, yon){
+  while (i > 0 && i < TUR.length - 1 && TUR[i][0] && !turHedef(i)) i += yon;   // ekranda olmayanı atla
+  if (i < 0) i = 0;
+  turAdim = i;
+  const n = TUR[i][1], el = turHedef(i);
+  $('turNo').textContent = `${i + 1} / ${TUR.length}`;
+  $('turBas').textContent = T('tur' + n + 'T'); $('turMetin').textContent = T('tur' + n);
+  $('turGeri').hidden = i === 0;
+  $('turIleri').textContent = i >= TUR.length - 1 ? T('tourDone') : T('tourNext') + ' ›';
+  if (el) el.scrollIntoView({block: 'center'});
+  requestAnimationFrame(turKonum);
+}
+function turKonum(){
+  const isik = $('turIsik'), kart = $('turKart'); if (!isik || turAdim < 0) return;
+  const el = turHedef(turAdim), vw = document.documentElement.clientWidth, vh = innerHeight;
+  if (!el){ isik.className = 'tur-isik bos'; kart.style.cssText = ''; kart.className = 'tur-kart orta'; return; }
+  const r = el.getBoundingClientRect(), p = 6;
+  isik.className = 'tur-isik';
+  Object.assign(isik.style, {left: r.left - p + 'px', top: r.top - p + 'px', width: r.width + p * 2 + 'px', height: r.height + p * 2 + 'px'});
+  kart.className = 'tur-kart';
+  const kw = Math.min(360, vw - 24), kh = kart.offsetHeight;
+  const ust = r.bottom + p + 12 + kh < vh ? r.bottom + p + 12 : Math.max(12, r.top - p - 12 - kh);
+  kart.style.cssText = `left:${Math.round(Math.min(Math.max(12, r.left + r.width / 2 - kw / 2), vw - kw - 12))}px;top:${Math.round(ust)}px;width:${kw}px`;
+}
+function turBitir(){
+  turAdim = -1;
+  if ($('tur')) $('tur').remove();
+  D.ayar.turGoruldu = true; kaydet();
+}
+window.addEventListener('resize', () => { if ($('tur')) turKonum(); });
+window.addEventListener('scroll', () => { if ($('tur')) turKonum(); }, {passive: true});

@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Kullanım turu: kurulumdan sonra bir kez çıkar, tüm adımlar gezilir, Geç/Bitir sonrası bir daha çıkmaz
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+const ok=(ad,k,ek='')=>L((k?'OK   ':'HATA ')+ad+(ek?' · '+ek:''));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;const $=id=>d.getElementById(id);
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Kaan',cins:'e',hamile:false,yas:33,boy:180,kilo:80,hedef:'kas',hedefKilo:84,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'07:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.destekVerdi=true`);
+  await bekle(1300);
+  ok('Kurulumdan sonra tur acildi',!!$('tur'));
+  const gorulen=[];let i=0;
+  while($('tur')&&i<20){const isik=$('turIsik').getBoundingClientRect(),kart=$('turKart').getBoundingClientRect();
+    const tasma=kart.left<0||kart.right>d.documentElement.clientWidth+1||kart.top<0||kart.bottom>w.innerHeight+1;
+    gorulen.push($('turNo').textContent+' '+$('turBas').textContent+(tasma?' [TASMA]':''));
+    $('turIleri').click();await bekle(80);i++;}
+  L('     '+gorulen.join(' | '));
+  ok('Tum adimlar gezildi, tasma yok',gorulen.length>=12&&!gorulen.some(g=>g.includes('TASMA')),gorulen.length+' adim');
+  ok('Bitir → isaretlendi',w.eval('D.ayar.turGoruldu')===true&&!$('tur'));
+  ok('Kayda yazildi',JSON.parse(w.localStorage.getItem('diyet_uygulamasi_v1')).ayar.turGoruldu===true);
+  w.turKontrol();await bekle(1200);ok('Ikinci kez cikmaz',!$('tur'));
+  w.turBaslat();await bekle(100);ok('Ayarlardan yeniden acilir',!!$('tur'));$('turGec').click();ok('Gec kapatir',!$('tur'));
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_tur',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

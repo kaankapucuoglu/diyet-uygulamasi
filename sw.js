@@ -1,7 +1,7 @@
 // Çevrimdışı çalışma: ilk açılışta uygulama dosyaları telefona kaydedilir, sonra internetsiz de açılır.
 // Yeni sürüm yayınlarken SURUM'u artır; eski önbellek silinir.
-const SURUM = 'diyet-v18';
-const DOSYALAR = ['./', './index.html', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png'];
+const SURUM = 'diyet-v19';
+const DOSYALAR = ['./', './index.html', './manifest.webmanifest', './icons/diyet.svg', './icons/diyet-192.png', './icons/diyet-512.png', './icons/diyet-maskable-512.png', './icons/diyet-apple-180.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(SURUM).then(c => c.addAll(DOSYALAR)).then(() => self.skipWaiting()));

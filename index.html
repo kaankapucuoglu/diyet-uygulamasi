@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#16a36b">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="icons/diyet.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/diyet-192.png">
+<link rel="apple-touch-icon" href="icons/diyet-apple-180.png">
 <meta name="apple-mobile-web-app-title" content="Diyet">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -151,8 +151,90 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 
 /* Geçmiş gün özeti */
 .past-card{grid-column:1/-1}
-.past-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.past-head h3{margin:0;flex:1;min-width:0}
+.past-head{display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;margin-bottom:12px}
+.past-head h3{margin:0;min-width:0}
+/* Kullanım turu: hedef aydınlık, gerisi karartılmış; açıklama kartı hedefin altında/üstünde */
+.tur{position:fixed;inset:0;z-index:70}
+.tur-isik{position:fixed;border-radius:14px;box-shadow:0 0 0 2px #fff,0 0 0 9999px rgba(15,23,42,.62);transition:left .25s,top .25s,width .25s,height .25s;pointer-events:none}
+.tur-isik.bos{left:50%!important;top:50%!important;width:0!important;height:0!important;box-shadow:0 0 0 9999px rgba(15,23,42,.62)}
+.tur-kart{position:fixed;background:var(--card);border-radius:16px;padding:14px 16px 12px;box-shadow:0 18px 50px rgba(15,23,42,.35);max-width:calc(100vw - 24px)}
+.tur-kart.orta{left:50%;top:50%;transform:translate(-50%,-50%);width:min(360px,calc(100vw - 24px))}
+.tur-kart small{font-size:11.5px;font-weight:700;color:var(--blue);letter-spacing:.04em}
+.tur-kart h3{font-size:17px;margin:4px 0 6px}
+.tur-kart p{font-size:14.5px;line-height:1.5;color:var(--text)}
+.tur-dug{display:flex;align-items:center;gap:6px;margin-top:12px}
+.tur-dug span{flex:1}
+.tur-dug .btn{min-height:40px;padding:0 12px;font-size:14px}
+.tur-dug .btn[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){ .tur-isik{transition:none} }
+/* Yediklerimi paylaş düğmesi: kart başlığının en sağında */
+/* Dar ekranda geçmiş gün başlığı tek satır kalsın: düğmede yalnız simge */
+@media (max-width:440px){ .past-head .paylas-btn .lbl{display:none} .past-head .paylas-btn{padding:0 10px} }
+.paylas-btn .mi{margin-inline-end:4px}
+.past-head .paylas-btn .mi:only-child,.past-head .paylas-btn .lbl[hidden]{margin:0}
+.kart-bas{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.kart-bas h3{margin:0;flex:1;min-width:0}
+.paylas-btn{min-height:32px;padding:0 12px;border-radius:99px;background:var(--blue-soft);color:var(--blue);font-weight:700;font-size:13px;white-space:nowrap;flex-shrink:0;margin-inline-start:auto}
+/* Paylaşılan gün: belge (A4) görünümü */
+.rapor{position:fixed;inset:0;z-index:60;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#e8ecf2;padding:12px 12px 32px}
+body.rapor-acik{overflow:hidden}
+.rapor-arac{position:sticky;top:0;z-index:1;display:flex;gap:8px;justify-content:center;max-width:794px;margin:0 auto 10px;padding:6px 0;background:#e8ecf2}
+.rapor-arac .btn{flex:1;max-width:240px}
+.rapor-sayfa{max-width:794px;margin:0 auto;background:#fff;color:#172338;border-radius:6px;box-shadow:0 6px 24px rgba(15,23,42,.14);padding:28px 30px}
+.rp-bas{border-bottom:2px solid var(--green);padding-bottom:12px;margin-bottom:14px}
+.rp-bas small{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
+.rp-bas h1{font-size:24px;margin:4px 0 2px}
+.rp-bas p{color:var(--muted);font-size:14px}
+.rp-ozet{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.rp-kutu{border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+.rp-kutu small{display:block;font-size:11.5px;color:var(--muted);font-weight:600}
+.rp-kutu b{font-size:17px}
+.rp-kutu span{font-size:12px;color:var(--muted)}
+.rp-ogun{margin-bottom:16px;break-inside:avoid}
+.rp-ogun h2{display:flex;align-items:baseline;gap:8px;font-size:16px;margin-bottom:6px}
+.rp-ogun h2 em{margin-inline-start:auto;font-style:normal;font-size:13px;color:var(--muted);font-weight:600;white-space:nowrap}
+.rp-saat{color:var(--blue);font-variant-numeric:tabular-nums}
+.rp-ogun table{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
+.rp-ogun th{font-size:11px;color:var(--muted);font-weight:700;text-align:end;padding:5px 4px;border-bottom:1px solid var(--line);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rp-ogun th:first-child,.rp-ogun td:first-child{text-align:start;width:38%}
+.rp-ogun td{padding:6px 4px;border-bottom:1px solid #f0f3f8;text-align:end;font-variant-numeric:tabular-nums;vertical-align:top}
+.rp-ogun td b{display:block;font-weight:600;overflow-wrap:anywhere}
+.rp-ogun td small{display:block;color:var(--muted);font-size:11.5px}
+.rp-ogun tfoot td{font-weight:700;border-bottom:0;border-top:1px solid var(--line)}
+.rp-yenmeyen{font-size:13px;color:var(--muted);margin:4px 0 12px}
+.rp-alt{border-top:1px solid var(--line);padding-top:10px;font-size:11.5px;color:var(--muted);text-align:center}
+@media (max-width:600px){
+  .rapor{padding:8px 6px 24px}
+  .rapor-sayfa{padding:16px 12px}
+  .rp-ozet{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rp-ogun table{font-size:11.5px}
+  .rp-ogun th{font-size:10px;padding:4px 2px}
+  .rp-ogun td{padding:5px 2px}
+  .rp-ogun th:first-child,.rp-ogun td:first-child{width:34%}
+}
+/* Dar ekranda tablo yerine satır: ad + miktar, altında "155 kcal · Protein 13 · …" (başlıklar kesilmesin) */
+@media (max-width:480px){
+  .rp-ogun thead{display:none}
+  .rp-ogun table,.rp-ogun tbody,.rp-ogun tfoot,.rp-ogun tr{display:block;width:100%}
+  .rp-ogun tr{padding:7px 2px;border-bottom:1px solid #f0f3f8}
+  .rp-ogun td{display:inline;padding:0;border:0;text-align:start;width:auto!important}
+  .rp-ogun td:first-child{display:block;margin-bottom:2px}
+  .rp-ogun td:not(:first-child){font-size:12px;color:var(--muted)}
+  .rp-ogun td:nth-child(2)::after{content:" a0" attr(data-l)}
+  .rp-ogun td:nth-child(n+3)::before{content:" · a0" attr(data-l) " a0"}
+  .rp-ogun tfoot tr{border-top:1px solid var(--line);border-bottom:0}
+  .rp-ogun tfoot td{border-top:0}
+  .rp-ogun tfoot td:not(:first-child){color:var(--text);font-weight:700}
+}
+@page{size:A4;margin:12mm}
+@media print{
+  body.rapor-acik > *:not(#rapor){display:none!important}
+  body.rapor-acik{overflow:visible;background:#fff}
+  .rapor{position:static;overflow:visible;background:#fff;padding:0}
+  .rapor-arac{display:none}
+  .rapor-sayfa{box-shadow:none;border-radius:0;max-width:none;padding:0}
+  .rp-ozet{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
 .tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--gold-soft);color:var(--gold);white-space:nowrap}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:10px}
 .stat{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
@@ -182,14 +264,17 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .meal-ico{width:38px;height:38px;border-radius:11px;background:var(--blue-soft);display:grid;place-items:center;font-size:19px;flex-shrink:0}
 .meal-title{flex:1;min-width:0}
 .meal-title b{display:block;font-size:16px;overflow-wrap:anywhere}
-.meal-title span{font-size:13px;color:var(--muted)}
+/* Öğün alt satırı: saat · kalori · besinler; sığmayan değer alt satıra iner (üst üste binmez, kutudan taşmaz) */
+.meal-title .ogun-alt{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:5px;row-gap:1px;min-width:0;font-size:13px;color:var(--muted)}
+.ogun-alt > i{font-style:normal;white-space:nowrap}
 /* Telefonda öğün başlığı: ad + düğmeler üst satırda yan yana, saat/kalori satırı altta tam genişlikte */
 @media (max-width:600px){
   .meal-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;column-gap:8px;row-gap:2px;padding:12px 14px}
   .meal-title{display:contents}
-  .meal-ico{grid-row:1/span 2;align-self:start;width:34px;height:34px;font-size:17px}
+  .meal-ico{grid-row:1;align-self:center;width:34px;height:34px;font-size:17px}
   .meal-title b{grid-column:2;grid-row:1;align-self:center}
-  .meal-title span{grid-column:2/-1;grid-row:2}
+  .meal-title .ogun-alt{grid-column:1/-1;grid-row:2;margin-top:4px;font-size:12px;column-gap:3px;letter-spacing:-.01em}
+  .ogun-alt .saat-btn{font-size:12.5px;padding-inline-end:1px}
   .meal-head .eat-btn{grid-column:3;grid-row:1}
   .meal-head .tog-btn{grid-column:4;grid-row:1}
 }
@@ -293,8 +378,7 @@ html,body{overflow-x:clip}
 @media (max-width:600px){ .grid3 input[type=time]::-webkit-calendar-picker-indicator{display:none} .grid3 input[type=time]{text-align:center;padding-inline:4px} }
 .ikili #p_su{flex:1.35}
 .ikili b{flex:none}
-.sub .hedef-yazi{display:block;line-height:1.5}
-.sub .hedef-yazi::after{content:none}
+.sub .hedef-yazi::after{content:" ·"}
 .tarti-kart{grid-column:1/-1;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:12px 16px;border-color:#f5dfb0;background:#fffaf0}
 .tarti-kart.girildi{border-color:#bfe8d4;background:var(--green-soft)}
 .tarti-bas{flex:1 1 180px;min-width:0}
@@ -307,6 +391,11 @@ html,body{overflow-x:clip}
 .sheet{background:var(--card);width:100%;max-width:600px;max-height:86vh;max-height:86dvh;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,.25)}
 .sheet-head{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
 .sheet-head h2{font-size:17px;flex:1;min-width:0}
+/* Pencere içinden açılan pencere: sol üstte önceki pencereye dönüş */
+.geri-btn{display:inline-flex;align-items:center;gap:2px;height:40px;padding:0 12px 0 8px;border-radius:12px;background:var(--blue-soft);color:var(--blue);font-weight:700;font-size:14px;flex-shrink:0}
+.geri-btn[hidden]{display:none}
+.geri-btn .ok{font-size:24px;line-height:1;margin-top:-3px}
+[dir=rtl] .geri-btn .ok{transform:scaleX(-1)}
 .sheet-body{padding:14px 16px;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .cur{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px}
 .cur small{color:var(--muted);font-size:12px;display:block}
@@ -331,7 +420,7 @@ a.btn{text-decoration:none}
 .chip.more{background:transparent;color:var(--blue);border:1px dashed #b9cdf6}
 body.klavye .overlay{padding:0;align-items:flex-start}
 body.klavye .sheet{max-height:100%!important;height:100%;border-radius:0}
-body.klavye .sheet:has(#ara:focus) .cur,body.klavye .sheet:has(#ara:focus) #kategoriler,body.klavye .sheet:has(#ara:focus) .legend,body.klavye .sheet:has(#ara:focus) #sbody > .hint{display:none}
+body.klavye .sheet:has(#ara) .cur,body.klavye .sheet:has(#ara) .legend,body.klavye .sheet:has(#ara) #sbody > .hint{display:none}
 body.klavye .sheet-head{padding-top:8px;padding-bottom:6px}
 .flist{list-style:none}
 .frow{display:block;width:100%;text-align:start;padding:10px 4px;border-bottom:1px solid #f0f3f8}
@@ -374,7 +463,7 @@ body.klavye .toast{display:none}
 .meal.kapali .items,.meal.kapali .add-food,.meal.kapali .ogun-not{display:none}
 .meal.kapali .meal-head{border-bottom:0}
 .tog-btn{display:inline-flex;align-items:center;gap:4px;min-height:38px;padding:0 10px;border-radius:10px;font-weight:700;font-size:12.5px;background:var(--blue-soft);color:var(--blue);flex-shrink:0;white-space:nowrap}
-.tog-btn i{font-style:normal;font-size:13px}
+.tog-btn i{font-style:normal;font-size:19px;line-height:1}
 @container (max-width:400px){ .tog-btn .lbl{display:none} .tog-btn{width:38px;justify-content:center;padding:0} }
 .saat-btn{display:inline-flex;align-items:center;gap:3px;font:inherit;font-size:13px;color:var(--blue);font-weight:700;padding:0 4px 0 0;border-radius:6px}
 .saat-btn::after{content:"✎";font-size:11px;opacity:.55}
@@ -1071,7 +1160,56 @@ Object.assign(S, {
   supDone:["✅ Destek oldum","✅ I’ve already supported","✅ Я уже поддержал(а)","✅ Ich habe schon unterstützt","✅ لقد دعمت بالفعل"],
   supThanks:["💚 Desteğin için çok teşekkürler! Artık hatırlatma göstermeyeceğiz.","💚 Thank you so much for your support! We won’t remind you again.","💚 Большое спасибо за поддержку! Больше не будем напоминать.","💚 Vielen Dank für deine Unterstützung! Wir erinnern dich nicht mehr.","💚 شكراً جزيلاً على دعمك! لن نذكّرك مرة أخرى."],
   sMore:["Diğer","More","Прочее","Weiteres","المزيد"],
-  instNow:["Şimdi yükle","Install now","Установить","Jetzt installieren","ثبّت الآن"]
+  instNow:["Şimdi yükle","Install now","Установить","Jetzt installieren","ثبّت الآن"],
+  shBtn:["📤 Paylaş","📤 Share","📤 Поделиться","📤 Teilen","📤 مشاركة"],
+  shTitle:["Yediklerimi gönder","Send what I ate","Отправить, что я съел(а)","Gegessenes senden","أرسل ما أكلته"],
+  shMeals:["{n} öğün","{n} meals","приёмов: {n}","{n} Mahlzeiten","{n} وجبات"],
+  shInfo:["Linke dokunan kişi o gün öğün öğün, saatiyle neler yediğini belge olarak görür ve PDF olarak kaydedebilir. Bilgiler linkin içindedir, sunucuya gönderilmez.","Whoever taps the link sees what you ate that day, meal by meal with times, as a document and can save it as PDF. The data is inside the link; nothing is sent to a server.","Получатель увидит по ссылке, что вы ели в этот день — по приёмам пищи и времени — в виде документа и сможет сохранить его в PDF. Данные внутри ссылки, на сервер ничего не отправляется.","Wer auf den Link tippt, sieht als Dokument, was du an dem Tag gegessen hast – Mahlzeit für Mahlzeit mit Uhrzeit – und kann es als PDF speichern. Die Daten stecken im Link, nichts geht an einen Server.","من يفتح الرابط يرى ما أكلته في ذلك اليوم، وجبةً وجبة مع الأوقات، كمستند ويمكنه حفظه PDF. البيانات داخل الرابط ولا تُرسل إلى أي خادم."],
+  shSend:["📤 Gönder","📤 Send","📤 Отправить","📤 Senden","📤 إرسال"],
+  shCopy:["📋 Linki kopyala","📋 Copy link","📋 Копировать ссылку","📋 Link kopieren","📋 نسخ الرابط"],
+  shPreview:["👁 Önizle","👁 Preview","👁 Предпросмотр","👁 Vorschau","👁 معاينة"],
+  shNone:["Bu gün “Yedim” işaretli öğün yok. Önce yediğin öğünleri işaretle.","No meals are marked “Ate” on this day. Mark the meals you ate first.","В этот день нет приёмов с отметкой «Съел(а)». Сначала отметьте съеденное.","An diesem Tag ist keine Mahlzeit als „Gegessen“ markiert. Markiere zuerst, was du gegessen hast.","لا توجد وجبات مُعلَّمة «أكلت» في هذا اليوم. علِّم ما أكلته أولاً."],
+  shText:["{d} yediklerim","What I ate on {d}","Что я ел(а): {d}","Was ich am {d} gegessen habe","ما أكلته يوم {d}"],
+  rpTitle:["Günlük beslenme kaydı","Daily food log","Дневник питания","Ernährungsprotokoll","سجل الطعام اليومي"],
+  rpPdf:["📄 PDF olarak kaydet","📄 Save as PDF","📄 Сохранить в PDF","📄 Als PDF speichern","📄 حفظ كملف PDF"],
+  rpClose:["Kapat","Close","Закрыть","Schließen","إغلاق"],
+  rpFood:["Yiyecek","Food","Продукт","Lebensmittel","الطعام"],
+  rpMealTotal:["Öğün toplamı","Meal total","Итого","Summe","مجموع الوجبة"],
+  rpNotEaten:["Yenmeyen öğünler","Skipped meals","Пропущенные приёмы","Ausgelassene Mahlzeiten","وجبات لم تؤكل"],
+  rpFooter:["Kişisel Diyet Planı ile hazırlandı","Made with Personal Diet Plan","Сделано в «Личный план питания»","Erstellt mit Persönlicher Diätplan","أُعدّ بواسطة خطة النظام الغذائي الشخصية"],
+  tourBtn:["Kullanım turu", "App tour", "Обзор приложения", "App-Tour", "جولة في التطبيق"],
+  tourSkip:["Geç", "Skip", "Пропустить", "Überspringen", "تخطَّ"],
+  tourNext:["İleri", "Next", "Далее", "Weiter", "التالي"],
+  tourDone:["Bitir ✓", "Done ✓", "Готово ✓", "Fertig ✓", "إنهاء ✓"],
+  tur1T:["👋 Hoş geldin!", "👋 Welcome!", "👋 Добро пожаловать!", "👋 Willkommen!", "👋 أهلاً بك!"],
+  tur1:["Uygulamayı 1 dakikada tanıyalım. İstemezsen “Geç”e bas; bu tur bir daha çıkmaz (Ayarlar’dan yeniden açabilirsin).", "Let’s get to know the app in a minute. Tap “Skip” if you like; this tour won’t show again (you can reopen it in Settings).", "Познакомимся с приложением за минуту. Можно нажать «Пропустить» — тур больше не появится (его можно открыть в Настройках).", "Lerne die App in einer Minute kennen. Mit „Überspringen“ endet die Tour und erscheint nicht wieder (in den Einstellungen erneut aufrufbar).", "لنتعرّف على التطبيق في دقيقة. اضغط «تخطَّ» إن شئت؛ لن تظهر هذه الجولة مجدداً (يمكنك فتحها من الإعدادات)."],
+  tur2T:["📅 Günler", "📅 Days", "📅 Дни", "📅 Tage", "📅 الأيام"],
+  tur2:["Bir güne dokun: geçmiş günlerde o günün özeti, gelecekte menüsü görünür. ‹ › ile haftalar arasında geçersin; alttaki nokta o gün kayıt olduğunu gösterir.", "Tap a day: past days show that day’s summary, future days show the menu. Use ‹ › to switch weeks; a dot means there are records that day.", "Нажмите на день: для прошлых дней — итоги, для будущих — меню. ‹ › — смена недели; точка означает, что в этот день есть записи.", "Tippe auf einen Tag: vergangene Tage zeigen die Zusammenfassung, kommende das Menü. Mit ‹ › wechselst du die Woche; ein Punkt bedeutet Einträge an dem Tag.", "اضغط على يوم: الأيام الماضية تعرض ملخصها، والقادمة تعرض قائمتها. استخدم ‹ › للتنقل بين الأسابيع؛ النقطة تعني وجود سجلات في ذلك اليوم."],
+  tur3T:["🔝 Üst menü", "🔝 Top menu", "🔝 Верхнее меню", "🔝 Menü oben", "🔝 القائمة العلوية"],
+  tur3:["Uyarılar (önemli sağlık notları), Destek ol, Program hazırla (diyetisyen ya da antrenör olarak başkasına program yap) ve Ayarlar.", "Warnings (important health notes), Support us, Create a plan (make a plan for someone else as a dietitian or coach) and Settings.", "Предупреждения (важные заметки о здоровье), Поддержать, Составить план (для другого человека — как диетолог или тренер) и Настройки.", "Hinweise (wichtige Gesundheitshinweise), Unterstützen, Plan erstellen (als Ernährungsberater oder Trainer für andere) und Einstellungen.", "التنبيهات (ملاحظات صحية مهمة)، ادعمنا، إعداد خطة (لشخص آخر كأخصائي تغذية أو مدرب) والإعدادات."],
+  tur4T:["📊 Bugün yenen", "📊 Eaten today", "📊 Съедено сегодня", "📊 Heute gegessen", "📊 ما أُكل اليوم"],
+  tur4:["“Yedim” dediğin öğünlerin toplamı: kalori, protein, karbonhidrat, şeker, yağ ve lif. Çubuklar hedefine ne kadar kaldığını gösterir.", "The total of the meals you marked “Ate”: calories, protein, carbs, sugar, fat and fiber. The bars show how far you are from your targets.", "Сумма отмеченных приёмов пищи: калории, белки, углеводы, сахар, жиры и клетчатка. Полосы показывают, сколько осталось до цели.", "Summe der als „Gegessen“ markierten Mahlzeiten: Kalorien, Eiweiß, Kohlenhydrate, Zucker, Fett und Ballaststoffe. Die Balken zeigen den Abstand zum Ziel.", "مجموع الوجبات التي علّمتها «أكلت»: السعرات والبروتين والكربوهيدرات والسكر والدهون والألياف. تُظهر الأشرطة ما تبقّى لهدفك."],
+  tur5T:["📤 Paylaş", "📤 Share", "📤 Поделиться", "📤 Teilen", "📤 مشاركة"],
+  tur5:["O gün öğün öğün, saatiyle neler yediğini link olarak gönder. Linki açan kişi bir belge görür ve PDF olarak kaydedebilir.", "Send what you ate that day, meal by meal with times, as a link. The person who opens it sees a document and can save it as PDF.", "Отправьте ссылкой, что вы ели в этот день — по приёмам и времени. Получатель увидит документ и сможет сохранить его в PDF.", "Sende als Link, was du an dem Tag gegessen hast – Mahlzeit für Mahlzeit mit Uhrzeit. Der Empfänger sieht ein Dokument und kann es als PDF speichern.", "أرسل ما أكلته في ذلك اليوم، وجبةً وجبة مع الأوقات، كرابط. من يفتحه يرى مستنداً ويمكنه حفظه PDF."],
+  tur6T:["💧 Su", "💧 Water", "💧 Вода", "💧 Wasser", "💧 الماء"],
+  tur6:["İçtiğin her bardak için bardağa ya da “+ bardak” düğmesine dokun.", "Tap a glass or the “+ glass” button for every glass you drink.", "За каждый выпитый стакан нажимайте на стакан или кнопку «+ стакан».", "Tippe für jedes getrunkene Glas auf ein Glas oder auf „+ Glas“.", "اضغط على كوب أو زر «+ كوب» عن كل كوب تشربه."],
+  tur7T:["🍽️ Öğün", "🍽️ Meal", "🍽️ Приём пищи", "🍽️ Mahlzeit", "🍽️ الوجبة"],
+  tur7:["Saate dokunup öğün saatini değiştir. Yedikten sonra “Yedim”e bas. Sağdaki ok öğünü gizler ya da gösterir.", "Tap the time to change the meal time. After eating, tap “Ate”. The arrow on the right hides or shows the meal.", "Нажмите на время, чтобы изменить его. После еды нажмите «Съел(а)». Стрелка справа скрывает или показывает приём.", "Tippe auf die Uhrzeit, um sie zu ändern. Nach dem Essen auf „Gegessen“ tippen. Der Pfeil rechts blendet die Mahlzeit aus oder ein.", "اضغط على الوقت لتغييره. بعد الأكل اضغط «أكلت». السهم على اليمين يخفي الوجبة أو يُظهرها."],
+  tur8T:["➖➕ Miktar", "➖➕ Amount", "➖➕ Количество", "➖➕ Menge", "➖➕ الكمية"],
+  tur8:["− / + ile miktarı azaltıp artır ya da sayıyı yaz. Değiştirdiğin miktar sonraki günlerde de hatırlanır.", "Use − / + to change the amount or type a number. The amount you choose is remembered on the following days.", "Меняйте количество кнопками − / + или введите число. Выбранное количество запоминается на следующие дни.", "Mit − / + die Menge ändern oder eine Zahl eingeben. Die Menge wird für die folgenden Tage gemerkt.", "غيّر الكمية بـ − / + أو اكتب رقماً. تُحفظ الكمية التي تختارها للأيام التالية."],
+  tur9T:["⇄ Kıyasla", "⇄ Compare", "⇄ Сравнить", "⇄ Vergleichen", "⇄ قارن"],
+  tur9:["Bu yemeği başka bir yemekle karşılaştır: protein, kalori, şeker… hangisi daha iyi, yeşil ve kırmızıyla görürsün; istersen tek dokunuşla değiştirirsin.", "Compare this food with another: protein, calories, sugar… green and red show which is better; swap it with one tap if you like.", "Сравните блюдо с другим: белки, калории, сахар… зелёный и красный покажут, что лучше; замена — одним касанием.", "Vergleiche dieses Lebensmittel mit einem anderen: Eiweiß, Kalorien, Zucker … Grün und Rot zeigen, was besser ist; Tausch mit einem Tipp.", "قارن هذا الطعام بآخر: البروتين والسعرات والسكر… الأخضر والأحمر يبيّنان الأفضل؛ واستبدله بلمسة إن شئت."],
+  tur10T:["↻ Değiştir", "↻ Swap", "↻ Заменить", "↻ Tauschen", "↻ استبدل"],
+  tur10:["Yemeği benzer yemeklerle değiştir (ör. bir ekmeği başka bir ekmekle).", "Swap the food for a similar one (e.g. one bread for another).", "Замените блюдо похожим (например, один хлеб другим).", "Tausche das Lebensmittel gegen ein ähnliches (z. B. ein Brot gegen ein anderes).", "استبدل الطعام بطعام مشابه (مثلاً خبز بآخر)."],
+  tur11T:["✕ Kaldır", "✕ Remove", "✕ Удалить", "✕ Entfernen", "✕ إزالة"],
+  tur11:["Yemeği bu öğünden çıkar.", "Remove the food from this meal.", "Убрать блюдо из этого приёма пищи.", "Das Lebensmittel aus dieser Mahlzeit entfernen.", "أزل الطعام من هذه الوجبة."],
+  tur12T:["＋ Yemek ekle", "＋ Add food", "＋ Добавить блюдо", "＋ Lebensmittel hinzufügen", "＋ أضف طعاماً"],
+  tur12:["Öğüne yemek ekle: ara (ör. “patates”) ya da Önerilenler’den seç; “Diğer grupları göster” ile tüm gruplar açılır.", "Add food to the meal: search (e.g. “potato”) or pick from Suggested; “Show other groups” opens all groups.", "Добавьте блюдо: найдите (например, «картофель») или выберите из Рекомендуемых; «Показать другие группы» откроет все группы.", "Füge der Mahlzeit etwas hinzu: suchen (z. B. „Kartoffel“) oder aus den Vorschlägen wählen; „Weitere Gruppen“ öffnet alle Gruppen.", "أضف طعاماً إلى الوجبة: ابحث (مثلاً «بطاطا») أو اختر من المقترحات؛ «إظهار المجموعات الأخرى» يفتح كل المجموعات."],
+  tur13T:["⚙️ Ayarlar", "⚙️ Settings", "⚙️ Настройки", "⚙️ Einstellungen", "⚙️ الإعدادات"],
+  tur13:["Profil, kilo/boy, hedefler, öğün saatleri ve yedek burada. 📋 Loglar’da yaptığın her değişikliğin kaydı, ✉️ Bize yazın’da öneri ve şikâyet adresi var.", "Profile, weight/height, targets, meal times and backup are here. 📋 Logs keep a record of every change you make; ✉️ Write to us has our address for feedback.", "Здесь профиль, вес/рост, цели, время приёмов и резервная копия. В 📋 Журнале — запись каждого изменения, в ✉️ Напишите нам — адрес для отзывов.", "Hier findest du Profil, Gewicht/Größe, Ziele, Essenszeiten und Sicherung. 📋 Protokoll zeigt jede Änderung, ✉️ Schreib uns die Adresse für Feedback.", "هنا الملف الشخصي والوزن/الطول والأهداف وأوقات الوجبات والنسخ الاحتياطي. في 📋 السجلات سجلّ لكل تغيير، وفي ✉️ راسلنا عنوان الاقتراحات والشكاوى."],
+  tur14T:["🎉 Hazırsın!", "🎉 You’re all set!", "🎉 Готово!", "🎉 Los geht’s!", "🎉 أنت جاهز!"],
+  tur14:["Afiyet olsun! Bu turu istediğin zaman Ayarlar → “Kullanım turu” ile yeniden açabilirsin.", "Enjoy your meals! You can reopen this tour any time in Settings → “App tour”.", "Приятного аппетита! Тур можно открыть снова в Настройки → «Обзор приложения».", "Guten Appetit! Die Tour kannst du jederzeit unter Einstellungen → „App-Tour“ erneut öffnen.", "بالهناء والشفاء! يمكنك إعادة فتح هذه الجولة في أي وقت من الإعدادات ← «جولة في التطبيق»."],
+  rpBad:["Paylaşım linki açılamadı (eksik ya da bozuk kopyalanmış olabilir).","The shared link couldn’t be opened (it may be incomplete or broken).","Не удалось открыть ссылку (возможно, она скопирована не полностью).","Der Link konnte nicht geöffnet werden (evtl. unvollständig kopiert).","تعذّر فتح الرابط (ربما نُسخ ناقصاً أو تالفاً)."]
 });
 // ---------- Ek yemekler: Türk mutfağı, kahvaltılık, hamur işi, tatlı, kuruyemiş ve kurutulmuş meyveler ----------
 // Sütunlar YEMEK_SATIR ile aynı: [id, kategori, kcal, protein, karb, yağ, şeker, lif (100 g), varsayılan miktar, 'birim:gram', içerik, porsiyon notu, arama, tr, en, ru, de, ar]
@@ -2107,6 +2245,21 @@ function sablon(k){
 function miktarHatirla(ogunId, f, g){ (D.miktar || (D.miktar = {}))[ogunId] = {...(D.miktar[ogunId] || {}), [f]: g}; }
 const menuOku = k => (D.kayit[k] && D.kayit[k].ogunler) || sablon(k);
 function menuYaz(k){ const r = kayitAl(k); if (!r.ogunler) r.ogunler = kopya(sablon(k)); return r.ogunler; }
+// Plan/program değişince bugün ve sonrasının özel menüsü silinir; bugün "yedim" denmiş öğünler olduğu gibi kalır
+function menuleriTemizle(saatDe = false){
+  const bugun = bugunK();
+  for (const [k, r] of Object.entries(D.kayit)){
+    if (k < bugun) continue;
+    if (saatDe) delete r.saat;
+    if (!r.ogunler) continue;
+    const yenen = r.ogunler.filter(o => r.yendi[o.id]);
+    delete r.ogunler;
+    if (k !== bugun || !yenen.length) continue;
+    const yeni = sablon(k).map(o => kopya(yenen.find(y => y.id === o.id) || o));
+    yenen.forEach(y => { if (!yeni.some(o => o.id === y.id)) yeni.push(kopya(y)); });
+    r.ogunler = yeni;
+  }
+}
 const yenenToplam = k => { const r = kayitOku(k); return topla(menuOku(k).filter(o => r.yendi[o.id]).flatMap(o => o.ogeler)); };
 const kayitVar = k => { const r = D.kayit[k]; return !!r && (r.su > 0 || Object.values(r.yendi).some(Boolean)); };
 
@@ -2138,7 +2291,24 @@ function dilUygula(){
   document.documentElement.lang = dil;
   document.documentElement.dir = RTL() ? 'rtl' : 'ltr';
 }
+// Yerinde çizim: basılan düğmenin kartı ekranda aynı yerde kalır (+, kaldır, yedim… sonrası sayfa kaymasın)
+let capaEl = null;
+function capaAl(){
+  const el = capaEl; capaEl = null;
+  const kart = el && el.isConnected && kilitY === null && el.closest('.meal, .card'); if (!kart) return null;
+  const grup = kart.classList.contains('meal') ? '#ogunler .meal' : '.wrap .card';
+  return {grup, i: [...document.querySelectorAll(grup)].indexOf(kart), y: kart.getBoundingClientRect().top};
+}
+function capaUygula(c){
+  const kart = c.i >= 0 && document.querySelectorAll(c.grup)[c.i]; if (!kart) return;
+  const hedef = Math.round(kart.getBoundingClientRect().top + scrollY - c.y);
+  // Sayfa kısaldıysa (yemek kaldırıldı) altta boşluk bırak; yoksa tarayıcı sayfayı yukarı çeker
+  const liste = $('ogunler'), eksik = hedef + innerHeight - document.documentElement.scrollHeight;
+  if (eksik > 0) liste.style.minHeight = liste.offsetHeight + eksik + 'px';
+  if (Math.abs(scrollY - hedef) > 1) window.scrollTo(0, hedef);
+}
 function ciz(){
+  const capa = capaAl();
   dilUygula();
   $('ogunler').style.minHeight = '';
   const P = D.profil;
@@ -2155,6 +2325,7 @@ function ciz(){
   $('altBaslik').innerHTML = `${hedef ? `<span class="hedef-yazi">${esc(hedef.replace(/ · $/, ''))}</span> ` : ''}<span class="olcu-yazi">${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg</span>`;
   gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz(); programBantCiz();
   ustHizala();
+  if (capa){ capaUygula(capa); requestAnimationFrame(() => capaUygula(capa)); }
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
 function ustHizala(){
@@ -2229,7 +2400,7 @@ function ozetCiz(){
     };
     const tv = (D.tartim || {})[aktif], to = tv != null ? oncekiTartim(aktif) : null;
     $('ozet').innerHTML = tartiKarti() + `<div class="card past-card">
-      <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span></div>
+      <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span><button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}" aria-label="${esc(T('shTitle'))}">${ikonlu('shBtn')}</button></div>
       <div class="stats">
         <div class="stat water"><small>💧 ${T('water')}</small><b>${litre(ml)}</b> <span>${T('L')} / ${litre(P.su)}</span>
           <div class="stat-acts"><button data-su="-1" aria-label="${T('dec')}">−</button><span>${T('glassN', {n: kay.su})}</span><button data-su="1" aria-label="${T('inc')}">+</button></div></div>
@@ -2252,7 +2423,7 @@ function ozetCiz(){
   const bardakGoster = Math.max(bardakSay, kay.su);
   $('ozet').innerHTML = tartiKarti() + `
     <div class="card">
-      <h3>${aktif === bugunK() ? T('eatenToday') : T('eaten')}</h3>
+      <div class="kart-bas"><h3>${aktif === bugunK() ? T('eatenToday') : T('eaten')}</h3>${aktif === bugunK() ? `<button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}">${T('shBtn')}</button>` : ''}</div>
       <div class="kcal-big"><b>${yuv(yenen.k)}</b><span>/ <span class="tgt">${P.kcal}</span> ${T('kcal')} · ${T('hedefK')}</span></div>
       ${cubuk(yenen.k, P.kcal)}${kalanYazi(yenen.k, P.kcal, T('kcal'))}
       <div class="macros">${makro('p', T('protein'), yenen.p, P.protein, true)}${makro('c', T('carbS'), yenen.c, P.karb)}${makro('s', T('sugar'), yenen.s, P.seker)}${makro('y', T('fat'), yenen.y, P.yag)}${makro('l', T('fiber'), yenen.l, P.lif, true)}</div>
@@ -2291,7 +2462,7 @@ function ogunleriCiz(){
     return `<article class="card meal${yendi ? ' eaten' : ''}${kapali ? ' kapali' : ''}">
       <div class="meal-head">
         <div class="meal-ico">${o.ico || OGUN_IKON[o.id] || '🍽️'}</div>
-        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span><button class="saat-btn" data-saat="${oi}" title="${esc(T('saatEdit'))}" aria-label="${esc(T('saatEdit'))}">${ogunSaati(aktif, o)}</button> · ${yuv(t.k)} ${T('kcal')} · ${T('aP')} ${yuv(t.p)} ${T('g')} · ${T('aS')} ${yuv(t.s)} ${T('g')}</span></div>
+        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span class="ogun-alt"><button class="saat-btn" data-saat="${oi}" title="${esc(T('saatEdit'))}" aria-label="${esc(T('saatEdit'))}">${ogunSaati(aktif, o)}</button><i>· ${yuv(t.k)} ${T('kcal')}</i>${[['p','aP'],['s','aS'],['y','aY'],['l','aL']].map(([a, ad]) => `<i>· ${T(ad)} ${yuv(t[a])} ${T('g')}</i>`).join('')}</span></div>
         <button class="eat-btn" data-yedim="${oi}">${yendi ? T('ateDone') : (gecmis ? T('notEaten') : T('ate'))}</button>
         <button class="tog-btn" data-tog="${esc(o.id)}" aria-expanded="${!kapali}" title="${esc(T(kapali ? 'showMeal' : 'hideMeal'))}"><i>${kapali ? '▾' : '▴'}</i><span class="lbl">${T(kapali ? 'showMeal' : 'hideMeal')}</span></button>
       </div>
@@ -2403,6 +2574,7 @@ const cift = s => s.split(',').map(Number);
 document.querySelector('.wrap').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const ds = b.dataset;
+  capaEl = !ds.tog && b.closest('#ogunler, #ozet') ? b : null;
   if (ds.tarih){ aktif = ds.tarih; detayAcik = false; ciz(); return; }
   if (ds.hafta){ aktif = gunEkle(aktif, +ds.hafta); detayAcik = false; ciz(); return; }
   if (ds.bugun){ aktif = bugunK(); detayAcik = false; ciz(); return; }
@@ -2421,10 +2593,11 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.tarti){ tartiKaydet(); return; }
   if (ds.togall !== undefined){ hepsiniTogla(ds.togall === '1'); return; }
   if (ds.progkaldir){ programKaldir(); return; }
+  if (ds.paylas){ yenenPaylasAc(aktif); return; }
 });
 document.querySelector('.wrap').addEventListener('change', e => {
   const t = e.target;
-  if (t.dataset.gram){ const [oi, ii] = cift(t.dataset.gram); miktarDegis(oi, ii, t.value); }
+  if (t.dataset.gram){ const [oi, ii] = cift(t.dataset.gram); capaEl = t; miktarDegis(oi, ii, t.value); }
 });
 $('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') kapat(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
@@ -2434,10 +2607,21 @@ $('hamileBtn').addEventListener('click', hamileDegistir);
 $('kocBtn').addEventListener('click', kocAc);
 $('destekBtn').addEventListener('click', destekAc);
 
+let geriFn = null, acSayac = 0;
 function ac(baslik, govde){
-  $('sheet').innerHTML = `<div class="sheet-head"><h2>${baslik}</h2><button class="icon-btn" data-kapat="1" aria-label="✕">✕</button></div><div class="sheet-body" id="sbody">${govde || ''}</div>`;
+  $('sheet').innerHTML = `<div class="sheet-head"><button class="geri-btn" id="sheetGeri" hidden><span class="ok">‹</span>${T('back')}</button><h2>${baslik}</h2><button class="icon-btn" data-kapat="1" aria-label="✕">✕</button></div><div class="sheet-body" id="sbody">${govde || ''}</div>`;
   $('sheet').querySelector('[data-kapat]').onclick = kapat;
+  $('sheetGeri').onclick = () => { if (geriFn) geriFn(); };
+  geriFn = null; acSayac++;
   $('overlay').classList.add('open'); sayfaKilitle();
+}
+// Sol üstteki "‹ Geri": fn verilirse görünür (null → gizli)
+function geriAyarla(fn){ geriFn = fn || null; if ($('sheetGeri')) $('sheetGeri').hidden = !geriFn; }
+// Pencere içinden açılan pencere: Geri, önceki pencereyi aynı kaydırma yerinde yeniden açar
+async function icinden(geriAc, yeniAc){
+  const y = $('sbody') ? $('sbody').scrollTop : 0, n = acSayac;
+  await yeniAc();
+  if (acSayac !== n && $('overlay').classList.contains('open')) geriAyarla(() => { geriAc(); $('sbody').scrollTop = y; });
 }
 function kapat(){ $('overlay').classList.remove('open'); kilidiAc(); }
 // Pencere açıkken arkadaki sayfa kaymasın (iPhone'da overflow:hidden yetmez → gövde yerinde sabitlenir)
@@ -2515,21 +2699,26 @@ function listeGorunumu(){
     <button class="btn ghost full" style="margin-top:12px" id="ozelEkle">${T('addCustom')}</button>`;
   $('ara').addEventListener('input', e => { SE.q = e.target.value; listeCiz(); });
   $('ozelEkle').addEventListener('click', ozelYemekFormu);
+  // Klavye açıkken sonuca/gruba dokununca arama kutusu odağı bırakmasın: liste kaymaz, ilk dokunuş tutar
+  $('sbody').onmousedown = e => { if (document.activeElement && document.activeElement.id === 'ara' && e.target.closest('.frow, .chip')) e.preventDefault(); };
+  geriAyarla(null);
   kategoriCiz(); listeCiz();
 }
 function kategoriCiz(){
   const uygun = SE.uygun;
   const katlar = (SE.benzer.length ? [BENZER] : []).concat(SE.son.length ? [SON] : []).concat([TUMU, ...[...new Set(tumYemekler().filter(uygun).map(f => f.kat))].sort((a, b) => KAT_SIRA.indexOf(a) - KAT_SIRA.indexOf(b))]);
   const ad = k => k === BENZER ? T('similar') : k === SON ? T('recent') : k === TUMU ? T('all') : katAd(k);
-  const daralt = SE.benzer.length > 0;   // değiştir/kıyasla modunda gruplar başta kapalı
-  const gorunen = daralt && !SE.tumGruplar ? [BENZER] : katlar;
+  // Gruplar başta kapalı: değiştir/kıyasla'da Benzerleri, ekle'de Önerilenler + "Diğer grupları göster"
+  const ana = SE.benzer.length ? BENZER : SE.son.length ? SON : null, daralt = !!ana;
+  const gorunen = daralt && !SE.tumGruplar ? [ana] : katlar;
   $('kategoriler').innerHTML = gorunen.map(k => `<button class="chip${k === SON || k === BENZER ? ' recent' : ''}${k === SE.kat ? ' on' : ''}" data-kat="${esc(k)}">${esc(ad(k))}</button>`).join('')
     + (daralt ? `<button class="chip more" data-grup="1">${T(SE.tumGruplar ? 'lessGroups' : 'moreGroups')}</button>` : '');
-  $('kategoriler').querySelectorAll('[data-kat]').forEach(b => b.onclick = () => { SE.kat = b.dataset.kat; kategoriCiz(); listeCiz(); });
+  // Gruba dokununca arama temizlenir (yoksa liste arama sonucunda kalıyordu)
+  $('kategoriler').querySelectorAll('[data-kat]').forEach(b => b.onclick = () => { SE.kat = b.dataset.kat; if (SE.q){ SE.q = ''; $('ara').value = ''; } kategoriCiz(); listeCiz(); });
   const g = $('kategoriler').querySelector('[data-grup]');
   if (g) g.onclick = () => {
     SE.tumGruplar = !SE.tumGruplar;
-    if (!SE.tumGruplar && SE.kat !== BENZER){ SE.kat = BENZER; listeCiz(); }   // kapatınca benzerlere dön
+    if (!SE.tumGruplar && SE.kat !== ana){ SE.kat = ana; listeCiz(); }   // kapatınca ana listeye dön
     kategoriCiz();
   };
 }
@@ -2557,7 +2746,7 @@ function listeCiz(){
     const ip = ipucu(f);
     return `<li><button class="frow" data-fid="${f.id}"><b>${isaretle(f.ad, A)}${n}</b><small>100 ${T('g')}: ${f.k} ${T('kcal')} · ${T('aP')} ${sayi(f.p)} · ${T('aK')} ${sayi(f.c)} · ${T('aS')} ${sayi(f.s)} · ${T('aY')} ${sayi(f.y)}${ip ? ' · ' + esc(ip) : ''}</small>${alt}</button></li>`;
   }).join('') : `<li class="empty">${T('noResult')}</li>`;
-  $('flist').querySelectorAll('[data-fid]').forEach(b => b.onclick = () => { SE.sec = b.dataset.fid; SE.g = esdegerMiktar(SE.sec); detayGorunumu(); });
+  $('flist').querySelectorAll('[data-fid]').forEach(b => b.onclick = () => { if ($('ara')) $('ara').blur(); SE.sec = b.dataset.fid; SE.g = esdegerMiktar(SE.sec); detayGorunumu(); });
 }
 function kiyasKarti(eskiF, eskiM, yeniF, yeniM){
   const eski = besin(eskiF.id, eskiM), yeni = besin(yeniF.id, yeniM);
@@ -2608,10 +2797,12 @@ function detayGorunumu(){
     SE.g = Math.max(0, Math.round((SE.g + yon * a) * 2) / 2); $('gramIn').value = sayi(SE.g); yenile();
   });
   $('geri').onclick = listeGorunumu;
+  geriAyarla(listeGorunumu);
   if ($('kapatBtn')) $('kapatBtn').onclick = kapat;
   $('onay').onclick = () => {
     if (!(SE.g > 0)){ toast(T('tZero')); return; }
     kapat();
+    if (!SE.sonra) capaEl = $('ogunler').querySelectorAll('.meal')[SE.oi] || null;   // eklenen öğün ekranda yerinde kalsın
     if (SE.sonra) SE.sonra(SE.sec, SE.g);
     else if (SE.mod === 'ekle') ogeEkle(SE.oi, SE.sec, SE.g); else ogeDegis(SE.oi, SE.ii, SE.sec, SE.g);
   };
@@ -2629,6 +2820,7 @@ function ozelYemekFormu(){
     </div>
     <div class="acts"><button class="btn ghost" id="geri">${T('cancel')}</button><button class="btn green" id="oKaydet">${T('save')}</button></div>`;
   $('geri').onclick = listeGorunumu;
+  geriAyarla(listeGorunumu);
   $('oKaydet').onclick = () => {
     const ad = $('oAd').value.trim(); if (!ad){ toast(T('tName')); return; }
     const n = id => Math.max(0, +String($(id).value).replace(/[,٫]/g, '.') || 0);
@@ -2680,6 +2872,7 @@ function ayarlarAc(dilAcik = false){
   ac(T('setTitle'), `
     <div class="ayar-ust"><button class="btn" id="logAc">📋 ${T('logs')}</button><button class="btn" id="yazAcBtn">✉️ ${T('fbBtn')}</button><button class="btn dil-ac" id="dilAc" aria-expanded="${!!dilAcik}">🌐 ${dil.toUpperCase()} <i>▾</i></button></div>
     <div id="dilListe" ${dilAcik ? '' : 'hidden'}>${dilListesi(dil)}</div>
+    <button class="btn ghost full" style="margin-top:8px" id="turAc">🧭 ${T('tourBtn')}</button>
     <div class="sec">${T('sProfile')}</div>
     <div class="cur"><b>${esc(P.ad || '—')}</b> · ${P.cins ? T(P.cins === 'k' ? 'female' : 'male') : ''} · ${P.yas} · ${P.boy} cm · ${sayi(P.kilo)} kg${h ? ` · ${T('bmi')} ${sayi(h.vki)}` : ''}<br>
       <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
@@ -2711,12 +2904,13 @@ function ayarlarAc(dilAcik = false){
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
   $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
   saatFormuBagla();
-  if ($('progKaldirBtn')) $('progKaldirBtn').onclick = programKaldir;
-  if ($('yukleBtn')) $('yukleBtn').onclick = () => { kapat(); yukleAc(); };
-  $('logAc').onclick = () => loglarAc();
-  $('yazAcBtn').onclick = yazAc;
+  if ($('progKaldirBtn')) $('progKaldirBtn').onclick = () => icinden(ayarlarAc, programKaldir);
+  if ($('yukleBtn')) $('yukleBtn').onclick = () => icinden(ayarlarAc, yukleAc);
+  $('logAc').onclick = () => icinden(ayarlarAc, loglarAc);
+  $('yazAcBtn').onclick = () => icinden(ayarlarAc, yazAc);
+  $('turAc').onclick = () => { kapat(); turBaslat(); };
   $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); };
-  $('linkYukle').onclick = async () => { const v = $('linkYapistir').value; kapat(); if (!(await programLinkiAc(v))) toast(T('impBad')); };
+  $('linkYukle').onclick = () => icinden(ayarlarAc, async () => { if (!(await programLinkiAc($('linkYapistir').value))) toast(T('impBad')); });
   $('olcuKaydet').onclick = () => {
     const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;
     const yeni = {yas: Math.round(oku('yas')), boy: Math.round(oku('boy')), kilo: Math.round(oku('kilo') * 2) / 2, hedefKilo: Math.round(oku('hedefKilo') * 2) / 2};
@@ -2726,9 +2920,10 @@ function ayarlarAc(dilAcik = false){
     Object.assign(P, yeni);
     hedefleriYenile();
     logEkle('diger', null, T('lBody', {l: degisen.join(', ')}));
-    kaydet(); ciz(); kapat(); toast(T('tSaved'));
+    kaydet(); ciz(); toast(T('tSaved'));
     // Gönderilen program varsa planı bozma; yoksa yeni hedeflere göre planı yeniden hazırlamayı sor
-    if (!D.program) onayAc(T('cBodyPlan'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
+    if (D.program) kapat();
+    else icinden(ayarlarAc, () => onayAc(T('cBodyPlan'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); }));
   };
   $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { const y = $('sbody').scrollTop; D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(true); $('sbody').scrollTop = y; });
   $('hedefKaydet').onclick = () => {
@@ -2759,19 +2954,17 @@ function ayarlarAc(dilAcik = false){
     const html = KAYNAK.replace(/(<script type="application\/json" id="gomuluVeri">)[\s\S]*?(<\/script>)/, (_, a, b) => a + veri + b);
     indir(html, `${dosyaAdi()}_diyet_listesi.html`, 'text/html');
   };
-  $('planSifirla').onclick = () => {
-    onayAc(T('cResetMenu'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); });
-  };
-  $('kayitSifirla').onclick = () => {
-    onayAc(T('cResetRec'), () => { D.kayit = {}; logEkle('diger', null, T('lResetRec')); kaydet(); ciz(); toast(T('tRecDel')); });
-  };
+  $('planSifirla').onclick = () => icinden(ayarlarAc, () =>
+    onayAc(T('cResetMenu'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); }));
+  $('kayitSifirla').onclick = () => icinden(ayarlarAc, () =>
+    onayAc(T('cResetRec'), () => { D.kayit = {}; logEkle('diger', null, T('lResetRec')); kaydet(); ciz(); toast(T('tRecDel')); }));
 }
 // Profilden haftalık şablonu yeniden üret; bugün ve sonrasının özel menülerini temizle (geçmiş korunur)
 function planYenile(){
   D.planlar = planOlustur(D.profil);
   D.planBaslangic = gunEkle(bugunK(), -haftaGunu(bugunK()));   // bu hafta = 1. hafta
   D.miktar = {};   // yeni planda eski miktar tercihleri geçersiz
-  for (const k of Object.keys(D.kayit)) if (k >= bugunK()) delete D.kayit[k].ogunler;
+  menuleriTemizle();
   logEkle('diger', null, T('lPlan', {h: T('g_' + D.profil.hedef), k: D.profil.kcal, p: D.profil.protein}));
 }
 const dosyaAdi = () => (D.profil.ad || 'diyet').toLocaleLowerCase('tr-TR').replace(/[çğıöşü]/g, c => KATLA[c]).replace(/[^a-z0-9]+/g, '_') || 'diyet';
@@ -2786,7 +2979,7 @@ function indir(icerik, ad, tip){
 // ---------- Onay penceresi (X, Esc ya da dışarı dokununca kapanır) ----------
 function onayAc(metin, evet, ek = ''){
   ac(T('confirmT'), `<p class="onay-metin">${esc(metin)}</p>${ek}<div class="acts"><button class="btn ghost" id="onayHayir">${T('cancel2')}</button><button class="btn green" id="onayEvet">${T('yes')}</button></div>`);
-  $('onayHayir').onclick = kapat;
+  $('onayHayir').onclick = () => { if (geriFn) geriFn(); else kapat(); };
   $('onayEvet').onclick = () => { kapat(); evet(); };
 }
 
@@ -2956,13 +3149,16 @@ function destekVerildi(){ D.ayar.destekVerdi = true; kaydet(); ciz(); toast(T('s
 function destekHatirlat(bugun = bugunK()){
   if (!D.ayar.kurulum || D.ayar.destekVerdi || haftaGunu(bugun) !== 6 || D.ayar.destekHatirlatma === bugun) return;
   setTimeout(() => {
-    if ($('overlay').classList.contains('open') || !$('kurulum').hidden || !$('koc').hidden) return;
+    if ($('overlay').classList.contains('open') || !$('kurulum').hidden || !$('koc').hidden || $('tur') || $('rapor')) return;
     D.ayar.destekHatirlatma = bugun; kaydet();
-    ac('☕ ' + T('supRemT'), `<p class="onay-metin">${esc(T('supRemText'))}</p>
-      <div class="acts"><button class="btn ghost" id="hatSonra">${T('instLater')}</button><button class="btn solid" id="hatDestek">☕ ${T('supBtn')}</button></div>`);
-    $('hatSonra').onclick = kapat;
-    $('hatDestek').onclick = destekAc;
+    hatirlatmaAc();
   }, 2500);
+}
+function hatirlatmaAc(){
+  ac('☕ ' + T('supRemT'), `<p class="onay-metin">${esc(T('supRemText'))}</p>
+    <div class="acts"><button class="btn ghost" id="hatSonra">${T('instLater')}</button><button class="btn solid" id="hatDestek">☕ ${T('supBtn')}</button></div>`);
+  $('hatSonra').onclick = kapat;
+  $('hatDestek').onclick = () => icinden(hatirlatmaAc, destekAc);
 }
 const DESTEK = {iban:'TR37 0015 7000 0000 0091 2185 43', ad:'Kaan Kapucuoğlu', banka:'Npara'};
 let destekTutar = 200;
@@ -3279,7 +3475,7 @@ function programUygula(P){
   D.planlar = [hafta];
   D.planBaslangic = gunEkle(bugun, -haftaGunu(bugun));
   D.miktar = {};
-  for (const k of Object.keys(D.kayit)) if (k >= bugun){ delete D.kayit[k].ogunler; delete D.kayit[k].saat; }
+  menuleriTemizle(true);
   saatKaydet(bugun, Object.fromEntries(P.o));
   if (P.t.kcal) D.profil.kcal = P.t.kcal;
   if (P.t.protein) D.profil.protein = P.t.protein;
@@ -3295,7 +3491,7 @@ function programKaldir(){
     const o = D.oncekiPlan;
     if (o && o.planlar && o.planlar.length){ D.planlar = o.planlar; D.planBaslangic = o.planBaslangic; D.miktar = o.miktar || {}; }
     else D.planlar = planOlustur(D.profil);
-    for (const k of Object.keys(D.kayit)) if (k >= bugunK()) delete D.kayit[k].ogunler;
+    menuleriTemizle();
     hedefleriYenile();
     D.program = null; D.oncekiPlan = null;
     logEkle('diger', null, T('lProgRemove'));
@@ -3312,7 +3508,7 @@ function programSor(P){
     ${D.ayar.kurulum ? '' : `<div class="wmsg info">${esc(T('impSetup'))}</div>`}
     <div class="acts"><button class="btn ghost" id="impHayir">${T('impNo')}</button><button class="btn green" id="impEvet">${T('impYes')}</button></div>`);
   const linkTemizle = () => { if (/^#p=/.test(location.hash)) try { history.replaceState(null, '', location.pathname + location.search); } catch(e){} };
-  $('impHayir').onclick = () => { linkTemizle(); kapat(); toast(T('impNot')); };
+  $('impHayir').onclick = () => { linkTemizle(); if (geriFn) geriFn(); else kapat(); toast(T('impNot')); };
   $('impEvet').onclick = () => {
     linkTemizle(); kapat();
     if (D.ayar.kurulum) programUygula(P);
@@ -3329,6 +3525,7 @@ function bekleyenProgramYukle(){
   if (P) programUygula(P);
 }
 async function programLinkiAc(metin){
+  if (/#y=/.test(String(metin || ''))) return yenenLinkiAc(metin);   // yapıştırılan "yediklerim" linki
   const m = String(metin || '').match(/#p=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
   if (!m) return false;
   let P = null;
@@ -3340,6 +3537,7 @@ async function programLinkiAc(metin){
 }
 // Açılışta adres çubuğundaki program linki (# kısmı sunucuya gitmez)
 function adresProgramKontrol(){
+  if (/^#y=/.test(location.hash)){ yenenLinkiAc(location.hash); return; }
   if (!/^#p=/.test(location.hash)) return;
   programLinkiAc(location.hash);
 }
@@ -3364,6 +3562,142 @@ function yukleAc(){
   const adimlar = T(iosMu() ? 'instIos' : 'instAndroid').split('|');
   ac(T('instTitle'), `<ol class="adimlar">${adimlar.map(a => `<li>${esc(a)}</li>`).join('')}</ol>`);
 }
+
+// ---------- Yediklerimi paylaş: günün yenen öğünleri (saat, yemek, miktar, besin) linkin içinde ----------
+// Link: …/app/#y=<sıkıştırılmış>&n=<uzunluk>; açan kişi belge görünümünde görür, "PDF olarak kaydet" ile PDF alır (sunucuya veri gitmez)
+function yenenPaketi(k){
+  const r = kayitOku(k), P = D.profil, v = Math.round;
+  return {v:1, a: P.ad || '', d: k, l: dil, h: [P.kcal, P.protein, P.karb, P.seker, P.yag, P.lif], su: [r.su * P.bardak, P.su],
+    o: menuOku(k).map(o => [ogunAd(o), ogunSaati(k, o), r.yendi[o.id] ? 1 : 0, r.yendi[o.id] ? o.ogeler.map(it => {
+      const f = yemek(it.f), b = besin(it.f, it.g);
+      return [f.ad, miktarYazi(f, it.g), v(b.k), v(b.p), v(b.c), v(b.s), v(b.y), v(b.l)];
+    }) : []])};
+}
+async function yenenPaylasAc(k){
+  const Y = yenenPaketi(k), yenen = Y.o.filter(o => o[2]);
+  if (!yenen.length){ toast(T('shNone')); return; }
+  const kod = await paketKodla(Y), url = PAYLASIM_TABAN + '#y=' + kod + '&n=' + kod.length;
+  const baslik = (Y.a ? Y.a + ' · ' : '') + T('shText', {d: etiket(k)});
+  ac(T('shTitle'), `<div class="cur"><b>${esc(etiket(k))} · ${T('shMeals', {n: yenen.length})} · ${yuv(yenenToplam(k).k)} ${T('kcal')}</b><br>
+      <small>${yenen.map(o => esc(o[1] + ' ' + o[0])).join(' · ')}</small></div>
+    <div class="hint" style="margin:10px 0 4px">${esc(T('shInfo'))}</div>
+    <div class="acts">${navigator.share ? `<button class="btn solid" id="shGonder">${T('shSend')}</button>` : ''}<button class="btn" id="shKopya">${T('shCopy')}</button></div>
+    <button class="btn ghost full" style="margin-top:8px" id="shOnizle">${T('shPreview')}</button>`);
+  if ($('shGonder')) $('shGonder').onclick = () => navigator.share({title: baslik, text: baslik, url}).catch(() => {});
+  $('shKopya').onclick = () => kopyala(url);
+  $('shOnizle').onclick = () => yenenRaporAc(Y);
+}
+async function yenenLinkiAc(metin){
+  const m = String(metin || '').match(/#y=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
+  if (!m) return false;
+  let Y = null;
+  if (!m[2] || +m[2] === m[1].length){
+    try { Y = await paketCoz(m[1]); } catch(e){}
+    if (!Y || Y.v !== 1 || !Array.isArray(Y.o) || !/^\d{4}-\d\d-\d\d$/.test(Y.d)) Y = null;
+  }
+  if (!Y){ if (/^#y=/.test(location.hash)) raporLinkTemizle(); toast(T('rpBad')); return true; }
+  yenenRaporAc(Y);
+  return true;
+}
+const raporLinkTemizle = () => { try { history.replaceState(null, '', location.pathname + location.search); } catch(e){} };
+// Belge görünümü (A4 sayfa); yazdırma/PDF'te yalnız bu sayfa çıkar
+function yenenRaporAc(Y){
+  kapat();
+  if ($('rapor')) $('rapor').remove();
+  const dil0 = dil; if (!D.ayar.kurulum && DILLER.some(d => d.k === Y.l)) dil = Y.l;   // kurulumsuz alıcı: gönderenin dili
+  const n = x => Math.round(+x || 0), top = [0, 0, 0, 0, 0, 0];
+  const yenen = Y.o.filter(o => o[2] && Array.isArray(o[3])), yenmeyen = Y.o.filter(o => !o[2]);
+  yenen.forEach(o => o[3].forEach(it => { for (let i = 0; i < 6; i++) top[i] += n(it[2 + i]); }));
+  const h = Array.isArray(Y.h) ? Y.h : [], ad = [T('calories'), T('protein'), T('carb'), T('sugar'), T('fat'), T('fiber')];
+  const birim = i => i ? T('g') : T('kcal'), kisa = [T('kcal'), T('protein'), T('carbS'), T('sugar'), T('fat'), T('fiber')];
+  const tarih = tarihDen(Y.d).toLocaleDateString(LOC(), {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const su = Array.isArray(Y.su) ? Y.su : [0, 0];
+  const kutu = (baslik, deger, hedef, b) => `<div class="rp-kutu"><small>${baslik}</small><b>${deger}</b> <span>${b}${hedef ? ' / ' + hedef : ''}</span></div>`;
+  const html = `<div class="rapor" id="rapor" translate="no" dir="${RTL() ? 'rtl' : 'ltr'}">
+    <div class="rapor-arac"><button class="btn solid" id="rpPdf">${T('rpPdf')}</button><button class="btn ghost" id="rpKapat">✕ ${T('rpClose')}</button></div>
+    <article class="rapor-sayfa">
+      <header class="rp-bas"><div><small>🥗 ${T('rpTitle')}</small><h1>${esc(String(Y.a || '').slice(0, 40)) || '—'}</h1><p>${esc(tarih)}</p></div></header>
+      <section class="rp-ozet">${ad.map((a, i) => kutu(a, n(top[i]), n(h[i]), birim(i))).join('')}${kutu('💧 ' + T('water'), litre(n(su[0])), n(su[1]) ? litre(n(su[1])) : '', T('L'))}</section>
+      ${yenen.map(o => {
+        const t = [0, 0, 0, 0, 0, 0]; o[3].forEach(it => { for (let i = 0; i < 6; i++) t[i] += n(it[2 + i]); });
+        return `<section class="rp-ogun"><h2><span class="rp-saat">${esc(String(o[1] || ''))}</span>${esc(String(o[0] || ''))}<em>${t[0]} ${T('kcal')}</em></h2>
+          <table><thead><tr><th>${T('rpFood')}</th>${kisa.map(k => `<th>${k}</th>`).join('')}</tr></thead>
+          <tbody>${o[3].map(it => `<tr><td><b>${esc(String(it[0] || ''))}</b><small>${esc(String(it[1] || ''))}</small></td>${[2, 3, 4, 5, 6, 7].map(i => `<td data-l="${kisa[i - 2]}">${n(it[i])}</td>`).join('')}</tr>`).join('')}</tbody>
+          <tfoot><tr><td>${T('rpMealTotal')}</td>${t.map((x, j) => `<td data-l="${kisa[j]}">${x}</td>`).join('')}</tr></tfoot></table></section>`;
+      }).join('')}
+      ${yenmeyen.length ? `<p class="rp-yenmeyen"><b>${T('rpNotEaten')}:</b> ${yenmeyen.map(o => esc(String(o[1] || '') + ' ' + String(o[0] || ''))).join(' · ')}</p>` : ''}
+      <footer class="rp-alt">${T('rpFooter')} · diyet.maviplay.com</footer>
+    </article></div>`;
+  dil = dil0;
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.body.classList.add('rapor-acik');
+  const baslik0 = document.title;
+  document.title = `${String(Y.a || '').slice(0, 40)} ${Y.d}`.trim();   // PDF dosya adı
+  $('rapor').scrollTop = 0;
+  $('rpPdf').onclick = () => window.print();
+  $('rpKapat').onclick = () => {
+    $('rapor').remove(); document.body.classList.remove('rapor-acik'); document.title = baslik0;
+    if (/^#y=/.test(location.hash)) raporLinkTemizle();
+  };
+}
+
+// ---------- Kullanım turu: ilk açılışta bir kez (Geç ile atlanır, bir daha çıkmaz); Ayarlar → Kullanım turu ile yeniden ----------
+// [hedef seçici (yoksa ortada kart), metin no]; hedefi ekranda olmayan adım atlanır (ör. öğünler gizliyse)
+const TUR = [[null, 1], ['#gunler', 2], ['.top-btns', 3], ['#ozet .card', 4], ['#ozet [data-paylas]', 5], ['#ozet .water-card', 6],
+  ['#ogunler .meal .meal-head', 7], ['#ogunler .item .gram', 8], ['#ogunler [data-kiyas]', 9], ['#ogunler [data-degis]', 10],
+  ['#ogunler [data-sil]', 11], ['#ogunler .add-food', 12], ['#ayarBtn', 13], [null, 14]];
+let turAdim = -1;
+const turHedef = i => TUR[i][0] ? [...document.querySelectorAll(TUR[i][0])].find(e => e.getClientRects().length) || null : null;
+function turKontrol(){
+  if (D.ayar.turGoruldu || !D.ayar.kurulum) return;
+  setTimeout(() => {
+    if (D.ayar.turGoruldu || $('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[py]=/.test(location.hash)) return;
+    turBaslat();
+  }, 900);
+}
+function turBaslat(){
+  kapat();
+  if (aktif !== bugunK()){ aktif = bugunK(); ciz(); }
+  if ($('tur')) $('tur').remove();
+  document.body.insertAdjacentHTML('beforeend', `<div class="tur" id="tur"><div class="tur-isik" id="turIsik"></div>
+    <div class="tur-kart" id="turKart" role="dialog" aria-modal="true" aria-live="polite"><small id="turNo"></small><h3 id="turBas"></h3><p id="turMetin"></p>
+    <div class="tur-dug"><button class="btn ghost" id="turGec">${T('tourSkip')}</button><span></span><button class="btn ghost" id="turGeri">‹ ${T('back')}</button><button class="btn solid" id="turIleri"></button></div></div></div>`);
+  $('turGec').onclick = turBitir;
+  $('turGeri').onclick = () => turGit(turAdim - 1, -1);
+  $('turIleri').onclick = () => turAdim >= TUR.length - 1 ? turBitir() : turGit(turAdim + 1, 1);
+  turGit(0, 1);
+}
+function turGit(i, yon){
+  while (i > 0 && i < TUR.length - 1 && TUR[i][0] && !turHedef(i)) i += yon;   // ekranda olmayanı atla
+  if (i < 0) i = 0;
+  turAdim = i;
+  const n = TUR[i][1], el = turHedef(i);
+  $('turNo').textContent = `${i + 1} / ${TUR.length}`;
+  $('turBas').textContent = T('tur' + n + 'T'); $('turMetin').textContent = T('tur' + n);
+  $('turGeri').hidden = i === 0;
+  $('turIleri').textContent = i >= TUR.length - 1 ? T('tourDone') : T('tourNext') + ' ›';
+  if (el) el.scrollIntoView({block: 'center'});
+  requestAnimationFrame(turKonum);
+}
+function turKonum(){
+  const isik = $('turIsik'), kart = $('turKart'); if (!isik || turAdim < 0) return;
+  const el = turHedef(turAdim), vw = document.documentElement.clientWidth, vh = innerHeight;
+  if (!el){ isik.className = 'tur-isik bos'; kart.style.cssText = ''; kart.className = 'tur-kart orta'; return; }
+  const r = el.getBoundingClientRect(), p = 6;
+  isik.className = 'tur-isik';
+  Object.assign(isik.style, {left: r.left - p + 'px', top: r.top - p + 'px', width: r.width + p * 2 + 'px', height: r.height + p * 2 + 'px'});
+  kart.className = 'tur-kart';
+  const kw = Math.min(360, vw - 24), kh = kart.offsetHeight;
+  const ust = r.bottom + p + 12 + kh < vh ? r.bottom + p + 12 : Math.max(12, r.top - p - 12 - kh);
+  kart.style.cssText = `left:${Math.round(Math.min(Math.max(12, r.left + r.width / 2 - kw / 2), vw - kw - 12))}px;top:${Math.round(ust)}px;width:${kw}px`;
+}
+function turBitir(){
+  turAdim = -1;
+  if ($('tur')) $('tur').remove();
+  D.ayar.turGoruldu = true; kaydet();
+}
+window.addEventListener('resize', () => { if ($('tur')) turKonum(); });
+window.addEventListener('scroll', () => { if ($('tur')) turKonum(); }, {passive: true});
 // ---------- Kurulum sihirbazı ----------
 let W = null, wAdim = 0, wHata = '';
 const HEDEFLER = [['ver','🔥'],['sekil','🏋️'],['koru','⚖️'],['kas','💪'],['al','📈']];
@@ -3554,6 +3888,7 @@ function wBitir(){
   sihirbazKapat();
   toast('👋 ' + selam());
   bekleyenProgramYukle();   // linkle gelen program: profil tamamlanınca otomatik yüklenir
+  turKontrol();
 }
 $('kurulum').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || b.disabled) return;
@@ -3647,14 +3982,38 @@ D = tamamla(enYeni(lsOku(), gomuluOku()) || varsayilanDurum());
 baslat2();
 adresProgramKontrol();
 destekHatirlat();
+turKontrol();
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
 try { localStorage.setItem(ANAHTAR + '_test', '1'); localStorage.removeItem(ANAHTAR + '_test'); } catch(e){ depoCalisiyor = false; }
 idbOku().then(v => {
   const yeni = enYeni(v, D);
   if (yeni && yeni !== D && (yeni.guncel || 0) > (D.guncel || 0)){ D = tamamla(yeni); if ($('kurulum').hidden) baslat2(); }
 });
-// Sayfa arka plana atılınca son hali yaz
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && D.guncel) { try { localStorage.setItem(ANAHTAR, JSON.stringify(D)); } catch(e){} } });
+// Başka sekme/pencere daha yeni kaydettiyse onu al (eski sekme yeni kaydı ezmesin)
+function depoOku(){ try { return JSON.parse(localStorage.getItem(ANAHTAR) || 'null'); } catch(e){ return null; } }
+function depoTazele(){
+  const v = depoOku();
+  if (!v || !((v.guncel || 0) > (D.guncel || 0)) || !enYeni(v)) return;
+  D = tamamla(v);
+  if ($('kurulum').hidden && !$('overlay').classList.contains('open')) ciz();
+}
+window.addEventListener('storage', e => { if (e.key === ANAHTAR) depoTazele(); });
+// Gece yarısı / arka plandan dönüş: "bugün" açıksa yeni güne geç (yoksa yapılan kayıt önceki güne yazılırdı)
+let sonBugun = bugunK();
+function gunKontrol(){
+  const b = bugunK();
+  if (b === sonBugun || !D.ayar.kurulum || !$('kurulum').hidden || $('overlay').classList.contains('open')) return;
+  if (aktif === sonBugun){ aktif = b; detayAcik = false; }
+  sonBugun = b; ciz();
+}
+// Sayfa arka plana atılınca son hali yaz (depodaki daha yeniyse dokunma); öne gelince tazele
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden'){
+    const v = depoOku();
+    if (D.guncel && !(v && (v.guncel || 0) > D.guncel)) try { localStorage.setItem(ANAHTAR, JSON.stringify(D)); } catch(e){}
+  } else { depoTazele(); gunKontrol(); }
+});
+window.addEventListener('pageshow', e => { if (e.persisted){ depoTazele(); gunKontrol(); } });
 // Çevrimdışı çalışma: web adresinden açıldıysa uygulama dosyalarını telefona kaydet (dosyadan açılınca çalışmaz, gerek de yok)
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
 // Telefon klavyesi: görünen alanı ölç, klavye açıksa işaretle, odaklanan alanı ortaya kaydır
@@ -3685,7 +4044,7 @@ document.addEventListener('focusout', () => setTimeout(gorunenAlan, 100));
 // Gece yarısını geçince "bugün" değişsin
 // Dakika başında: tarih-saat ve gece yarısında "bugün"
 (function dakika(){
-  setTimeout(() => { if (D.ayar.kurulum) saatYaz(); if (!document.hidden && $('kurulum').hidden) gunleriCiz(); dakika(); }, 60000 - Date.now() % 60000 + 50);
+  setTimeout(() => { if (D.ayar.kurulum) saatYaz(); if (!document.hidden && $('kurulum').hidden){ gunleriCiz(); gunKontrol(); } dakika(); }, 60000 - Date.now() % 60000 + 50);
 })();
 </script>
 </body>
