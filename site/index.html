@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="tr" translate="no">
+<html lang="tr" translate="no" data-app-name="LifeFit">
+<!-- Uygulama adı TEK yerden gelir: yukarıdaki data-app-name. Sayfadaki tüm "{app}" yerleri, <title>, og: etiketleri ve manifest adı (site_paketle.py) buradan dolar. -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google" content="notranslate">
 <meta name="theme-color" content="#16a36b">
-<title>Diyet Listesi · Ücretsiz kişisel diyet planı uygulaması</title>
-<meta name="description" content="Ücretsiz, reklamsız kişisel diyet planı: öğün öğün menü, su takibi, besin kıyaslama, alerji ve hamilelik desteği, diyetisyenler için program linki. İnternetsiz de çalışır.">
-<meta property="og:title" content="Diyet Listesi · Kişisel diyet planı">
-<meta property="og:description" content="Ücretsiz, reklamsız, internetsiz çalışan diyet planı uygulaması. 5 dil.">
+<title>Kişisel beslenme planı · maviplay</title>
+<meta name="description" content="Ücretsiz, reklamsız kişisel beslenme planı: 900+ yemek, 78 alerjen süzgeci, regl ve hamilelik desteği, öğün hatırlatıcı, isteğe bağlı hesapla cihazlar arası eşitleme. Android, iPhone ve web.">
+<meta property="og:title" content="Kişisel beslenme planı · maviplay">
+<meta property="og:description" content="Ücretsiz, reklamsız, takipsiz. 900+ yemek, 78 alerjen süzgeci, regl ve hamilelik desteği. Android, iPhone ve web. 5 dil.">
 <meta property="og:image" content="https://diyet.maviplay.com/img/og.png">
 <meta property="og:url" content="https://diyet.maviplay.com/">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="/app/icons/diyet.svg">
 <link rel="apple-touch-icon" href="/app/icons/diyet-apple-180.png">
 <style>
-:root{--bg:#f4f7fb;--card:#fff;--line:#e3e9f1;--text:#132036;--muted:#5b6b82;--green:#13935f;--green2:#16a36b;--green-soft:#e5f6ee;--blue:#2563eb;--blue-soft:#eaf1ff;--gold:#b7791f;--gold-soft:#fdf3e2;--r:18px;
+:root{--bg:#f4f7fb;--card:#fff;--line:#e3e9f1;--text:#132036;--muted:#5b6b82;--green:#13935f;--green2:#16a36b;--green-soft:#e5f6ee;--blue:#2563eb;--blue-soft:#eaf1ff;--gold:#b7791f;--gold-soft:#fdf3e2;--rose:#be185d;--rose-soft:#fce7f3;--r:18px;
   --shadow:0 1px 2px rgba(19,32,54,.05),0 10px 30px rgba(19,32,54,.08)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -40,14 +41,24 @@ img{max-width:100%;display:block}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--green);background:var(--green-soft);padding:6px 12px;border-radius:99px}
 h1{font-size:clamp(32px,5vw,54px);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin:16px 0 14px}
 h1 em{font-style:normal;color:var(--green2)}
-.lead{font-size:clamp(16px,1.6vw,19px);color:var(--muted);max-width:560px}
+.lead{font-size:clamp(16px,1.6vw,19px);color:var(--muted);max-width:580px}
+/* Düğmeler: yan yana sığmazsa alta kayar (flex-wrap), 560 px altında tam genişlik alt alta */
 .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:0 20px;border-radius:14px;font:inherit;font-weight:700;font-size:15.5px;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .12s,box-shadow .2s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:0 20px;border-radius:14px;font:inherit;font-weight:700;font-size:15.5px;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .12s,box-shadow .2s;min-width:0}
 .btn:active{transform:scale(.97)}
 .btn.pri{background:var(--green2);color:#fff;box-shadow:0 8px 20px rgba(22,163,107,.28)}
 .btn.pri:hover{background:var(--green)}
 .btn.sec{background:var(--card);color:var(--text);border-color:var(--line);box-shadow:var(--shadow)}
 .btn.sec:hover{border-color:#c9d5e6}
+.btn.dark{background:var(--text);color:#fff;box-shadow:0 8px 20px rgba(19,32,54,.22)}
+.btn.dark:hover{background:#0b1426}
+/* Mağaza düğmeleri: iki satırlı etiket */
+.btn.store{min-height:58px;padding:0 20px 0 16px;text-align:start;justify-content:flex-start}
+.btn.store .ic{width:26px;height:26px}
+.btn.store .lbl{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.btn.store small{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn.store b{font-size:16px}
+.btn.store.soon{cursor:default}
 .facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;color:var(--muted);font-size:14px;font-weight:600}
 .facts span{display:inline-flex;align-items:center;gap:6px}
 .facts .ic{width:18px;height:18px;color:var(--green2)}
@@ -61,6 +72,7 @@ h1 em{font-style:normal;color:var(--green2)}
 .vbtn .i-play{display:none;fill:currentColor;stroke:none}
 .phone.dur .vbtn .i-play{display:block}.phone.dur .vbtn .i-pause{display:none}
 .vbtn:focus-visible{outline:3px solid var(--green2);outline-offset:2px}
+.vidcap{grid-column:1/-1;text-align:center;color:var(--muted);font-size:14px;margin-top:-6px}
 /* Bölümler */
 section{padding:64px 0}
 .sec-head{max-width:720px;margin-bottom:30px}
@@ -71,10 +83,11 @@ section{padding:64px 0}
 .feat .fi{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:var(--green-soft);color:var(--green2);margin-bottom:14px}
 .feat:nth-child(3n+2) .fi{background:var(--blue-soft);color:var(--blue)}
 .feat:nth-child(3n) .fi{background:var(--gold-soft);color:var(--gold)}
+.feat.rose .fi{background:var(--rose-soft);color:var(--rose)}
 .feat h3{font-size:17.5px;margin-bottom:6px}
 .feat p{color:var(--muted);font-size:15px}
 /* Galeri */
-.gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .gallery figure{text-align:center}
 .gallery .phone{width:100%;max-width:240px;margin:0 auto}
 .gallery figcaption{margin-top:12px;font-weight:700;font-size:14.5px;color:var(--muted)}
@@ -82,7 +95,8 @@ section{padding:64px 0}
 .pc .bar{display:flex;gap:6px;padding:10px 14px;background:#eef2f7;border-bottom:1px solid var(--line)}
 .pc .bar i{width:11px;height:11px;border-radius:50%;background:#cfd8e5}
 .pc img{width:100%;height:auto}
-/* Koç */
+.pc figcaption{padding:10px 14px;font-weight:700;font-size:14.5px;color:var(--muted);border-top:1px solid var(--line)}
+/* Paylaşım adımları */
 .coach{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
 .steps{list-style:none;counter-reset:s;display:grid;gap:12px}
 .steps li{counter-increment:s;display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
@@ -100,12 +114,22 @@ section{padding:64px 0}
 .panel ol li::before{content:counter(a);flex:none;width:28px;height:28px;border-radius:9px;background:var(--blue-soft);color:var(--blue);font-weight:800;display:grid;place-items:center;font-size:14px}
 .panel .side{display:grid;gap:10px}
 .note{font-size:14px;color:var(--muted);background:var(--card);border:1px dashed #c9d5e6;border-radius:14px;padding:14px 16px}
-/* KVKK */
+/* SSS */
+.faq{display:grid;gap:10px;max-width:860px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 18px;box-shadow:var(--shadow)}
+.faq summary{cursor:pointer;font-weight:700;font-size:16px;padding:15px 0;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;line-height:1;color:var(--muted);flex:none}
+.faq details[open] summary::after{content:"–"}
+.faq p{color:#3c4b62;font-size:15px;padding:0 0 16px}
+/* Gizlilik */
 .kvkk{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow)}
-.kvkk h3{font-size:16.5px;margin:18px 0 6px}
-.kvkk h3:first-child{margin-top:0}
-.kvkk p,.kvkk li{color:#3c4b62;font-size:15px}
-.kvkk ul{padding-inline-start:20px;display:grid;gap:4px}
+.kvkk p{color:#3c4b62;font-size:15px}
+.legal{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.legal a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:12px;background:var(--bg);border:1px solid var(--line);color:var(--text);text-decoration:none;font-weight:700;font-size:14.5px}
+.legal a:hover{border-color:#c9d5e6;background:#fff}
+.legal .ic{width:18px;height:18px;color:var(--green2)}
+.kvkk .small{margin-top:16px;font-size:13.5px;color:var(--muted)}
 footer{padding:34px 0 calc(34px + env(safe-area-inset-bottom));color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
 footer .wrap{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
 footer .sp{margin-inline-start:auto}
@@ -134,15 +158,16 @@ footer .sp{margin-inline-start:auto}
 </div></header>
 
 <main>
-<div class="hero"><div class="wrap">
+<div class="hero" id="video"><div class="wrap">
   <div>
     <span class="eyebrow"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M20 6 9 17l-5-5"/></svg><span data-t="badge"></span></span>
     <h1 data-t="h1" data-html="1"></h1>
     <p class="lead" data-t="lead"></p>
+    <!-- Mağaza bağlantıları: aşağıdaki JS'te MAGAZA sabitini doldur (play / ios). '#' kaldığı sürece düğme "yakında" gösterir. -->
     <div class="ctas">
-      <a class="btn pri" href="/app/"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span data-t="open"></span></a>
-      <button class="btn sec" id="installBtn" type="button"><svg class="ic" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg><span data-t="install"></span></button>
-      <a class="btn sec" href="/app/index.html" download="Diyet-Listesi.html"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span data-t="download"></span></a>
+      <a class="btn pri store" href="#" data-store="play" rel="noopener"><svg class="ic" viewBox="0 0 24 24"><path d="M5 3.5v17l14-8.5z"/><path d="m5 3.5 9.5 9.5M5 20.5l9.5-8.5"/></svg><span class="lbl"><small data-t="stPlayS"></small><b data-t="stPlay"></b></span></a>
+      <a class="btn dark store" href="#" data-store="ios" rel="noopener"><svg class="ic" viewBox="0 0 24 24"><path d="M12 7c-2.5 0-4 1.6-4 4.6 0 3 2 6.9 3.6 6.9.8 0 1-.5 1.9-.5s1.1.5 1.9.5c1.6 0 3.6-3.9 3.6-6.9 0-2.2-1.3-3.6-3-3.9-1.1-.2-2.2.5-2.6.5-.5 0-1-.6-1.4-1.2"/><path d="M12.5 6.5c0-1.5 1-2.9 2.5-3.2.1 1.6-1 3-2.5 3.2z"/></svg><span class="lbl"><small data-t="stIosS"></small><b data-t="stIos"></b></span></a>
+      <a class="btn sec store" href="/app/"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span class="lbl"><small data-t="stWebS"></small><b data-t="stWeb"></b></span></a>
     </div>
     <div class="facts">
       <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span data-t="f1"></span></span>
@@ -151,39 +176,47 @@ footer .sp{margin-inline-start:auto}
       <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span data-t="f4"></span></span>
     </div>
   </div>
+  <!-- Ekran görüntüsü + kullanım videosu. Yeni video: site/video/kullanim.mp4 (+ kullanim.jpg poster), senaryo: kaynak/video/SENARYO.md -->
   <div class="shots">
-    <div class="phone"><img src="/img/tel-ogun.png" alt="" width="390" height="844" loading="eager"></div>
-    <div class="phone b vid dur"><video src="/img/kullanim.mp4?v=2" poster="/img/kullanim.jpg?v=2" width="600" height="1298" muted loop playsinline preload="none" aria-label="Diyet Listesi kullanım videosu (52 sn)"></video><button class="vbtn" type="button" aria-label="Videoyu oynat"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14"/><path class="i-play" d="M7 4.5 19.5 12 7 19.5z"/></svg></button></div>
+    <div class="phone"><img src="/img/app-ana.png" alt="" width="390" height="844" loading="eager"></div>
+    <div class="phone b vid dur"><video src="/video/kullanim.mp4?v=3" poster="/video/kullanim.jpg?v=3" width="600" height="1298" muted loop playsinline preload="none" data-alt="vidAlt"></video><button class="vbtn" type="button" aria-label="Videoyu oynat"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14"/><path class="i-play" d="M7 4.5 19.5 12 7 19.5z"/></svg></button></div>
   </div>
+  <p class="vidcap" data-t="vidS"></p>
 </div></div>
 
 <section id="ozellikler"><div class="wrap">
   <div class="sec-head"><h2 data-t="featT"></h2><p data-t="featS"></p></div>
   <div class="grid">
     <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M3 11h18M5 11a7 7 0 0 0 14 0M9 4c0 2 1 3 3 3s3-1 3-3"/></svg></div><h3 data-t="c1t"></h3><p data-t="c1"></p></article>
-    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2.7s6 6.3 6 11.3a6 6 0 0 1-12 0c0-5 6-11.3 6-11.3z"/></svg></div><h3 data-t="c2t"></h3><p data-t="c2"></p></article>
-    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M8 3H5v18h3M16 3h3v18h-3M9 12h6M12 9l3 3-3 3"/></svg></div><h3 data-t="c3t"></h3><p data-t="c3"></p></article>
-    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg></div><h3 data-t="c4t"></h3><p data-t="c4"></p></article>
-    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3 data-t="c5t"></h3><p data-t="c5"></p></article>
-    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></div><h3 data-t="c6t"></h3><p data-t="c6"></p></article>
-    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M2 12h3l3-8 4 16 3-8h7"/></svg></div><h3 data-t="c7t"></h3><p data-t="c7"></p></article>
-    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 3 21l9-4 9 4-2-8.5M12 3v14"/><circle cx="12" cy="7" r="0.5"/></svg></div><h3 data-t="c8t"></h3><p data-t="c8"></p></article>
-    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M2 5h20M2 12h20M2 19h20"/><path d="M8 2v6M16 9v6M12 16v6"/></svg></div><h3 data-t="c9t"></h3><p data-t="c9"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></div><h3 data-t="c2t"></h3><p data-t="c2"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></svg></div><h3 data-t="c3t"></h3><p data-t="c3"></p></article>
+    <article class="card feat rose"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2"/></svg></div><h3 data-t="c4t"></h3><p data-t="c4"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12.5 3 21l9-4 9 4-2-8.5M12 3v14"/><circle cx="12" cy="7" r="0.5"/></svg></div><h3 data-t="c5t"></h3><p data-t="c5"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></div><h3 data-t="c6t"></h3><p data-t="c6"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M6 9v6M18 9v6M3 11v2M21 11v2M6 12h12"/><rect x="7" y="7" width="3" height="10" rx="1"/><rect x="14" y="7" width="3" height="10" rx="1"/></svg></div><h3 data-t="c7t"></h3><p data-t="c7"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M8 3H5v18h3M16 3h3v18h-3M9 12h6M12 9l3 3-3 3"/></svg></div><h3 data-t="c8t"></h3><p data-t="c8"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 20v-3a4 4 0 0 1 8 0v3"/><circle cx="12" cy="11" r="2.5"/><path d="M20 10a9 9 0 0 1 2 5"/></svg></div><h3 data-t="c9t"></h3><p data-t="c9"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></svg></div><h3 data-t="c10t"></h3><p data-t="c10"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></div><h3 data-t="c11t"></h3><p data-t="c11"></p></article>
+    <article class="card feat"><div class="fi"><svg class="ic" viewBox="0 0 24 24"><path d="M2 5h20M2 12h20M2 19h20"/><path d="M8 2v6M16 9v6M12 16v6"/></svg></div><h3 data-t="c12t"></h3><p data-t="c12"></p></article>
   </div>
 </div></section>
 
 <section id="ekranlar" style="padding-top:20px"><div class="wrap">
   <div class="sec-head"><h2 data-t="galT"></h2><p data-t="galS"></p></div>
+  <!-- Ekran görüntüleri: site/img/app-*.png (780×1688, telefon 390×844 @2x). Şimdilik yer tutucu. -->
   <div class="gallery">
-    <figure><div class="phone"><img src="/img/tel-ana.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g1"></figcaption></figure>
-    <figure><div class="phone"><img src="/img/tel-kiyas.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g2"></figcaption></figure>
-    <figure><div class="phone"><img src="/img/tel-koc.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g3"></figcaption></figure>
-    <figure><div class="phone"><img src="/img/tel-sihirbaz.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g4"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/app-ana.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g1"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/app-kurulum.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g2"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/app-regl.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g3"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/app-hesap.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g4"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/app-paylas.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g5"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/app-kiyas.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g6"></figcaption></figure>
   </div>
-  <div class="pc"><div class="bar"><i></i><i></i><i></i></div><img src="/img/pc.png" alt="" loading="lazy" width="1440" height="900"></div>
+  <figure class="pc"><div class="bar"><i></i><i></i><i></i></div><img src="/img/app-web.png" alt="" loading="lazy" width="1440" height="900"><figcaption data-t="gWeb"></figcaption></figure>
 </div></section>
 
-<section id="diyetisyen"><div class="wrap coach">
+<section id="paylasim"><div class="wrap coach">
   <div>
     <div class="sec-head" style="margin-bottom:18px"><h2 data-t="coachT"></h2><p data-t="coachS"></p></div>
     <ol class="steps">
@@ -192,7 +225,7 @@ footer .sp{margin-inline-start:auto}
       <li><div><b data-t="s3t"></b><span data-t="s3"></span></div></li>
     </ol>
   </div>
-  <div class="phone" style="margin:0 auto"><img src="/img/tel-koc.png" alt="" loading="lazy" width="390" height="844"></div>
+  <div class="phone" style="margin:0 auto"><img src="/img/app-paylas.png" alt="" loading="lazy" width="390" height="844"></div>
 </div></section>
 
 <section id="yukle"><div class="wrap">
@@ -202,142 +235,187 @@ footer .sp{margin-inline-start:auto}
     <button class="tab" role="tab" data-tab="ios" aria-selected="false"><svg class="ic" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/></svg>iPhone / iPad</button>
     <button class="tab" role="tab" data-tab="pc" aria-selected="false"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span data-t="pcTab"></span></button>
   </div>
-  <div class="panel" data-panel="android"><ol data-t="andSteps" data-list="1"></ol><div class="side"><button class="btn pri js-install" type="button"><span data-t="installNow"></span></button><div class="note" data-t="andNote"></div></div></div>
-  <div class="panel" data-panel="ios"><ol data-t="iosSteps" data-list="1"></ol><div class="side"><a class="btn pri" href="/app/"><span data-t="open"></span></a><div class="note" data-t="iosNote"></div></div></div>
-  <div class="panel" data-panel="pc"><ol data-t="pcSteps" data-list="1"></ol><div class="side"><button class="btn pri js-install" type="button"><span data-t="installPc"></span></button><a class="btn sec" href="/app/index.html" download="Diyet-Listesi.html"><span data-t="download"></span></a><div class="note" data-t="pcNote"></div></div></div>
+  <div class="panel" data-panel="android"><ol data-t="andSteps" data-list="1"></ol><div class="side"><a class="btn pri store" href="#" data-store="play" rel="noopener"><svg class="ic" viewBox="0 0 24 24"><path d="M5 3.5v17l14-8.5z"/><path d="m5 3.5 9.5 9.5M5 20.5l9.5-8.5"/></svg><span class="lbl"><small data-t="stPlayS"></small><b data-t="stPlay"></b></span></a><div class="note" data-t="andNote"></div></div></div>
+  <div class="panel" data-panel="ios"><ol data-t="iosSteps" data-list="1"></ol><div class="side"><a class="btn dark store" href="#" data-store="ios" rel="noopener"><svg class="ic" viewBox="0 0 24 24"><path d="M12 7c-2.5 0-4 1.6-4 4.6 0 3 2 6.9 3.6 6.9.8 0 1-.5 1.9-.5s1.1.5 1.9.5c1.6 0 3.6-3.9 3.6-6.9 0-2.2-1.3-3.6-3-3.9-1.1-.2-2.2.5-2.6.5-.5 0-1-.6-1.4-1.2"/><path d="M12.5 6.5c0-1.5 1-2.9 2.5-3.2.1 1.6-1 3-2.5 3.2z"/></svg><span class="lbl"><small data-t="stIosS"></small><b data-t="stIos"></b></span></a><div class="note" data-t="iosNote"></div></div></div>
+  <div class="panel" data-panel="pc"><ol data-t="pcSteps" data-list="1"></ol><div class="side"><a class="btn pri" href="/app/"><span data-t="open"></span></a><button class="btn sec js-install" type="button"><span data-t="installPc"></span></button><div class="note" data-t="pcNote"></div></div></div>
 </div></section>
 
+<section id="sss" style="padding-top:20px"><div class="wrap">
+  <div class="sec-head"><h2 data-t="sssT"></h2></div>
+  <div class="faq">
+    <details><summary data-t="q1"></summary><p data-t="a1"></p></details>
+    <details><summary data-t="q2"></summary><p data-t="a2"></p></details>
+    <details><summary data-t="q3"></summary><p data-t="a3"></p></details>
+    <details><summary data-t="q4"></summary><p data-t="a4"></p></details>
+    <details><summary data-t="q5"></summary><p data-t="a5" data-html="1"></p></details>
+    <details><summary data-t="q6"></summary><p data-t="a6"></p></details>
+  </div>
+</div></section>
+
+<!-- Hukuk metinleri uygulamayla birlikte gelir (/app/legal/*.html, 5 dil, #tr|en|ru|de|ar). Burada metin tekrar yazılmaz, yalnız bağlantı. -->
 <section id="gizlilik" style="padding-top:20px"><div class="wrap">
   <div class="sec-head"><h2 data-t="kvkkT"></h2><p data-t="kvkkS"></p></div>
-  <div class="kvkk" data-t="kvkk" data-html="1"></div>
+  <div class="kvkk">
+    <p data-t="saglik"></p>
+    <div class="legal">
+      <a href="/app/legal/gizlilik.html" data-legal><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-t="lGiz"></span></a>
+      <a href="/app/legal/aydinlatma.html" data-legal><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6M9 13h6M9 17h6"/></svg><span data-t="lAyd"></span></a>
+      <a href="/app/legal/acik-riza.html" data-legal><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg><span data-t="lRiza"></span></a>
+      <a href="/app/legal/kosullar.html" data-legal><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6"/></svg><span data-t="lKos"></span></a>
+      <a href="/hesap-sil" data-legal><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg><span data-t="lSil"></span></a>
+    </div>
+    <p class="small" data-t="sorumlu" data-html="1"></p>
+  </div>
 </div></section>
 </main>
 
 <footer><div class="wrap">
   <span>© 2026 maviplay · <span data-t="name"></span></span>
   <a href="mailto:destek@maviplay.com">destek@maviplay.com</a>
-  <a href="#gizlilik" data-t="kvkkLink"></a>
+  <a href="/app/legal/gizlilik.html" data-legal data-t="lGiz"></a>
+  <a href="/app/legal/kosullar.html" data-legal data-t="lKos"></a>
+  <a href="/hesap-sil" data-legal data-t="lSil"></a>
   <a class="sp" href="https://maviplay.com">maviplay.com</a>
 </div></footer>
 
 <script>
+// Uygulama adı: <html data-app-name> (tek sabit). Metinlerdeki {app} buradan dolar.
+const APP_AD = document.documentElement.dataset.appName || 'LifeFit';
+// MAĞAZA BAĞLANTILARI — BURAYI DOLDUR. '#' kaldığı sürece ilgili düğme "yakında" yazar ve Yükle bölümüne kaydırır.
+//   play: Google Play dahili test katılım bağlantısı (https://play.google.com/apps/internaltest/... ya da store/apps/details?id=com.maviplay.lifefit)
+//   ios : TestFlight davet bağlantısı (https://testflight.apple.com/join/...) ya da App Store bağlantısı
+const MAGAZA = { play: '#', ios: '#' };
 const DIL = ['tr','en','ru','de','ar'];
 const AD = {tr:'Türkçe', en:'English', ru:'Русский', de:'Deutsch', ar:'العربية'};
 const M = {
-name:['Diyet Listesi','Diet Plan','План питания','Ernährungsplan','خطة غذائية'],
-badge:['Ücretsiz · Reklamsız · Üyelik yok','Free · No ads · No sign-up','Бесплатно · Без рекламы · Без регистрации','Kostenlos · Werbefrei · Ohne Anmeldung','مجاني · بلا إعلانات · بلا تسجيل'],
-h1:['Sana özel diyet planı, <em>öğün öğün</em> cebinde.','Your personal diet plan, <em>meal by meal</em>, in your pocket.','Ваш план питания — <em>по приёмам пищи</em>, всегда под рукой.','Dein persönlicher Ernährungsplan, <em>Mahlzeit für Mahlzeit</em>, immer dabei.','خطتك الغذائية الشخصية، <em>وجبة بوجبة</em>، في جيبك.'],
-lead:['Yaşın, boyun, kilon ve hedefine göre 4 haftalık menü hazırlar. Yediklerini, suyunu ve besin değerlerini takip et; yemekleri tek dokunuşla değiştir, kıyasla. İnternetsiz de çalışır, verilerin yalnızca senin cihazında kalır.','Builds a 4-week menu from your age, height, weight and goal. Track meals, water and nutrients; swap and compare foods with one tap. Works offline, and your data stays on your device.','Составляет меню на 4 недели по возрасту, росту, весу и цели. Отмечайте еду, воду и нутриенты; меняйте и сравнивайте блюда одним касанием. Работает без интернета, данные остаются на устройстве.','Erstellt einen 4-Wochen-Plan nach Alter, Größe, Gewicht und Ziel. Mahlzeiten, Wasser und Nährwerte verfolgen; Lebensmittel mit einem Tipp tauschen und vergleichen. Funktioniert offline, Daten bleiben auf deinem Gerät.','تُعدّ قائمة لأربعة أسابيع حسب عمرك وطولك ووزنك وهدفك. تابع وجباتك والماء والعناصر الغذائية، وبدّل الأطعمة وقارنها بلمسة. تعمل دون إنترنت وتبقى بياناتك على جهازك.'],
+name:['{app}','{app}','{app}','{app}','{app}'],
+metaDesc:['Ücretsiz, reklamsız kişisel beslenme planı: 900+ yemek, 78 alerjen süzgeci, regl ve hamilelik desteği, öğün hatırlatıcı, isteğe bağlı hesapla cihazlar arası eşitleme. Android, iPhone ve web.','Free, ad-free personal nutrition plan: 900+ foods, 78 allergen filters, period and pregnancy support, meal reminders, optional account for syncing across devices. Android, iPhone and web.','Бесплатный план питания без рекламы: более 900 блюд, 78 фильтров аллергенов, поддержка цикла и беременности, напоминания о еде, аккаунт по желанию для синхронизации. Android, iPhone и веб.','Kostenloser, werbefreier Ernährungsplan: 900+ Lebensmittel, 78 Allergenfilter, Zyklus- und Schwangerschaftsunterstützung, Essenserinnerungen, optionales Konto zur Synchronisation. Android, iPhone und Web.','خطة غذائية شخصية مجانية بلا إعلانات: أكثر من 900 طعام، 78 مرشح حساسية، دعم الدورة والحمل، تذكير بالوجبات، حساب اختياري للمزامنة بين الأجهزة. أندرويد وآيفون وويب.'],
+badge:['Ücretsiz · Reklamsız · Takipsiz','Free · No ads · No tracking','Бесплатно · Без рекламы · Без слежки','Kostenlos · Werbefrei · Kein Tracking','مجاني · بلا إعلانات · بلا تتبع'],
+h1:['Sana özel beslenme planı, <em>öğün öğün</em> cebinde.','Your personal nutrition plan, <em>meal by meal</em>, in your pocket.','Ваш план питания — <em>по приёмам пищи</em>, всегда под рукой.','Dein persönlicher Ernährungsplan, <em>Mahlzeit für Mahlzeit</em>, immer dabei.','خطتك الغذائية الشخصية، <em>وجبة بوجبة</em>، في جيبك.'],
+lead:['Yaşına, boyuna, kilona, hedefine, sporuna ve kullandığın takviyelere göre haftalık menü hazırlar. 900’den fazla yemek, 78 alerjen süzgeci, regl ve hamilelik dönemine özel öneriler, öğün hatırlatıcı. Hesap açmadan kullanılır; istersen hesap açıp cihazların arasında eşitlersin.','Builds a weekly menu from your age, height, weight, goal, training and supplements. 900+ foods, 78 allergen filters, tips for your period and pregnancy, meal reminders. Works without an account; create one if you want to sync across devices.','Составляет недельное меню по возрасту, росту, весу, цели, тренировкам и добавкам. Более 900 блюд, 78 фильтров аллергенов, советы на время менструации и беременности, напоминания о еде. Работает без аккаунта; создайте его, если нужна синхронизация между устройствами.','Erstellt einen Wochenplan nach Alter, Größe, Gewicht, Ziel, Training und Supplements. Über 900 Lebensmittel, 78 Allergenfilter, Tipps für Periode und Schwangerschaft, Essenserinnerungen. Funktioniert ohne Konto; mit Konto synchronisierst du zwischen deinen Geräten.','تُعدّ قائمة أسبوعية حسب عمرك وطولك ووزنك وهدفك وتمارينك ومكملاتك. أكثر من 900 طعام، 78 مرشح حساسية، نصائح لفترة الدورة والحمل، وتذكير بالوجبات. يعمل بلا حساب؛ وإن أردت أنشئ حساباً للمزامنة بين أجهزتك.'],
+stPlay:['Google Play','Google Play','Google Play','Google Play','Google Play'],
+stPlayS:['Dahili test','Internal test','Внутреннее тестирование','Interner Test','اختبار داخلي'],
+stIos:['TestFlight','TestFlight','TestFlight','TestFlight','TestFlight'],
+stIosS:['iPhone · iPad','iPhone · iPad','iPhone · iPad','iPhone · iPad','iPhone · iPad'],
+stWeb:['Web’de aç','Open on the web','Открыть в браузере','Im Browser öffnen','افتح في المتصفح'],
+stWebS:['Tarayıcıda, yüklemesiz','In your browser, no install','В браузере, без установки','Im Browser, ohne Installation','في المتصفح دون تثبيت'],
+soon:['yakında','soon','скоро','bald','قريباً'],
 open:['Uygulamayı aç','Open the app','Открыть приложение','App öffnen','افتح التطبيق'],
-install:['Telefona yükle','Install on phone','Установить на телефон','Aufs Handy installieren','ثبّت على الهاتف'],
-download:['Bilgisayara indir (HTML)','Download for PC (HTML)','Скачать для ПК (HTML)','Für PC herunterladen (HTML)','تنزيل للكمبيوتر (HTML)'],
-f1:['5 dil','5 languages','5 языков','5 Sprachen','5 لغات'],
-f2:['İnternetsiz çalışır','Works offline','Работает офлайн','Funktioniert offline','يعمل دون إنترنت'],
-f3:['340+ yemek','340+ foods','340+ блюд','340+ Lebensmittel','+340 طعاماً'],
-f4:['Verin cihazında','Data stays on device','Данные на устройстве','Daten bleiben lokal','بياناتك على جهازك'],
-featT:['Neler yapabilirsin?','What can you do?','Что умеет приложение?','Was kann die App?','ماذا يمكنك أن تفعل؟'],
-featS:['Kısa bir kurulumdan sonra plan hazır. Gerisi dokunarak seçmek.','A short setup and your plan is ready. After that, just tap to choose.','Короткая настройка — и план готов. Дальше просто выбирайте касанием.','Kurze Einrichtung, und dein Plan steht. Danach nur noch antippen.','إعداد قصير وتصبح خطتك جاهزة. بعدها اختر باللمس فقط.'],
+f1:['900+ yemek · 23 kategori','900+ foods · 23 categories','900+ блюд · 23 категории','900+ Lebensmittel · 23 Kategorien','+900 طعام · 23 فئة'],
+f2:['78 alerjen süzgeci','78 allergen filters','78 фильтров аллергенов','78 Allergenfilter','78 مرشح حساسية'],
+f3:['5 dil','5 languages','5 языков','5 Sprachen','5 لغات'],
+f4:['Android · iPhone · Web','Android · iPhone · Web','Android · iPhone · Web','Android · iPhone · Web','Android · iPhone · Web'],
+vidS:['Adım adım kısa kullanım videosu.','A short step-by-step video.','Короткое пошаговое видео.','Kurzes Video, Schritt für Schritt.','فيديو قصير خطوة بخطوة.'],
+vidAlt:['{app} kullanım videosu','{app} walkthrough video','Видео о работе {app}','{app} Video-Tour','فيديو استخدام {app}'],
+featT:['Neler var?','What’s inside?','Что умеет приложение?','Was kann die App?','ماذا يقدّم التطبيق؟'],
+featS:['Kısa bir kurulumdan sonra planın hazır. Gerisi dokunarak seçmek.','A short setup and your plan is ready. After that, just tap to choose.','Короткая настройка — и план готов. Дальше просто выбирайте касанием.','Kurze Einrichtung, und dein Plan steht. Danach nur noch antippen.','إعداد قصير وتصبح خطتك جاهزة. بعدها اختر باللمس فقط.'],
 c1t:['Öğün öğün menü','Meal-by-meal menu','Меню по приёмам пищи','Menü pro Mahlzeit','قائمة لكل وجبة'],
-c1:['Kahvaltı, öğle, akşam ve ara öğünler; Türk mutfağından 340’tan fazla yemek, kuruyemiş ve kurutulmuş meyve.','Breakfast, lunch, dinner and snacks, with 340+ foods from Turkish cuisine plus nuts and dried fruit.','Завтрак, обед, ужин и перекусы: более 340 блюд турецкой кухни, орехи и сухофрукты.','Frühstück, Mittag, Abend und Snacks: über 340 Gerichte der türkischen Küche, Nüsse und Trockenobst.','فطور وغداء وعشاء ووجبات خفيفة، مع أكثر من 340 طعاماً من المطبخ التركي والمكسرات والفواكه المجففة.'],
-c2t:['Su ve hedef takibi','Water & target tracking','Вода и цели','Wasser & Ziele','الماء والأهداف'],
-c2:['Kalori, protein, karbonhidrat, şeker, yağ ve lif hedefleri; aşınca uyarır, tamamlayınca kutlar.','Calorie, protein, carb, sugar, fat and fibre targets. You get a warning when you go over and a cheer when you hit a target.','Цели по калориям, белкам, углеводам, сахару, жирам и клетчатке; предупреждает о превышении.','Ziele für Kalorien, Eiweiß, Kohlenhydrate, Zucker, Fett und Ballaststoffe; warnt bei Überschreitung.','أهداف السعرات والبروتين والكربوهيدرات والسكر والدهون والألياف، مع تنبيه عند التجاوز.'],
-c3t:['Değiştir ve kıyasla','Swap & compare','Замена и сравнение','Tauschen & vergleichen','بدّل وقارن'],
-c3:['Bir yemeği benzeriyle değiştir; protein, şeker ve kalori farkını renkli olarak gör.','Swap a food for a similar one and see the protein, sugar and calorie difference in colour.','Замените блюдо похожим и увидите разницу белков, сахара и калорий в цвете.','Tausche ein Lebensmittel gegen ein ähnliches und sieh Unterschiede farbig.','بدّل طعاماً بآخر مشابه وشاهد الفرق في البروتين والسكر والسعرات بالألوان.'],
-c4t:['Alerji ve tercih','Allergies & preferences','Аллергии и предпочтения','Allergien & Vorlieben','الحساسية والتفضيلات'],
-c4:['Alerjen içeren yemekler hiç önerilmez. Vejetaryen, vegan; kan şekeri, tansiyon, kolesterol odakları.','Foods with your allergens are never suggested. Vegetarian and vegan options, plus blood sugar, blood pressure and cholesterol modes.','Блюда с аллергенами не предлагаются. Вегетарианство, веганство; сахар, давление, холестерин.','Lebensmittel mit Allergenen werden nie vorgeschlagen. Vegetarisch, vegan; Blutzucker, Blutdruck, Cholesterin.','لا تُقترح الأطعمة المسببة لحساسيتك أبداً. نباتي ونباتي صرف، وتركيز على السكر والضغط والكوليسترول.'],
-c5t:['Öğün saatlerin','Your meal times','Ваше время еды','Deine Essenszeiten','مواعيد وجباتك'],
-c5:['Kahvaltı, öğle ve akşam saatini seç; ara öğünler otomatik ayarlanır. Değişiklikler geçmişi bozmaz.','Pick breakfast, lunch and dinner times; snacks are set automatically. Changes never alter your history.','Выберите время основных приёмов пищи — перекусы расставятся сами. История не меняется.','Wähle die Hauptmahlzeiten; Snacks werden automatisch gesetzt. Der Verlauf bleibt unverändert.','اختر مواعيد الوجبات الرئيسية وتُضبط الوجبات الخفيفة تلقائياً، دون تغيير السجل.'],
-c6t:['Diyetisyen linki','Dietitian link','Ссылка от диетолога','Link vom Ernährungsberater','رابط أخصائي التغذية'],
-c6:['Diyetisyenin ya da antrenörün hazırladığı program bir linkle gelir, tek onayla uygulamana yüklenir.','A plan from your dietitian or coach arrives as a link and loads into your app with one confirmation.','План от диетолога или тренера приходит ссылкой и загружается одним подтверждением.','Ein Plan vom Berater oder Trainer kommt als Link und wird mit einer Bestätigung geladen.','تصلك خطة أخصائي التغذية أو المدرب برابط وتُحمَّل بتأكيد واحد.'],
-c7t:['Hamilelik desteği','Pregnancy support','Поддержка беременности','Schwangerschaft','دعم الحمل'],
-c7:['Trimestere göre kalori, protein ve su ihtiyacı; hamilelikte önerilmeyen yiyecekler listeden çıkar.','Calorie, protein and water needs adjusted by trimester; foods not advised in pregnancy are left out.','Калории, белок и вода по триместрам; нерекомендуемые продукты исключаются.','Kalorien, Eiweiß und Wasser je Trimester; nicht empfohlene Lebensmittel werden ausgelassen.','احتياجات السعرات والبروتين والماء حسب الثلث، مع استبعاد الأطعمة غير المناسبة للحمل.'],
-c8t:['Geçmiş ve kayıtlar','History & logs','История и журнал','Verlauf & Protokoll','السجل والتاريخ'],
-c8:['Her günün özeti saklanır; ne zaman neyi değiştirdiğin adım adım kayıtlıdır.','Every day’s summary is kept, and each change you make is logged step by step.','Итоги каждого дня сохраняются; все изменения записаны по шагам.','Jede Tagesübersicht bleibt erhalten; jede Änderung wird protokolliert.','يُحفظ ملخص كل يوم وتُسجَّل كل تغييراتك خطوة بخطوة.'],
-c9t:['5 dil, her cihaz','5 languages, any device','5 языков, любое устройство','5 Sprachen, jedes Gerät','5 لغات وأي جهاز'],
-c9:['Türkçe, İngilizce, Rusça, Almanca, Arapça. Telefon, tablet ve bilgisayarda aynı düzen.','Turkish, English, Russian, German and Arabic. Same layout on phone, tablet and computer.','Турецкий, английский, русский, немецкий, арабский. Телефон, планшет и ПК.','Türkisch, Englisch, Russisch, Deutsch, Arabisch. Handy, Tablet und PC.','التركية والإنجليزية والروسية والألمانية والعربية، على الهاتف واللوح والكمبيوتر.'],
+c1:['Kahvaltı, öğle, akşam ve ara öğünler. 23 kategoride 900’den fazla yemek: Türk ve dünya mutfağı, hazır ve paketli ürünler, sporcu besinleri ve takviyeler.','Breakfast, lunch, dinner and snacks. 900+ foods in 23 categories: Turkish and world cuisine, ready-made and packaged products, sports nutrition and supplements.','Завтрак, обед, ужин и перекусы. Более 900 блюд в 23 категориях: турецкая и мировая кухня, готовые и упакованные продукты, спортпит и добавки.','Frühstück, Mittag, Abend und Snacks. Über 900 Lebensmittel in 23 Kategorien: türkische und internationale Küche, Fertig- und Packungsprodukte, Sportnahrung und Supplements.','فطور وغداء وعشاء ووجبات خفيفة. أكثر من 900 طعام في 23 فئة: المطبخ التركي والعالمي، منتجات جاهزة ومعلّبة، تغذية رياضية ومكملات.'],
+c2t:['Hedef, spor ve takviye','Goal, training & supplements','Цель, спорт и добавки','Ziel, Training & Supplements','الهدف والرياضة والمكملات'],
+c2:['Kalori, protein, karbonhidrat, şeker, yağ, lif ve su hedefleri; kilo hedefine, antrenman günlerine ve kullandığın takviyelere göre hesaplanır.','Calorie, protein, carb, sugar, fat, fibre and water targets, calculated from your weight goal, training days and the supplements you take.','Цели по калориям, белкам, углеводам, сахару, жирам, клетчатке и воде — с учётом цели по весу, дней тренировок и ваших добавок.','Ziele für Kalorien, Eiweiß, Kohlenhydrate, Zucker, Fett, Ballaststoffe und Wasser – berechnet nach Gewichtsziel, Trainingstagen und deinen Supplements.','أهداف السعرات والبروتين والكربوهيدرات والسكر والدهون والألياف والماء، تُحسب حسب هدف وزنك وأيام تمرينك ومكملاتك.'],
+c3t:['78 alerjen süzgeci','78 allergen filters','78 фильтров аллергенов','78 Allergenfilter','78 مرشح حساسية'],
+c3:['Alerjen içeren yemekler hiç önerilmez. Vejetaryen, vegan; kan şekeri, tansiyon ve kolesterol odakları.','Foods with your allergens are never suggested. Vegetarian and vegan options; blood sugar, blood pressure and cholesterol modes.','Блюда с вашими аллергенами не предлагаются. Вегетарианство, веганство; режимы для сахара, давления и холестерина.','Lebensmittel mit deinen Allergenen werden nie vorgeschlagen. Vegetarisch, vegan; Blutzucker, Blutdruck, Cholesterin.','لا تُقترح الأطعمة المسببة لحساسيتك أبداً. خيارات نباتية ونباتية صرفة، وتركيز على السكر والضغط والكوليسترول.'],
+c4t:['Regl takibi','Period tracking','Отслеживание цикла','Zyklus-Tracking','متابعة الدورة الشهرية'],
+c4:['Başlangıç ve bitişi kaydet; sonraki dönem tahmini, döneme özel beslenme ipuçları ve artırılmış su hedefi.','Log start and end dates; get a prediction for the next period, nutrition tips for those days and a higher water target.','Отмечайте начало и конец; прогноз следующей менструации, советы по питанию в эти дни и увеличенная цель по воде.','Beginn und Ende eintragen; Prognose für die nächste Periode, Ernährungstipps für diese Tage und ein höheres Wasserziel.','سجّلي البداية والنهاية؛ توقع الدورة التالية، نصائح غذائية لتلك الأيام وهدف ماء أعلى.'],
+c5t:['Hamilelik','Pregnancy','Беременность','Schwangerschaft','الحمل'],
+c5:['Trimestere göre kalori, protein ve su ihtiyacı; hamilelikte önerilmeyen yiyecekler listeden çıkar.','Calorie, protein and water needs adjusted by trimester; foods not advised in pregnancy are left out.','Калории, белок и вода по триместрам; нерекомендуемые продукты исключаются.','Kalorien, Eiweiß und Wasser je Trimester; nicht empfohlene Lebensmittel werden ausgelassen.','احتياجات السعرات والبروتين والماء حسب الثلث، مع استبعاد الأطعمة غير المناسبة للحمل.'],
+c6t:['Öğün hatırlatıcı','Meal reminders','Напоминания о еде','Essenserinnerungen','تذكير بالوجبات'],
+c6:['Kahvaltı, öğle, akşam ve ara öğün saatinde bildirim gelir. Saatleri sen seçersin; istediğin an kapatırsın.','A notification at breakfast, lunch, dinner and snack time. You pick the times and can turn it off any time.','Уведомление к завтраку, обеду, ужину и перекусам. Время выбираете вы; отключить можно в любой момент.','Benachrichtigung zu Frühstück, Mittag, Abend und Snack. Die Zeiten wählst du; jederzeit abschaltbar.','إشعار في وقت الفطور والغداء والعشاء والوجبات الخفيفة. أنت تختار الأوقات وتوقفه متى شئت.'],
+c7t:['Antrenman kartı','Training card','Карточка тренировки','Trainingskarte','بطاقة التمرين'],
+c7:['Antrenman ve dinlenme günleri ayrı planlanır; öncesi ve sonrası için öneri, ara öğünde takviyen hazır.','Training and rest days are planned separately, with before-and-after tips and your supplement ready in the snack.','Дни тренировок и отдыха планируются отдельно: советы до и после, добавка уже в перекусе.','Trainings- und Ruhetage werden getrennt geplant; Tipps für davor und danach, dein Supplement steht im Snack.','تُخطط أيام التمرين والراحة كلٌّ على حدة؛ نصائح لما قبل التمرين وبعده، ومكملك جاهز في الوجبة الخفيفة.'],
+c8t:['Değiştir ve kıyasla','Swap & compare','Замена и сравнение','Tauschen & vergleichen','بدّل وقارن'],
+c8:['Bir yemeği benzeriyle değiştir; protein, şeker ve kalori farkını renkli olarak gör.','Swap a food for a similar one and see the protein, sugar and calorie difference in colour.','Замените блюдо похожим и увидите разницу белков, сахара и калорий в цвете.','Tausche ein Lebensmittel gegen ein ähnliches und sieh die Unterschiede farbig.','بدّل طعاماً بآخر مشابه وشاهد الفرق في البروتين والسكر والسعرات بالألوان.'],
+c9t:['Hesap isteğe bağlı','Account is optional','Аккаунт — по желанию','Konto optional','الحساب اختياري'],
+c9:['Kullanıcı adı ve şifreyle hesap aç, verilerin cihazların arasında eşitlensin. Hesap açmazsan her şey yalnız cihazında kalır.','Create an account with a username and password to sync across devices. Without one, everything stays on your device only.','Создайте аккаунт (имя пользователя и пароль), чтобы данные синхронизировались между устройствами. Без аккаунта всё остаётся только на устройстве.','Mit Benutzername und Passwort ein Konto anlegen und zwischen Geräten synchronisieren. Ohne Konto bleibt alles nur auf deinem Gerät.','أنشئ حساباً باسم مستخدم وكلمة مرور لمزامنة بياناتك بين أجهزتك. بدون حساب تبقى كل بياناتك على جهازك فقط.'],
+c10t:['Program paylaşımı','Plan sharing','Обмен программами','Pläne teilen','مشاركة البرامج'],
+c10:['Diyetisyenin ya da antrenörün hazırladığı program bağlantıyla, WhatsApp’la ya da uygulama içinde kullanıcı adıyla gelir; tek onayla yüklenir.','A plan from your dietitian or coach arrives as a link, via WhatsApp or in-app by username, and loads with one confirmation.','План от диетолога или тренера приходит ссылкой, через WhatsApp или в приложении по имени пользователя и загружается одним подтверждением.','Ein Plan vom Berater oder Trainer kommt als Link, per WhatsApp oder in der App über den Benutzernamen und wird mit einer Bestätigung geladen.','تصلك خطة أخصائي التغذية أو المدرب برابط أو عبر واتساب أو داخل التطبيق باسم المستخدم، وتُحمَّل بتأكيد واحد.'],
+c11t:['Sıralama (isteğe bağlı)','Leaderboard (optional)','Рейтинг (по желанию)','Rangliste (optional)','الترتيب (اختياري)'],
+c11:['Üst üste kayıt tuttuğun gün sayısıyla dünyada ve ülkende sıralan. Yalnız kullanıcı adın ve gün sayın görünür; sağlık verin asla.','Rank in your country and worldwide by your streak of logged days. Only your username and day count are shown, never health data.','Соревнуйтесь по серии дней с записями — в своей стране и в мире. Видны только имя пользователя и число дней, никаких данных о здоровье.','Mit deiner Serie protokollierter Tage im Land und weltweit. Sichtbar sind nur Benutzername und Tage, nie Gesundheitsdaten.','تنافس في بلدك والعالم بعدد الأيام المتتالية التي سجّلت فيها. يظهر اسم المستخدم وعدد الأيام فقط، ولا تظهر بياناتك الصحية أبداً.'],
+c12t:['5 dil, her cihaz','5 languages, any device','5 языков, любое устройство','5 Sprachen, jedes Gerät','5 لغات وأي جهاز'],
+c12:['Türkçe, İngilizce, Rusça, Almanca, Arapça. Android, iPhone, iPad ve web’de aynı düzen; reklam ve takip yok.','Turkish, English, Russian, German and Arabic. Same layout on Android, iPhone, iPad and the web; no ads, no tracking.','Турецкий, английский, русский, немецкий, арабский. Один интерфейс на Android, iPhone, iPad и в браузере; без рекламы и слежки.','Türkisch, Englisch, Russisch, Deutsch, Arabisch. Gleiche Oberfläche auf Android, iPhone, iPad und im Web; keine Werbung, kein Tracking.','التركية والإنجليزية والروسية والألمانية والعربية. التصميم نفسه على أندرويد وآيفون وآيباد والويب؛ بلا إعلانات ولا تتبع.'],
 galT:['Ekranlardan','Screenshots','Скриншоты','Screenshots','لقطات من التطبيق'],
 galS:['Sade, büyük dokunma alanları; telefonda tek elle kullanılır.','Clean design with big touch targets; easy to use with one hand.','Простой дизайн и крупные кнопки — удобно одной рукой.','Klares Design, große Tippflächen; einhändig bedienbar.','تصميم بسيط وأزرار كبيرة؛ سهل الاستخدام بيد واحدة.'],
-g1:['Günün özeti ve öğünler','Day summary & meals','Итоги дня и приёмы пищи','Tagesübersicht & Mahlzeiten','ملخص اليوم والوجبات'],
-g2:['Yemek kıyaslama','Food comparison','Сравнение блюд','Lebensmittelvergleich','مقارنة الأطعمة'],
-g3:['Diyetisyen programı','Dietitian plan','План диетолога','Plan vom Berater','خطة أخصائي التغذية'],
-g4:['Kişisel kurulum','Personal setup','Личная настройка','Persönliche Einrichtung','الإعداد الشخصي'],
-coachT:['Diyetisyenler ve spor hocaları için','For dietitians and coaches','Для диетологов и тренеров','Für Ernährungsberater und Trainer','لأخصائيي التغذية والمدربين'],
-coachS:['Danışanına gün gün, öğün öğün program yaz; saatleri ve miktarları belirle, linkle gönder. Hesap açmak, sunucuya veri göndermek yok.','Write a plan for your client day by day and meal by meal, set times and amounts, and send it as a link. No accounts, no server uploads.','Составьте план для клиента по дням и приёмам пищи, задайте время и порции и отправьте ссылкой. Без аккаунтов и серверов.','Plan für Klienten Tag für Tag und Mahlzeit für Mahlzeit schreiben, Zeiten und Mengen festlegen, als Link senden. Ohne Konto, ohne Server-Upload.','اكتب خطة لعميلك يوماً بيوم ووجبة بوجبة، وحدد المواعيد والكميات وأرسلها برابط. بلا حسابات ولا رفع بيانات.'],
+g1:['Günün planı','Plan for the day','План на день','Tagesplan','خطة اليوم'],
+g2:['Kurulum: hedef, spor, takviye','Setup: goal, training, supplements','Настройка: цель, спорт, добавки','Einrichtung: Ziel, Training, Supplements','الإعداد: الهدف والرياضة والمكملات'],
+g3:['Regl takibi','Period tracking','Отслеживание цикла','Zyklus-Tracking','متابعة الدورة'],
+g4:['Hesap ve eşitleme','Account & sync','Аккаунт и синхронизация','Konto & Sync','الحساب والمزامنة'],
+g5:['Program paylaşımı','Plan sharing','Обмен программами','Pläne teilen','مشاركة البرامج'],
+g6:['Yemek kıyaslama','Food comparison','Сравнение блюд','Lebensmittelvergleich','مقارنة الأطعمة'],
+gWeb:['Web sürümü (bilgisayar)','Web version (desktop)','Веб-версия (компьютер)','Web-Version (Computer)','إصدار الويب (الكمبيوتر)'],
+coachT:['Diyetisyenler ve antrenörler için','For dietitians and coaches','Для диетологов и тренеров','Für Ernährungsberater und Trainer','لأخصائيي التغذية والمدربين'],
+coachS:['Danışanına gün gün, öğün öğün program yaz; saatleri ve miktarları belirle. Bağlantıyla, WhatsApp’la ya da uygulama içinde kullanıcı adıyla gönder.','Write a plan for your client day by day and meal by meal, set times and amounts. Send it as a link, via WhatsApp or in-app by username.','Составьте план для клиента по дням и приёмам пищи, задайте время и порции. Отправьте ссылкой, через WhatsApp или в приложении по имени пользователя.','Plan für Klienten Tag für Tag und Mahlzeit für Mahlzeit schreiben, Zeiten und Mengen festlegen. Als Link, per WhatsApp oder in der App über den Benutzernamen senden.','اكتب خطة لعميلك يوماً بيوم ووجبة بوجبة، وحدد المواعيد والكميات. أرسلها برابط أو عبر واتساب أو داخل التطبيق باسم المستخدم.'],
 s1t:['Programı hazırla','Create the plan','Составьте план','Plan erstellen','أعدّ الخطة'],
 s1:['Uygulamada “Program hazırla”ya dokun; öğün saatlerini seç, yemekleri ekle, notlarını yaz.','Tap “Create plan” in the app; set meal times, add foods and notes.','Нажмите «Составить план», задайте время, добавьте блюда и заметки.','Tippe auf „Plan erstellen“, setze Zeiten, füge Lebensmittel und Notizen hinzu.','اضغط «إعداد خطة»، حدد المواعيد وأضف الأطعمة والملاحظات.'],
-s2t:['Linki gönder','Send the link','Отправьте ссылку','Link senden','أرسل الرابط'],
-s2:['WhatsApp, SMS ya da e-postayla paylaş. İstersen yazdır ya da PDF kaydet.','Share via WhatsApp, SMS or e-mail, or print it / save it as PDF.','Отправьте в WhatsApp, SMS или почтой; можно распечатать или сохранить PDF.','Per WhatsApp, SMS oder E-Mail teilen; auch drucken oder als PDF speichern.','شاركه عبر واتساب أو رسالة أو بريد، أو اطبعه واحفظه PDF.'],
+s2t:['Gönder','Send it','Отправьте','Senden','أرسلها'],
+s2:['Bağlantıyı kopyala, WhatsApp’la paylaş ya da danışanın kullanıcı adını yaz: program gelen kutusuna düşer.','Copy the link, share it on WhatsApp or type your client’s username: the plan lands in their inbox.','Скопируйте ссылку, отправьте в WhatsApp или введите имя пользователя клиента — план попадёт в его входящие.','Link kopieren, per WhatsApp teilen oder den Benutzernamen des Klienten eingeben: Der Plan landet im Posteingang.','انسخ الرابط أو شاركه عبر واتساب أو اكتب اسم مستخدم عميلك، فتصل الخطة إلى صندوقه الوارد.'],
 s3t:['Danışan onaylar','Client confirms','Клиент подтверждает','Klient bestätigt','العميل يؤكد'],
-s3:['“Beslenme programı otomatik olarak yüklenecektir, onaylıyor musunuz?” Evet’e basınca program, saatleriyle birlikte yüklenir.','“The meal plan will be loaded automatically. Do you confirm?” After a tap on Yes, the plan loads with its times.','«План будет загружен автоматически. Подтверждаете?» — после «Да» план загружается вместе со временем.','„Der Plan wird automatisch geladen. Bestätigen?“ Nach „Ja“ wird er samt Zeiten geladen.','«سيتم تحميل الخطة تلقائياً، هل توافق؟» عند الضغط على نعم تُحمَّل الخطة بمواعيدها.'],
-instT:['Uygulama gibi yükle','Install it like an app','Установите как приложение','Wie eine App installieren','ثبّته كتطبيق'],
-instS:['Mağazaya gerek yok. Ana ekranına eklenir, simgesiyle açılır, internetsiz çalışır.','No app store needed. It sits on your home screen, opens from its icon and works offline.','Магазин не нужен: значок на главном экране, работа без интернета.','Kein App-Store nötig: Symbol auf dem Startbildschirm, funktioniert offline.','لا حاجة لمتجر: أيقونة على الشاشة الرئيسية ويعمل دون إنترنت.'],
-pcTab:['Bilgisayar','Computer','Компьютер','Computer','الكمبيوتر'],
-installNow:['Şimdi yükle','Install now','Установить','Jetzt installieren','ثبّت الآن'],
-installPc:['Uygulama olarak yükle','Install as app','Установить как приложение','Als App installieren','ثبّت كتطبيق'],
-andSteps:['Bu sayfayı Chrome ile aç|“Şimdi yükle”ye dokun (ya da ⋮ menüsünden “Uygulamayı yükle”)|“Yükle”yi onayla; simge ana ekrana gelir','Open this page in Chrome|Tap “Install now” (or ⋮ menu → “Install app”)|Confirm “Install”; the icon appears on your home screen','Откройте страницу в Chrome|Нажмите «Установить» (или ⋮ → «Установить приложение»)|Подтвердите; значок появится на экране','Öffne diese Seite in Chrome|Tippe „Jetzt installieren“ (oder ⋮ → „App installieren“)|Bestätige; das Symbol erscheint auf dem Startbildschirm','افتح الصفحة في كروم|اضغط «ثبّت الآن» (أو ⋮ ← «تثبيت التطبيق»)|أكّد؛ تظهر الأيقونة على الشاشة'],
-andNote:['Samsung İnternet’te: menü ☰ → “Sayfayı ekle” → “Ana ekran”.','In Samsung Internet: menu ☰ → “Add page to” → “Home screen”.','В Samsung Internet: меню ☰ → «Добавить страницу» → «Главный экран».','In Samsung Internet: Menü ☰ → „Seite hinzufügen“ → „Startbildschirm“.','في Samsung Internet: القائمة ☰ ← «إضافة صفحة» ← «الشاشة الرئيسية».'],
-iosSteps:['“Uygulamayı aç”a dokun (Safari ile)|Alttaki Paylaş düğmesine (□↑) dokun|“Ana Ekrana Ekle”yi seç ve sağ üstte “Ekle”ye bas','Tap “Open the app” (in Safari)|Tap the Share button (□↑)|Choose “Add to Home Screen”, then tap “Add”','Нажмите «Открыть приложение» (в Safari)|Нажмите «Поделиться» (□↑)|Выберите «На экран “Домой”» и «Добавить»','Tippe „App öffnen“ (in Safari)|Tippe auf Teilen (□↑)|Wähle „Zum Home-Bildschirm“ und „Hinzufügen“','اضغط «افتح التطبيق» (في سفاري)|اضغط زر المشاركة (□↑)|اختر «إضافة إلى الشاشة الرئيسية» ثم «إضافة»'],
-iosNote:['iPhone’da yükleme yalnızca Safari ile yapılır. Diyetisyeninden gelen linki açtığında program Safari’de açılırsa, uygulamada Ayarlar → “Program linki yapıştır” ile de yükleyebilirsin.','On iPhone, installing works only in Safari. If a plan link from your dietitian opens in Safari, you can also load it in the app via Settings → “Paste plan link”.','На iPhone установка возможна только в Safari. Если ссылка от диетолога открылась в Safari, вставьте её в приложении: Настройки → «Вставить ссылку».','Auf dem iPhone geht die Installation nur in Safari. Öffnet sich ein Plan-Link in Safari, füge ihn in der App unter Einstellungen → „Plan-Link einfügen“ ein.','على iPhone يتم التثبيت عبر سفاري فقط. إذا فُتح رابط الخطة في سفاري، الصقه في التطبيق: الإعدادات ← «لصق رابط الخطة».'],
-pcSteps:['Chrome ya da Edge ile “Uygulama olarak yükle”ye tıkla; masaüstünde kendi penceresinde açılır|Ya da “Bilgisayara indir (HTML)” ile tek dosyayı indir; çift tıklayınca tarayıcıda açılır|İndirilen dosyada verilerin o tarayıcıda saklanır; Ayarlar’dan yedek alıp başka cihaza taşıyabilirsin','In Chrome or Edge click “Install as app”; it opens in its own window|Or use “Download for PC (HTML)” to get one file that opens in your browser|With the downloaded file, data is stored in that browser; use Settings → backup to move it','В Chrome или Edge нажмите «Установить как приложение» — откроется в отдельном окне|Или скачайте один HTML-файл и откройте его в браузере|Данные хранятся в этом браузере; перенос — через резервную копию в Настройках','In Chrome oder Edge „Als App installieren“ klicken; öffnet im eigenen Fenster|Oder als eine HTML-Datei herunterladen und im Browser öffnen|Daten liegen in diesem Browser; per Sicherung in den Einstellungen übertragen','في كروم أو إيدج اضغط «ثبّت كتطبيق» ليفتح في نافذته|أو نزّل ملف HTML واحداً وافتحه في المتصفح|تُحفظ البيانات في ذلك المتصفح؛ انقلها عبر النسخ الاحتياطي في الإعدادات'],
-pcNote:['Telefon ve tablette HTML indirme önerilmez: indirilen dosyada kayıtlar kaybolabilir. Oralarda “Telefona yükle”yi kullan.','HTML download isn’t recommended on phones and tablets because records may be lost. Use “Install on phone” there.','На телефонах и планшетах HTML-файл не рекомендуется — записи могут теряться. Используйте установку.','Auf Handy und Tablet ist der HTML-Download nicht empfohlen (Daten können verloren gehen). Dort „Installieren“ nutzen.','لا يُنصح بتنزيل HTML على الهاتف واللوح لأن السجلات قد تضيع؛ استخدم التثبيت.'],
+s3:['“Program yüklensin mi?” sorusuna Evet deyince program, saatleriyle birlikte yüklenir.','After a tap on Yes to “Load this plan?”, the plan loads with its times.','После «Да» на вопрос «Загрузить план?» план загружается вместе со временем.','Nach „Ja“ bei „Plan laden?“ wird er samt Zeiten geladen.','عند الضغط على «نعم» لسؤال «تحميل الخطة؟» تُحمَّل الخطة بمواعيدها.'],
+instT:['Yükle','Get the app','Установить','App holen','احصل على التطبيق'],
+instS:['Android ve iPhone için uygulama, dilersen tarayıcıda web sürümü. Hesap açarsan hepsi aynı verilerle çalışır.','An app for Android and iPhone, or the web version in your browser. With an account they all share the same data.','Приложение для Android и iPhone или веб-версия в браузере. С аккаунтом все они работают с одними данными.','App für Android und iPhone oder die Web-Version im Browser. Mit Konto arbeiten alle mit denselben Daten.','تطبيق لأندرويد وآيفون، أو إصدار الويب في المتصفح. مع حساب تعمل كلها بالبيانات نفسها.'],
+pcTab:['Web','Web','Веб','Web','الويب'],
+installPc:['Ana ekrana / masaüstüne ekle','Add to home screen / desktop','Добавить на экран / рабочий стол','Zum Startbildschirm / Desktop','أضف إلى الشاشة الرئيسية / سطح المكتب'],
+andSteps:['Google Play’deki dahili test sürümüne katıl (bağlantı)|Google Play’den yükle|Aç; birkaç soruyla kurulumu tamamla','Join the internal test on Google Play (link)|Install from Google Play|Open it and answer a few setup questions','Присоединитесь к внутреннему тестированию в Google Play (ссылка)|Установите из Google Play|Откройте и ответьте на несколько вопросов','Dem internen Test bei Google Play beitreten (Link)|Aus Google Play installieren|Öffnen und ein paar Fragen zur Einrichtung beantworten','انضم إلى الاختبار الداخلي في Google Play (الرابط)|ثبّت من Google Play|افتحه وأجب عن بضعة أسئلة للإعداد'],
+andNote:['Dahili test sürümü mağazada görünmez, yalnız bağlantıyla yüklenir. Güncellemeler Google Play’den gelir.','The internal test build is not visible in the store and is installed only via the link. Updates come through Google Play.','Внутренняя тестовая версия не видна в магазине и устанавливается только по ссылке. Обновления приходят через Google Play.','Die interne Testversion ist im Store nicht sichtbar und wird nur über den Link installiert. Updates kommen über Google Play.','إصدار الاختبار الداخلي لا يظهر في المتجر ويُثبَّت بالرابط فقط. التحديثات تأتي عبر Google Play.'],
+iosSteps:['App Store’dan TestFlight uygulamasını yükle|TestFlight davet bağlantısına dokun, “Yükle”ye bas|Uygulamayı aç; kurulumu tamamla','Install TestFlight from the App Store|Tap the TestFlight invite link, then “Install”|Open the app and finish the setup','Установите TestFlight из App Store|Нажмите на ссылку-приглашение TestFlight, затем «Установить»|Откройте приложение и завершите настройку','TestFlight aus dem App Store installieren|Auf den TestFlight-Einladungslink tippen, dann „Installieren“|App öffnen und die Einrichtung abschließen','ثبّت TestFlight من App Store|اضغط رابط دعوة TestFlight ثم «تثبيت»|افتح التطبيق وأكمل الإعداد'],
+iosNote:['TestFlight sürümleri 90 gün geçerlidir; yeni sürüm çıkınca TestFlight haber verir.','TestFlight builds are valid for 90 days; TestFlight notifies you when a new build is out.','Сборки TestFlight действуют 90 дней; о новой версии TestFlight сообщит.','TestFlight-Versionen gelten 90 Tage; bei einer neuen Version meldet sich TestFlight.','إصدارات TestFlight صالحة 90 يوماً؛ يخبرك TestFlight عند صدور إصدار جديد.'],
+pcSteps:['“Web’de aç”a dokun; yüklemesiz çalışır|İstersen ana ekrana ya da masaüstüne ekle (Chrome/Edge: “Uygulamayı yükle”, Safari: Paylaş → Ana Ekrana Ekle)|Hesap açarsan telefon uygulamasıyla aynı verileri görürsün','Tap “Open on the web”; nothing to install|Optionally add it to your home screen or desktop (Chrome/Edge: “Install app”, Safari: Share → Add to Home Screen)|With an account you see the same data as in the phone app','Нажмите «Открыть в браузере» — без установки|При желании добавьте на главный экран или рабочий стол (Chrome/Edge: «Установить приложение», Safari: Поделиться → На экран «Домой»)|С аккаунтом вы увидите те же данные, что и в приложении','„Im Browser öffnen“ antippen – ohne Installation|Optional zum Startbildschirm oder Desktop hinzufügen (Chrome/Edge: „App installieren“, Safari: Teilen → Zum Home-Bildschirm)|Mit Konto siehst du dieselben Daten wie in der Handy-App','اضغط «افتح في المتصفح»؛ يعمل دون تثبيت|إن أردت أضفه إلى الشاشة الرئيسية أو سطح المكتب (كروم/إيدج: «تثبيت التطبيق»، سفاري: مشاركة ← إضافة إلى الشاشة الرئيسية)|مع حساب ترى البيانات نفسها كما في تطبيق الهاتف'],
+pcNote:['Web sürümünde bildirimler yalnız sayfa açıkken çalışır; hatırlatıcılar için telefon uygulamasını kullan.','In the web version notifications only work while the page is open; use the phone app for reminders.','В веб-версии уведомления работают только при открытой странице; для напоминаний используйте приложение.','In der Web-Version kommen Benachrichtigungen nur bei geöffneter Seite; für Erinnerungen die Handy-App nutzen.','في إصدار الويب تعمل الإشعارات فقط عندما تكون الصفحة مفتوحة؛ استخدم تطبيق الهاتف للتذكير.'],
+sssT:['Sık sorulanlar','FAQ','Частые вопросы','Häufige Fragen','الأسئلة الشائعة'],
+q1:['Verilerim nerede saklanıyor?','Where is my data stored?','Где хранятся мои данные?','Wo liegen meine Daten?','أين تُخزَّن بياناتي؟'],
+a1:['Hesap açmazsan yalnız cihazında. Hesap açarsan profilin ve kayıtların, cihazların arasında eşitlenmek için Almanya’daki (AB) sunucumuzda da saklanır; yalnız açık rızanla, istediğin an silebilirsin. Reklam, takip, analiz ve üçüncü taraf yoktur.','Without an account, only on your device. With an account, your profile and logs are also stored on our server in Germany (EU) to sync between your devices — only with your explicit consent, and you can delete them any time. No ads, tracking, analytics or third parties.','Без аккаунта — только на устройстве. С аккаунтом профиль и записи также хранятся на нашем сервере в Германии (ЕС) для синхронизации между устройствами — только с вашего явного согласия, удалить можно в любой момент. Без рекламы, слежки, аналитики и третьих лиц.','Ohne Konto nur auf deinem Gerät. Mit Konto werden Profil und Protokolle zusätzlich auf unserem Server in Deutschland (EU) gespeichert, um zwischen deinen Geräten zu synchronisieren – nur mit deiner ausdrücklichen Einwilligung, jederzeit löschbar. Keine Werbung, kein Tracking, keine Analyse, keine Dritten.','بدون حساب على جهازك فقط. مع حساب تُخزَّن بياناتك أيضاً على خادمنا في ألمانيا (الاتحاد الأوروبي) للمزامنة بين أجهزتك، بموافقتك الصريحة فقط، ويمكنك حذفها متى شئت. لا إعلانات ولا تتبع ولا تحليلات ولا أطراف ثالثة.'],
+q2:['Hesap açmak zorunlu mu?','Do I need an account?','Нужен ли аккаунт?','Brauche ich ein Konto?','هل الحساب إلزامي؟'],
+a2:['Hayır. Tüm özellikler hesapsız çalışır. Hesap yalnız cihazlar arası eşitleme, uygulama içi paylaşım (kullanıcı adıyla) ve sıralama için gerekir. Kullanıcı adı ve şifre yeter; e-posta ya da telefon istenmez.','No. Everything works without one. An account is only needed for syncing across devices, in-app sharing by username and the leaderboard. A username and password are enough; no e-mail or phone number.','Нет. Всё работает без него. Аккаунт нужен только для синхронизации между устройствами, обмена в приложении по имени пользователя и рейтинга. Достаточно имени пользователя и пароля; e-mail и телефон не нужны.','Nein. Alles funktioniert ohne. Ein Konto brauchst du nur für die Synchronisation zwischen Geräten, das Teilen in der App per Benutzername und die Rangliste. Benutzername und Passwort genügen; keine E-Mail, keine Telefonnummer.','لا. كل الميزات تعمل بدون حساب. الحساب مطلوب فقط للمزامنة بين الأجهزة والمشاركة داخل التطبيق باسم المستخدم والترتيب. يكفي اسم مستخدم وكلمة مرور؛ لا بريد ولا هاتف.'],
+q3:['Bu tıbbi tavsiye mi?','Is this medical advice?','Это медицинская рекомендация?','Ist das ein medizinischer Rat?','هل هذه نصيحة طبية؟'],
+a3:['Hayır. Uygulama genel beslenme bilgisine dayanan bir takip aracıdır; tıbbi cihaz değildir, teşhis ve tedavi yerine geçmez. Hamilelik, kronik hastalık, ilaç kullanımı ya da yeme bozukluğu öyküsü varsa planı doktoruna ya da diyetisyenine danışmadan uygulama.','No. The app is a tracking tool based on general nutrition data; it is not a medical device and does not replace diagnosis or treatment. If you are pregnant, have a chronic condition, take medication or have a history of eating disorders, check the plan with your doctor or dietitian first.','Нет. Приложение — инструмент учёта на основе общих данных о питании; это не медицинское изделие и не замена диагностике и лечению. При беременности, хронических заболеваниях, приёме лекарств или расстройствах пищевого поведения сначала обсудите план с врачом или диетологом.','Nein. Die App ist ein Tracking-Werkzeug auf Basis allgemeiner Ernährungsdaten; sie ist kein Medizinprodukt und ersetzt weder Diagnose noch Behandlung. Bei Schwangerschaft, chronischer Krankheit, Medikamenten oder Essstörungen den Plan zuerst mit Arzt oder Ernährungsberater besprechen.','لا. التطبيق أداة متابعة تعتمد على معلومات غذائية عامة؛ ليس جهازاً طبياً ولا يحل محل التشخيص أو العلاج. في حالات الحمل أو الأمراض المزمنة أو تناول الأدوية أو اضطرابات الأكل، استشر طبيبك أو أخصائي التغذية قبل اتباع الخطة.'],
+q4:['Ücretli mi? Reklam var mı?','Is it paid? Are there ads?','Платное? Есть реклама?','Kostet es etwas? Gibt es Werbung?','هل هو مدفوع؟ هل فيه إعلانات؟'],
+a4:['Ücretsiz. Reklam, uygulama içi satın alma ve takip yok.','It’s free. No ads, no in-app purchases, no tracking.','Бесплатно. Без рекламы, встроенных покупок и слежки.','Kostenlos. Keine Werbung, keine In-App-Käufe, kein Tracking.','مجاني. لا إعلانات ولا مشتريات داخل التطبيق ولا تتبع.'],
+q5:['Hesabımı nasıl silerim?','How do I delete my account?','Как удалить аккаунт?','Wie lösche ich mein Konto?','كيف أحذف حسابي؟'],
+a5:['Uygulamada Ayarlar → Hesap → “Hesabı sil”: hesabın, sunucudaki tüm verilerin ve paylaşımların anında silinir; cihazındaki veriler kalır. Uygulamaya giremiyorsan <a href="/hesap-sil">hesap silme</a> sayfasındaki adımları izle.','In the app: Settings → Account → “Delete account”. Your account, all server data and shares are deleted immediately; data on your device stays. If you can’t open the app, follow the steps on the <a href="/hesap-sil">account deletion</a> page.','В приложении: Настройки → Аккаунт → «Удалить аккаунт». Аккаунт, все данные на сервере и обмены удаляются сразу; данные на устройстве остаются. Если не можете открыть приложение, следуйте шагам на странице <a href="/hesap-sil">удаления аккаунта</a>.','In der App: Einstellungen → Konto → „Konto löschen“. Konto, alle Serverdaten und geteilte Pläne werden sofort gelöscht; die Daten auf deinem Gerät bleiben. Kommst du nicht in die App, folge den Schritten auf der Seite <a href="/hesap-sil">Konto löschen</a>.','في التطبيق: الإعدادات ← الحساب ← «حذف الحساب». يُحذف حسابك وكل بياناتك على الخادم ومشاركاتك فوراً؛ وتبقى بيانات جهازك. إن لم تستطع فتح التطبيق فاتبع الخطوات في صفحة <a href="/hesap-sil">حذف الحساب</a>.'],
+q6:['Telefon uygulaması ile web sürümü aynı mı?','Is the phone app the same as the web version?','Приложение и веб-версия — одно и то же?','Sind Handy-App und Web-Version dasselbe?','هل تطبيق الهاتف هو إصدار الويب نفسه؟'],
+a6:['Aynı uygulama. Hesap açarsan ikisi de aynı verileri gösterir. Hesapsız kullanıyorsan her biri kendi kaydını tutar; Ayarlar → Verileri taşı ile aktarabilirsin. Bildirimler telefon uygulamasında her zaman, web’de yalnız sayfa açıkken çalışır.','Same app. With an account both show the same data. Without one, each keeps its own records; you can move them with Settings → Transfer data. Notifications always work in the phone app, on the web only while the page is open.','Да. С аккаунтом обе показывают одни данные. Без аккаунта каждая хранит записи отдельно; перенести можно через Настройки → Перенос данных. Уведомления в приложении работают всегда, в браузере — только при открытой странице.','Dieselbe App. Mit Konto zeigen beide dieselben Daten. Ohne Konto führt jede eigene Aufzeichnungen; übertragen geht über Einstellungen → Daten übertragen. Benachrichtigungen kommen in der Handy-App immer, im Web nur bei geöffneter Seite.','نفس التطبيق. مع حساب يعرض كلاهما البيانات نفسها. بدون حساب يحتفظ كل منهما بسجلاته؛ يمكنك نقلها من الإعدادات ← نقل البيانات. الإشعارات تعمل دائماً في تطبيق الهاتف، وفي الويب فقط عندما تكون الصفحة مفتوحة.'],
 kvkkT:['Gizlilik ve KVKK','Privacy','Конфиденциальность','Datenschutz','الخصوصية'],
-kvkkS:['Kısaca: hesap yok, takip yok, sağlık verilerin sunucumuza gelmez.','In short: no accounts, no tracking, and your health data never reaches our server.','Коротко: без аккаунтов и слежки; данные о здоровье не попадают на сервер.','Kurz: kein Konto, kein Tracking, Gesundheitsdaten erreichen nie unseren Server.','باختصار: بلا حسابات ولا تتبع، وبيانات صحتك لا تصل إلى خادمنا.'],
-kvkkLink:['Gizlilik ve KVKK','Privacy','Конфиденциальность','Datenschutz','الخصوصية'],
-kvkk:[
-`<h3>Veri sorumlusu</h3><p>Maviplay · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
-<h3>Hangi veriler, nerede?</h3><ul><li>Adın, yaşın, boyun, kilon, hedefin, alerjilerin, hamilelik bilgin, öğünlerin ve su kayıtların <b>yalnızca kendi cihazında</b> (tarayıcı depolaması) tutulur. Bu veriler bize ya da üçüncü kişilere <b>gönderilmez</b>.</li>
-<li>Diyetisyenin gönderdiği program linkinde program, adresin “#” işaretinden sonraki kısmında taşınır. Tarayıcılar bu kısmı sunucuya göndermez; program doğrudan cihazına yüklenir.</li>
-<li>Uygulamada çerez, reklam, analiz ya da takip aracı yoktur.</li></ul>
-<h3>Sunucu kayıtları</h3><p>Sayfaları sunan sunucu (Almanya), güvenlik ve hata tespiti için standart erişim kayıtları tutar: IP adresi, tarih-saat, istenen sayfa, tarayıcı bilgisi. Bu kayıtlar en fazla 30 gün saklanır ve başka amaçla kullanılmaz (KVKK m.5/2-f, meşru menfaat).</p>
-<h3>Özel nitelikli veri</h3><p>Sağlık bilgileri KVKK m.6 kapsamında özel nitelikli veridir. Bu bilgiler yalnızca senin cihazında işlenir; tarafımızca toplanmaz, saklanmaz ve aktarılmaz.</p>
-<h3>Hakların</h3><p>KVKK m.11 kapsamındaki haklarını (bilgi alma, düzeltme, silme vb.) destek@maviplay.com adresine yazarak kullanabilirsin. Cihazındaki verileri uygulamada Ayarlar → “Kayıtları sıfırla” ile ya da tarayıcı verilerini silerek istediğin an silebilirsin.</p>
-<h3>Sağlık uyarısı</h3><p>Uygulamadaki öneriler genel bilgilendirme amaçlıdır, tıbbi teşhis ya da tedavi yerine geçmez. Hamilelik, kronik hastalık ya da ilaç kullanımında doktoruna veya diyetisyenine danış.</p>`,
-`<h3>Controller</h3><p>Maviplay · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
-<h3>What data, where?</h3><ul><li>Your name, age, height, weight, goal, allergies, pregnancy status, meals and water logs are stored <b>only on your device</b> (browser storage). They are <b>never sent</b> to us or third parties.</li>
-<li>A plan link from your dietitian carries the plan after the “#” in the address. Browsers don’t send that part to the server; the plan loads directly onto your device.</li>
-<li>No cookies, ads, analytics or trackers.</li></ul>
-<h3>Server logs</h3><p>The web server (Germany) keeps standard access logs for security: IP address, time, requested page and browser. They are kept for at most 30 days (legitimate interest, GDPR Art. 6(1)(f)).</p>
-<h3>Health data</h3><p>Health information is processed only on your device; we don’t collect, store or transfer it.</p>
-<h3>Your rights</h3><p>Write to destek@maviplay.com to exercise your rights. You can erase on-device data at any time in Settings → “Reset records” or by clearing browser data.</p>
-<h3>Health notice</h3><p>Suggestions are general information and not medical advice. If you are pregnant, have a chronic condition or take medication, consult your doctor or dietitian.</p>`,
-`<h3>Ответственный</h3><p>Maviplay · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
-<h3>Какие данные и где?</h3><ul><li>Имя, возраст, рост, вес, цель, аллергии, беременность, приёмы пищи и вода хранятся <b>только на вашем устройстве</b> и <b>не передаются</b> нам или третьим лицам.</li>
-<li>План в ссылке от диетолога передаётся после знака «#» в адресе; браузеры не отправляют эту часть на сервер.</li>
-<li>Нет cookie, рекламы, аналитики и трекеров.</li></ul>
-<h3>Журналы сервера</h3><p>Сервер (Германия) хранит стандартные журналы доступа (IP, время, страница, браузер) не более 30 дней для безопасности.</p>
-<h3>Ваши права</h3><p>Пишите на destek@maviplay.com. Данные на устройстве можно удалить в Настройках или очистив данные браузера.</p>
-<h3>Важно</h3><p>Рекомендации носят общий характер и не заменяют консультацию врача.</p>`,
-`<h3>Verantwortlicher</h3><p>Maviplay · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
-<h3>Welche Daten, wo?</h3><ul><li>Name, Alter, Größe, Gewicht, Ziel, Allergien, Schwangerschaft, Mahlzeiten und Wasser werden <b>nur auf deinem Gerät</b> gespeichert und <b>nie</b> an uns oder Dritte gesendet.</li>
-<li>Ein Plan-Link überträgt den Plan nach dem „#“ in der Adresse; Browser senden diesen Teil nicht an den Server.</li>
-<li>Keine Cookies, Werbung, Analyse oder Tracker.</li></ul>
-<h3>Server-Protokolle</h3><p>Der Server (Deutschland) speichert Standard-Zugriffsprotokolle (IP, Zeit, Seite, Browser) höchstens 30 Tage zur Sicherheit (Art. 6 Abs. 1 lit. f DSGVO).</p>
-<h3>Deine Rechte</h3><p>Schreib an destek@maviplay.com. Lokale Daten löschst du jederzeit in den Einstellungen oder über die Browserdaten.</p>
-<h3>Gesundheitshinweis</h3><p>Die Vorschläge sind allgemeine Informationen und ersetzen keine ärztliche Beratung.</p>`,
-`<h3>المسؤول عن البيانات</h3><p>Maviplay · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
-<h3>ما البيانات وأين؟</h3><ul><li>الاسم والعمر والطول والوزن والهدف والحساسية والحمل والوجبات والماء تُحفظ <b>على جهازك فقط</b> و<b>لا تُرسل</b> إلينا أو لأي طرف.</li>
-<li>تنقل روابط الخطط البيانات بعد علامة «#» في العنوان، ولا ترسل المتصفحات هذا الجزء إلى الخادم.</li>
-<li>لا ملفات تعريف ارتباط ولا إعلانات ولا تتبع.</li></ul>
-<h3>سجلات الخادم</h3><p>يحتفظ الخادم (ألمانيا) بسجلات وصول قياسية (IP، الوقت، الصفحة، المتصفح) لمدة أقصاها 30 يوماً لأغراض الأمان.</p>
-<h3>حقوقك</h3><p>راسلنا على destek@maviplay.com. يمكنك حذف البيانات من الإعدادات أو بمسح بيانات المتصفح.</p>
-<h3>تنبيه صحي</h3><p>الاقتراحات معلومات عامة ولا تغني عن استشارة الطبيب.</p>`]
+kvkkS:['Kısaca: reklam yok, takip yok. Hesapsızda verilerin yalnız cihazında; hesaplıda yalnız açık rızanla Almanya’daki (AB) sunucumuzda. Ayrıntılar aşağıdaki metinlerde.','In short: no ads, no tracking. Without an account your data stays on your device; with one it is stored on our server in Germany (EU) only with your explicit consent. Details in the documents below.','Коротко: без рекламы и слежки. Без аккаунта данные остаются на устройстве; с аккаунтом — на нашем сервере в Германии (ЕС), только с вашего явного согласия. Подробности в документах ниже.','Kurz: keine Werbung, kein Tracking. Ohne Konto bleiben deine Daten auf dem Gerät; mit Konto liegen sie nur mit deiner ausdrücklichen Einwilligung auf unserem Server in Deutschland (EU). Details in den Dokumenten unten.','باختصار: لا إعلانات ولا تتبع. بدون حساب تبقى بياناتك على جهازك؛ ومع حساب تُخزَّن على خادمنا في ألمانيا (الاتحاد الأوروبي) بموافقتك الصريحة فقط. التفاصيل في المستندات أدناه.'],
+saglik:['Sağlık uyarısı: öneriler genel bilgilendirme amaçlıdır, tıbbi teşhis ya da tedavi yerine geçmez. Hamilelik, kronik hastalık ya da ilaç kullanımında doktoruna veya diyetisyenine danış.','Health notice: suggestions are general information and not medical advice. If you are pregnant, have a chronic condition or take medication, consult your doctor or dietitian.','Важно: рекомендации носят общий характер и не заменяют консультацию врача. При беременности, хронических заболеваниях или приёме лекарств обратитесь к врачу или диетологу.','Gesundheitshinweis: Die Vorschläge sind allgemeine Informationen und ersetzen keine ärztliche Beratung. Bei Schwangerschaft, chronischer Krankheit oder Medikamenten Arzt oder Ernährungsberater fragen.','تنبيه صحي: الاقتراحات معلومات عامة ولا تغني عن استشارة الطبيب. في حالات الحمل أو الأمراض المزمنة أو تناول الأدوية استشر طبيبك أو أخصائي التغذية.'],
+lGiz:['Gizlilik Politikası','Privacy Policy','Политика конфиденциальности','Datenschutzerklärung','سياسة الخصوصية'],
+lAyd:['KVKK Aydınlatma Metni','KVKK Privacy Notice','Уведомление KVKK','KVKK-Informationstext','إشعار KVKK'],
+lRiza:['Açık Rıza Metni','Explicit Consent','Явное согласие','Ausdrückliche Einwilligung','نص الموافقة الصريحة'],
+lKos:['Kullanım Koşulları','Terms of Use','Условия использования','Nutzungsbedingungen','شروط الاستخدام'],
+lSil:['Hesabı ve verileri silme','Delete account & data','Удаление аккаунта и данных','Konto & Daten löschen','حذف الحساب والبيانات'],
+sorumlu:['Veri sorumlusu: Kaan Kapucuoğlu (Maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a>. Metinler 5 dilde; sayfa açılınca seçtiğin dil gelir.','Controller: Kaan Kapucuoğlu (Maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a>. Documents are available in 5 languages and open in your language.','Ответственный: Kaan Kapucuoğlu (Maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a>. Документы на 5 языках, открываются на вашем языке.','Verantwortlicher: Kaan Kapucuoğlu (Maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a>. Dokumente in 5 Sprachen, öffnen sich in deiner Sprache.','المسؤول عن البيانات: Kaan Kapucuoğlu (Maviplay) · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a>. المستندات بخمس لغات وتُفتح بلغتك.']
 };
 let dil = 'tr';
 try { const q = new URLSearchParams(location.search).get('lang'); dil = DIL.includes(q) ? q : (localStorage.getItem('diyet_site_dil') || (navigator.language || 'tr').slice(0, 2)); } catch(e){}
 if (!DIL.includes(dil)) dil = 'en';
+const tx = (k, i) => (M[k][i] || M[k][0]).replace(/\{app\}/g, APP_AD);
 function uygula(){
   const i = DIL.indexOf(dil);
   document.documentElement.lang = dil; document.documentElement.dir = dil === 'ar' ? 'rtl' : 'ltr';
   document.querySelectorAll('[data-t]').forEach(el => {
-    const v = M[el.dataset.t][i] || M[el.dataset.t][0];
+    const v = tx(el.dataset.t, i);
     if (el.dataset.list) el.innerHTML = v.split('|').map(s => '<li>' + s.replace(/</g, '&lt;') + '</li>').join('');
     else if (el.dataset.html) el.innerHTML = v; else el.textContent = v;
   });
-  document.title = M.name[i] + ' · ' + M.badge[i];
+  document.title = APP_AD + ' · ' + tx('badge', i);
+  const meta = (sel, v) => { const m = document.querySelector(sel); if (m) m.setAttribute('content', v); };
+  meta('meta[name="description"]', tx('metaDesc', i)); meta('meta[property="og:title"]', APP_AD + ' · ' + tx('badge', i)); meta('meta[property="og:description"]', tx('metaDesc', i));
+  document.querySelectorAll('video[data-alt]').forEach(v => v.setAttribute('aria-label', tx(v.dataset.alt, i)));
+  // Mağaza düğmeleri: MAGAZA dolu ise bağlantı, değilse "yakında"
+  document.querySelectorAll('[data-store]').forEach(a => {
+    const h = MAGAZA[a.dataset.store] || '#', soon = h === '#';
+    a.href = h; a.target = soon ? '' : '_blank'; a.classList.toggle('soon', soon); a.setAttribute('aria-disabled', soon);
+    const s = a.querySelector('small'); if (s) s.textContent = tx(a.dataset.store === 'play' ? 'stPlayS' : 'stIosS', i) + (soon ? ' · ' + tx('soon', i) : '');
+  });
+  // Hukuk sayfaları: seçili dilin çapasıyla aç (#tr|en|ru|de|ar)
+  document.querySelectorAll('a[data-legal]').forEach(a => { a.href = a.getAttribute('href').split('#')[0] + '#' + dil; });
   document.getElementById('langs').innerHTML = DIL.map(k => `<button type="button" data-dil="${k}" aria-pressed="${k === dil}" title="${AD[k]}" lang="${k}">${k.toUpperCase()}</button>`).join('');
   try { localStorage.setItem('diyet_site_dil', dil); } catch(e){}
 }
 document.getElementById('langs').addEventListener('click', e => { const b = e.target.closest('[data-dil]'); if (b){ dil = b.dataset.dil; uygula(); } });
+// Mağaza bağlantısı henüz yoksa Yükle bölümüne götür
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-store].soon'); if (!a) return;
+  e.preventDefault(); sekme(a.dataset.store === 'ios' ? 'ios' : 'android'); document.getElementById('yukle').scrollIntoView({behavior: 'smooth'});
+});
 // Yükleme sekmeleri: cihaza göre doğru sekme açık gelir
 const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const android = /Android/.test(navigator.userAgent);
@@ -347,16 +425,13 @@ function sekme(ad){
 }
 document.querySelector('.tabs').addEventListener('click', e => { const t = e.target.closest('.tab'); if (t) sekme(t.dataset.tab); });
 sekme(ios ? 'ios' : android ? 'android' : 'pc');
-// Tek dokunuşla yükleme (Android/Chrome/Edge); olmazsa adımlara götür
+// Web sürümünü ana ekrana / masaüstüne ekleme (Chrome/Edge); olmazsa adımlara götür
 let olay = null;
 addEventListener('beforeinstallprompt', e => { e.preventDefault(); olay = e; });
-function yukle(){
+document.querySelectorAll('.js-install').forEach(b => b.addEventListener('click', () => {
   if (olay){ olay.prompt(); olay.userChoice.finally(() => { olay = null; }); return; }
-  sekme(ios ? 'ios' : android ? 'android' : 'pc');
-  document.getElementById('yukle').scrollIntoView({behavior: 'smooth'});
-}
-document.getElementById('installBtn').addEventListener('click', yukle);
-document.querySelectorAll('.js-install').forEach(b => b.addEventListener('click', yukle));
+  sekme('pc'); document.getElementById('yukle').scrollIntoView({behavior: 'smooth'});
+}));
 if (matchMedia('(display-mode: standalone)').matches) location.replace('/app/');
 // Kullanım videosu: ekrandayken oynar, dışındayken durur; hareket azaltma açıksa kendiliğinden oynamaz
 document.querySelectorAll('.phone.vid').forEach(k => {

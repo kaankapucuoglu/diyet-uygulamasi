@@ -1,5 +1,5 @@
 // Tanıtım sayfası için küçük önbellek (uygulamanın kendi önbelleği /app/sw.js'te)
-const SURUM = 'diyet-site-v1';
+const SURUM = 'diyet-site-v2';
 self.addEventListener('install', e => { e.waitUntil(caches.open(SURUM).then(c => c.addAll(['/'])).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(a => Promise.all(a.filter(x => x.startsWith('diyet-site-') && x !== SURUM).map(x => caches.delete(x)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {

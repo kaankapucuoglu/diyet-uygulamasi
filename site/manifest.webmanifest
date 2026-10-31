@@ -1,8 +1,8 @@
 {
   "id": "/app/",
-  "name": "Diyet Listesi",
-  "short_name": "Diyet",
-  "description": "Kişisel diyet planı: öğünler, su, kıyaslama ve geçmiş",
+  "name": "LifeFit",
+  "short_name": "LifeFit",
+  "description": "Kişisel beslenme planı: öğünler, su, regl ve antrenman takibi, hatırlatıcı, isteğe bağlı hesapla eşitleme",
   "lang": "tr",
   "start_url": "/app/",
   "scope": "/",
@@ -11,8 +11,23 @@
   "background_color": "#f3f6fb",
   "theme_color": "#16a36b",
   "icons": [
-    {"src": "/app/icons/diyet-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "/app/icons/diyet-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "/app/icons/diyet-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "/app/icons/diyet-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/icons/diyet-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/icons/diyet-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
