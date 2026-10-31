@@ -1,0 +1,64 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:375px;height:812px;border:0"></iframe><iframe id="g" style="width:375px;height:812px;border:0"></iframe><script>
+// Verileri taşı: tarayıcı (Chrome) kayıtları → ana ekran uygulaması (boş / kendi kayıtlı); birleştirme, hatalı kod, adres linki
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+const ok=(ad,kosul,ek='')=>L((kosul?'OK   ':'HATA ')+ad+(ek?' · '+ek:''));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;const $=id=>d.getElementById(id);
+const kur=(ad,hedef)=>w.eval(`W={...kopya(D.profil),dil:'tr',ad:'${ad}',cins:'e',hamile:false,yas:33,boy:180,kilo:80,hedef:'${hedef}',hedefKilo:${hedef==='ver'?75:84},hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'07:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.destekVerdi=true;D.ayar.turGoruldu=true;if($('tur'))$('tur').remove();kapat()`);
+const J=x=>JSON.stringify(x);
+try{
+  // 1) Chrome tarafı: bugün kahvaltı (3 yumurta, 5 zeytin, muz, tam buğday ekmeği) + ara öğün yendi, 3 bardak su; dün öğle yendi
+  kur('Kaan','kas');await bekle(300);
+  w.eval(`const o=menuYaz(aktif)[0];o.ogeler=[{f:'yumurta',g:3},{f:'zeytin',g:5},{f:'muz',g:1},{f:'tamekmek',g:1}];yedimDegis(0);yedimDegis(1);kayitAl(aktif).su=3;
+    aktif=gunEkle(bugunK(),-1);yedimDegis(2);aktif=bugunK();kaydet();ciz()`);
+  const G=JSON.parse(w.eval('JSON.stringify(D)')),bugun=w.eval('bugunK()'),dun=w.eval('gunEkle(bugunK(),-1)'),onceki=w.eval('gunEkle(bugunK(),-2)');
+  ok('Chrome: bugun 2 ogun yendi',Object.values(G.kayit[bugun].yendi).filter(Boolean).length===2);
+  // Ayarlar → Verileri taşı (Geri → Ayarlar)
+  w.ayarlarAc();ok('Ayarlarda Verileri tasi',!!$('tasiAcBtn'));
+  $('tasiAcBtn').click();await bekle(300);
+  ok('Tasi penceresi + Geri',!!$('tasiKopya')&&!!$('tasiYapistir')&&!$('sheetGeri').hidden,d.querySelector('#sbody .cur b').textContent);
+  const kod=w.eval('tasiKod');ok('Tasima kodu uretildi',/#t=z[A-Za-z0-9_-]+&n=\d+$/.test(kod),kod.length+' karakter');
+  const tasma=[...d.querySelectorAll('#sheet *')].filter(e=>{const r=e.getBoundingClientRect();return r.width&&r.right>d.documentElement.clientWidth+1;}).map(e=>e.tagName+'.'+e.className);
+  ok('Tasi penceresi tasma yok (375px)',!tasma.length,tasma.join(','));
+  $('sheetGeri').click();await bekle(50);ok('Geri → Ayarlar',!!$('tasiAcBtn'));w.kapat();
+  // 2) Ana ekran uygulaması BOŞ: kurulum ilk adımında aktar düğmesi → yapıştır → onay → kayıtlar gelir
+  w.eval("D=tamamla(varsayilanDurum());kaydet();baslat2()");await bekle(100);
+  ok('Bos uygulama: kurulum acik',!$('kurulum').hidden);
+  const wb=d.querySelector('[data-wtasi]');ok('Kurulum ilk adiminda aktar dugmesi',!!wb,wb&&wb.textContent);
+  wb.click();await bekle(200);ok('Kurulumda tasi penceresi (gonder bolumu yok)',!!$('tasiYapistir')&&!$('tasiKopya'));
+  $('tasiYapistir').value='bozuk metin';$('tasiAlBtn').click();await bekle(50);ok('Kodsuz metin reddedildi',!!$('tasiYapistir'));
+  $('tasiYapistir').value=kod;$('tasiAlBtn').click();await bekle(300);
+  ok('Onay penceresi + Geri',!!$('onayEvet')&&!$('sheetGeri').hidden,d.querySelector('.onay-metin').textContent);
+  $('onayEvet').click();await bekle(300);
+  ok('Kurulum kapandi',$('kurulum').hidden);
+  const D1=JSON.parse(w.eval('JSON.stringify(D)'));
+  ok('Bugunun yenenleri geldi',J(D1.kayit[bugun].yendi)===J(G.kayit[bugun].yendi)&&J(D1.kayit[bugun].ogunler[0].ogeler)===J(G.kayit[bugun].ogunler[0].ogeler),D1.kayit[bugun].ogunler[0].ogeler.map(x=>x.g+' '+x.f).join(', '));
+  ok('Dun + su + profil geldi',J(D1.kayit[dun].yendi)===J(G.kayit[dun].yendi)&&D1.kayit[bugun].su===3&&D1.profil.ad==='Kaan');
+  ok('Ekranda bugun yenen kcal',+d.querySelector('#ozet .kcal-big b').textContent.replace(/\D/g,'')>0,d.querySelector('#ozet .kcal-big b').textContent);
+  // 3) Ana ekran uygulamasının KENDİ kayıtları var (farklı profil/plan): birleşir, hiçbiri silinmez
+  w.eval("D=tamamla(varsayilanDurum());kaydet();baslat2()");kur('Uygulama','ver');await bekle(200);
+  w.eval(`yedimDegis(3);kayitAl(aktif).su=1;aktif=gunEkle(bugunK(),-2);yedimDegis(0);aktif=bugunK();kaydet()`);
+  const U=JSON.parse(w.eval('JSON.stringify(D)'));
+  await w.eval(`tasiLinkiAc(${J(kod)})`);await bekle(200);$('onayEvet').click();await bekle(300);
+  const D2=JSON.parse(w.eval('JSON.stringify(D)')),y2=D2.kayit[bugun].yendi,ids=Object.keys(y2).filter(k=>y2[k]);
+  const og=id=>(r=>J(r.ogunler.find(o=>o.id===id).ogeler))(D2.kayit[bugun]);
+  const gid=Object.keys(G.kayit[bugun].yendi).filter(k=>G.kayit[bugun].yendi[k]),uid=Object.keys(U.kayit[bugun].yendi).filter(k=>U.kayit[bugun].yendi[k]);
+  ok('Bugun: iki tarafin yenen ogunleri birlesti',ids.length===gid.length+uid.length,ids.join(','));
+  ok('Bugun ogun icerikleri korundu',gid.every(id=>og(id)===J(G.kayit[bugun].ogunler.find(o=>o.id===id).ogeler))&&uid.every(id=>og(id)===J(U.kayit[bugun].ogunler.find(o=>o.id===id).ogeler)));
+  ok('Su: buyuk olan',D2.kayit[bugun].su===3);
+  ok('Dun (yalniz Chrome) geldi',J(D2.kayit[dun].ogunler)===J(G.kayit[dun].ogunler)&&J(D2.kayit[dun].yendi)===J(G.kayit[dun].yendi));
+  ok('Onceki gun (yalniz uygulama) kaldi',J(D2.kayit[onceki].ogunler)===J(U.kayit[onceki].ogunler)&&J(D2.kayit[onceki].yendi)===J(U.kayit[onceki].yendi));
+  ok('Loglar birlesti',D2.log.length>=new Set(G.log.concat(U.log).map(l=>l.t+'|'+l.m)).size+1,D2.log.length+' kayit');
+  ok('Profil son islem yapilan taraftan',D2.profil.ad==='Uygulama');
+  ok('Dunun menusu ekranda ayni',(()=>{w.eval('aktif=gunEkle(bugunK(),-1);ciz()');const t=[...d.querySelectorAll('#ogunler .meal.eaten')].length;w.eval('aktif=bugunK();ciz()');return t===1;})());
+  // 4) Bozuk kod
+  await w.eval(`tasiLinkiAc('https://diyet.maviplay.com/app/#t=zAAAA&n=5')`);await bekle(100);ok('Bozuk kod uyarisi',!!$('tasiTamam'));$('tasiTamam').click();
+  // 5) Uyarı (iPhone ana ekran uygulaması): tamam / verileri taşı
+  w.eval('ayriDepoAc()');ok('Ayri depo uyarisi',!!$('ayriTasi')&&w.eval('D.ayar.ayriDepo')===true,d.querySelector('.onay-metin').textContent.slice(0,60));
+  $('ayriTasi').click();await bekle(300);ok('Uyari → Verileri tasi + Geri',!!$('tasiYapistir')&&!$('sheetGeri').hidden);w.kapat();
+  // 6) Adres çubuğunda #t= linki (link tarayıcıda açılırsa): onay sorar, adres temizlenir
+  const g=document.getElementById('g');g.src='../../index.html'+kod.slice(kod.indexOf('#'));await bekle(2500);
+  const gw=g.contentWindow;ok('Adres linki: onay soruldu, adres temizlendi',!!gw.document.getElementById('onayEvet')&&!gw.location.hash,gw.location.hash.slice(0,10));
+  ok('Linkle aciliste tur cikmadi',!gw.document.getElementById('tur'));
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_tasi',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

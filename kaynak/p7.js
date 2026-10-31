@@ -322,6 +322,9 @@ function ayarlarAc(dilAcik = false){
     <div class="hint">${esc(T('impPasteHint'))}</div>
     <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
     ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `<div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
+    <div class="sec">${T('tasiT')}</div>
+    <div class="hint">${esc(T('tasiKisa'))}</div>
+    <button class="btn solid full" style="margin-top:8px" id="tasiAcBtn">📲 ${T('tasiT')}</button>
     <div class="sec">${T('sBackup')}</div>
     <div class="tip">${T('backupTip')}</div>
     <div class="acts"><button class="btn" id="yedekIndir">${T('dlBackup')}</button><button class="btn" id="yedekYukle">${T('ulBackup')}</button></div>
@@ -338,6 +341,7 @@ function ayarlarAc(dilAcik = false){
   $('logAc').onclick = () => icinden(ayarlarAc, loglarAc);
   $('yazAcBtn').onclick = () => icinden(ayarlarAc, yazAc);
   $('turAc').onclick = () => { kapat(); turBaslat(); };
+  $('tasiAcBtn').onclick = () => icinden(ayarlarAc, tasiAc);
   $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); };
   $('linkYukle').onclick = () => icinden(ayarlarAc, async () => { if (!(await programLinkiAc($('linkYapistir').value))) toast(T('impBad')); });
   $('olcuKaydet').onclick = () => {

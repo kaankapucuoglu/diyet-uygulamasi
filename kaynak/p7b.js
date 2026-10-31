@@ -492,6 +492,7 @@ function bekleyenProgramYukle(){
 }
 async function programLinkiAc(metin){
   if (/#y=/.test(String(metin || ''))) return yenenLinkiAc(metin);   // yapıştırılan "yediklerim" linki
+  if (/#t=/.test(String(metin || ''))) return tasiLinkiAc(metin);    // yapıştırılan taşıma kodu
   const m = String(metin || '').match(/#p=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
   if (!m) return false;
   let P = null;
@@ -504,6 +505,7 @@ async function programLinkiAc(metin){
 // Açılışta adres çubuğundaki program linki (# kısmı sunucuya gitmez)
 function adresProgramKontrol(){
   if (/^#y=/.test(location.hash)){ yenenLinkiAc(location.hash); return; }
+  if (/^#t=/.test(location.hash)){ tasiLinkiAc(location.hash); return; }
   if (!/^#p=/.test(location.hash)) return;
   programLinkiAc(location.hash);
 }
@@ -527,6 +529,105 @@ function yukleAc(){
   if (kurulumOlayi){ kurulumOlayi.prompt(); kurulumOlayi.userChoice.finally(() => { kurulumOlayi = null; }); return; }
   const adimlar = T(iosMu() ? 'instIos' : 'instAndroid').split('|');
   ac(T('instTitle'), `<ol class="adimlar">${adimlar.map(a => `<li>${esc(a)}</li>`).join('')}</ol>`);
+}
+
+// ---------- Verileri taşı: tarayıcı ↔ ana ekran uygulaması ↔ yeni telefon ----------
+// iPhone'da ana ekrana eklenen uygulama, Chrome ve Safari kayıtları birbirinden ayrı tutar (adres aynı olsa da).
+// Kod: …/app/#t=<sıkıştırılmış tüm veri>&n=<uzunluk>; alan taraf birleştirir, hiçbir gün silinmez (sunucuya veri gitmez)
+const kayitliGunler = X => Object.keys(X.kayit || {}).filter(k => { const r = X.kayit[k]; return !!r && (r.su > 0 || Object.values(r.yendi || {}).some(Boolean)); }).sort();
+let tasiKod = '';
+async function tasiAc(){
+  const gunler = kayitliGunler(D), ver = D.ayar.kurulum;
+  if (ver){ const kod = await paketKodla(D); tasiKod = PAYLASIM_TABAN + '#t=' + kod + '&n=' + kod.length; }   // tıklamada hazır olsun (iPhone kopyalamayı yalnız dokunuş anında izin verir)
+  ac('📲 ' + T('tasiT'), `<div class="hint" style="margin:0 0 4px">${esc(T('tasiInfo'))}</div>
+    ${ver ? `<div class="sec">${T('tasiVer')}</div>
+    <div class="cur"><b>${T('tasiOzet', {g: gunler.length})}</b>${gunler.length ? `<br><small>${esc(etiket(gunler[0]))} – ${esc(etiket(gunler[gunler.length - 1]))}</small>` : ''}</div>
+    <div class="acts"><button class="btn solid" id="tasiKopya">${T('tasiKopya')}</button>${navigator.share ? `<button class="btn" id="tasiGonder">${T('shSend')}</button>` : ''}</div>
+    <div class="hint" style="margin-top:6px">${esc(T('tasiGizli'))}</div>` : ''}
+    <div class="sec">${T('tasiAl')}</div>
+    <textarea class="search tasi-kutu" id="tasiYapistir" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="https://…#t=…"></textarea>
+    <div class="acts">${navigator.clipboard && navigator.clipboard.readText ? `<button class="btn" id="tasiPano">${T('tasiPano')}</button>` : ''}<button class="btn green" id="tasiAlBtn">${T('tasiAlBtn')}</button></div>`);
+  if ($('tasiKopya')) $('tasiKopya').onclick = () => kopyala(tasiKod, T('tasiKopyalandi'));
+  if ($('tasiGonder')) $('tasiGonder').onclick = () => navigator.share({title: T('tasiT'), text: tasiKod}).catch(() => {});
+  const al = m => { if (!/#t=/.test(m || '')){ toast(T('tasiBad')); return; } icinden(tasiAc, () => tasiLinkiAc(m)); };
+  if ($('tasiPano')) $('tasiPano').onclick = () => navigator.clipboard.readText().then(m => { $('tasiYapistir').value = m || ''; al(m); }, () => toast(T('tasiElle')));
+  $('tasiAlBtn').onclick = () => al($('tasiYapistir').value);
+}
+async function tasiLinkiAc(metin){
+  const m = String(metin || '').match(/#t=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
+  if (!m) return false;
+  if (/^#t=/.test(location.hash)) raporLinkTemizle();   // yenileyince tekrar sormasın
+  let G = null;
+  if (!m[2] || +m[2] === m[1].length){ try { G = await paketCoz(m[1]); } catch(e){} }
+  if (!G || !enYeni(G)){
+    ac(T('confirmT'), `<p class="onay-metin">${esc(T('tasiBad'))}</p><div class="acts"><button class="btn green" id="tasiTamam">${T('tamam')}</button></div>`);
+    $('tasiTamam').onclick = () => { if (geriFn) geriFn(); else kapat(); };
+    return true;
+  }
+  onayAc(T('tasiSor', {g: kayitliGunler(G).length, a: (G.profil && G.profil.ad) || '—'}), () => verileriBirlestir(G));
+  return true;
+}
+// Birleştirme: profil/plan/ayar son işlem yapılan taraftan; günler birleşir (aynı günde yenen öğünler toplanır, su büyük olan)
+function verileriBirlestir(gelen){
+  const G = tamamla(kopya(gelen)), sayi0 = kayitliGunler(G).length;
+  idbAc().then(db => db.transaction('veri', 'readwrite').objectStore('veri').put(kopya(D), ANAHTAR + '_aktarim_oncesi')).catch(() => {});   // geri dönüş için
+  if (!D.ayar.kurulum || !D.planlar.length) D = G;
+  else {
+    const sonIs = X => (X.log || []).reduce((m, l) => Math.max(m, l.t || 0), 0) || X.guncel || 0;
+    const [A, B] = sonIs(G) > sonIs(D) ? [G, D] : [D, G];   // A: güncel taraf (profil, plan, ayar), B: öbürü
+    // Kayıtlı günlerin menüsü (ve öbür tarafın geçmiş saatleri) kendi planından sabitlenir; plan değişse de aynı görünür
+    const sabitle = (X, saatDe) => {
+      const D0 = D; D = X;
+      try {
+        for (const k of kayitliGunler(X)){
+          const r = X.kayit[k];
+          try {
+            if (!r.ogunler && Object.values(r.yendi || {}).some(Boolean)) r.ogunler = kopya(sablon(k));
+            if (saatDe && k < bugunK()) r.saat = {...saatSeti(k), ...(r.saat || {})};
+          } catch(e){}
+        }
+      } finally { D = D0; }
+    };
+    sabitle(A, false); sabitle(B, true);
+    const puan = r => 100 * Object.values(r.yendi || {}).filter(Boolean).length + (r.su || 0) + (r.ogunler ? 1 : 0);
+    const kayit = {...B.kayit};
+    for (const [k, r] of Object.entries(A.kayit)) kayit[k] = kayit[k] ? (puan(kayit[k]) > puan(r) ? gunBirlestir(kayit[k], r) : gunBirlestir(r, kayit[k])) : r;
+    const log = new Map(), oy = new Map();
+    for (const l of B.log.concat(A.log)) log.set(l.t + '|' + l.m, l);
+    for (const f of B.ozelYemek.concat(A.ozelYemek)) oy.set(f.id, f);
+    D = {...A, kayit, tartim: {...(B.tartim || {}), ...(A.tartim || {})}, log: [...log.values()].sort((x, y) => x.t - y.t).slice(-2000), ozelYemek: [...oy.values()],
+      ayar: {...B.ayar, ...A.ayar, kurulum: true, turGoruldu: !!(A.ayar.turGoruldu || B.ayar.turGoruldu)}};
+  }
+  logEkle('diger', null, T('lTasi', {g: sayi0}));
+  kaydet(); kapat();
+  aktif = bugunK(); detayAcik = false;
+  if (D.ayar.kurulum && !$('kurulum').hidden){ document.body.classList.remove('wiz-acik'); $('kurulum').hidden = true; }
+  baslat2();
+  toast(T('tasiOk', {g: sayi0}));
+}
+// Aynı gün iki tarafta: dolu olan esas; öbüründe yenen ama bunda yenmemiş öğünler eklenir
+function gunBirlestir(ust, alt){
+  const r = kopya(ust); r.yendi = r.yendi || {};
+  r.su = Math.max(ust.su || 0, alt.su || 0);
+  if (r.ogunler) for (const o of alt.ogunler || []) if ((alt.yendi || {})[o.id] && !r.yendi[o.id]){
+    const i = r.ogunler.findIndex(x => x.id === o.id);
+    if (i >= 0) r.ogunler[i] = kopya(o); else r.ogunler.push(kopya(o));
+    r.yendi[o.id] = true;
+  }
+  if (alt.saat) r.saat = {...alt.saat, ...(r.saat || {})};
+  return r;
+}
+// iPhone ana ekran uygulaması: kayıtların tarayıcıdan ayrı olduğunu bir kez anlat (tur bittikten sonra)
+function ayriDepoKontrol(){
+  if (!iosMu() || !bagimsiz() || D.ayar.ayriDepo || !D.ayar.kurulum || !D.ayar.turGoruldu) return;
+  if ($('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[pyt]=/.test(location.hash)) return;
+  ayriDepoAc();
+}
+function ayriDepoAc(){
+  D.ayar.ayriDepo = true; kaydet();
+  ac('📲 ' + T('ayriT'), `<p class="onay-metin">${esc(T('ayriM'))}</p><div class="acts"><button class="btn ghost" id="ayriTamam">${T('tamam')}</button><button class="btn solid" id="ayriTasi">${T('tasiT')}</button></div>`);
+  $('ayriTamam').onclick = kapat;
+  $('ayriTasi').onclick = () => icinden(ayriDepoAc, tasiAc);
 }
 
 // ---------- Yediklerimi paylaş: günün yenen öğünleri (saat, yemek, miktar, besin) linkin içinde ----------
@@ -617,7 +718,7 @@ const turHedef = i => TUR[i][0] ? [...document.querySelectorAll(TUR[i][0])].find
 function turKontrol(){
   if (D.ayar.turGoruldu || !D.ayar.kurulum) return;
   setTimeout(() => {
-    if (D.ayar.turGoruldu || $('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[py]=/.test(location.hash)) return;
+    if (D.ayar.turGoruldu || $('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[pyt]=/.test(location.hash)) return;
     turBaslat();
   }, 900);
 }
@@ -661,6 +762,7 @@ function turBitir(){
   turAdim = -1;
   if ($('tur')) $('tur').remove();
   D.ayar.turGoruldu = true; kaydet();
+  setTimeout(ayriDepoKontrol, 400);
 }
 window.addEventListener('resize', () => { if ($('tur')) turKonum(); });
 window.addEventListener('scroll', () => { if ($('tur')) turKonum(); }, {passive: true});

@@ -507,6 +507,7 @@ body.klavye .toast{display:none}
 .link-yapistir{display:flex;gap:8px;margin-top:6px}
 .link-yapistir .search{flex:1;min-width:0}
 .link-yapistir .btn{flex:none}
+.tasi-kutu{display:block;margin-top:6px;min-height:74px;resize:none;font-size:16px;line-height:1.35;word-break:break-all;font-family:inherit}
 .saat-liste{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .saat-satir{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px 8px 14px;border-bottom:1px solid #f0f3f8}
 .saat-satir:last-child{border-bottom:0}
@@ -1137,7 +1138,7 @@ Object.assign(S, {
   // Uygulama olarak yükle
   instBtn:["📲 Uygulama olarak yükle","📲 Install as app","📲 Установить как приложение","📲 Als App installieren","📲 التثبيت كتطبيق"],
   instTitle:["📲 Telefona uygulama olarak ekle","📲 Add to your phone as an app","📲 Добавить на телефон как приложение","📲 Als App aufs Handy","📲 أضفه إلى هاتفك كتطبيق"],
-  instIos:["Safari’de alttaki Paylaş düğmesine (□↑) dokun|Listeyi kaydırıp “Ana Ekrana Ekle”yi seç|Sağ üstte “Ekle”ye dokun. Simge ana ekrana gelir, internetsiz de açılır.","Tap the Share button (□↑) in Safari|Scroll and choose “Add to Home Screen”|Tap “Add”. The icon appears on your home screen and works offline.","Нажмите «Поделиться» (□↑) в Safari|Выберите «На экран “Домой”»|Нажмите «Добавить». Значок появится на экране и будет работать без интернета.","Tippe in Safari auf Teilen (□↑)|Wähle „Zum Home-Bildschirm“|Tippe auf „Hinzufügen“. Das Symbol erscheint und funktioniert offline.","اضغط زر المشاركة (□↑) في سفاري|اختر «إضافة إلى الشاشة الرئيسية»|اضغط «إضافة». ستظهر الأيقونة وتعمل دون إنترنت."],
+  instIos:["Safari’de alttaki Paylaş düğmesine (□↑) dokun|Listeyi kaydırıp “Ana Ekrana Ekle”yi seç|Sağ üstte “Ekle”ye dokun. Simge ana ekrana gelir, internetsiz de açılır.|Not: Ana ekrandaki uygulama tarayıcıdaki kayıtları görmez. Ekledikten sonra Ayarlar → Verileri taşı ile kayıtlarını aktar.", "Tap the Share button (□↑) in Safari|Scroll and choose “Add to Home Screen”|Tap “Add”. The icon appears on your home screen and works offline.|Note: the home-screen app can’t see records from the browser. After adding it, move them with Settings → Transfer data.", "Нажмите «Поделиться» (□↑) в Safari|Выберите «На экран “Домой”»|Нажмите «Добавить». Значок появится на экране и будет работать без интернета.|Примечание: приложение на экране «Домой» не видит записи браузера. После добавления перенесите их: Настройки → Перенос данных.", "Tippe in Safari auf Teilen (□↑)|Wähle „Zum Home-Bildschirm“|Tippe auf „Hinzufügen“. Das Symbol erscheint und funktioniert offline.|Hinweis: Die Home-Bildschirm-App sieht die Browser-Einträge nicht. Übertrage sie danach über Einstellungen → Daten übertragen.", "اضغط زر المشاركة (□↑) في سفاري|اختر «إضافة إلى الشاشة الرئيسية»|اضغط «إضافة». ستظهر الأيقونة وتعمل دون إنترنت.|ملاحظة: التطبيق على الشاشة الرئيسية لا يرى سجلات المتصفح. بعد إضافته انقلها عبر الإعدادات ← نقل البيانات."],
   instAndroid:["Chrome’da sağ üstteki ⋮ menüsüne dokun|“Uygulamayı yükle” ya da “Ana ekrana ekle”yi seç|“Yükle”ye dokun. Simge ana ekrana gelir, internetsiz de açılır.","Tap the ⋮ menu in Chrome|Choose “Install app” or “Add to Home screen”|Tap “Install”. The icon appears and works offline.","Откройте меню ⋮ в Chrome|Выберите «Установить приложение» или «Добавить на гл. экран»|Нажмите «Установить». Значок появится и будет работать офлайн.","Tippe in Chrome auf ⋮|Wähle „App installieren“ oder „Zum Startbildschirm“|Tippe auf „Installieren“. Das Symbol erscheint und funktioniert offline.","اضغط قائمة ⋮ في كروم|اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»|اضغط «تثبيت». تظهر الأيقونة وتعمل دون إنترنت."],
   instLater:["Daha sonra","Later","Позже","Später","لاحقاً"],
   tamam:["Tamam","OK","ОК","OK","حسناً"],
@@ -1211,6 +1212,25 @@ Object.assign(S, {
   tur14:["Afiyet olsun! Bu turu istediğin zaman Ayarlar → “Kullanım turu” ile yeniden açabilirsin.", "Enjoy your meals! You can reopen this tour any time in Settings → “App tour”.", "Приятного аппетита! Тур можно открыть снова в Настройки → «Обзор приложения».", "Guten Appetit! Die Tour kannst du jederzeit unter Einstellungen → „App-Tour“ erneut öffnen.", "بالهناء والشفاء! يمكنك إعادة فتح هذه الجولة في أي وقت من الإعدادات ← «جولة في التطبيق»."],
   termsLink:["📄 Kullanım koşulları", "📄 Terms of use", "📄 Условия использования", "📄 Nutzungsbedingungen", "📄 شروط الاستخدام"],
   privLink:["🔒 Gizlilik politikası", "🔒 Privacy policy", "🔒 Конфиденциальность", "🔒 Datenschutz", "🔒 سياسة الخصوصية"],
+  tasiT:["Verileri taşı", "Transfer data", "Перенос данных", "Daten übertragen", "نقل البيانات"],
+  tasiKisa:["iPhone’da ana ekrandaki uygulama, Chrome ve Safari kayıtları ayrı tutar. Kayıtlarını aralarında ya da yeni telefona buradan taşı.", "On iPhone, the home-screen app, Chrome and Safari keep separate records. Move your records between them or to a new phone here.", "На iPhone приложение на экране «Домой», Chrome и Safari хранят записи отдельно. Здесь можно перенести записи между ними или на новый телефон.", "Auf dem iPhone speichern die Home-Bildschirm-App, Chrome und Safari getrennt. Hier überträgst du deine Einträge zwischen ihnen oder auf ein neues Handy.", "على iPhone يحفظ التطبيق على الشاشة الرئيسية وChrome وSafari السجلات بشكل منفصل. انقل سجلاتك بينها أو إلى هاتف جديد من هنا."],
+  tasiInfo:["1) Kayıtların olduğu yerde (ör. Chrome) “Kodu kopyala”ya dokun. 2) Öbür tarafta (ör. ana ekrandaki uygulama) bu pencereyi aç, kodu yapıştır, “Aktar”a dokun. İki taraftaki kayıtlar birleşir, hiçbiri silinmez.", "1) Where your records are (e.g. Chrome), tap “Copy code”. 2) On the other side (e.g. the home-screen app), open this window, paste the code and tap “Transfer”. Records from both sides are merged; nothing is deleted.", "1) Там, где ваши записи (например, Chrome), нажмите «Скопировать код». 2) На другой стороне (например, в приложении на экране «Домой») откройте это окно, вставьте код и нажмите «Перенести». Записи объединятся, ничего не удалится.", "1) Wo deine Einträge sind (z. B. Chrome), tippe auf „Code kopieren“. 2) Auf der anderen Seite (z. B. in der Home-Bildschirm-App) öffne dieses Fenster, füge den Code ein und tippe auf „Übertragen“. Die Einträge beider Seiten werden zusammengeführt, nichts wird gelöscht.", "1) حيث توجد سجلاتك (مثل Chrome) اضغط «نسخ الرمز». 2) في الجهة الأخرى (مثل التطبيق على الشاشة الرئيسية) افتح هذه النافذة والصق الرمز واضغط «نقل». تُدمج سجلات الجهتين ولا يُحذف شيء."],
+  tasiVer:["Buradaki kayıtları gönder", "Send records from here", "Отправить записи отсюда", "Einträge von hier senden", "إرسال السجلات من هنا"],
+  tasiOzet:["{g} günlük kayıt", "{g} days of records", "Записей за дней: {g}", "Einträge von {g} Tagen", "سجلات {g} يوم"],
+  tasiKopya:["📋 Kodu kopyala", "📋 Copy code", "📋 Скопировать код", "📋 Code kopieren", "📋 نسخ الرمز"],
+  tasiGizli:["Kod tüm kayıtlarını ve profilini içerir; yalnızca kendine gönder.", "The code contains all your records and profile; only send it to yourself.", "Код содержит все ваши записи и профиль — отправляйте его только себе.", "Der Code enthält alle Einträge und dein Profil – sende ihn nur an dich selbst.", "يحتوي الرمز على كل سجلاتك وملفك الشخصي؛ أرسله لنفسك فقط."],
+  tasiAl:["Başka yerden al", "Receive from elsewhere", "Получить из другого места", "Von woanders übernehmen", "استلام من مكان آخر"],
+  tasiPano:["📋 Panodan yapıştır", "📋 Paste from clipboard", "📋 Вставить из буфера", "📋 Aus Zwischenablage einfügen", "📋 لصق من الحافظة"],
+  tasiAlBtn:["📥 Aktar", "📥 Transfer", "📥 Перенести", "📥 Übertragen", "📥 نقل"],
+  tasiKopyalandi:["Kod kopyalandı. Şimdi öbür tarafta Ayarlar → Verileri taşı’yı aç ve yapıştır.", "Code copied. Now open Settings → Transfer data on the other side and paste it.", "Код скопирован. Откройте на другой стороне Настройки → Перенос данных и вставьте его.", "Code kopiert. Öffne jetzt auf der anderen Seite Einstellungen → Daten übertragen und füge ihn ein.", "تم نسخ الرمز. افتح الآن في الجهة الأخرى الإعدادات ← نقل البيانات والصقه."],
+  tasiBad:["Taşıma kodu okunamadı. Kodun tamamını kopyalayıp yapıştırdığından emin ol.", "Couldn’t read the transfer code. Make sure you copied and pasted the whole code.", "Не удалось прочитать код переноса. Убедитесь, что скопировали и вставили код целиком.", "Der Übertragungscode konnte nicht gelesen werden. Prüfe, ob du den ganzen Code kopiert und eingefügt hast.", "تعذّرت قراءة رمز النقل. تأكد من نسخ الرمز كاملًا ولصقه."],
+  tasiElle:["Panoya erişilemedi; kutuya uzun basıp “Yapıştır”ı seç.", "Couldn’t access the clipboard; long-press the box and choose “Paste”.", "Нет доступа к буферу; нажмите и удерживайте поле и выберите «Вставить».", "Kein Zugriff auf die Zwischenablage; halte das Feld gedrückt und wähle „Einsetzen“.", "تعذّر الوصول إلى الحافظة؛ اضغط مطولًا على المربع واختر «لصق»."],
+  tasiSor:["Gelen kodda {g} günlük kayıt var ({a}). Bu kayıtlar buradakilerle birleştirilecek; hiçbir kayıt silinmez. Aktarılsın mı?", "The code has {g} days of records ({a}). They will be merged with the records here; nothing is deleted. Transfer now?", "В коде записи за дней: {g} ({a}). Они будут объединены с записями здесь, ничего не удалится. Перенести?", "Der Code enthält Einträge von {g} Tagen ({a}). Sie werden mit den Einträgen hier zusammengeführt, nichts wird gelöscht. Jetzt übertragen?", "يحتوي الرمز على سجلات {g} يوم ({a}). ستُدمج مع السجلات هنا ولن يُحذف شيء. هل تريد النقل الآن؟"],
+  tasiOk:["✅ Kayıtlar aktarıldı ({g} gün)", "✅ Records transferred ({g} days)", "✅ Записи перенесены (дней: {g})", "✅ Einträge übertragen ({g} Tage)", "✅ تم نقل السجلات ({g} يوم)"],
+  lTasi:["Kayıtlar aktarıldı: {g} gün (birleştirildi)", "Records transferred: {g} days (merged)", "Записи перенесены: дней {g} (объединено)", "Einträge übertragen: {g} Tage (zusammengeführt)", "تم نقل السجلات: {g} يوم (دمج)"],
+  tasiWiz:["📲 Kayıtlarım başka yerde, aktar", "📲 My records are elsewhere, transfer", "📲 Мои записи в другом месте — перенести", "📲 Meine Einträge sind woanders – übertragen", "📲 سجلاتي في مكان آخر، نقل"],
+  ayriT:["Kayıtlar bu uygulamada ayrı tutulur", "This app keeps its own records", "Это приложение хранит записи отдельно", "Diese App speichert getrennt", "هذا التطبيق يحفظ سجلاته بشكل منفصل"],
+  ayriM:["iPhone, ana ekrana eklenen uygulamanın kayıtlarını Chrome ve Safari’den ayrı saklar. Tarayıcıda girdiğin kayıtlar burada görünmez; silinmediler, tarayıcıda duruyorlar. Aktarmak için tarayıcıda Ayarlar → Verileri taşı → Kodu kopyala, sonra burada Verileri taşı → Aktar.", "iPhone stores the home-screen app’s records separately from Chrome and Safari. Records you entered in the browser don’t show here; they aren’t deleted, they’re still in the browser. To move them: in the browser, Settings → Transfer data → Copy code, then here Transfer data → Transfer.", "iPhone хранит записи приложения на экране «Домой» отдельно от Chrome и Safari. Записи, введённые в браузере, здесь не видны; они не удалены, они в браузере. Чтобы перенести: в браузере Настройки → Перенос данных → Скопировать код, затем здесь Перенос данных → Перенести.", "Das iPhone speichert die Einträge der Home-Bildschirm-App getrennt von Chrome und Safari. Im Browser eingegebene Einträge erscheinen hier nicht; sie sind nicht gelöscht, sondern im Browser. Zum Übertragen: im Browser Einstellungen → Daten übertragen → Code kopieren, dann hier Daten übertragen → Übertragen.", "يحفظ iPhone سجلات التطبيق المضاف إلى الشاشة الرئيسية بشكل منفصل عن Chrome وSafari. السجلات التي أدخلتها في المتصفح لا تظهر هنا؛ لم تُحذف، فهي ما زالت في المتصفح. للنقل: في المتصفح الإعدادات ← نقل البيانات ← نسخ الرمز، ثم هنا نقل البيانات ← نقل."],
   rpBad:["Paylaşım linki açılamadı (eksik ya da bozuk kopyalanmış olabilir).","The shared link couldn’t be opened (it may be incomplete or broken).","Не удалось открыть ссылку (возможно, она скопирована не полностью).","Der Link konnte nicht geöffnet werden (evtl. unvollständig kopiert).","تعذّر فتح الرابط (ربما نُسخ ناقصاً أو تالفاً)."]
 });
 // ---------- Ek yemekler: Türk mutfağı, kahvaltılık, hamur işi, tatlı, kuruyemiş ve kurutulmuş meyveler ----------
@@ -2895,6 +2915,9 @@ function ayarlarAc(dilAcik = false){
     <div class="hint">${esc(T('impPasteHint'))}</div>
     <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
     ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `<div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
+    <div class="sec">${T('tasiT')}</div>
+    <div class="hint">${esc(T('tasiKisa'))}</div>
+    <button class="btn solid full" style="margin-top:8px" id="tasiAcBtn">📲 ${T('tasiT')}</button>
     <div class="sec">${T('sBackup')}</div>
     <div class="tip">${T('backupTip')}</div>
     <div class="acts"><button class="btn" id="yedekIndir">${T('dlBackup')}</button><button class="btn" id="yedekYukle">${T('ulBackup')}</button></div>
@@ -2911,6 +2934,7 @@ function ayarlarAc(dilAcik = false){
   $('logAc').onclick = () => icinden(ayarlarAc, loglarAc);
   $('yazAcBtn').onclick = () => icinden(ayarlarAc, yazAc);
   $('turAc').onclick = () => { kapat(); turBaslat(); };
+  $('tasiAcBtn').onclick = () => icinden(ayarlarAc, tasiAc);
   $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); };
   $('linkYukle').onclick = () => icinden(ayarlarAc, async () => { if (!(await programLinkiAc($('linkYapistir').value))) toast(T('impBad')); });
   $('olcuKaydet').onclick = () => {
@@ -3530,6 +3554,7 @@ function bekleyenProgramYukle(){
 }
 async function programLinkiAc(metin){
   if (/#y=/.test(String(metin || ''))) return yenenLinkiAc(metin);   // yapıştırılan "yediklerim" linki
+  if (/#t=/.test(String(metin || ''))) return tasiLinkiAc(metin);    // yapıştırılan taşıma kodu
   const m = String(metin || '').match(/#p=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
   if (!m) return false;
   let P = null;
@@ -3542,6 +3567,7 @@ async function programLinkiAc(metin){
 // Açılışta adres çubuğundaki program linki (# kısmı sunucuya gitmez)
 function adresProgramKontrol(){
   if (/^#y=/.test(location.hash)){ yenenLinkiAc(location.hash); return; }
+  if (/^#t=/.test(location.hash)){ tasiLinkiAc(location.hash); return; }
   if (!/^#p=/.test(location.hash)) return;
   programLinkiAc(location.hash);
 }
@@ -3565,6 +3591,105 @@ function yukleAc(){
   if (kurulumOlayi){ kurulumOlayi.prompt(); kurulumOlayi.userChoice.finally(() => { kurulumOlayi = null; }); return; }
   const adimlar = T(iosMu() ? 'instIos' : 'instAndroid').split('|');
   ac(T('instTitle'), `<ol class="adimlar">${adimlar.map(a => `<li>${esc(a)}</li>`).join('')}</ol>`);
+}
+
+// ---------- Verileri taşı: tarayıcı ↔ ana ekran uygulaması ↔ yeni telefon ----------
+// iPhone'da ana ekrana eklenen uygulama, Chrome ve Safari kayıtları birbirinden ayrı tutar (adres aynı olsa da).
+// Kod: …/app/#t=<sıkıştırılmış tüm veri>&n=<uzunluk>; alan taraf birleştirir, hiçbir gün silinmez (sunucuya veri gitmez)
+const kayitliGunler = X => Object.keys(X.kayit || {}).filter(k => { const r = X.kayit[k]; return !!r && (r.su > 0 || Object.values(r.yendi || {}).some(Boolean)); }).sort();
+let tasiKod = '';
+async function tasiAc(){
+  const gunler = kayitliGunler(D), ver = D.ayar.kurulum;
+  if (ver){ const kod = await paketKodla(D); tasiKod = PAYLASIM_TABAN + '#t=' + kod + '&n=' + kod.length; }   // tıklamada hazır olsun (iPhone kopyalamayı yalnız dokunuş anında izin verir)
+  ac('📲 ' + T('tasiT'), `<div class="hint" style="margin:0 0 4px">${esc(T('tasiInfo'))}</div>
+    ${ver ? `<div class="sec">${T('tasiVer')}</div>
+    <div class="cur"><b>${T('tasiOzet', {g: gunler.length})}</b>${gunler.length ? `<br><small>${esc(etiket(gunler[0]))} – ${esc(etiket(gunler[gunler.length - 1]))}</small>` : ''}</div>
+    <div class="acts"><button class="btn solid" id="tasiKopya">${T('tasiKopya')}</button>${navigator.share ? `<button class="btn" id="tasiGonder">${T('shSend')}</button>` : ''}</div>
+    <div class="hint" style="margin-top:6px">${esc(T('tasiGizli'))}</div>` : ''}
+    <div class="sec">${T('tasiAl')}</div>
+    <textarea class="search tasi-kutu" id="tasiYapistir" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="https://…#t=…"></textarea>
+    <div class="acts">${navigator.clipboard && navigator.clipboard.readText ? `<button class="btn" id="tasiPano">${T('tasiPano')}</button>` : ''}<button class="btn green" id="tasiAlBtn">${T('tasiAlBtn')}</button></div>`);
+  if ($('tasiKopya')) $('tasiKopya').onclick = () => kopyala(tasiKod, T('tasiKopyalandi'));
+  if ($('tasiGonder')) $('tasiGonder').onclick = () => navigator.share({title: T('tasiT'), text: tasiKod}).catch(() => {});
+  const al = m => { if (!/#t=/.test(m || '')){ toast(T('tasiBad')); return; } icinden(tasiAc, () => tasiLinkiAc(m)); };
+  if ($('tasiPano')) $('tasiPano').onclick = () => navigator.clipboard.readText().then(m => { $('tasiYapistir').value = m || ''; al(m); }, () => toast(T('tasiElle')));
+  $('tasiAlBtn').onclick = () => al($('tasiYapistir').value);
+}
+async function tasiLinkiAc(metin){
+  const m = String(metin || '').match(/#t=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
+  if (!m) return false;
+  if (/^#t=/.test(location.hash)) raporLinkTemizle();   // yenileyince tekrar sormasın
+  let G = null;
+  if (!m[2] || +m[2] === m[1].length){ try { G = await paketCoz(m[1]); } catch(e){} }
+  if (!G || !enYeni(G)){
+    ac(T('confirmT'), `<p class="onay-metin">${esc(T('tasiBad'))}</p><div class="acts"><button class="btn green" id="tasiTamam">${T('tamam')}</button></div>`);
+    $('tasiTamam').onclick = () => { if (geriFn) geriFn(); else kapat(); };
+    return true;
+  }
+  onayAc(T('tasiSor', {g: kayitliGunler(G).length, a: (G.profil && G.profil.ad) || '—'}), () => verileriBirlestir(G));
+  return true;
+}
+// Birleştirme: profil/plan/ayar son işlem yapılan taraftan; günler birleşir (aynı günde yenen öğünler toplanır, su büyük olan)
+function verileriBirlestir(gelen){
+  const G = tamamla(kopya(gelen)), sayi0 = kayitliGunler(G).length;
+  idbAc().then(db => db.transaction('veri', 'readwrite').objectStore('veri').put(kopya(D), ANAHTAR + '_aktarim_oncesi')).catch(() => {});   // geri dönüş için
+  if (!D.ayar.kurulum || !D.planlar.length) D = G;
+  else {
+    const sonIs = X => (X.log || []).reduce((m, l) => Math.max(m, l.t || 0), 0) || X.guncel || 0;
+    const [A, B] = sonIs(G) > sonIs(D) ? [G, D] : [D, G];   // A: güncel taraf (profil, plan, ayar), B: öbürü
+    // Kayıtlı günlerin menüsü (ve öbür tarafın geçmiş saatleri) kendi planından sabitlenir; plan değişse de aynı görünür
+    const sabitle = (X, saatDe) => {
+      const D0 = D; D = X;
+      try {
+        for (const k of kayitliGunler(X)){
+          const r = X.kayit[k];
+          try {
+            if (!r.ogunler && Object.values(r.yendi || {}).some(Boolean)) r.ogunler = kopya(sablon(k));
+            if (saatDe && k < bugunK()) r.saat = {...saatSeti(k), ...(r.saat || {})};
+          } catch(e){}
+        }
+      } finally { D = D0; }
+    };
+    sabitle(A, false); sabitle(B, true);
+    const puan = r => 100 * Object.values(r.yendi || {}).filter(Boolean).length + (r.su || 0) + (r.ogunler ? 1 : 0);
+    const kayit = {...B.kayit};
+    for (const [k, r] of Object.entries(A.kayit)) kayit[k] = kayit[k] ? (puan(kayit[k]) > puan(r) ? gunBirlestir(kayit[k], r) : gunBirlestir(r, kayit[k])) : r;
+    const log = new Map(), oy = new Map();
+    for (const l of B.log.concat(A.log)) log.set(l.t + '|' + l.m, l);
+    for (const f of B.ozelYemek.concat(A.ozelYemek)) oy.set(f.id, f);
+    D = {...A, kayit, tartim: {...(B.tartim || {}), ...(A.tartim || {})}, log: [...log.values()].sort((x, y) => x.t - y.t).slice(-2000), ozelYemek: [...oy.values()],
+      ayar: {...B.ayar, ...A.ayar, kurulum: true, turGoruldu: !!(A.ayar.turGoruldu || B.ayar.turGoruldu)}};
+  }
+  logEkle('diger', null, T('lTasi', {g: sayi0}));
+  kaydet(); kapat();
+  aktif = bugunK(); detayAcik = false;
+  if (D.ayar.kurulum && !$('kurulum').hidden){ document.body.classList.remove('wiz-acik'); $('kurulum').hidden = true; }
+  baslat2();
+  toast(T('tasiOk', {g: sayi0}));
+}
+// Aynı gün iki tarafta: dolu olan esas; öbüründe yenen ama bunda yenmemiş öğünler eklenir
+function gunBirlestir(ust, alt){
+  const r = kopya(ust); r.yendi = r.yendi || {};
+  r.su = Math.max(ust.su || 0, alt.su || 0);
+  if (r.ogunler) for (const o of alt.ogunler || []) if ((alt.yendi || {})[o.id] && !r.yendi[o.id]){
+    const i = r.ogunler.findIndex(x => x.id === o.id);
+    if (i >= 0) r.ogunler[i] = kopya(o); else r.ogunler.push(kopya(o));
+    r.yendi[o.id] = true;
+  }
+  if (alt.saat) r.saat = {...alt.saat, ...(r.saat || {})};
+  return r;
+}
+// iPhone ana ekran uygulaması: kayıtların tarayıcıdan ayrı olduğunu bir kez anlat (tur bittikten sonra)
+function ayriDepoKontrol(){
+  if (!iosMu() || !bagimsiz() || D.ayar.ayriDepo || !D.ayar.kurulum || !D.ayar.turGoruldu) return;
+  if ($('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[pyt]=/.test(location.hash)) return;
+  ayriDepoAc();
+}
+function ayriDepoAc(){
+  D.ayar.ayriDepo = true; kaydet();
+  ac('📲 ' + T('ayriT'), `<p class="onay-metin">${esc(T('ayriM'))}</p><div class="acts"><button class="btn ghost" id="ayriTamam">${T('tamam')}</button><button class="btn solid" id="ayriTasi">${T('tasiT')}</button></div>`);
+  $('ayriTamam').onclick = kapat;
+  $('ayriTasi').onclick = () => icinden(ayriDepoAc, tasiAc);
 }
 
 // ---------- Yediklerimi paylaş: günün yenen öğünleri (saat, yemek, miktar, besin) linkin içinde ----------
@@ -3655,7 +3780,7 @@ const turHedef = i => TUR[i][0] ? [...document.querySelectorAll(TUR[i][0])].find
 function turKontrol(){
   if (D.ayar.turGoruldu || !D.ayar.kurulum) return;
   setTimeout(() => {
-    if (D.ayar.turGoruldu || $('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[py]=/.test(location.hash)) return;
+    if (D.ayar.turGoruldu || $('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[pyt]=/.test(location.hash)) return;
     turBaslat();
   }, 900);
 }
@@ -3699,6 +3824,7 @@ function turBitir(){
   turAdim = -1;
   if ($('tur')) $('tur').remove();
   D.ayar.turGoruldu = true; kaydet();
+  setTimeout(ayriDepoKontrol, 400);
 }
 window.addEventListener('resize', () => { if ($('tur')) turKonum(); });
 window.addEventListener('scroll', () => { if ($('tur')) turKonum(); }, {passive: true});
@@ -3748,7 +3874,10 @@ function wCiz(){
   let baslik = '', alt = '', govde = '';
   if (ad === 'dil'){
     baslik = T('wLangT'); alt = T('wLangS');
-    govde = `<div class="opts">${DILLER.map(d => wOpt('wdil', d.k, d.k === W.dil, d.k.toUpperCase(), d.ad).replace('class="ic"', 'class="ic kod"')).join('')}</div>`;
+    govde = `<div class="opts">${DILLER.map(d => wOpt('wdil', d.k, d.k === W.dil, d.k.toUpperCase(), d.ad).replace('class="ic"', 'class="ic kod"')).join('')}</div>`
+      // Ana ekran uygulamasını yeni ekleyen ya da telefon değiştiren: kayıtlarını buradan aktarır
+      + `<button class="btn ghost full" style="margin-top:14px" data-wtasi="1">${T('tasiWiz')}</button>`
+      + (iosMu() && bagimsiz() ? `<div class="hint" style="margin-top:6px">${esc(T('tasiKisa'))}</div>` : '');
   } else if (ad === 'ad'){
     baslik = T('wNameT'); alt = T('wNameS');
     govde = `<div class="wfield"><label for="wAd">${T('name')}</label><input class="wname" id="wAd" data-wf="ad" value="${esc(W.ad)}" placeholder="${esc(T('namePh'))}" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" enterkeyhint="next" maxlength="30"></div>
@@ -3898,6 +4027,7 @@ $('kurulum').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || b.disabled) return;
   const ds = b.dataset;
   if (ds.wkapat){ sihirbazKapat(); return; }
+  if (ds.wtasi){ tasiAc(); return; }
   if (ds.wdil){ W.dil = ds.wdil; wCiz(); return; }
   if (ds.wcins){
     W.cins = ds.wcins; if (W.cins !== 'k') W.hamile = false; wHata = '';
@@ -3987,6 +4117,7 @@ baslat2();
 adresProgramKontrol();
 destekHatirlat();
 turKontrol();
+setTimeout(ayriDepoKontrol, 1600);
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
 try { localStorage.setItem(ANAHTAR + '_test', '1'); localStorage.removeItem(ANAHTAR + '_test'); } catch(e){ depoCalisiyor = false; }
 idbOku().then(v => {

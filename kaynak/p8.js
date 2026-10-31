@@ -44,7 +44,10 @@ function wCiz(){
   let baslik = '', alt = '', govde = '';
   if (ad === 'dil'){
     baslik = T('wLangT'); alt = T('wLangS');
-    govde = `<div class="opts">${DILLER.map(d => wOpt('wdil', d.k, d.k === W.dil, d.k.toUpperCase(), d.ad).replace('class="ic"', 'class="ic kod"')).join('')}</div>`;
+    govde = `<div class="opts">${DILLER.map(d => wOpt('wdil', d.k, d.k === W.dil, d.k.toUpperCase(), d.ad).replace('class="ic"', 'class="ic kod"')).join('')}</div>`
+      // Ana ekran uygulamasını yeni ekleyen ya da telefon değiştiren: kayıtlarını buradan aktarır
+      + `<button class="btn ghost full" style="margin-top:14px" data-wtasi="1">${T('tasiWiz')}</button>`
+      + (iosMu() && bagimsiz() ? `<div class="hint" style="margin-top:6px">${esc(T('tasiKisa'))}</div>` : '');
   } else if (ad === 'ad'){
     baslik = T('wNameT'); alt = T('wNameS');
     govde = `<div class="wfield"><label for="wAd">${T('name')}</label><input class="wname" id="wAd" data-wf="ad" value="${esc(W.ad)}" placeholder="${esc(T('namePh'))}" autocomplete="off" autocorrect="off" autocapitalize="words" spellcheck="false" enterkeyhint="next" maxlength="30"></div>
@@ -194,6 +197,7 @@ $('kurulum').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || b.disabled) return;
   const ds = b.dataset;
   if (ds.wkapat){ sihirbazKapat(); return; }
+  if (ds.wtasi){ tasiAc(); return; }
   if (ds.wdil){ W.dil = ds.wdil; wCiz(); return; }
   if (ds.wcins){
     W.cins = ds.wcins; if (W.cins !== 'k') W.hamile = false; wHata = '';
@@ -283,6 +287,7 @@ baslat2();
 adresProgramKontrol();
 destekHatirlat();
 turKontrol();
+setTimeout(ayriDepoKontrol, 1600);
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}
 try { localStorage.setItem(ANAHTAR + '_test', '1'); localStorage.removeItem(ANAHTAR + '_test'); } catch(e){ depoCalisiyor = false; }
 idbOku().then(v => {
