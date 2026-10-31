@@ -220,8 +220,8 @@ body.rapor-acik{overflow:hidden}
   .rp-ogun td{display:inline;padding:0;border:0;text-align:start;width:auto!important}
   .rp-ogun td:first-child{display:block;margin-bottom:2px}
   .rp-ogun td:not(:first-child){font-size:12px;color:var(--muted)}
-  .rp-ogun td:nth-child(2)::after{content:" a0" attr(data-l)}
-  .rp-ogun td:nth-child(n+3)::before{content:" · a0" attr(data-l) " a0"}
+  .rp-ogun td:nth-child(2)::after{content:"\00a0" attr(data-l)}
+  .rp-ogun td:nth-child(n+3)::before{content:" ·\00a0" attr(data-l) "\00a0"}
   .rp-ogun tfoot tr{border-top:1px solid var(--line);border-bottom:0}
   .rp-ogun tfoot td{border-top:0}
   .rp-ogun tfoot td:not(:first-child){color:var(--text);font-weight:700}
