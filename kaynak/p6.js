@@ -72,9 +72,12 @@ function kayitAl(k){ if (!D.kayit[k]) D.kayit[k] = {yendi:{}, su:0}; return D.ka
 // Günün menüsü: o güne ait kayıt varsa o, yoksa haftalık şablon
 // Miktar hafızası: bir öğünde yemeğin miktarı değişince, şablondan gelen günlerde aynı öğündeki aynı yemek o miktarla gelir
 function sablon(k){
-  const gun = D.planlar[haftaNo(k)][haftaGunu(k)], m = D.miktar || {};
-  if (!Object.keys(m).length) return gun;
-  return gun.map(o => m[o.id] ? {...o, ogeler: o.ogeler.map(it => m[o.id][it.f] != null ? {...it, g: m[o.id][it.f]} : it)} : o);
+  let gun = D.planlar[haftaNo(k)][haftaGunu(k)];
+  const m = D.miktar || {};
+  if (Object.keys(m).length) gun = gun.map(o => m[o.id] ? {...o, ogeler: o.ogeler.map(it => m[o.id][it.f] != null ? {...it, g: m[o.id][it.f]} : it)} : o);
+  // Regl günleri: demir / magnezyum / C vitamini kaynaklarına ağırlık (şablonun kopyası üzerinde, aynı kaloride; plan ve diyetisyen programı değişmez)
+  if (!D.program && reglTakipli() && reglGunu(k)) gun = oneriAgirlik(kopya(gun), REGL_ONERI, profilUygun(D.profil), haftaGunu(k) + 7 * haftaNo(k));
+  return gun;
 }
 function miktarHatirla(ogunId, f, g){ (D.miktar || (D.miktar = {}))[ogunId] = {...(D.miktar[ogunId] || {}), [f]: g}; }
 const menuOku = k => (D.kayit[k] && D.kayit[k].ogunler) || sablon(k);
@@ -150,15 +153,14 @@ function ciz(){
   $('ust').textContent = T('eyebrow');
   $('baslik').textContent = selam();
   $('lAyar').textContent = T('settings'); $('lUyari').textContent = T('warnBtn');
-  $('lKoc').textContent = T('kocBtn'); $('lDestek').textContent = T('supBtn');
-  $('destekBtn').classList.toggle('titre', !D.ayar.destekVerdi);
+  $('lKoc').textContent = T('kocBtn');
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
   // Tarih zaten en üstte (saat satırında) yazıyor; burada yalnız hedef özeti
   $('altBaslik').innerHTML = `${hedef ? `<span class="hedef-yazi">${esc(hedef.replace(/ · $/, ''))}</span> ` : ''}<span class="olcu-yazi">${P.kcal} ${T('kcal')} · ${sayi(P.kilo)} kg</span>`;
-  gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); kayitDurumYaz(); hamileBtnCiz(); saatYaz(); programBantCiz();
-  ustHizala();
+  gunleriCiz(); ozetCiz(); ogunAracCiz(); ogunleriCiz(); kayitDurumYaz(); ciplerCiz(); saatYaz(); programBantCiz();
+  ustHizala(); hatirlaticiYenile();
   if (capa){ capaUygula(capa); requestAnimationFrame(() => capaUygula(capa)); }
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
@@ -177,7 +179,7 @@ function gunleriCiz(){
     ${aktif !== bugun ? `<button class="today-btn" data-bugun="1">${T('today')}</button>` : ''}<button class="nav-btn hafta-ok" data-hafta="7" aria-label="›">›</button>`;
   $('gunler').innerHTML = [0,1,2,3,4,5,6].map(i => {
     const k = gunEkle(bas, i);
-    const cls = (k === aktif ? ' active' : '') + (k === bugun ? ' today' : '') + (k < bugun ? ' past' : '');
+    const cls = (k === aktif ? ' active' : '') + (k === bugun ? ' today' : '') + (k < bugun ? ' past' : '') + (reglTakipli() && reglGunu(k) ? ' regl' : '');
     return `<button class="day${cls}" data-tarih="${k}"><b>${gunKisa(k)}</b><span>${tarihDen(k).getDate()}</span><i class="${kayitVar(k) ? 'on' : ''}"></i></button>`;
   }).join('');
 }
@@ -224,8 +226,8 @@ function tartiKaydet(){
   kaydet(); ciz(); toast(T('tSaved'));
 }
 function ozetCiz(){
-  const P = D.profil, kay = kayitOku(aktif), menu = menuOku(aktif), yenen = yenenToplam(aktif);
-  const bardakSay = Math.ceil(P.su / P.bardak), ml = kay.su * P.bardak;
+  const P = D.profil, kay = kayitOku(aktif), menu = menuOku(aktif), yenen = yenenToplam(aktif), suH = suHedefi(aktif);
+  const bardakSay = Math.ceil(suH / P.bardak), ml = kay.su * P.bardak;
   if (gecmisMi(aktif)){
     const yenenOgun = menu.filter(o => kay.yendi[o.id]);
     const stat = (ad, deger, birim, hedef, enAz = false) => {
@@ -234,9 +236,9 @@ function ozetCiz(){
     };
     const tv = (D.tartim || {})[aktif], to = tv != null ? oncekiTartim(aktif) : null;
     $('ozet').innerHTML = tartiKarti() + `<div class="card past-card">
-      <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span><button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}" aria-label="${esc(T('shTitle'))}">${ikonlu('shBtn')}</button></div>
+      <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span>${reglEtiket(aktif)}<button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}" aria-label="${esc(T('shTitle'))}">${ikonlu('shBtn')}</button></div>
       <div class="stats">
-        <div class="stat water"><small>💧 ${T('water')}</small><b>${litre(ml)}</b> <span>${T('L')} / ${litre(P.su)}</span>
+        <div class="stat water"><small>💧 ${T('water')}</small><b>${litre(ml)}</b> <span>${T('L')} / ${litre(suH)}</span>
           <div class="stat-acts"><button data-su="-1" aria-label="${T('dec')}">−</button><span>${T('glassN', {n: kay.su})}</span><button data-su="1" aria-label="${T('inc')}">+</button></div></div>
         ${stat(T('calories'), yuv(yenen.k), T('kcal'), P.kcal)}
         ${stat(T('protein'), yuv(yenen.p), T('g'), P.protein, true)}
@@ -264,14 +266,40 @@ function ozetCiz(){
     </div>
     <div class="card water-card">
       <h3>${T('water')}</h3>
-      <div class="water-head"><b>${litre(ml)} ${T('L')}</b><span>/ <span class="tgt">${litre(P.su)} ${T('L')}</span> · ${T('glassN', {n: kay.su + '/' + bardakSay})}</span></div>
-      ${cubuk(ml, P.su, true)}${kalanYazi(ml, P.su, 'ml', true)}
+      <div class="water-head"><b>${litre(ml)} ${T('L')}</b><span>/ <span class="tgt">${litre(suH)} ${T('L')}</span> · ${T('glassN', {n: kay.su + '/' + bardakSay})}</span></div>
+      ${cubuk(ml, suH, true)}${kalanYazi(ml, suH, 'ml', true)}
       <div class="glasses">${Array.from({length: bardakGoster}, (_, i) => `<button class="glass${i < kay.su ? ' full' : ''}${i >= bardakSay ? ' ekstra' : ''}" data-bardak="${i}" aria-label="${i+1}"></button>`).join('')}</div>
       <div class="water-btns">
         <button class="btn ghost" data-su="-1">${T('minusGlass')}</button>
         <button class="btn solid" data-su="1" style="flex:1">${T('drank', {ml: P.bardak})}</button>
       </div>
-    </div>`;
+    </div>${reglBant(aktif)}${antrenmanKarti(aktif)}`;
+}
+// Geçmiş gün başlığında regl işareti (başladı / devam / bitti)
+function reglEtiket(k){
+  if (!reglTakipli()) return '';
+  const r = reglGunu(k); if (!r) return '';
+  return `<span class="tag regl-tag">${r.basladi ? T('reglBasIsaret') : r.bitti ? T('reglBitIsaret') : T('reglIsaret', {n: r.n})}</span>`;
+}
+// Regl bandı: o gün regl ise beslenme ipucu (demir + C vitamini, magnezyum, su +500 ml, tuz/kafein azalt); tıbbi iddia yok
+function reglBant(k){
+  if (!reglTakipli() || gecmisMi(k)) return '';
+  const r = reglGunu(k); if (!r) return '';
+  return `<div class="card bant regl-bant"><div class="bant-bas"><b>${T('reglIsaret', {n: r.n})}</b><small>${T('reglSuNot')}</small></div><p>${esc(T('reglTip'))}</p><small class="not">${esc(T('reglNot'))}</small></div>`;
+}
+// Antrenman kartı: antrenman / dinlenme günü, öncesi–sonrası öneri ve ara öğündeki takviyeyle bağ; spor yapmayana yalnız bugün genel öneri
+function antrenmanKarti(k){
+  const P = D.profil, spor = P.spor || {};
+  if (gecmisMi(k)) return '';
+  if (!(spor.gun > 0)) return k === bugunK() ? `<div class="card bant ant-kart"><div class="bant-bas"><b>🚶 ${T('antT')}</b></div><p>${esc(T('antYok'))}</p></div>` : '';
+  const ant = antrenmanGunu(k), ara = menuOku(k).find(o => o.id === 'ara1'), sabit = new Set(takviyeIdleri(P));
+  const takviye = ara ? ara.ogeler.filter(it => sabit.has(it.f)).map(it => yemek(it.f).ad) : [];
+  const ad = id => yemek(id).ad, once = `${ad('muz')}, ${ad('yulaf')}`, sonra = takviye.length ? takviye.join(', ') : `${ad('suzme')} + ${ad('muz')}`;
+  const satirlar = ant
+    ? [T('antOnce', {y: once}), T('antSonra', {y: sonra}), T('antTip_' + (spor.tur || 'karma'))].concat(takviye.length ? [T('antAra', {y: takviye.join(', ')})] : [])
+    : [T('antDinlenmeTip')];
+  return `<div class="card bant ant-kart${ant ? ' ant' : ''}"><div class="bant-bas"><b>${T(ant ? 'antGun' : 'antDinlenme')}</b><small>${esc(sporOzet(spor))}</small></div>
+    <ul>${satirlar.map(s => `<li>${esc(s)}</li>`).join('')}</ul><small class="not">${esc(T('antNot'))}</small></div>`;
 }
 function ogunleriCiz(){
   const menu = menuOku(aktif), kay = kayitOku(aktif), gecmis = gecmisMi(aktif);
@@ -296,7 +324,7 @@ function ogunleriCiz(){
     return `<article class="card meal${yendi ? ' eaten' : ''}${kapali ? ' kapali' : ''}">
       <div class="meal-head">
         <div class="meal-ico">${o.ico || OGUN_IKON[o.id] || '🍽️'}</div>
-        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span class="ogun-alt"><button class="saat-btn" data-saat="${oi}" title="${esc(T('saatEdit'))}" aria-label="${esc(T('saatEdit'))}">${ogunSaati(aktif, o)}</button><i>· ${yuv(t.k)} ${T('kcal')}</i>${[['p','aP'],['s','aS'],['y','aY'],['l','aL']].map(([a, ad]) => `<i>· ${T(ad)} ${yuv(t[a])} ${T('g')}</i>`).join('')}</span></div>
+        <div class="meal-title"><b>${esc(ogunAd(o))}</b><span class="ogun-alt"><button class="saat-btn" data-saat="${oi}" title="${esc(T('saatEdit'))}" aria-label="${esc(T('saatEdit'))}">${ogunSaati(aktif, o)}</button><i>· ${yuv(t.k)} ${T('kcal')}</i><i>· ${T('aP')} ${yuv(t.p)} ${T('g')}</i></span></div>
         <button class="eat-btn" data-yedim="${oi}">${yendi ? T('ateDone') : (gecmis ? T('notEaten') : T('ate'))}</button>
         <button class="tog-btn" data-tog="${esc(o.id)}" aria-expanded="${!kapali}" title="${esc(T(kapali ? 'showMeal' : 'hideMeal'))}"><i>${kapali ? '▾' : '▴'}</i><span class="lbl">${T(kapali ? 'showMeal' : 'hideMeal')}</span></button>
       </div>
@@ -316,6 +344,20 @@ function hamileBtnCiz(){
   b.textContent = hamileMi() ? T('btnHamileDegil') : T('btnHamile');
   b.classList.toggle('on', hamileMi());
 }
+// Çip satırı: hamilelik (kadın) · regl başladı/bitti + yaklaşıyor (kadın, hamile değil) · antrenman/dinlenme günü (spor yapan)
+function ciplerCiz(){
+  hamileBtnCiz();
+  const P = D.profil, k = aktif, bugun = bugunK(); let h = '';
+  if (reglTakipli() && k <= bugun){
+    const acik = reglAcik(), t = reglTahmin();
+    if (acik && k >= acik.bas) h += `<span class="cip regl on">${T('reglDevam', {n: gunFark(acik.bas, k) + 1})}</span><button class="cip regl" data-reglbit="1">✓ ${T('reglBitti')}</button>`;
+    else if (!reglGunu(k)) h += `<button class="cip regl" data-reglbas="1">${T('reglBasla')}</button>`;
+    if (!acik && k === bugun && t && t.kalan >= 0 && t.kalan <= 3) h += `<span class="cip bilgi">${t.kalan === 0 ? T('reglBugun') : T('reglYaklasiyor', {n: t.kalan})}</span>`;
+  }
+  if (P.spor && P.spor.gun > 0 && !gecmisMi(k)) h += `<span class="cip ${antrenmanGunu(k) ? 'ant' : 'dinlen'}">${T(antrenmanGunu(k) ? 'antGun' : 'antDinlenme')}</span>`;
+  $('cipler').innerHTML = h;
+  $('cipSatir').hidden = !h && $('hamileBtn').hidden;
+}
 // Başlığın yanındaki tarih-saat (dakikada bir güncellenir)
 function saatYaz(){
   const z = new Date();
@@ -324,7 +366,7 @@ function saatYaz(){
 
 // ---------- Değişiklik işlemleri (hepsi loglanır) ----------
 function suDegis(yeni){
-  const k = kayitAl(aktif), eski = k.su, max = Math.ceil(D.profil.su / D.profil.bardak) + 8;
+  const k = kayitAl(aktif), eski = k.su, max = Math.ceil(suHedefi(aktif) / D.profil.bardak) + 8;
   yeni = sinirla(yeni, 0, max);
   if (yeni === eski) return;
   k.su = yeni;

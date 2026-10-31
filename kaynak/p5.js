@@ -1,6 +1,6 @@
 // ---------- Öğün düzeni ve temel menü ----------
 const ANAHTAR = 'diyet_uygulamasi_v1', ESKI_ANAHTAR = 'kaan_diyet_v2';
-const SURUM = 7;
+const SURUM = 8;
 // Doktor listesindeki öğün düzeni: 3 ana + 2 ara öğün
 const OGUN_TANIM = [
   {id:'kahvalti', ad:'Kahvaltı', saat:'08:30', ico:'☀️'},
@@ -111,10 +111,32 @@ const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay','smoot
   'protein_sut','sporcu_icecegi']);
 // Kalori yetmezse ara öğüne eklenecek besleyici seçenekler (ilk uygun olan)
 const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]],
-  [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',25]]];   // sona doğru alerjiye uygun seçenekler
+  [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',3]]];   // sona doğru alerjiye uygun seçenekler
+
+// Spor: gun 0 yok · 2 haftada 1–2 · 4 haftada 3–4 · 5 haftada 5+; tur guc/kardiyo/karma. Antrenman günleri (0 Pzt … 6 Paz) varsayılan dağılımı
+const ANT_VARSAYILAN = {0:[], 2:[0, 3], 4:[0, 1, 3, 4], 5:[0, 1, 2, 3, 4]};
+const antrenmanVarsayilan = gun => [...(ANT_VARSAYILAN[gun] || ANT_VARSAYILAN[5])];
+// Takviye anahtarı → yemek, öğün, miktar; ant: yalnız antrenman günleri (whey/bitkisel: antrenman sonrası ara öğün; kreatin her gün öğle; kazein gece; omega-3/multivitamin/kolajen kahvaltı)
+const TAKVIYE_PLAN = {
+  whey:{f:'whey_izolat', ogun:'ara1', g:1, ant:true}, bitkisel:{f:'vegan_protein', ogun:'ara1', g:1, ant:true}, kazein:{f:'kazein', ogun:'gece', g:1},
+  kreatin:{f:'kreatin', ogun:'ogle', g:1}, bcaa:{f:'bcaa', ogun:'ara1', g:1, ant:true}, pre:{f:'pre_workout', ogun:'ara1', g:1, ant:true},
+  omega3:{f:'omega3', ogun:'kahvalti', g:1}, multi:{f:'multivitamin', ogun:'kahvalti', g:1}, kolajen:{f:'kolajen', ogun:'kahvalti', g:1}, elektrolit:{f:'elektrolit', ogun:'ara1', g:1, ant:true}
+};
+const TAKVIYE_ANAHTAR = ['whey','kazein','bitkisel','kreatin','bcaa','pre','omega3','multi','kolajen','elektrolit','diger'];
+const takviyeIdleri = p => (p.takviye || []).map(k => TAKVIYE_PLAN[k] && TAKVIYE_PLAN[k].f).filter(Boolean);
+// Regl döneminde ağırlık verilen yemekler: demir (kırmızı et, baklagil, ıspanak), magnezyum (kabak çekirdeği, bitter), C vitamini (portakal, kivi, çilek)
+const REGL_ONERI = ['biftek','dana_sis','dana_kusbasi','kofte_firin','ispanak_kiyma','yesil_mercimek','nohut_ispanak','mercimek','mcorba','ezogelin','ispanak_hasl','ispanak_salata','brokoli',
+  'portakal','kivi','mandalina','cilek','kabak_cek','badem','bitter','suzme','yumurta'];
+// Hamilelikte ağırlık verilen yemekler: folat (ıspanak, baklagil, brokoli), kalsiyum (süt ürünleri, tahin, badem), demir + C vitamini, düşük cıvalı balık
+const HAMILE_ONERI = ['ispanak_hasl','ispanak_salata','brokoli','mercimek','nohut','yesil_mercimek','nohut_ispanak','mcorba','yumurta','yogurt','suzme','beyazp','lor','badem','ceviz','keten',
+  'biftek','dana_kusbasi','kofte_firin','portakal','kivi','mandalina','cilek','levrek','hamsi','somon'];
 
 const BOS_PROFIL = {ad:'', cins:'', hamile:false, ara0:false, trimester:1, yas:30, boy:170, kilo:70, hedefKilo:65, hedef:'', odaklar:[], alerjiler:[], aktivite:2, hiz:0.5, haric:[],
+  spor:{gun:0, tur:'karma'}, takviye:[], antrenmanGunleri:[],
   kcal:1800, protein:130, karb:180, seker:55, yag:60, lif:25, su:2500, bardak:250};
+// v8: birimi gramdan adede/dilime dönen yemekler (eski kayıtlardaki gram miktarı adede çevrilir)
+const BIRIM_GECIS = {hurma:8, kayisi:8, gun_kurusu:8, kestane:10, biskuvi:8, kepekli_biskuvi:10, grisini:5, revani:80, cheesecake:120, tiramisu:120, elmali_turta:120, fume_somon:25, surimi:17,
+  tavuk_jambon:15, hindi_salam:10, tavuk_sosis:50, falafel_firin:25, cig_kofte:25, kadinbudu:75, brezilya:5, findikli_cikolata:5};
 const HEDEF_KEYS = ['kcal','protein','karb','seker','yag','su','bardak'];
 const HEDEF_ETIKET = {kcal:'tKcal', protein:'tProtein', karb:'tCarb', seker:'tSugar', yag:'tFat', su:'tWater', bardak:'tGlass'};
 
@@ -130,6 +152,10 @@ function tamamla(x){
   if (!x.profil.haric) x.profil.haric = [];
   if (!x.profil.odaklar) x.profil.odaklar = [];
   if (!x.profil.alerjiler) x.profil.alerjiler = [];
+  if (!x.profil.spor || typeof x.profil.spor !== 'object') x.profil.spor = {gun:0, tur:'karma'};
+  if (!Array.isArray(x.profil.takviye)) x.profil.takviye = [];
+  if (!Array.isArray(x.profil.antrenmanGunleri)) x.profil.antrenmanGunleri = antrenmanVarsayilan(x.profil.spor.gun || 0);
+  if (!Array.isArray(x.regl)) x.regl = [];
   // Eski tek seçimli "Kan şekeri" hedefi → kilo hedefi + kan şekeri odağı
   if (x.profil.hedef === 'seker'){
     x.profil.hedef = vki(x.profil) >= 25 ? 'ver' : 'koru';
@@ -154,6 +180,16 @@ function tamamla(x){
   // Tek haftalık eski plan → 1. hafta (kullanıcının değişiklikleri korunur); eksik haftalar açılışta profile göre üretilir
   if (!x.planlar){ x.planlar = x.plan && x.plan.length ? [x.plan] : []; delete x.plan; }
   if (!x.planBaslangic) x.planBaslangic = '';
+  if ((x.surum || 0) < 8){
+    // v8: gramdan adede dönen yemeklerin kayıtlı miktarları adede çevrilir (plan, günlük menüler, miktar hafızası, koç programı)
+    const cevir = it => { const a = BIRIM_GECIS[it.f]; if (a && it.g > 20) it.g = Math.max(0.5, Math.round(it.g / a * 2) / 2); };
+    const ogunler = l => (l || []).forEach(o => (o.ogeler || []).forEach(cevir));
+    (x.planlar || []).forEach(h => h.forEach(ogunler));
+    Object.values(x.kayit).forEach(r => ogunler(r.ogunler));
+    if (x.oncekiPlan && x.oncekiPlan.planlar) x.oncekiPlan.planlar.forEach(h => h.forEach(ogunler));
+    for (const m of [x.miktar, x.oncekiPlan && x.oncekiPlan.miktar]) if (m) Object.values(m).forEach(o => { for (const f in o) if (BIRIM_GECIS[f] && o[f] > 20) o[f] = Math.max(0.5, Math.round(o[f] / BIRIM_GECIS[f] * 2) / 2); });
+    if (x.koc && x.koc.gun) x.koc.gun.forEach(g => Object.values(g).forEach(l => (l || []).forEach(cevir)));
+  }
   x.surum = SURUM;
   return x;
 }
@@ -199,6 +235,7 @@ function kaydet(){
   depoCalisiyor = ok;
   kayitZamani = new Date();
   kayitDurumYaz();
+  if (window.Esitle) Esitle.kirli();   // hesap varsa 3 sn sonra sunucuya da yazılır (p9a.js)
 }
 function kayitDurumYaz(){
   const el = $('kayitDurum');
@@ -251,7 +288,9 @@ function vki(p){ return p.kilo / Math.pow(p.boy / 100, 2); }
 function vkiSinif(b){ return b < 18.5 ? 'bmi1' : b < 25 ? 'bmi2' : b < 30 ? 'bmi3' : 'bmi4'; }
 function hedefHesapla(p){
   const bmr = 10 * p.kilo + 6.25 * p.boy - 5 * p.yas + (p.cins === 'k' ? -161 : 5);
-  const tdee = bmr * PAL[(p.aktivite || 2) - 1];
+  // Düzenli spor: günlük hareket seçimine küçük ek katsayı (haftada 3–4 gün +0,05, 5+ gün +0,10); seçim bozulmaz, yalnız düzeltme
+  const sporGun = p.spor && p.spor.gun || 0, sporEk = sporGun >= 5 ? 0.1 : sporGun >= 4 ? 0.05 : 0;
+  const tdee = bmr * (PAL[(p.aktivite || 2) - 1] + sporEk);
   const b = vki(p), od = new Set(p.odaklar || []), seker = od.has('seker');
   const hamile = p.cins === 'k' && !!p.hamile, tri = p.trimester || 1;
   let kcal = tdee;
@@ -276,7 +315,7 @@ function hedefHesapla(p){
   let hafta = 0;
   if (!hamile && p.hedef === 'ver' && p.hedefKilo < p.kilo) hafta = Math.ceil((p.kilo - p.hedefKilo) / p.hiz);
   if (!hamile && p.hedef === 'al' && p.hedefKilo > p.kilo) hafta = Math.ceil((p.hedefKilo - p.kilo) / 0.35);
-  return {bmr:Math.round(bmr), tdee:Math.round(tdee), vki:b, kcal, protein, karb, seker: sekerG, yag, lif, su, hafta};
+  return {bmr:Math.round(bmr), tdee:Math.round(tdee), vki:b, kcal, protein, karb, seker: sekerG, yag, lif, su, hafta, sporEk};
 }
 
 // ---------- Plan üretici ----------
@@ -289,11 +328,11 @@ function rol(f){
   if (cs >= 0.5 && ['tahil','pilav','meyve','baklagil','anayemek'].includes(f.kat)) return 'K';
   return 'S';
 }
-// Miktarı birime göre yuvarla: yumurta tam adet, diğer adetler 0,5'lik (ekmek en çok 3 dilim); gram 30 altı 5'lik, üstü 10'luk
+// Miktarı birime göre yuvarla: yumurta tam adet, diğer adetler 0,5'lik (ekmek en çok 3 dilim; meyve 2 adet, küçük kuru meyve 6); gram 30 altı 5'lik, üstü 10'luk
 function yuvarla(f, m){
   if (f.a){
     if (f.kat === 'yumurta') return sinirla(Math.round(m), 1, f.id === 'ybeyaz' ? 6 : 4);
-    return sinirla(Math.round(m * 2) / 2, 0.5, f.b === 'dilim' ? 3 : f.kat === 'meyve' ? 2 : 4);
+    return sinirla(Math.round(m * 2) / 2, 0.5, f.b === 'dilim' ? 3 : f.kat === 'meyve' ? (f.a <= 20 ? 6 : 2) : 4);
   }
   return sinirla(m < 30 ? Math.round(m / 5) * 5 : Math.round(m / 10) * 10, 5, 400);
 }
@@ -316,11 +355,11 @@ function araOgunEkle(p, hafta){
   const izinli = profilUygun(p);
   return hafta.map(gun => {
     if (gun.some(o => o.id === 'ara0')) return gun;
-    const ara1 = gun.find(o => o.id === 'ara1'), ogeler = [];
-    if (ara1 && ara1.ogeler.length > 1){
-      let i = ara1.ogeler.findIndex(it => yemek(it.f).kat === 'meyve');
-      if (i < 0) i = ara1.ogeler.length - 1;
-      ogeler.push(ara1.ogeler.splice(i, 1)[0]);
+    const ara1 = gun.find(o => o.id === 'ara1'), ogeler = [], sabit = new Set(takviyeIdleri(p));
+    const tasinir = ara1 ? ara1.ogeler.filter(it => !sabit.has(it.f)) : [];   // takviye kalemi (whey vb.) yerinde kalır
+    if (ara1 && tasinir.length > 1){
+      let it = tasinir.find(it => yemek(it.f).kat === 'meyve') || tasinir[tasinir.length - 1];
+      ogeler.push(ara1.ogeler.splice(ara1.ogeler.indexOf(it), 1)[0]);
     } else {
       const f = ['elma','mandalina','armut','portakal'].find(id => izinli(yemek(id)));
       if (f) ogeler.push({f, g: 1});
@@ -357,13 +396,46 @@ function haftaOlustur(p, temel){
     return {f: en.id, g: yuvarla(en, en.a ? gram / en.a : gram)};
   };
   const plan = temel.map(gun => OGUN_TANIM.map((o, i) => ({...o, ogeler: birlestir(gun[i].map(([f, g]) => degistir({f, g})).filter(Boolean))})));
-  plan.forEach(gun => gunuOlcekle(gun, p, izinli));
+  const hamile = p.cins === 'k' && !!p.hamile;
+  plan.forEach((gun, gi) => {
+    takviyeKatmani(gun, p, gi);                                       // takviye katmanı: ölçekleme bu kalemlere dokunmaz, kaloriye dahildir
+    if (hamile) oneriAgirlik(gun, HAMILE_ONERI, izinli, gi);           // hamilelik: folat/kalsiyum/demir kaynaklarına ağırlık
+    gunuOlcekle(gun, p, izinli);
+  });
   return plan;
 }
+// Takviye katmanı: seçilen takviyeler ilgili öğüne sabit miktarla girer; ant olanlar yalnız antrenman günlerinde (gi: 0 Pzt … 6 Paz)
+function takviyeKatmani(gun, p, gi){
+  const ant = (p.antrenmanGunleri || []).includes(gi);
+  for (const k of p.takviye || []){
+    const t = TAKVIYE_PLAN[k]; if (!t || (t.ant && !ant)) continue;
+    const o = gun.find(o => o.id === t.ogun) || gun[gun.length - 1];
+    if (!o.ogeler.some(it => it.f === t.f)) o.ogeler.push({f: t.f, g: t.g});
+  }
+}
+// Öneri listesine ağırlık: aynı grup ve roldeki bir kalem, listedeki izinli bir yemekle aynı kaloride değiştirilir (günde en çok 3; tohum aynı gün için aynı sonucu verir)
+const GRUP_ONERI = {et:'protein', balik:'protein', yumurta:'protein', bitkisel:'protein', anayemek:'yemek', baklagil:'yemek', sebze:'sebze', salata:'sebze'};
+function oneriAgirlik(gun, liste, izinli, tohum = 0){
+  const adaylar = liste.map(yemek).filter(y => y.id && y.kat && izinli(y) && !DOKTOR_DISI.has(y.id));
+  if (!adaylar.length) return gun;
+  const grup = y => GRUP_ONERI[y.kat] || y.kat;
+  let sayi = 0, i = tohum;
+  for (const o of gun) for (let k = 0; k < o.ogeler.length && sayi < 3; k++){
+    const it = o.ogeler[k], f = yemek(it.f);
+    if (!f.kat || liste.includes(f.id) || SIVI.has(f.id)) continue;
+    const uygun = adaylar.filter(y => y.id !== f.id && grup(y) === grup(f) && rol(y) === rol(f) && !o.ogeler.some(x => x.f === y.id));
+    if (!uygun.length) continue;
+    const y = uygun[(i++) % uygun.length], gram = besin(it.f, it.g).k / (y.k || 1) * 100;
+    o.ogeler[k] = {f: y.id, g: yuvarla(y, y.a ? gram / y.a : gram)};
+    sayi++;
+  }
+  return gun;
+}
 function gunuOlcekle(gun, p, izinli){
+  const sabit = new Set(takviyeIdleri(p));   // takviye kalemleri ölçeklenmez (1 ölçek 1 ölçek kalır)
   const hepsi = () => gun.flatMap(o => o.ogeler);
   const top = r => topla(hepsi().filter(it => !r || rol(yemek(it.f)) === r));
-  const uygula = (r, k) => gun.forEach(o => o.ogeler.forEach(it => { const f = yemek(it.f); if (rol(f) === r) it.g = yuvarla(f, it.g * k); }));
+  const uygula = (r, k) => gun.forEach(o => o.ogeler.forEach(it => { const f = yemek(it.f); if (rol(f) === r && !sabit.has(it.f)) it.g = yuvarla(f, it.g * k); }));
   const tumu = () => top().k;
   // 1) Protein hedefi
   const pP = top('P').p, pDiger = tumu() ? top().p - pP : 0;
@@ -383,7 +455,7 @@ function gunuOlcekle(gun, p, izinli){
     kAyarla();
   }
   // 5) Şeker sınırı aşılıyorsa şekerli kalemleri (meyve, süt ürünü, tatlı) azalt, kaloriyi tahılla geri tamamla
-  const sekerli = f => !['sebze','salata','corba'].includes(f.kat) && f.k && f.s * 4 / f.k >= 0.2;
+  const sekerli = f => !['sebze','salata','corba'].includes(f.kat) && !sabit.has(f.id) && f.k && f.s * 4 / f.k >= 0.2;
   const sToplam = topla(hepsi().filter(it => sekerli(yemek(it.f)))).s;
   if (top().s > p.seker * 1.05 && sToplam > 0){
     const k = sinirla(1 - (top().s - p.seker) / sToplam, 0.5, 1);
@@ -392,8 +464,34 @@ function gunuOlcekle(gun, p, izinli){
   }
   // 6) Hâlâ fazlaysa sebze dışındaki sabit kalemleri (karışık yemek, süt ürünü) biraz azalt
   if (tumu() > p.kcal * 1.07){
-    const azalt = f => rol(f) === 'S' && !['sebze','salata'].includes(f.kat);
+    const azalt = f => rol(f) === 'S' && !['sebze','salata'].includes(f.kat) && !sabit.has(f.id);
     const kS = topla(hepsi().filter(it => azalt(yemek(it.f)))).k;
     if (kS > 0){ const k = sinirla((kS + p.kcal - tumu()) / kS, 0.7, 1); gun.forEach(o => o.ogeler.forEach(it => { const f = yemek(it.f); if (azalt(f)) it.g = yuvarla(f, it.g * k); })); }
   }
 }
+
+// ---------- Regl takibi (kadın kullanıcı, hamile değilse): D.regl = [{bas:'YYYY-MM-DD', bit:null | 'YYYY-MM-DD'}] ----------
+const reglTakipli = () => D.profil.cins === 'k' && !(D.profil.hamile);
+const reglAcik = () => (D.regl || []).find(r => !r.bit) || null;
+const gunFark = (a, b) => Math.round((tarihDen(b) - tarihDen(a)) / 864e5);   // b − a (gün)
+// k günü regl içinde mi: {n: kaçıncı gün, basladi, bitti} ya da null (bitişi yazılmamış kayıt en çok 10 gün sayılır)
+function reglGunu(k){
+  for (const r of D.regl || []){
+    const son = r.bit || gunEkle(r.bas, 9);
+    if (k >= r.bas && k <= son) return {n: gunFark(r.bas, k) + 1, bas: r.bas, bit: r.bit, basladi: k === r.bas, bitti: k === r.bit};
+  }
+  return null;
+}
+// Ortalama döngü ve sonraki tahmin: en az 2 başlangıç; 15–60 gün arası döngüler sayılır
+function reglTahmin(){
+  const baslar = (D.regl || []).map(r => r.bas).sort();
+  if (baslar.length < 2) return null;
+  const donguler = baslar.slice(1).map((b, i) => gunFark(baslar[i], b)).filter(n => n >= 15 && n <= 60);
+  if (!donguler.length) return null;
+  const ort = Math.round(donguler.reduce((a, b) => a + b, 0) / donguler.length), tarih = gunEkle(baslar[baslar.length - 1], ort);
+  return {ort, tarih, kalan: gunFark(bugunK(), tarih)};
+}
+// Günün su hedefi: regl günlerinde +500 ml
+const suHedefi = k => D.profil.su + (reglTakipli() && reglGunu(k) ? 500 : 0);
+const antrenmanGunu = k => (D.profil.antrenmanGunleri || []).includes(haftaGunu(k));
+const sporOzet = s => !s || !(s.gun > 0) ? T('sporYok') : T('sporHafta', {n: s.gun >= 5 ? '5+' : s.gun >= 4 ? '3–4' : '1–2', t: T('tur_' + (s.tur || 'karma'))});

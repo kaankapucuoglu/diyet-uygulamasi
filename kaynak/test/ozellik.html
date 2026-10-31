@@ -1,0 +1,166 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><iframe id="f2" src="../../index.html" style="width:360px;height:780px;border:0"></iframe><script>
+// Yeni özellikler: sihirbaz spor/takviye → plana takviye; regl başlat/bitir + geçmişte işaret + regl günü önerisi; yeni alerjenler; birimler; bildirim anahtarı (web + yerli köprü); destek ol yok; antrenman kartı; dünya/hazır kategorileri; 360 px düzen
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+const ok=(k,m)=>L((k?'OK   ':'HATA ')+m);
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;
+try{
+  const bugun=w.eval('bugunK()');
+  // --- 1) Destek ol kaldırıldı ---
+  ok(!d.getElementById('destekBtn')&&typeof w.destekAc==='undefined'&&typeof w.destekHatirlat==='undefined'&&!w.eval('S.supBtn'),'destek ol düğmesi/pencere/metin yok');
+  ok(d.querySelectorAll('.top-btns .tool-btn').length===3,'üst düğme sayısı 3');
+  // --- 2) Sihirbaz: spor + takviye adımları ---
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Kaan',cins:'e',hamile:false,yas:28,boy:182,kilo:82,hedef:'kas',hedefKilo:86,hiz:0.5,aktivite:3,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.turGoruldu=true;D.ayar.hepsiKapali=false;D.ayar.kapali={};ciz()`);
+  await bekle(300);
+  const kcal0=w.eval('D.profil.kcal');
+  w.eval("sihirbazAc('spor')");await bekle(200);
+  ok(w.eval('wAdimlar()').includes('spor')&&w.eval('wAdimlar()').includes('takviye')&&w.eval('wAdimlar()').indexOf('spor')===w.eval('wAdimlar()').indexOf('aktivite')+1,'adımlar: aktivite → spor → takviye · '+w.eval('wAdimlar().join(",")'));
+  ok(d.querySelector('#kurulum [data-wspor="0"].on'),'spor adımında "Hayır" önceden seçili');
+  d.querySelector('#kurulum [data-wspor="4"]').click();await bekle(120);
+  ok(!!d.querySelector('#kurulum [data-wsportur]'),'3–4 gün seçilince tür seçenekleri açıldı');
+  d.querySelector('#kurulum [data-wsportur="guc"]').click();await bekle(120);
+  d.querySelector('#kurulum [data-wileri]').click();await bekle(200);
+  ok(w.eval('wAdimlar()[wAdim]')==='takviye','takviye adımına geçti');
+  d.querySelector('#kurulum [data-wtakvar="var"]').click();await bekle(120);
+  const takCip=d.querySelectorAll('#kurulum [data-wtak]');ok(takCip.length===11,'11 takviye seçeneği: '+[...takCip].map(b=>b.textContent).join(' | '));
+  d.querySelector('#kurulum [data-wileri]').click();await bekle(150);
+  ok(!!d.querySelector('#kurulum .wmsg.err'),'takviye "var" ama seçim yok → hata mesajı');
+  d.querySelector('#kurulum [data-wtak="whey"]').click();await bekle(80);d.querySelector('#kurulum [data-wtak="kreatin"]').click();await bekle(80);d.querySelector('#kurulum [data-wtak="omega3"]').click();await bekle(80);
+  // Özet adımına kadar ileri
+  for(let i=0;i<12&&w.eval('wAdimlar()[wAdim]')!=='ozet';i++){const y=d.querySelector('#kurulum [data-walerjivar="yok"]');if(y&&!d.querySelector('#kurulum [data-walerjivar].on'))y.click();d.querySelector('#kurulum [data-wileri]').click();await bekle(120);}
+  ok(w.eval('wAdimlar()[wAdim]')==='ozet','özet adımı · '+(d.querySelector('#kurulum .wmsg.err')?d.querySelector('#kurulum .wmsg.err').textContent:'hata yok'));
+  ok(/Haftada 3–4 gün/.test(d.getElementById('kurulum').textContent)&&/Whey/.test(d.getElementById('kurulum').textContent),'özette spor ve takviye satırı');
+  d.querySelector('#kurulum [data-wileri]').click();await bekle(400);
+  ok(d.getElementById('kurulum').hidden,'sihirbaz kapandı');
+  ok(w.eval('D.profil.spor.gun')===4&&w.eval('D.profil.spor.tur')==='guc'&&w.eval('D.profil.takviye.join()')==='whey,kreatin,omega3','profil: spor 3–4 gün güç, takviye whey+kreatin+omega3');
+  ok(w.eval('D.profil.antrenmanGunleri.join()')==='0,1,3,4','antrenman günleri varsayılan Pzt,Sal,Per,Cum');
+  const kcal1=w.eval('D.profil.kcal');ok(kcal1>kcal0,'spor ile kalori hedefi arttı: '+kcal0+' → '+kcal1);
+  // Plan: antrenman gününde whey, her gün kreatin, kahvaltıda omega-3
+  const antGun=w.eval(`D.planlar[0][0]`),dinGun=w.eval(`D.planlar[0][2]`);
+  const bul=(g,o,f)=>(g.find(x=>x.id===o)||{ogeler:[]}).ogeler.find(it=>it.f===f);
+  ok(bul(antGun,'ara1','whey_izolat')&&bul(antGun,'ara1','whey_izolat').g===1,'Pzt ara öğün: 1 ölçek whey izolat');
+  ok(!bul(dinGun,'ara1','whey_izolat'),'Çar (dinlenme) ara öğünde whey yok');
+  ok(bul(antGun,'ogle','kreatin')&&bul(dinGun,'ogle','kreatin'),'kreatin her gün öğle');
+  ok(bul(antGun,'kahvalti','omega3')&&bul(antGun,'kahvalti','omega3').g===1,'omega-3 kahvaltı 1 adet');
+  const gunKcal=g=>g.reduce((t,o)=>t+w.eval(`topla(${JSON.stringify(o.ogeler)}).k`),0);
+  ok(Math.abs(gunKcal(antGun)-kcal1)/kcal1<0.12,'takviyeli gün kalorisi hedefe yakın '+Math.round(gunKcal(antGun))+' / '+kcal1);
+  // Ekranda: antrenman kartı + çip
+  const bugunGun=w.eval('haftaGunu(bugunK())'),antMi=[0,1,3,4].includes(bugunGun);
+  ok(!!d.querySelector('#ozet .ant-kart')&&!!d.querySelector('#cipler .cip.'+(antMi?'ant':'dinlen')),'antrenman kartı ve çipi ('+(antMi?'antrenman':'dinlenme')+' günü)');
+  ok(d.querySelector('#ozet .ant-kart').textContent.includes(antMi?'Öncesi':'Protein hedefini'),'antrenman kartı metni günün türüne uygun');
+  if(antMi) ok(/whey/i.test(d.querySelector('#ozet .ant-kart').textContent),'antrenman kartı ara öğündeki whey ile bağ kuruyor');
+  // Öğün başlığı sade: saat · kcal · P
+  const alt=d.querySelector('#ogunler .meal .ogun-alt');ok(alt&&alt.querySelectorAll('i').length===2,'öğün başlığı: kcal + protein (2 kalem)');
+  // Ayarlar: spor & takviye bölümü, antrenman günleri, bildirim anahtarı
+  w.eval('ayarlarAc()');await bekle(250);
+  ok(!!d.getElementById('sporDuzenle')&&d.querySelectorAll('#sbody .ant-gunler .day').length===7&&d.querySelectorAll('#sbody .ant-gunler .day.active').length===4,'Ayarlar: spor bölümü, 7 gün düğmesi, 4 seçili');
+  ok(!!d.getElementById('notTog')&&!w.eval('D.ayar.hatirlatici')&&!d.getElementById('notTog').classList.contains('on'),'öğün hatırlatıcı anahtarı var, varsayılan kapalı');
+  ok(!d.querySelector('#sbody .regl-liste'),'erkek kullanıcıda regl bölümü yok');
+  // Antrenman günü değiştir: Çar ekle → planda Çar whey var
+  d.querySelector('#sbody .ant-gunler .day[data-antgun="2"]').click();await bekle(400);
+  ok(w.eval('D.profil.antrenmanGunleri.join()')==='0,1,2,3,4'&&bul(w.eval('D.planlar[0][2]'),'ara1','whey_izolat'),'Çar antrenman günü yapıldı → Çar ara öğünde whey');
+  // Bildirim: web yolu (izin verildi varsayımı)
+  w.Notification={permission:'granted',requestPermission:async()=>'granted'};
+  d.getElementById('notTog').click();await bekle(400);
+  ok(w.eval('D.ayar.hatirlatici')===true&&d.getElementById('notTog').classList.contains('on'),'hatırlatıcı açıldı (web, izin var)');
+  const simdi=new Date(),dk=simdi.getHours()*60+simdi.getMinutes();
+  const sonra=w.eval(`menuOku(bugunK()).filter(o=>{const [h,m]=ogunSaati(bugunK(),o).split(':').map(Number);return h*60+m>${dk};}).length`);
+  ok(w.eval('notZamanlayici.length')===sonra,'web zamanlayıcı: bugün kalan '+sonra+' öğün için kuruldu ('+w.eval('notZamanlayici.length')+')');
+  const ornek=w.eval('notMetin(menuOku(bugunK())[0]).body');ok(/vakti 🍽 — planında: /.test(ornek),'bildirim metni: '+ornek);
+  // Yerli kabuk köprüsü
+  w.__LF_NATIVE=true;const cagri=[],iptal=[];w.__lfNotify=o=>cagri.push(o);w.__lfCancelNotify=id=>iptal.push(id);
+  w.eval('hatirlaticiYenile(true)');
+  const ogunSay=w.eval('menuOku(bugunK()).length');
+  ok(cagri.length===ogunSay&&cagri.every(o=>o.repeat==='daily'&&typeof o.hour==='number'&&typeof o.minute==='number'&&/^ogun_/.test(o.id)&&o.body)&&iptal.length>=ogunSay,'yerli köprü: '+cagri.length+' günlük bildirim kuruldu, '+iptal.length+' iptal · '+JSON.stringify(cagri[0]));
+  d.getElementById('notTog').click();await bekle(300);
+  ok(w.eval('D.ayar.hatirlatici')===false&&cagri.length===ogunSay&&w.eval('notZamanlayici.length')===0,'kapatınca yeni bildirim kurulmaz, zamanlayıcılar silinir');
+  delete w.__LF_NATIVE;w.eval('kapat()');
+  // --- 3) Regl takibi (kadın, hamile değil) ---
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Ayşe',cins:'k',hamile:false,yas:28,boy:165,kilo:60,hedef:'koru',hedefKilo:60,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',spor:{gun:0,tur:'karma'},takviye:[],takviyeVar:'yok',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.regl=[];aktif=bugunK();ciz()`);
+  await bekle(300);
+  ok(!!d.querySelector('#cipler [data-reglbas]')&&!d.getElementById('hamileBtn').hidden,'kadın: "Regl başladı" çipi + hamilelik düğmesi aynı satırda');
+  ok(!d.querySelector('#ozet .ant-kart.ant')&&/150 dk/.test(d.querySelector('#ozet .ant-kart')?d.querySelector('#ozet .ant-kart').textContent:''),'spor yapmayana genel yürüyüş önerisi');
+  const menuOnce=w.eval('menuOku(bugunK()).flatMap(o=>o.ogeler.map(it=>it.f)).join()');
+  d.querySelector('#cipler [data-reglbas]').click();await bekle(300);
+  ok(w.eval('D.regl.length')===1&&w.eval('D.regl[0].bas')===bugun&&w.eval('D.regl[0].bit')===null,'regl başladı → D.regl kaydı bugün, bitiş yok');
+  ok(!!d.querySelector('#cipler [data-reglbit]')&&/1\. gün/.test(d.getElementById('cipler').textContent),'çip "Regl bitti" oldu, 1. gün yazıyor');
+  ok(!!d.querySelector('#ozet .regl-bant')&&/C vitamini/.test(d.querySelector('#ozet .regl-bant').textContent),'regl bandı (demir + C vitamini ipucu) göründü');
+  ok(w.eval('suHedefi(bugunK())')===w.eval('D.profil.su')+500&&/\+500/.test(d.querySelector('#ozet .regl-bant').textContent),'regl günü su hedefi +500 ml');
+  const menuSonra=w.eval('menuOku(bugunK()).flatMap(o=>o.ogeler.map(it=>it.f)).join()');
+  const reglSay=s=>s.split(',').filter(id=>w.eval('REGL_ONERI').includes(id)).length;
+  ok(menuSonra!==menuOnce&&reglSay(menuSonra)>reglSay(menuOnce),'regl günü menüsü değişti: öneri kalemi '+reglSay(menuOnce)+' → '+reglSay(menuSonra));
+  ok(!!d.querySelector('#gunler .day.regl.today'),'hafta şeridinde bugün regl işaretli');
+  d.querySelector('#cipler [data-reglbit]').click();await bekle(300);
+  ok(w.eval('D.regl[0].bit')===bugun&&!!d.querySelector('#cipler [data-reglbas]')===false,'regl bitti → bitiş yazıldı; aynı gün yeni başlangıç çipi yok');
+  // Geçmiş döngü + tahmin
+  w.eval(`D.regl=[{bas:gunEkle(bugunK(),-40),bit:gunEkle(bugunK(),-36)},{bas:gunEkle(bugunK(),-12),bit:gunEkle(bugunK(),-8)}];kaydet();aktif=gunEkle(bugunK(),-10);ciz()`);await bekle(300);
+  ok(/Regl \(3\. gün\)/.test(d.querySelector('#ozet .past-head').textContent),'geçmiş gün özetinde "Regl (3. gün)" işareti');
+  ok(d.querySelectorAll('#gunler .day.regl').length>=1,'geçmiş haftada regl günleri işaretli: '+d.querySelectorAll('#gunler .day.regl').length);
+  w.eval('aktif=gunEkle(bugunK(),-12);ciz()');await bekle(200);
+  ok(/Regl başladı/.test(d.querySelector('#ozet .past-head').textContent),'başlangıç gününde "Regl başladı" işareti');
+  w.eval('aktif=bugunK();ciz()');await bekle(200);
+  const t=w.eval('JSON.stringify(reglTahmin())');ok(/"ort":28/.test(t),'tahmin: ortalama döngü 28 gün · '+t);
+  w.eval(`D.regl.push({bas:gunEkle(bugunK(),-27),bit:gunEkle(bugunK(),-23)});D.regl=[{bas:gunEkle(bugunK(),-55),bit:gunEkle(bugunK(),-51)},{bas:gunEkle(bugunK(),-27),bit:gunEkle(bugunK(),-23)}];ciz()`);await bekle(200);
+  ok(/yaklaşıyor \(~1 gün\)/.test(d.getElementById('cipler').textContent),'"Regl yaklaşıyor (~1 gün)" bilgisi · '+d.getElementById('cipler').textContent);
+  // Ayarlar: regl listesi, düzeltme, silme
+  w.eval('ayarlarAc()');await bekle(250);
+  ok(d.querySelectorAll('#sbody .regl-satir').length===2&&/5 gün/.test(d.querySelector('#sbody .regl-liste').textContent),'Ayarlar regl listesi: 2 döngü, süre 5 gün');
+  const bit=d.querySelector('#sbody [data-reglbitis]');bit.value=w.eval('gunEkle(gunEkle(bugunK(),-27),5)');bit.dispatchEvent(new w.Event('change'));await bekle(300);
+  ok(/6 gün/.test(d.querySelector('#sbody .regl-liste').textContent),'bitiş düzeltildi → 6 gün');
+  d.querySelector('#sbody [data-reglsil]').click();await bekle(300);
+  ok(w.eval('D.regl.length')===1&&d.querySelectorAll('#sbody .regl-satir').length===1,'kayıt silindi');
+  w.eval('kapat()');
+  // Hamile: regl çipi yok, uyarılarda trimester notu
+  w.eval('D.profil.hamile=true;D.profil.trimester=2;ciz()');await bekle(200);
+  ok(!d.querySelector('#cipler [data-reglbas]')&&!d.querySelector('#cipler [data-reglbit]'),'hamilelikte regl çipi gizli');
+  w.eval('uyarilarAc()');await bekle(200);
+  ok(/Trimester notu/.test(d.getElementById('sbody').textContent)&&/kalsiyum/i.test(d.getElementById('sbody').textContent)&&/Folat/.test(d.getElementById('sbody').textContent),'uyarılarda 2. trimester notu + öne çıkan besinler');
+  w.eval('kapat();D.profil.hamile=false;ciz()');
+  // --- 4) Alerjen filtresi (yeni etiketler) ---
+  const uyg=(al,id)=>w.eval(`profilUygun({...D.profil,alerjiler:${JSON.stringify(al)}})(yemek('${id}'))`);
+  ok(w.eval('ALERJENLER.length')>=70&&['arpa','lupin','yumusakca','pekan','brezilya','makadamya','laktoz','tatlandirici','histamin','fodmap','gida_boyasi','nikel','karabugday'].every(a=>w.eval(`!!alerjen('${a}')`)),'yeni alerjenler tanımlı: '+w.eval('ALERJENLER.length'));
+  ok(!uyg(['yumusakca'],'kalamar')&&!uyg(['yumusakca'],'midye_dolma')&&uyg(['yumusakca'],'karides'),'yumuşakça: kalamar/midye gizli, karides görünür');
+  ok(!uyg(['kabuklu'],'midye_dolma')&&!uyg(['kabuklu'],'karides'),'eski "kabuklu" seçimi yumuşakçaları da gizler (geriye uyum)');
+  ok(!uyg(['arpa'],'bira')&&uyg(['arpa'],'tamekmek'),'arpa: bira gizli, ekmek görünür');
+  ok(!uyg(['laktoz'],'sut')&&!uyg(['laktoz'],'yogurt')&&uyg(['laktoz'],'kasar')&&uyg(['laktoz'],'laktozsuz_sut'),'laktoz: süt/yoğurt gizli, kaşar ve laktozsuz süt görünür');
+  ok(!uyg(['tatlandirici'],'kola_zero')&&uyg(['tatlandirici'],'kola')&&!uyg(['gida_boyasi'],'enerji_icecegi'),'tatlandırıcı: kola zero gizli; gıda boyası: enerji içeceği gizli');
+  ok(!uyg(['histamin'],'sucuk')&&!uyg(['histamin'],'kasar')&&!uyg(['fodmap'],'sogan')&&!uyg(['nikel'],'bitter')&&!uyg(['pekan'],'pekan')&&!uyg(['karabugday'],'karabugday_ekmegi'),'histamin/fodmap/nikel/pekan/karabuğday eşlemeleri');
+  ok(!uyg(['hardal'],'sosisli')&&!uyg(['lupin'],'glutensiz_ekmek'),'hardal: sosisli gizli; acı bakla: glutensiz ekmek gizli');
+  // Sihirbaz alerji aramasında yeni etiket bulunuyor
+  w.eval("sihirbazAc('alerji');W.alerjiVar='var';W.alerjiAra='laktoz';wCiz()");await bekle(200);
+  ok(!!d.querySelector('#alSonuc [data-walerji="laktoz"]'),'alerji aramasında "laktoz" çipi');
+  w.eval('sihirbazKapat()');await bekle(150);
+  // --- 5) Birimler ---
+  const b=id=>w.eval(`yemek('${id}').b+':'+yemek('${id}').d`);
+  ok(b('yumurta')==='adet:2'&&b('pirinc')===':150'&&b('tavuk')===':150'&&b('mcorba')===':250','yumurta adet, pilav/et/çorba gram');
+  ok(b('hurma')==='adet:3'&&b('kayisi')==='adet:4'&&b('cheesecake')==='dilim:1'&&b('surimi')==='adet:3'&&b('tavuk_sosis')==='adet:1'&&b('grisini')==='adet:5','düzeltilen birimler: hurma/kayısı/surimi adet, cheesecake dilim');
+  ok(b('kreatin')==='olcek:1'&&b('cay')==='bardak:2'&&b('kahve')==='fincan:1'&&b('simit')==='adet:1'&&b('tamekmek')==='dilim:2','ölçek/bardak/fincan/adet/dilim');
+  const oi=w.eval(`menuOku(aktif).findIndex(o=>o.id==='ara1')`);
+  w.eval(`secimAc({mod:'ekle',oi:${oi}})`);await bekle(200);
+  const grup=d.querySelector('#kategoriler [data-grup]');if(grup){grup.click();await bekle(100);}
+  const katlar=[...d.querySelectorAll('#kategoriler [data-kat]')].map(x=>x.dataset.kat);
+  ok(katlar.includes('dunya')&&katlar.includes('hazir')&&katlar.indexOf('dunya')===katlar.indexOf('anayemek')+1,'kategoriler: dunya (ana yemekten sonra) ve hazir var');
+  const ara=async q=>{const a=d.getElementById('ara');a.value=q;a.dispatchEvent(new w.Event('input'));await bekle(120);return [...d.querySelectorAll('#flist [data-fid]')];};
+  for(const [q,en] of [['ramen',1],['nugget',2],['taco',1],['dondurulmuş',6],['fast food',12],['konserve',6],['butter chicken',1]]){const r=await ara(q);ok(r.length>=en,`ara "${q}": ${r.length} sonuç (beklenen >= ${en}) · ${r.slice(0,3).map(x=>x.querySelector('b').textContent).join(' | ')}`);}
+  const r=await ara('hurma');const hb=r.find(x=>x.dataset.fid==='hurma');hb.click();await bekle(150);
+  ok(/adet/.test(d.getElementById('birimYazi').textContent)&&d.getElementById('gramIn').value==='3','hurma ekle penceresi: 3 adet (≈ 24 g) · '+d.getElementById('birimYazi').textContent);
+  w.eval('kapat()');
+  // Eski veri geçişi: gram tutulan hurma adede döner
+  const gecis=w.eval(`(()=>{const x=varsayilanDurum();x.surum=7;x.planlar=[[[{id:'ara1',ogeler:[{f:'hurma',g:25}]}]]];x.kayit['2025-01-01']={yendi:{},su:0,ogunler:[{id:'ara1',ogeler:[{f:'cheesecake',g:120}]}]};const y=tamamla(x);return [y.planlar[0][0][0].ogeler[0].g,y.kayit['2025-01-01'].ogunler[0].ogeler[0].g,y.surum].join()})()`);
+  ok(gecis==='3,1,8','v7→v8 geçişi: hurma 25 g → 3 adet, cheesecake 120 g → 1 dilim · '+gecis);
+  // --- 6) Düzen: yatay taşma yok, çipler sığıyor ---
+  ok(d.documentElement.scrollWidth<=w.innerWidth+1,'390 px: yatay taşma yok ('+d.documentElement.scrollWidth+' / '+w.innerWidth+')');
+  const cs=d.getElementById('cipSatir').getBoundingClientRect();ok(cs.height<80,'çip satırı yüksekliği makul: '+Math.round(cs.height)+' px');
+  const wb=d.querySelector('#ozet .water-btns');ok(wb&&wb.getBoundingClientRect().right<=w.innerWidth,'su düğmeleri kutudan taşmıyor');
+  // 360 px çerçeve
+  const f2=document.getElementById('f2'),w2=f2.contentWindow,d2=w2.document;
+  w2.eval(`W={...kopya(D.profil),dil:'de',ad:'Maximilian',cins:'k',hamile:false,yas:30,boy:165,kilo:60,hedef:'koru',hedefKilo:60,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',spor:{gun:5,tur:'kardiyo'},takviye:['whey','elektrolit'],takviyeVar:'var',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.turGoruldu=true;D.ayar.hepsiKapali=false;D.ayar.kapali={};D.regl=[{bas:bugunK(),bit:null}];ciz()`);
+  await bekle(400);
+  ok(d2.documentElement.scrollWidth<=w2.innerWidth+1,'360 px (DE): yatay taşma yok ('+d2.documentElement.scrollWidth+')');
+  const cips=[...d2.querySelectorAll('#cipSatir .cip')];ok(cips.length>=3&&cips.every(c=>c.getBoundingClientRect().right<=w2.innerWidth+1),'360 px: '+cips.length+' çip (hamile, regl, antrenman) ekran içinde, alt alta kayabiliyor');
+  const btns=[...d2.querySelectorAll('#ozet .water-btns .btn, .top-btns .tool-btn')];ok(btns.every(x=>x.getBoundingClientRect().right<=w2.innerWidth+1&&x.getBoundingClientRect().left>=-1),'360 px: su ve üst düğmeler ekran içinde');
+  const kartlar=[...d2.querySelectorAll('#ozet .card')];ok(kartlar.length>=4&&kartlar.every(k=>Math.abs(k.getBoundingClientRect().left-kartlar[0].getBoundingClientRect().left)<1&&Math.abs(k.getBoundingClientRect().width-kartlar[0].getBoundingClientRect().width)<1),'360 px: özet kartları (yenen, su, regl bandı, antrenman) aynı hizada: '+kartlar.length);
+  ok(!!d2.querySelector('#ozet .regl-bant')&&!!d2.querySelector('#ozet .ant-kart'),'360 px: regl bandı + antrenman kartı var');
+  ok(!!d2.querySelector('#ozet .ant-kart')&&/Cardio|Training|Ruhetag/.test(d2.querySelector('#ozet .ant-kart').textContent),'DE: antrenman kartı Almanca · '+d2.querySelector('#ozet .ant-kart .bant-bas').textContent);
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_ozellik',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

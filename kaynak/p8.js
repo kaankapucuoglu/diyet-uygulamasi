@@ -2,7 +2,7 @@
 let W = null, wAdim = 0, wHata = '';
 const HEDEFLER = [['ver','🔥'],['sekil','🏋️'],['koru','⚖️'],['kas','💪'],['al','📈']];
 const odakAd = k => T(k === 'seker' ? 'g_seker' : 'o_' + k);
-const wAdimlar = () => ['dil','ad', ...(W.cins === 'k' ? ['hamile'] : []), 'olcu','hedef','aktivite',
+const wAdimlar = () => ['dil','ad', ...(W.cins === 'k' ? ['hamile'] : []), 'olcu','hedef','aktivite','spor','takviye',
   ...(!W.hamile && (W.hedef === 'ver' || W.hedef === 'al') ? ['kilo'] : []), 'tercih','alerji','saat','ozet'];
 function sihirbazAc(baslangic = 0){
   W = {...kopya(D.profil), dil: D.ayar.dil || 'tr', alerjiAra: ''};
@@ -16,6 +16,10 @@ function sihirbazAc(baslangic = 0){
   if (W.cins !== 'k') W.hamile = false;
   // Alerji sorusu: kurulumu bitmiş kullanıcıda mevcut seçim, yeni kullanıcıda boş (seçmesi gerekir)
   W.alerjiVar = (W.alerjiler || []).length ? 'var' : D.ayar.kurulum ? 'yok' : '';
+  // Spor ve takviye: "Hayır" önceden seçili (hızlı geçilebilir); seçilen takviyeler çoklu seçim
+  W.spor = {gun: +(D.profil.spor && D.profil.spor.gun) || 0, tur: (D.profil.spor && D.profil.spor.tur) || 'karma'};
+  W.takviye = [...(D.profil.takviye || [])];
+  W.takviyeVar = W.takviye.length ? 'var' : 'yok';
   wAdim = typeof baslangic === 'string' ? Math.max(0, wAdimlar().indexOf(baslangic)) : baslangic;
   wHata = '';
   document.body.classList.add('wiz-acik');
@@ -73,6 +77,17 @@ function wCiz(){
   } else if (ad === 'aktivite'){
     baslik = T('wActT'); alt = T('wActS');
     govde = `<div class="opts">${[1,2,3,4,5].map(i => wOpt('wakt', i, W.aktivite === i, ['🪑','🚶','🏃','🚴','🏋️'][i-1], T('a' + i), T('ad' + i))).join('')}</div>`;
+  } else if (ad === 'spor'){
+    baslik = T('wSporT'); alt = T('wSporS');
+    const g = W.spor.gun;
+    govde = `<div class="opts">${[[0,'🙂','spor0','spor0d'],[2,'🚶','spor2',''],[4,'🏃','spor4',''],[5,'🏋️','spor5','']].map(([n, ic, k, d]) => wOpt('wspor', n, g === n, ic, T(k), d ? T(d) : '')).join('')}</div>`
+      + (g > 0 ? `<div class="wsec">${T('sporTurT')}</div><div class="opts">${[['guc','🏋️'],['kardiyo','🏃'],['karma','🔀']].map(([t, ic]) => wOpt('wsportur', t, W.spor.tur === t, ic, T('tur_' + t))).join('')}</div>` : '');
+  } else if (ad === 'takviye'){
+    baslik = T('wTakT'); alt = T('wTakS');
+    const sec = new Set(W.takviye);
+    govde = `<div class="opts">${wOpt('wtakvar', 'yok', W.takviyeVar === 'yok', '🙂', T('takYok'))}${wOpt('wtakvar', 'var', W.takviyeVar === 'var', '💊', T('takVar'))}</div>`
+      + (W.takviyeVar === 'var' ? `<div class="wsec">${T('takSecili')}</div><div class="al-sonuc">${TAKVIYE_ANAHTAR.map(k => `<button class="al-chip${sec.has(k) ? ' on' : ''}" data-wtak="${k}">${sec.has(k) ? '✓ ' : ''}${T('tk_' + k)}</button>`).join('')}</div>`
+        + (sec.size ? '' : `<div class="hint" style="margin-top:10px">${T('takBos')}</div>`) : '');
   } else if (ad === 'kilo'){
     baslik = T('wKiloT'); alt = W.hedef === 'ver' ? T('wKiloS') : '';
     govde = wStepper('hedefKilo', 'targetW', 0.5);
@@ -114,6 +129,7 @@ function wCiz(){
       <div class="wmsg info">${T('goalLbl')}: <b>${T('g_' + W.hedef)}</b> · ${T('a' + W.aktivite)}${h.hafta ? ' · ' + T('weeks', {n: h.hafta}) : ''}</div>
       ${(W.odaklar || []).map(k => `<div class="wmsg info"><b>${ODAKLAR.find(o => o[0] === k)[1]} ${odakAd(k)}:</b> ${T('od_' + k)}</div>`).join('')}
       ${W.hamile ? `<div class="wmsg info"><b>🤰 ${T('gHamile', {t: W.trimester || 1})}:</b> ${esc(T('hamileNot'))}</div>` : ''}
+      <div class="wmsg info"><b>🏋️ ${esc(sporOzet(W.spor))}</b>${h.sporEk ? ' · ' + esc(T('sporEkNot', {g: W.spor.gun >= 5 ? '5+' : '3–4', n: Math.round(h.sporEk * 100 / PAL[(W.aktivite || 2) - 1])})) : ''}${W.takviyeVar === 'var' && W.takviye.length ? `<br>💊 ${T('takLbl')}: ${W.takviye.map(k => esc(T('tk_' + k))).join(', ')}` : ''}</div>
       ${(W.alerjiler || []).length ? `<div class="wmsg warn"><b>🚫 ${T('alerjiSecili')}</b> ${W.alerjiler.map(a => esc(alerjen(a).ad)).join(', ')}</div>` : ''}
       <details class="method"><summary>${T('method')}</summary><ul>${T('methodTxt').split('|').concat(T('methodOdak')).map(s => `<li>${esc(s)}</li>`).join('')}</ul></details>
       <div class="wmsg warn">${T('disclaimer')}</div>`;
@@ -167,19 +183,28 @@ function wDogrula(ad){
     if (!(dk(s.kahvalti) < dk(s.ogle) && dk(s.ogle) < dk(s.aksam)) || (W.ara0 && !(dk(s.kahvalti) < dk(s.ara0) && dk(s.ara0) < dk(s.ogle)))) return T('saatHata');
   }
   if (ad === 'alerji' && W.alerjiVar === 'var' && !(W.alerjiler || []).length) return T('errAlerji');
+  if (ad === 'takviye' && W.takviyeVar === 'var' && !(W.takviye || []).length) return T('errTak');
   if (ad === 'kilo' && ((W.hedef === 'ver' && !(W.hedefKilo < W.kilo && W.hedefKilo >= 30)) || (W.hedef === 'al' && !(W.hedefKilo > W.kilo)))) return T('errTarget');
   return '';
 }
 function wBitir(){
   const h = hedefHesapla(W);
-  const {dil: secilenDil, alerjiAra, alerjiVar, saatler, saatElle, olcuElle, ...profil} = W;
+  const {dil: secilenDil, alerjiAra, alerjiVar, takviyeVar, saatler, saatElle, olcuElle, ...profil} = W;
   profil.ad = profil.ad.trim();
   if (alerjiVar !== 'var') profil.alerjiler = [];
+  if (takviyeVar !== 'var') profil.takviye = [];
+  // Spor günü sayısı değiştiyse (ya da hiç yoksa) antrenman günleri varsayılan dağılıma döner; aynıysa kullanıcının seçtiği günler korunur
+  profil.spor = {gun: +profil.spor.gun || 0, tur: profil.spor.tur || 'karma'};
+  const eskiSpor = D.profil.spor || {};
+  if (!(profil.spor.gun > 0)) profil.antrenmanGunleri = [];
+  else if (profil.spor.gun !== eskiSpor.gun || !(profil.antrenmanGunleri || []).length) profil.antrenmanGunleri = antrenmanVarsayilan(profil.spor.gun);
   // Profil düzenlemesinde hamilelik ve alerji değişikliklerini logla
   if (D.ayar.kurulum){
     const eski = D.profil, adlar = l => l.map(a => alerjen(a).ad).join(', ') || T('alerjiYok');
     if ([...eski.alerjiler || []].sort().join() !== [...profil.alerjiler].sort().join()) logEkle('diger', null, T('lAlerji', {l: adlar(profil.alerjiler)}));
     if (!!eski.hamile !== !!profil.hamile) logEkle('diger', null, profil.hamile ? T('lHamileOn', {t: profil.trimester || 1}) : T('lHamileOff'));
+    const sporYazi = p => `${sporOzet(p.spor)} · ${(p.takviye || []).map(k => T('tk_' + k)).join(', ') || T('takYok')}`;
+    if (sporYazi(eski) !== sporYazi(profil)) logEkle('diger', null, T('lSpor', {l: sporYazi(profil)}));
   }
   D.profil = {...profil, kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su};
   D.ayar.dil = secilenDil; D.ayar.kurulum = true;
@@ -231,6 +256,10 @@ $('kurulum').addEventListener('click', e => {
   }
   if (ds.wodak){ const o = new Set(W.odaklar || []); o.has(ds.wodak) ? o.delete(ds.wodak) : o.add(ds.wodak); W.odaklar = [...o]; wCiz(); return; }
   if (ds.wakt){ W.aktivite = +ds.wakt; wCiz(); return; }
+  if (ds.wspor !== undefined){ W.spor.gun = +ds.wspor; wHata = ''; wCiz(); return; }
+  if (ds.wsportur){ W.spor.tur = ds.wsportur; wCiz(); return; }
+  if (ds.wtakvar){ W.takviyeVar = ds.wtakvar; if (W.takviyeVar === 'yok') W.takviye = []; wHata = ''; wCiz(); return; }
+  if (ds.wtak){ const s = new Set(W.takviye); s.has(ds.wtak) ? s.delete(ds.wtak) : s.add(ds.wtak); W.takviye = [...s]; wHata = ''; wCiz(); return; }
   if (ds.whiz){ W.hiz = +ds.whiz; wCiz(); return; }
   if (ds.wpreset){ W.haric = {hepsi:[], vejetaryen:['m','c','f'], vegan:['m','c','f','e','d']}[ds.wpreset]; wCiz(); return; }
   if (ds.wharic){ const h = new Set(W.haric); h.has(ds.wharic) ? h.delete(ds.wharic) : h.add(ds.wharic); W.haric = [...h]; wCiz(); return; }
@@ -287,7 +316,6 @@ function baslat2(){
 D = tamamla(enYeni(lsOku(), gomuluOku()) || varsayilanDurum());
 baslat2();
 adresProgramKontrol();
-destekHatirlat();
 turKontrol();
 setTimeout(ayriDepoKontrol, 1600);
 try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch(e){}

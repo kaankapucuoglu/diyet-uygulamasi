@@ -118,57 +118,6 @@ function kopyala(metin, mesaj, sure){
   return kopyalaDene(metin).then(ok => { toast(ok ? mesaj || T('tCopied') : T('tCopyFail'), ok ? sure : 5200); return ok; });
 }
 
-// ---------- Destek ol ----------
-// "Destek oldum" → düğme titremesi ve pazar hatırlatması kalıcı olarak kapanır
-function destekVerildi(){ D.ayar.destekVerdi = true; kaydet(); ciz(); toast(T('supThanks')); }
-// Pazar günleri ana ekranda kibar hatırlatma (günde bir kez; destek olana hiç gösterilmez)
-function destekHatirlat(bugun = bugunK()){
-  if (!D.ayar.kurulum || D.ayar.destekVerdi || haftaGunu(bugun) !== 6 || D.ayar.destekHatirlatma === bugun) return;
-  setTimeout(() => {
-    if ($('overlay').classList.contains('open') || !$('kurulum').hidden || !$('koc').hidden || $('tur') || $('rapor')) return;
-    D.ayar.destekHatirlatma = bugun; kaydet();
-    hatirlatmaAc();
-  }, 2500);
-}
-function hatirlatmaAc(){
-  ac('☕ ' + T('supRemT'), `<p class="onay-metin">${esc(T('supRemText'))}</p>
-    <div class="acts"><button class="btn ghost" id="hatSonra">${T('instLater')}</button><button class="btn solid" id="hatDestek">☕ ${T('supBtn')}</button></div>`);
-  $('hatSonra').onclick = kapat;
-  $('hatDestek').onclick = () => icinden(hatirlatmaAc, destekAc);
-}
-const DESTEK = {iban:'TR37 0015 7000 0000 0091 2185 43', ad:'Kaan Kapucuoğlu', banka:'Npara'};
-let destekTutar = 200;
-function destekAc(){
-  const satir = (k, ad, deger, ltr = true) => `<div class="kopya-satir"><div><small>${ad}</small><b${ltr ? ' dir="ltr"' : ''}>${esc(deger)}</b></div><button class="mini" data-kopya="${k}">📋 ${T('supCopy')}</button></div>`;
-  const ciz2 = () => {
-    $('sbody').innerHTML = `<p class="onay-metin">${esc(T('supText'))}</p>
-      <div class="sec" style="margin-top:6px">${T('supAmount')}</div>
-      <div class="chips" style="margin-top:0">${[50, 100, 200, 500].map(n => `<button class="chip${n === destekTutar ? ' on' : ''}" data-tutar="${n}">${n} ₺</button>`).join('')}</div>
-      <div class="stepper"><button data-tadim="-50" aria-label="${T('dec')}">−</button><input id="tutarIn" type="text" inputmode="numeric" autocomplete="off" value="${destekTutar}"><button data-tadim="50" aria-label="${T('inc')}">+</button></div>
-      <div class="hint" style="text-align:center;margin-bottom:10px">₺ TRY</div>
-      ${satir('iban', T('supIban'), DESTEK.iban)}${satir('ad', T('supName'), DESTEK.ad, false)}${satir('banka', T('supBank'), DESTEK.banka, false)}
-      ${satir('tutar', T('supAmount'), destekTutar + ' ₺')}${satir('aciklama', T('supDesc'), T('supDescVal'), false)}
-      <button class="btn solid full" style="margin-top:10px" data-kopya="hepsi">${T('supCopyAll')}</button>
-      <div class="tip" style="margin-top:12px">${esc(T('supHow'))}</div>
-      <div class="hint" style="margin-top:8px">${esc(T('supForeign'))}</div>
-      ${D.ayar.destekVerdi ? `<div class="wmsg info" style="margin-top:12px">${esc(T('supThanks'))}</div>` : `<button class="btn ghost full" style="margin-top:12px" data-verdim="1">${T('supDone')}</button>`}`;
-    $('tutarIn').addEventListener('change', e => { destekTutar = sinirla(Math.round(+String(e.target.value).replace(/\D/g, '')) || 200, 10, 100000); ciz2(); });
-  };
-  ac(T('supTitle'));
-  ciz2();
-  $('sbody').onclick = e => {
-    const b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.tutar){ destekTutar = +b.dataset.tutar; ciz2(); return; }
-    if (b.dataset.verdim){ destekVerildi(); kapat(); return; }
-    if (b.dataset.tadim){ destekTutar = sinirla(destekTutar + (+b.dataset.tadim), 10, 100000); ciz2(); return; }
-    const k = b.dataset.kopya; if (!k) return;
-    const deger = {iban: DESTEK.iban.replace(/\s/g, ''), ad: DESTEK.ad, banka: DESTEK.banka, tutar: String(destekTutar), aciklama: T('supDescVal'),
-      hepsi: `${T('supIban')}: ${DESTEK.iban}\n${T('supName')}: ${DESTEK.ad}\n${T('supBank')}: ${DESTEK.banka}\n${T('supAmount')}: ${destekTutar} TL\n${T('supDesc')}: ${T('supDescVal')}`}[k];
-    const ad = {iban: T('supIban'), ad: T('supName'), banka: T('supBank'), tutar: T('supAmount'), aciklama: T('supDesc'), hepsi: T('supCopyAll').replace(/^\S+\s/, '')}[k];
-    kopyala(deger, T('supCopied', {x: ad}));
-  };
-}
-
 // ---------- Başkası için program (diyetisyen / spor hocası) ----------
 const PAYLASIM_TABAN = 'https://diyet.maviplay.com/app/';
 const KOC_GUN = 7;
@@ -820,3 +769,106 @@ function turBitir(){
 }
 window.addEventListener('resize', () => { if ($('tur')) turKonum(); });
 window.addEventListener('scroll', () => { if ($('tur')) turKonum(); }, {passive: true});
+
+// ---------- Regl takibi: ana sayfa çipi (başladı / bitti), Ayarlar listesi (düzelt / sil), tahmin ----------
+function reglBaslat(k = bugunK()){
+  if (k > bugunK()) return;
+  if (reglAcik()){ toast(T('reglAcik'), 4000); return; }
+  if (reglGunu(k)){ toast(T('reglAcik'), 4000); return; }
+  D.regl.push({bas: k, bit: null}); D.regl.sort((a, b) => a.bas < b.bas ? -1 : 1);
+  logEkle('diger', k, T('lReglBas', {d: etiket(k)}));
+  kaydet(); ciz(); toast(T('tSaved'));
+}
+function reglBitir(k = bugunK()){
+  const r = reglAcik(); if (!r) return;
+  if (k < r.bas){ toast(T('reglHata'), 4000); return; }
+  r.bit = k;
+  logEkle('diger', k, T('lReglBit', {d: etiket(k)}));
+  kaydet(); ciz(); toast(T('tSaved'));
+}
+// Ayarlar: döngü listesi (başlangıç–bitiş tarih alanları, süre, sil) + sonraki regl tahmini
+function reglListesi(){
+  const t = reglTahmin();
+  const satir = (r, i) => `<li class="regl-satir"><label><span>${T('reglBas')}</span><input type="date" data-reglbas="${i}" value="${r.bas}" max="${bugunK()}"></label>
+    <label><span>${T('reglBit')}</span><input type="date" data-reglbitis="${i}" value="${r.bit || ''}" min="${r.bas}" max="${bugunK()}"></label>
+    <span class="regl-sure">${r.bit ? T('reglSure', {n: gunFark(r.bas, r.bit) + 1}) : T('reglDevamEd')}</span><button class="mini del" data-reglsil="${i}" title="${esc(T('remove'))}">🗑</button></li>`;
+  const liste = (D.regl || []).map((r, i) => [r, i]).sort((a, b) => a[0].bas < b[0].bas ? 1 : -1).slice(0, 12);
+  return `<ul class="regl-liste">${liste.length ? liste.map(([r, i]) => satir(r, i)).join('') : `<li class="hint">${esc(T('reglListeBos'))}</li>`}</ul>
+    <div class="hint" style="margin-top:6px">${t ? esc(T('reglTahmin', {d: etiket(t.tarih), n: t.ort})) : esc(T('reglTahminYok'))}</div>
+    <div class="hint" style="margin-top:4px">${esc(T('reglNot'))}</div>`;
+}
+function reglListesiBagla(){
+  const yenile = () => { const y = $('sbody').scrollTop; ayarlarAc(); $('sbody').scrollTop = y; };
+  $('sbody').querySelectorAll('[data-reglsil]').forEach(b => b.onclick = () => {
+    const r = D.regl.splice(+b.dataset.reglsil, 1)[0]; if (!r) return;
+    logEkle('diger', r.bas, T('lReglSil', {d: etiket(r.bas)})); kaydet(); ciz(); yenile();
+  });
+  $('sbody').querySelectorAll('[data-reglbas],[data-reglbitis]').forEach(el => el.onchange = () => {
+    const i = +(el.dataset.reglbas != null ? el.dataset.reglbas : el.dataset.reglbitis), r = D.regl[i]; if (!r) return;
+    const v = /^\d{4}-\d\d-\d\d$/.test(el.value) ? el.value : null;
+    if (el.dataset.reglbas != null){ if (!v || (r.bit && v > r.bit)){ toast(T('reglHata'), 4000); yenile(); return; } r.bas = v; }
+    else { if (v && v < r.bas){ toast(T('reglHata'), 4000); yenile(); return; } r.bit = v; }
+    D.regl.sort((a, b) => a.bas < b.bas ? -1 : 1);
+    logEkle('diger', r.bas, T('lReglDuzen', {d: etiket(r.bas)})); kaydet(); ciz(); yenile();
+  });
+}
+
+// ---------- Antrenman günleri (Ayarlar): değişince takviye katmanı için menü yeniden hazırlanır (diyetisyen programında dokunulmaz) ----------
+function antrenmanGunuDegis(j){
+  const P = D.profil, s = new Set(P.antrenmanGunleri || []);
+  s.has(j) ? s.delete(j) : s.add(j);
+  P.antrenmanGunleri = [...s].sort();
+  logEkle('diger', null, T('lAntGun', {l: P.antrenmanGunleri.map(i => haftaGunAd(i)).join(', ') || '—'}));
+  if (!D.program) planYenile();
+  kaydet(); ciz();
+  const y = $('sbody').scrollTop; ayarlarAc(); $('sbody').scrollTop = y;
+}
+
+// ---------- Öğün hatırlatıcı bildirimleri ----------
+// Web: Notification API + zamanlayıcı (yalnız uygulama açıkken; varsa service worker ile gösterilir)
+// Yerli kabuk: window.__LF_NATIVE varsa __lfNotify({id, title, body, hour, minute, repeat:'daily'}) / __lfCancelNotify(id) — kabuk günlük tekrarı kendisi kurar
+let notZamanlayici = [], notImza = null;
+function notMetin(o){
+  const liste = o.ogeler.slice(0, 2).map(it => yemek(it.f).ad).join(', ');
+  return {title: T('app'), body: T('notBody', {ogun: ogunAd(o), liste: liste || '—'})};
+}
+// Bugünün öğün saatleri/ilk yemekleri değişmediyse hiçbir şey yapmaz (ciz() her çizimde çağırır)
+function hatirlaticiYenile(zorla){
+  const acik = !!D.ayar.hatirlatici && !!D.ayar.kurulum, k = bugunK();
+  const menu = acik ? menuOku(k) : [];
+  const imza = acik ? dil + '|' + menu.map(o => `${o.id}|${ogunSaati(k, o)}|${o.ogeler.slice(0, 2).map(it => it.f).join(',')}`).join(';') : '';
+  if (!zorla && imza === notImza) return;
+  notImza = imza;
+  notZamanlayici.forEach(clearTimeout); notZamanlayici = [];
+  const yerli = !!(window.__LF_NATIVE && window.__lfNotify);
+  if (yerli && window.__lfCancelNotify) SAAT_IDLER.forEach(id => { try { window.__lfCancelNotify('ogun_' + id); } catch(e){} });
+  if (!acik) return;
+  const simdi = Date.now();
+  for (const o of menu){
+    const [h, m] = ogunSaati(k, o).split(':').map(Number), {title, body} = notMetin(o), id = 'ogun_' + o.id;
+    if (yerli){ try { window.__lfNotify({id, title, body, hour: h, minute: m, repeat: 'daily'}); } catch(e){} continue; }
+    const z = new Date(); z.setHours(h, m, 0, 0);
+    const gecikme = z.getTime() - simdi;
+    if (gecikme > 0 && gecikme < 864e5) notZamanlayici.push(setTimeout(() => { bildirimGoster(title, body, id); notImza = null; hatirlaticiYenile(); }, gecikme));
+  }
+}
+function bildirimGoster(title, body, tag){
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const sec = {body, tag, icon: 'icons/diyet-192.png', badge: 'icons/diyet-192.png'};
+  const dogrudan = () => { try { new Notification(title, sec); } catch(e){} };
+  if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) navigator.serviceWorker.getRegistration().then(r => { if (r && r.showNotification) r.showNotification(title, sec); else dogrudan(); }).catch(dogrudan);
+  else dogrudan();
+}
+// Ayarlar anahtarı: açarken izin istenir (web); yerli kabukta izni kabuk yönetir
+async function hatirlaticiAyarla(acik){
+  if (acik && !window.__LF_NATIVE){
+    if (!('Notification' in window)){ toast(T('notYok'), 4000); return false; }
+    let izin = Notification.permission;
+    if (izin === 'default') try { izin = await Notification.requestPermission(); } catch(e){}
+    if (izin !== 'granted'){ toast(T('notIzinYok'), 5200); return false; }
+  }
+  D.ayar.hatirlatici = !!acik;
+  logEkle('diger', null, T(acik ? 'notAcik' : 'notKapali'));
+  kaydet(); hatirlaticiYenile(true); toast(T(acik ? 'notAcik' : 'notKapali'));
+  return true;
+}

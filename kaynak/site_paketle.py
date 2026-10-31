@@ -16,6 +16,7 @@ os.makedirs(app)
 for ad in ['index.html', 'sw.js', 'manifest.webmanifest']:
     shutil.copy2(os.path.join(KOK, ad), app)
 shutil.copytree(os.path.join(KOK, 'icons'), os.path.join(app, 'icons'))
+shutil.copytree(os.path.join(KOK, 'legal'), os.path.join(app, 'legal'))   # hukuk sayfaları (5 dil) uygulamayla birlikte
 html = open(os.path.join(app, 'index.html'), encoding='utf-8').read()
 assert '<script type="application/json" id="gomuluVeri">null</script>' in html, 'gömülü veri boş değil!'
 if '--tar' in sys.argv:

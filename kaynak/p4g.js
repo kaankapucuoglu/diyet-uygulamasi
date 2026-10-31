@@ -19,9 +19,9 @@ YEMEK_EK.push(
   ['tekirdag_kofte','et',250,17,7,17,1,0.5,150,'','my','','tekirdağ köfte','Tekirdağ köftesi','Tekirdağ meatballs','Тефтели по-текирдагски','Tekirdağ-Frikadellen','كفتة تكيرداغ'],
   ['kasap_kofte','et',260,17,5,19,1,0.3,150,'','my','','kasap köfte ızgara','Kasap köfte (ızgara)','Butcher-style meatballs (grilled)','Котлеты по-мясницки (гриль)','Metzger-Frikadellen (gegrillt)','كفتة الجزار مشوية'],
   ['cag_kebabi','et',240,22,1,16,0,0,150,'','my','','cağ kebabı erzurum kuzu','Cağ kebabı','Cağ kebab (Erzurum lamb)','Кебаб джаг (баранина)','Cağ-Kebap (Lamm)','كباب جاغ'],
-  ['tavuk_jambon','et',110,16,2,4,1,0,30,'','ct','','jambon tavuk dilim şarküteri','Tavuk jambon','Chicken ham','Куриная ветчина','Hähnchenschinken','جامبون دجاج'],
-  ['hindi_salam','et',150,14,3,9,1.5,0,30,'','ct','','salam hindi şarküteri','Hindi salam','Turkey salami','Салями из индейки','Putensalami','سلامي ديك رومي'],
-  ['tavuk_sosis','et',220,12,5,17,1.5,0,50,'','cty','','sosis tavuk','Tavuk sosis','Chicken sausage','Куриные сосиски','Hähnchenwürstchen','نقانق دجاج'],
+  ['tavuk_jambon','et',110,16,2,4,1,0,2,'dilim:15','ct','','jambon tavuk dilim şarküteri','Tavuk jambon','Chicken ham','Куриная ветчина','Hähnchenschinken','جامبون دجاج'],
+  ['hindi_salam','et',150,14,3,9,1.5,0,3,'dilim:10','ct','','salam hindi şarküteri','Hindi salam','Turkey salami','Салями из индейки','Putensalami','سلامي ديك رومي'],
+  ['tavuk_sosis','et',220,12,5,17,1.5,0,1,'adet:50','cty','','sosis tavuk','Tavuk sosis','Chicken sausage','Куриные сосиски','Hähnchenwürstchen','نقانق دجاج'],
   // Balık & deniz ürünleri
   ['lufer','balik',170,23,0,8.5,0,0,200,'','f','','lüfer ızgara balık','Lüfer (ızgara)','Bluefish (grilled)','Луфарь на гриле','Blaubarsch (gegrillt)','سمك أزرق مشوي'],
   ['cinekop','balik',160,22,0,8,0,0,200,'','f','','çinekop ızgara balık','Çinekop (ızgara)','Young bluefish (grilled)','Молодой луфарь на гриле','Junger Blaubarsch (gegrillt)','سمك أزرق صغير مشوي'],
@@ -30,14 +30,14 @@ YEMEK_EK.push(
   ['kefal','balik',150,21,0,7,0,0,200,'','f','','kefal ızgara balık','Kefal (ızgara)','Grey mullet (grilled)','Кефаль на гриле','Meeräsche (gegrillt)','سمك البوري مشوي'],
   ['barbun','balik',200,20,4,11,0,0.2,150,'','f','','barbun balık tava','Barbun balığı (tava)','Red mullet (pan-fried)','Барабулька жареная','Rotbarbe (gebraten)','سمك البربوني المقلي'],
   ['morina','balik',105,23,0,1,0,0,200,'','f','','morina cod fırın balık','Morina (fırın)','Cod (baked)','Треска запечённая','Kabeljau (Ofen)','سمك القد مخبوز'],
-  ['fume_somon','balik',180,22,0,10,0,0,50,'','ft','','füme somon dilim','Füme somon','Smoked salmon','Копчёный лосось','Räucherlachs','سلمون مدخن'],
+  ['fume_somon','balik',180,22,0,10,0,0,2,'dilim:25','ft','','füme somon dilim','Füme somon','Smoked salmon','Копчёный лосось','Räucherlachs','سلمون مدخن'],
   ['ton_zy','balik',190,25,0,10,0,0,80,'','f','kutu:80','ton balığı zeytinyağlı konserve','Ton balığı (zeytinyağlı, süzülmüş)','Tuna in olive oil (drained)','Тунец в оливковом масле','Thunfisch in Olivenöl (abgetropft)','تونة بزيت الزيتون'],
   ['sardalya_konserve','balik',210,25,0,12,0,0,90,'','ft','kutu:90','sardalya konserve','Sardalya (konserve)','Canned sardines','Сардины консервированные','Sardinen (Dose)','سردين معلب'],
   ['ahtapot','balik',140,25,3.5,2.5,0,0,150,'','f','','ahtapot ızgara','Ahtapot (ızgara)','Grilled octopus','Осьминог на гриле','Oktopus (gegrillt)','أخطبوط مشوي'],
   ['balik_kofte','balik',180,15,10,9,1,0.8,150,'','fe','','balık köftesi fırın','Balık köftesi (fırın)','Fish cakes (baked)','Рыбные котлеты (запечённые)','Fischfrikadellen (Ofen)','كفتة سمك مخبوزة'],
   ['midye_tava','balik',270,12,22,15,1,1,150,'','fy','','midye tava kızartma','Midye tava','Fried mussels','Жареные мидии','Frittierte Miesmuscheln','بلح البحر المقلي'],
   ['kalamar_tava','balik',260,13,20,14,1,0.8,150,'','fy','','kalamar tava kızartma','Kalamar tava','Fried calamari','Жареные кальмары','Frittierte Calamari','حبار مقلي'],
-  ['surimi','balik',95,7.5,15,0.5,5,0,50,'','ft','','yengeç çubuğu surimi','Yengeç çubuğu (surimi)','Crab sticks (surimi)','Крабовые палочки','Surimi-Sticks','أصابع السلطعون (سوريمي)'],
+  ['surimi','balik',95,7.5,15,0.5,5,0,3,'adet:17','ft','','yengeç çubuğu surimi','Yengeç çubuğu (surimi)','Crab sticks (surimi)','Крабовые палочки','Surimi-Sticks','أصابع السلطعون (سوريمي)'],
   // Yumurta
   ['sivi_ybeyaz','yumurta',48,10.5,0.7,0.2,0.7,0,100,'','e','bardak:250','yumurta beyazı sıvı pastörize sporcu','Sıvı yumurta beyazı (pişmiş)','Liquid egg whites (cooked)','Жидкий яичный белок (приготовленный)','Flüssiges Eiklar (gegart)','بياض بيض سائل (مطهو)'],
   ['ybeyaz_omlet','yumurta',70,11,2,2,1,0.5,200,'','e','','omlet yumurta beyazı sebzeli fit','Yumurta beyazı omleti (sebzeli)','Egg-white omelette (veg)','Белковый омлет с овощами','Eiweiß-Omelett (Gemüse)','أومليت بياض البيض بالخضار'],
@@ -79,7 +79,7 @@ YEMEK_EK.push(
   ['tempeh','bitkisel',195,20,8,11,0,5,100,'','','','tempeh soya fermente vegan','Tempeh','Tempeh','Темпе','Tempeh','تمبيه'],
   ['seitan','bitkisel',140,25,6,2,0.5,0.6,100,'','','','seitan buğday proteini vegan','Seitan','Seitan (wheat protein)','Сейтан','Seitan','سيتان'],
   ['soya_kiyma','bitkisel',110,15,7,1,1.5,4,100,'','','','soya kıyması tvp vegan','Soya kıyması (ıslatılmış)','Soy mince (TVP, rehydrated)','Соевый фарш (размоченный)','Sojagranulat (eingeweicht)','لحم صويا مفروم'],
-  ['falafel_firin','bitkisel',230,9,25,10,2,6,100,'','','','falafel fırın nohut köftesi vegan','Falafel (fırın)','Falafel (baked)','Фалафель (запечённый)','Falafel (Ofen)','فلافل مخبوز'],
+  ['falafel_firin','bitkisel',230,9,25,10,2,6,4,'adet:25','','','falafel fırın nohut köftesi vegan','Falafel (fırın)','Falafel (baked)','Фалафель (запечённый)','Falafel (Ofen)','فلافل مخبوز'],
   ['vegan_burger','bitkisel',220,17,8,13,1,3,1,'adet:110','','','vegan burger köftesi bitkisel','Bitkisel burger köftesi','Plant-based burger patty','Растительная котлета для бургера','Pflanzliches Burger-Patty','قرص برغر نباتي'],
   ['vegan_peynir','bitkisel',280,1,20,22,0,1,30,'','y','','vegan peynir bitkisel','Vegan peynir','Vegan cheese','Веганский сыр','Veganer Käse','جبن نباتي'],
   ['hindistan_yogurt','bitkisel',110,1,8,8.5,4,0.5,150,'','y','','hindistan cevizi yoğurdu vegan','Hindistan cevizi yoğurdu','Coconut yogurt','Кокосовый йогурт','Kokosjoghurt','زبادي جوز الهند'],
@@ -218,7 +218,7 @@ YEMEK_EK.push(
   ['kuru_mango','meyve',320,2.5,78,1,66,2.5,30,'','','','kuru mango kurutulmuş','Kuru mango','Dried mango','Сушёное манго','Getrocknete Mango','مانجو مجففة'],
   // Kuruyemiş, tohum & yağ
   ['pekan','kuruyemis',690,9,14,72,4,9.6,30,'','','','pekan cevizi','Pekan cevizi','Pecans','Орехи пекан','Pekannüsse','جوز البقان'],
-  ['brezilya','kuruyemis',660,14,12,67,2.3,7.5,10,'','','','brezilya cevizi','Brezilya cevizi','Brazil nuts','Бразильский орех','Paranüsse','جوز البرازيل'],
+  ['brezilya','kuruyemis',660,14,12,67,2.3,7.5,2,'adet:5','','','brezilya cevizi','Brezilya cevizi','Brazil nuts','Бразильский орех','Paranüsse','جوز البرازيل'],
   ['makadamya','kuruyemis',720,8,14,76,4.6,8.6,30,'','','','makadamya cevizi','Makadamya','Macadamia nuts','Макадамия','Macadamianüsse','مكاديميا'],
   ['cam_fistigi','kuruyemis',670,14,13,68,3.6,3.7,10,'','','yk:8','çam fıstığı','Çam fıstığı','Pine nuts','Кедровые орехи','Pinienkerne','صنوبر'],
   ['tuzlu_yerfistigi','kuruyemis',600,25,16,50,4,8,30,'','t','','yer fıstığı tuzlu kavrulmuş','Yer fıstığı (kavrulmuş, tuzlu)','Salted roasted peanuts','Солёный жареный арахис','Erdnüsse (geröstet, gesalzen)','فول سوداني محمص مملح'],
@@ -237,7 +237,7 @@ YEMEK_EK.push(
   ['peynir_kraker','atistirmalik',330,13,32,16,2,3,60,'','dt','','peynir kraker atıştırmalık','Peynir + tam buğday kraker','Cheese & whole-wheat crackers','Сыр с цельнозерновыми крекерами','Käse mit Vollkorncrackern','جبن مع مقرمشات القمح الكامل'],
   ['pirinc_kraker','atistirmalik',400,7,82,4,2,1.5,25,'','t','','kraker pirinç','Pirinç krakeri','Rice crackers','Рисовые крекеры','Reiscracker','مقرمشات الأرز'],
   ['cikolatali_patlak','atistirmalik',480,6,64,22,26,3,1,'adet:15','d','','pirinç patlağı çikolatalı','Çikolatalı pirinç patlağı','Chocolate-coated rice cakes','Рисовые хлебцы в шоколаде','Reiswaffeln mit Schokolade','كعك الأرز بالشوكولاتة'],
-  ['findikli_cikolata','atistirmalik',550,8,52,34,48,3,25,'','dy','','çikolata fındıklı sütlü','Fındıklı sütlü çikolata','Milk chocolate with hazelnuts','Молочный шоколад с фундуком','Vollmilch-Haselnuss-Schokolade','شوكولاتة بالحليب والبندق'],
+  ['findikli_cikolata','atistirmalik',550,8,52,34,48,3,5,'kare:5','dy','','çikolata fındıklı sütlü','Fındıklı sütlü çikolata','Milk chocolate with hazelnuts','Молочный шоколад с фундуком','Vollmilch-Haselnuss-Schokolade','شوكولاتة بالحليب والبندق'],
   ['karamelli_misir','atistirmalik',420,3.5,78,11,48,4,30,'','','','patlamış mısır karamelli','Karamelli patlamış mısır','Caramel popcorn','Карамельный попкорн','Karamell-Popcorn','فشار بالكراميل'],
   ['sebze_cipsi','atistirmalik',500,5,55,28,15,9,30,'','y','','cips sebze pancar havuç','Sebze cipsi','Vegetable chips','Овощные чипсы','Gemüsechips','رقائق الخضار'],
   // Tatlı
@@ -249,11 +249,11 @@ YEMEK_EK.push(
   ['magnolia','tatli',230,3.5,28,11.5,20,0.6,150,'','dy','','magnolia muzlu bisküvili','Magnolia (muzlu)','Magnolia pudding (banana)','Магнолия (банановый десерт)','Magnolia-Dessert (Banane)','ماغنوليا بالموز'],
   ['laz_boregi','tatli',260,5,35,11,18,0.6,150,'','dey','','laz böreği muhallebili','Laz böreği','Laz böreği (custard pastry)','Лаз бёреги (слойка с кремом)','Laz böreği (Pudding-Gebäck)','بوريك لاز'],
   ['profiterol','tatli',280,5,30,16,20,1,150,'','dey','','profiterol çikolata soslu','Profiterol','Profiteroles','Профитроли','Profiteroles','بروفيترول'],
-  ['tiramisu','tatli',290,6,28,17,19,0.5,120,'','dey','','tiramisu','Tiramisu','Tiramisu','Тирамису','Tiramisu','تيراميسو'],
-  ['cheesecake','tatli',320,6,25,22,20,0.4,120,'','dey','','cheesecake','Cheesecake','Cheesecake','Чизкейк','Käsekuchen','تشيز كيك'],
+  ['tiramisu','tatli',290,6,28,17,19,0.5,1,'dilim:120','dey','','tiramisu','Tiramisu','Tiramisu','Тирамису','Tiramisu','تيراميسو'],
+  ['cheesecake','tatli',320,6,25,22,20,0.4,1,'dilim:120','dey','','cheesecake','Cheesecake','Cheesecake','Чизкейк','Käsekuchen','تشيز كيك'],
   ['brownie','tatli',440,5.5,55,22,38,2.5,1,'adet:60','dey','','brownie çikolatalı kek','Brownie','Brownie','Брауни','Brownie','براوني'],
   ['waffle','tatli',310,6,35,16,18,1.5,1,'adet:150','dey','','waffle çikolatalı meyveli','Waffle (çikolatalı, meyveli)','Waffle (chocolate & fruit)','Вафля с шоколадом и фруктами','Waffel (Schoko & Obst)','وافل بالشوكولاتة والفواكه'],
-  ['elmali_turta','tatli',270,2.5,37,12.5,18,1.6,120,'','dy','','elmalı turta tart','Elmalı turta','Apple pie','Яблочный пирог','Apfelkuchen','فطيرة التفاح'],
+  ['elmali_turta','tatli',270,2.5,37,12.5,18,1.6,1,'dilim:120','dy','','elmalı turta tart','Elmalı turta','Apple pie','Яблочный пирог','Apfelkuchen','فطيرة التفاح'],
   ['un_kurabiyesi','tatli',500,6,58,27,22,1.5,1,'adet:20','dy','','kurabiye un kurabiyesi','Un kurabiyesi','Shortbread cookies','Песочное печенье','Mürbekekse','كعك الغريبة'],
   ['sekerpare','tatli',390,4.5,58,16,38,1,1,'adet:40','dey','','şekerpare şerbetli','Şekerpare','Şekerpare (syrup cookie)','Шекерпаре','Şekerpare','شكربارة'],
   ['kadayif','tatli',400,4,55,18,38,1.5,100,'','dy','','kadayıf tel kadayıf cevizli','Tel kadayıf (cevizli)','Kadayıf (shredded pastry)','Кадаиф','Kadayıf','كنافة بالجوز'],
@@ -352,3 +352,120 @@ OGUN_ONERI.aksam.push('lufer','cinekop','kalkan','dil_baligi','kefal','morina','
   'pazi_sarma','zy_kereviz','zy_lahana_sarma','mantar_yemegi','fit_somon_tabak','kemik_suyu','havuc_corba','ispanak_corba','pirasa_corba','kabak_izgara','patlican_izgara','kuskonmaz','bruksel','yesil_fasulye',
   'karnabahar_firin','borani','kozbiber_salata','koz_sebze_salata');
 OGUN_ONERI.gece.push('cottage','skyr','yogurt_yagsiz','sut_yagsiz');
+
+// ---------- Ek yemekler 7: Dünya mutfağı (Hint, Uzak Doğu, Meksika, İtalyan…) + Hazır/paketli ürünler ve fast food (marka adı olmadan) ----------
+// Sütunlar YEMEK_SATIR ile aynı (bkz. p4d.js). İki yeni kategori: dunya, hazir (KAT_SIRA'da p7.js)
+Object.assign(S, {
+  k_dunya:["Dünya Mutfağı","World cuisine","Кухни мира","Internationale Küche","مطابخ العالم"],
+  k_hazir:["Hazır, Paketli & Fast Food","Ready-made, packaged & fast food","Готовая еда, полуфабрикаты и фастфуд","Fertiggerichte, Verpacktes & Fast Food","أطعمة جاهزة ومعلّبة ووجبات سريعة"]
+});
+YEMEK_EK.push(
+  // Hint
+  ['butter_chicken','dunya',190,14,7,12,3,1,250,'','cdy','','hint tereyağlı tavuk köri murgh makhani','Butter chicken (Hint tereyağlı tavuk)','Butter chicken','Баттер чикен (курица в сливочном соусе)','Butter Chicken','دجاج بالزبدة (هندي)'],
+  ['tikka_masala','dunya',160,15,7,8,3,1,250,'','cd','','hint tavuk köri tikka masala','Tavuk tikka masala','Chicken tikka masala','Курица тикка масала','Chicken Tikka Masala','دجاج تيكا ماسالا'],
+  ['dal','dunya',110,6,15,3,2,4,250,'','','','hint mercimek köri dal tarka vegan','Dal (Hint baharatlı mercimek)','Dal (Indian spiced lentils)','Дал (индийская чечевица со специями)','Dal (indische Linsen)','دال (عدس هندي بالبهارات)'],
+  ['palak_paneer','dunya',150,8,6,11,2,2,250,'','d','','hint ıspanak peynir köri vejetaryen','Palak paneer (ıspanaklı peynir)','Palak paneer (spinach & cheese)','Палак панир (шпинат с сыром)','Palak Paneer (Spinat mit Käse)','بالاك بانير (سبانخ بالجبن)'],
+  ['biryani','dunya',175,9,22,6,1,1,300,'','c','','hint pilav baharatlı tavuklu biryani','Tavuklu biryani','Chicken biryani','Бирьяни с курицей','Hähnchen-Biryani','برياني بالدجاج'],
+  ['naan','dunya',290,9,50,6,3,2,1,'adet:90','d','','hint ekmek naan','Naan ekmeği','Naan bread','Хлеб наан','Naan-Brot','خبز نان'],
+  ['samosa','dunya',260,5,30,13,2,3,2,'adet:60','y','','hint börek patatesli kızartma','Samosa (patatesli)','Samosa (potato)','Самса (с картофелем)','Samosa (Kartoffel)','سمبوسة (بطاطس)'],
+  // Uzak Doğu
+  ['pad_thai','dunya',180,8,25,6,5,1.5,300,'','ce','','tayland pirinç noodle fıstık pad thai','Pad Thai (tavuklu)','Pad Thai (chicken)','Пад тай с курицей','Pad Thai (Hähnchen)','باد تاي بالدجاج'],
+  ['ramen','dunya',95,6,12,2.5,1,0.5,400,'','ct','kase:400','japon noodle çorba ramen','Ramen (tavuklu)','Ramen (chicken)','Рамэн с курицей','Ramen (Hähnchen)','رامن بالدجاج'],
+  ['pho','dunya',60,5,7,1.5,0.5,0.3,400,'','mt','kase:400','vietnam noodle çorba pho etli','Pho (Vietnam et çorbası)','Pho (Vietnamese beef noodle soup)','Фо бо (вьетнамский суп с говядиной)','Pho (vietnamesische Rindfleischsuppe)','فو (شوربة لحم فيتنامية)'],
+  ['spring_roll','dunya',150,4,22,5,2,2,2,'adet:50','','','çin sebzeli rulo spring roll fırın','Sebzeli spring roll (fırın)','Vegetable spring roll (baked)','Спринг-ролл с овощами (запечённый)','Gemüse-Frühlingsrolle (Ofen)','سبرينغ رول بالخضار (بالفرن)'],
+  ['dim_sum','dunya',170,10,20,5.5,1,1,4,'adet:30','c','','çin buğulama mantı dim sum gyoza','Dim sum (tavuklu, buğulama)','Dim sum (chicken, steamed)','Дим-сам с курицей (на пару)','Dim Sum (Hähnchen, gedämpft)','ديم سم بالدجاج (على البخار)'],
+  ['kung_pao','dunya',170,15,9,8.5,4,1.5,250,'','ct','','çin tavuk fıstıklı acılı kung pao','Kung Pao tavuk','Kung Pao chicken','Курица кунг-пао','Kung-Pao-Hähnchen','دجاج كونغ باو'],
+  ['tavuk_noodle','dunya',160,8,24,4,2,1.5,300,'','c','','çin sebzeli noodle tavuklu wok chow mein','Sebzeli tavuklu noodle','Chicken vegetable noodles','Лапша с курицей и овощами','Nudeln mit Hähnchen und Gemüse','نودلز بالدجاج والخضار'],
+  ['bibimbap','dunya',140,7,18,4.5,3,2,350,'','me','','kore pilav sebze yumurta bibimbap','Bibimbap (Kore)','Bibimbap','Пибимпап','Bibimbap','بيبيمباب (كوري)'],
+  ['poke_bowl','dunya',130,9,15,4,2,2,350,'','f','','hawaii somon pirinç avokado poke','Poke bowl (somonlu)','Poke bowl (salmon)','Поке с лососем','Poke Bowl (Lachs)','بوكي بول بالسلمون'],
+  ['miso_corba','dunya',35,3,3.5,1.2,0.8,0.5,250,'','t','kase:250','japon miso çorbası soya tofu','Miso çorbası','Miso soup','Мисо-суп','Misosuppe','شوربة ميسو'],
+  ['tom_yum','dunya',55,5,4,2.3,1.5,0.5,300,'','ft','kase:300','tayland karidesli ekşi acılı çorba','Tom yum (karidesli)','Tom yum (shrimp)','Том ям с креветками','Tom Yum (Garnelen)','توم يام بالروبيان'],
+  ['yesil_kori','dunya',150,10,7,9.5,3,1.5,300,'','c','','tayland yeşil köri hindistan cevizi sütü tavuk','Tay yeşil körisi (tavuklu)','Thai green curry (chicken)','Тайское зелёное карри с курицей','Thai-Grüncurry (Hähnchen)','كاري تايلندي أخضر بالدجاج'],
+  ['tofu_wok','dunya',110,9,7,5.5,3,2,250,'','','','sebzeli tofu wok vegan sote','Sebzeli tofu wok','Tofu vegetable stir-fry','Тофу с овощами (вок)','Tofu-Gemüse-Wok','توفو بالخضار (ووك)'],
+  ['satay','dunya',190,22,6,9,3,1,150,'','c','','endonezya tavuk şiş fıstık soslu satay','Tavuk satay (fıstık soslu)','Chicken satay (peanut sauce)','Сатай из курицы (арахисовый соус)','Hähnchen-Satay (Erdnusssauce)','ساتيه دجاج (صوص الفول السوداني)'],
+  ['sashimi','dunya',140,22,0,5.5,0,0,100,'','f','','japon çiğ balık somon sashimi','Sashimi (somon)','Sashimi (salmon)','Сашими (лосось)','Sashimi (Lachs)','ساشيمي (سلمون)'],
+  ['onigiri','dunya',180,4,38,1,0.5,0.5,1,'adet:110','','','japon pirinç topu onigiri','Onigiri (pirinç topu)','Onigiri (rice ball)','Онигири (рисовый шарик)','Onigiri (Reisbällchen)','أونيغيري (كرات الأرز)'],
+  ['kimchi','dunya',25,1.5,4,0.3,1.5,1.5,50,'','t','','kore fermente lahana kimchi turşu','Kimchi','Kimchi','Кимчи','Kimchi','كيمتشي'],
+  ['kore_tavuk','dunya',280,16,22,14,8,1,150,'','cy','','kore çıtır tavuk acılı tatlı sos yangnyeom','Kore usulü çıtır tavuk (soslu)','Korean fried chicken (glazed)','Корейская жареная курица (в соусе)','Koreanisches Brathähnchen (glasiert)','دجاج كوري مقرمش (بالصوص)'],
+  // Meksika
+  ['taco','dunya',200,12,20,8,2,3,2,'adet:90','cd','','meksika taco mısır tortilla tavuklu','Taco (tavuklu)','Tacos (chicken)','Тако с курицей','Tacos (Hähnchen)','تاكو بالدجاج'],
+  ['burrito','dunya',210,11,24,8,2,3,1,'adet:300','mdy','','meksika burrito dürüm fasulye pirinç dana','Burrito (dana etli)','Burrito (beef)','Буррито с говядиной','Burrito (Rind)','بوريتو باللحم'],
+  ['quesadilla','dunya',290,13,28,14,2,2,1,'adet:150','dy','','meksika quesadilla peynirli tortilla','Quesadilla (peynirli)','Quesadilla (cheese)','Кесадилья с сыром','Quesadilla (Käse)','كيساديا بالجبن'],
+  ['nachos','dunya',300,8,38,13,2,4,100,'','dty','','meksika nachos mısır cipsi peynirli','Nachos (peynir soslu)','Nachos (cheese sauce)','Начос с сырным соусом','Nachos (Käsesauce)','ناتشوز (بصوص الجبن)'],
+  ['enchilada','dunya',180,10,18,7.5,2,2,250,'','cd','','meksika enchilada tavuklu soslu tortilla','Enchilada (tavuklu)','Enchilada (chicken)','Энчилада с курицей','Enchilada (Hähnchen)','إنشيلادا بالدجاج'],
+  // İtalyan & Avrupa
+  ['carbonara','dunya',260,11,26,12,1.5,1.5,250,'','mdey','','italyan makarna carbonara kremalı yumurtalı','Spagetti carbonara','Spaghetti carbonara','Спагетти карбонара','Spaghetti Carbonara','سباغيتي كاربونارا'],
+  ['gnocchi','dunya',150,4,30,2,2.5,2,250,'','','','italyan patates hamuru gnocchi domates soslu','Gnocchi (domates soslu)','Gnocchi (tomato sauce)','Ньокки в томатном соусе','Gnocchi (Tomatensauce)','نيوكي (بصوص الطماطم)'],
+  ['caprese','dunya',140,8,4,10.5,3,1,200,'','d','','italyan caprese mozzarella domates fesleğen','Caprese salata','Caprese salad','Салат капрезе','Caprese-Salat','سلطة كابريزي'],
+  ['bruschetta','dunya',220,6,30,8,3,2.5,2,'adet:50','','','italyan bruschetta domatesli ekmek','Bruschetta (domatesli)','Bruschetta (tomato)','Брускетта с томатами','Bruschetta (Tomate)','بروسكيتا بالطماطم'],
+  ['mac_cheese','dunya',230,9,26,10,3,1,250,'','dy','','amerikan peynirli makarna mac and cheese','Peynirli makarna (mac & cheese)','Mac & cheese','Макароны с сыром (мак-н-чиз)','Mac & Cheese','معكرونة بالجبن (ماك آند تشيز)'],
+  ['paella','dunya',150,9,20,3.5,1,1,300,'','ft','','ispanyol pilav deniz ürünlü paella','Deniz ürünlü paella','Seafood paella','Паэлья с морепродуктами','Meeresfrüchte-Paella','باييا بثمار البحر'],
+  ['fish_chips','dunya',260,12,25,12,0.5,2,300,'','fy','','ingiliz balık patates kızartma fish and chips','Fish & chips','Fish & chips','Фиш-энд-чипс','Fish & Chips','فيش آند تشيبس'],
+  ['gulas','dunya',130,11,7,6.5,2,1.5,300,'','m','','macar gulaş et yahni gulasch','Gulaş','Goulash','Гуляш','Gulasch','غولاش'],
+  ['pelmeni','dunya',230,11,26,9,1,1.5,200,'','mde','','rus mantısı pelmeni etli','Pelmeni (Rus mantısı)','Pelmeni (Russian dumplings)','Пельмени','Pelmeni (russische Teigtaschen)','بيلميني (زلابية روسية)'],
+  ['ceviche','dunya',90,15,4,1.5,1.5,0.5,150,'','f','','peru çiğ balık limonlu ceviche','Ceviche (limonlu çiğ balık)','Ceviche','Севиче','Ceviche','سيفيتشي'],
+  // Hazır / paketli / konserve
+  ['dond_pizza','hazir',250,10,28,10,3,2,2,'dilim:90','mdty','','dondurulmuş hazır pizza karışık','Dondurulmuş pizza (karışık)','Frozen pizza (mixed)','Замороженная пицца (ассорти)','Tiefkühlpizza (gemischt)','بيتزا مجمّدة (مشكّلة)'],
+  ['hazir_corba','hazir',35,1,5.5,1.2,1,0.3,250,'','t','kepce:125','hazır toz çorba paket','Hazır çorba (toz, hazırlanmış)','Instant soup (powder, prepared)','Суп из пакета (приготовленный)','Tütensuppe (zubereitet)','شوربة سريعة التحضير (بودرة)'],
+  ['hazir_mercimek_corba','hazir',55,3,8.5,1,1,2,250,'','t','kepce:125','hazır kutu çorba ısıt iç mercimek','Hazır mercimek çorbası (kutu)','Ready lentil soup (carton)','Готовый чечевичный суп (упаковка)','Fertige Linsensuppe (Packung)','شوربة عدس جاهزة (علبة)'],
+  ['konserve_misir','hazir',80,2.5,15,1,4,2,100,'','t','','konserve mısır tane','Konserve mısır','Canned corn','Консервированная кукуруза','Mais (Dose)','ذرة معلّبة'],
+  ['konserve_fasulye','hazir',90,6,15,0.5,1,5,100,'','t','','konserve haşlanmış fasulye','Konserve fasulye (haşlanmış)','Canned beans','Консервированная фасоль','Bohnen (Dose)','فاصولياء معلّبة'],
+  ['konserve_bezelye','hazir',70,4.5,11,0.5,3,4,100,'','t','','konserve bezelye','Konserve bezelye','Canned peas','Консервированный горошек','Erbsen (Dose)','بازلاء معلّبة'],
+  ['konserve_mantar','hazir',20,2,2.5,0.3,0.5,1.5,100,'','t','','konserve mantar','Konserve mantar','Canned mushrooms','Консервированные грибы','Champignons (Dose)','فطر معلّب'],
+  ['konserve_domates','hazir',25,1.2,4.5,0.2,3,1,100,'','','','konserve doğranmış domates','Konserve doğranmış domates','Canned chopped tomatoes','Консервированные томаты (кусочками)','Gehackte Tomaten (Dose)','طماطم مقطّعة معلّبة'],
+  ['donmus_sebze','hazir',55,2.5,9,0.5,3,3.5,200,'','','','dondurulmuş karışık sebze garnitür haşlama','Dondurulmuş karışık sebze (haşlama)','Frozen mixed vegetables (boiled)','Замороженная овощная смесь (отварная)','TK-Gemüsemischung (gekocht)','خضار مشكّلة مجمّدة (مسلوقة)'],
+  ['dond_patates','hazir',160,2.5,25,5.5,0.5,2.5,150,'','','','dondurulmuş patates fırın','Dondurulmuş patates (fırın)','Frozen fries (oven-baked)','Замороженный картофель (запечённый)','TK-Pommes (Ofen)','بطاطس مجمّدة (بالفرن)'],
+  ['hazir_kofte','hazir',240,16,8,16,1,1,150,'','myt','','dondurulmuş hazır köfte fırın','Hazır köfte (dondurulmuş, fırın)','Frozen meatballs (oven-baked)','Замороженные котлеты (запечённые)','TK-Frikadellen (Ofen)','كفتة مجمّدة (بالفرن)'],
+  ['hazir_borek','hazir',290,8,30,15,1.5,1.5,150,'','dy','','dondurulmuş hazır börek peynirli fırın','Hazır börek (dondurulmuş, fırın)','Frozen börek (oven-baked)','Замороженный бёрек (запечённый)','TK-Börek (Ofen)','بوريك مجمّد (بالفرن)'],
+  ['hazir_manti','hazir',200,9,26,6.5,2.5,1.5,250,'','mde','','dondurulmuş hazır mantı yoğurtlu','Hazır mantı (dondurulmuş, yoğurtlu)','Frozen manti (with yogurt)','Замороженные манты (с йогуртом)','TK-Manti (mit Joghurt)','مانتي مجمّد (بالزبادي)'],
+  ['balik_kroket','hazir',220,12,18,10,0.5,1,4,'adet:30','fy','','dondurulmuş balık kroket fırın','Balık kroket (dondurulmuş, fırın)','Fish fingers (oven-baked)','Рыбные палочки (запечённые)','Fischstäbchen (Ofen)','أصابع السمك (بالفرن)'],
+  ['hazir_pilav','hazir',150,3,29,2.3,0.3,0.6,200,'','t','','hazır paket pilav mikrodalga','Hazır pilav (paket, mikrodalga)','Microwave rice (pouch)','Готовый рис (пакет для микроволновки)','Mikrowellenreis (Beutel)','أرز جاهز (كيس ميكروويف)'],
+  ['hazir_noodle','hazir',110,2.5,14,5,1,0.5,1,'adet:300','ty','','hazır bardak noodle paket','Hazır noodle (bardak, hazırlanmış)','Instant cup noodles (prepared)','Лапша быстрого приготовления (стакан)','Instant-Nudeln (Becher, zubereitet)','نودلز سريعة التحضير (كوب)'],
+  ['hazir_pure','hazir',95,2,14,3.5,1,1,150,'','','','hazır patates püresi tozu','Hazır patates püresi (toz, hazırlanmış)','Instant mashed potato (prepared)','Картофельное пюре быстрого приготовления','Instant-Kartoffelpüree (zubereitet)','بطاطس مهروسة سريعة التحضير'],
+  ['hazir_sandvic','hazir',230,10,26,9.5,3,2,1,'adet:160','cd','','market paketli üçgen sandviç tavuklu','Paketli sandviç (market, tavuklu)','Packaged sandwich (chicken)','Упакованный сэндвич (с курицей)','Verpacktes Sandwich (Hähnchen)','سندويش معبّأ (دجاج)'],
+  ['hazir_salata_kase','hazir',60,3,6,2.5,2,2,250,'','','','market hazır salata kase paketli','Hazır salata (market, kase)','Packaged salad bowl','Готовый салат (упаковка)','Fertigsalat (Schale)','سلطة جاهزة (علبة)'],
+  ['paket_kek','hazir',400,5,55,18,30,1,1,'adet:40','dey','','paketli hazır kek','Paketli kek','Packaged snack cake','Кекс в упаковке','Verpackter Kuchenriegel','كيك معبّأ'],
+  ['paket_kurabiye','hazir',490,5.5,65,23,32,2,2,'adet:12','dey','','paketli kurabiye çikolata parçacıklı','Paketli kurabiye (çikolata parçalı)','Packaged cookies (chocolate chip)','Печенье в упаковке (с шоколадом)','Verpackte Kekse (Schoko-Chips)','بسكويت معبّأ (برقائق الشوكولاتة)'],
+  // Fast food (zincir ürünleri, marka adı olmadan)
+  ['ff_patates_orta','hazir',310,3.5,41,15,0.3,3.8,1,'adet:115','y','','fast food patates kızartması orta boy','Patates kızartması (orta boy, fast food)','French fries (medium, fast food)','Картофель фри (средний, фастфуд)','Pommes (mittel, Fast Food)','بطاطس مقلية (حجم وسط، وجبات سريعة)'],
+  ['ff_patates_buyuk','hazir',310,3.5,41,15,0.3,3.8,1,'adet:150','y','','fast food patates kızartması büyük boy','Patates kızartması (büyük boy, fast food)','French fries (large, fast food)','Картофель фри (большой, фастфуд)','Pommes (groß, Fast Food)','بطاطس مقلية (حجم كبير، وجبات سريعة)'],
+  ['ff_tavuk_burger','hazir',270,12,28,12,4,1.5,1,'adet:220','cdy','','fast food çıtır tavuk burger','Çıtır tavuk burger (fast food)','Crispy chicken burger (fast food)','Бургер с хрустящей курицей (фастфуд)','Crispy Chicken Burger (Fast Food)','برغر دجاج مقرمش (وجبات سريعة)'],
+  ['ff_cift_cheeseburger','hazir',290,16,20,16,4,1,1,'adet:230','mdy','','fast food çift köfteli cheeseburger','Çift köfteli cheeseburger (fast food)','Double cheeseburger (fast food)','Двойной чизбургер (фастфуд)','Doppel-Cheeseburger (Fast Food)','تشيز برغر مزدوج (وجبات سريعة)'],
+  ['ff_nugget','hazir',300,15,18,18,0.5,1,6,'adet:17','cy','','fast food tavuk nugget kızartma','Tavuk nugget (kızartma, fast food)','Chicken nuggets (fried, fast food)','Куриные наггетсы (жареные, фастфуд)','Chicken Nuggets (frittiert, Fast Food)','ناغتس دجاج (مقلية، وجبات سريعة)'],
+  ['ff_citir_tavuk','hazir',270,20,10,17,0,0.5,2,'adet:100','cy','','fast food çıtır tavuk parça but kızartma','Çıtır tavuk parça (kızartma, fast food)','Fried chicken pieces (fast food)','Жареная курица кусочками (фастфуд)','Frittierte Hähnchenteile (Fast Food)','قطع دجاج مقلية (وجبات سريعة)'],
+  ['ff_sogan_halkasi','hazir',350,4.5,40,19,4,2.5,8,'adet:12','y','','fast food soğan halkası kızartma','Soğan halkası (kızartma)','Onion rings (fried)','Луковые кольца (жареные)','Zwiebelringe (frittiert)','حلقات البصل (مقلية)'],
+  ['ff_wrap','hazir',250,12,25,11,2.5,1.5,1,'adet:200','cdy','','fast food çıtır tavuk wrap dürüm','Çıtır tavuk wrap (fast food)','Crispy chicken wrap (fast food)','Ролл с хрустящей курицей (фастфуд)','Crispy Chicken Wrap (Fast Food)','راب دجاج مقرمش (وجبات سريعة)'],
+  ['ff_izgara_tavuk_sandvic','hazir',200,14,22,6,3,1.5,1,'adet:200','cd','','fast food ızgara tavuk sandviç burger','Izgara tavuk sandviç (fast food)','Grilled chicken sandwich (fast food)','Сэндвич с курицей гриль (фастфуд)','Grilled Chicken Sandwich (Fast Food)','سندويش دجاج مشوي (وجبات سريعة)'],
+  ['ff_pizza_dilim','hazir',270,11,32,10.5,3,2,2,'dilim:110','mdty','','fast food zincir pizza dilim orta boy','Pizza dilimi (orta boy, zincir)','Pizza slice (medium, chain)','Кусок пиццы (средняя, сеть)','Pizzastück (mittel, Kette)','شريحة بيتزا (حجم وسط، سلسلة مطاعم)'],
+  ['ff_tavuk_salata','hazir',110,9,6,5.5,2,1.5,250,'','c','','fast food tavuklu salata soslu','Tavuklu salata (soslu, fast food)','Chicken salad (dressed, fast food)','Салат с курицей (с соусом, фастфуд)','Hähnchensalat (mit Dressing, Fast Food)','سلطة دجاج (بالصوص، وجبات سريعة)'],
+  ['ff_dondurma','hazir',200,4,30,7,22,0.5,1,'adet:110','d','','fast food külah dondurma','Külah dondurma (fast food)','Ice cream cone (fast food)','Мороженое в рожке (фастфуд)','Eis in der Waffel (Fast Food)','آيس كريم بالقمع (وجبات سريعة)']
+);
+Object.assign(ALERJEN_EK, {
+  butter_chicken:'tavuk,sut,domates,sogan,sarimsak,kuruyemis,kaju', tikka_masala:'tavuk,sut,domates,sogan,sarimsak,biber', dal:'mercimek,sogan,sarimsak,domates,kimyon', palak_paneer:'sut,ispanak,sogan,sarimsak',
+  biryani:'tavuk,pirinc,sut,sogan,sarimsak,tarcin', naan:'gluten,bugday,sut', samosa:'gluten,bugday,patates,bezelye,sogan,kimyon',
+  pad_thai:'pirinc,yumurta,yerfistigi,soya,balik,tavuk,sogan', ramen:'gluten,bugday,yumurta,soya,tavuk,sogan,susam', pho:'kirmizi,pirinc,balik,sogan,tarcin', spring_roll:'gluten,bugday,soya,havuc,sogan',
+  dim_sum:'gluten,bugday,tavuk,soya,sogan,susam', kung_pao:'tavuk,yerfistigi,soya,biber,sarimsak,sogan,susam', tavuk_noodle:'gluten,bugday,yumurta,soya,tavuk,havuc,sogan,biber',
+  bibimbap:'kirmizi,yumurta,pirinc,soya,ispanak,havuc,susam,sarimsak,biber', poke_bowl:'balik,pirinc,soya,avokado,susam,salatalik', miso_corba:'soya', tom_yum:'kabuklu,balik,biber,sarimsak,mantar,domates',
+  yesil_kori:'tavuk,biber,sarimsak,balik,patlican', tofu_wok:'soya,brokoli,havuc,biber,sarimsak,susam', satay:'tavuk,yerfistigi,soya,sarimsak', sashimi:'balik', onigiri:'pirinc,balik,soya', kimchi:'biber,sarimsak,sogan,balik,histamin',
+  kore_tavuk:'tavuk,gluten,bugday,soya,sarimsak,biber,susam,misir',
+  taco:'misir,tavuk,sut,domates,sogan,biber', burrito:'gluten,bugday,kirmizi,fasulye,sut,domates,sogan,pirinc', quesadilla:'gluten,bugday,sut,biber,sogan', nachos:'misir,sut,domates,biber,sogan', enchilada:'misir,tavuk,sut,domates,biber,sogan',
+  carbonara:'gluten,bugday,yumurta,sut,kirmizi', gnocchi:'gluten,bugday,patates,yumurta,domates,sarimsak', caprese:'sut,domates', bruschetta:'gluten,bugday,domates,sarimsak,zeytin', mac_cheese:'gluten,bugday,sut',
+  paella:'pirinc,kabuklu,yumusakca,balik,domates,biber,sogan,sarimsak', fish_chips:'balik,gluten,bugday,patates,yumurta', gulas:'kirmizi,sogan,biber,domates,patates', pelmeni:'gluten,bugday,yumurta,kirmizi,sogan,sut',
+  ceviche:'balik,narenciye,sogan,biber,domates',
+  dond_pizza:'gluten,bugday,sut,domates,kirmizi,soya', hazir_corba:'gluten,bugday,sut,sogan,kereviz', hazir_mercimek_corba:'mercimek,sogan,havuc,kereviz', konserve_misir:'misir', konserve_fasulye:'fasulye', konserve_bezelye:'bezelye',
+  konserve_mantar:'mantar', konserve_domates:'domates', donmus_sebze:'havuc,bezelye,misir,fasulye', dond_patates:'patates', hazir_kofte:'kirmizi,gluten,bugday,sogan,soya', hazir_borek:'gluten,bugday,sut,yumurta',
+  hazir_manti:'gluten,bugday,yumurta,kirmizi,sut,sogan,sarimsak', balik_kroket:'balik,gluten,bugday,yumurta', hazir_pilav:'pirinc', hazir_noodle:'gluten,bugday,soya,sogan,kereviz', hazir_pure:'patates,sut',
+  hazir_sandvic:'gluten,bugday,sut,yumurta,tavuk,hardal', hazir_salata_kase:'misir,havuc,domates', paket_kek:'gluten,bugday,yumurta,sut,soya', paket_kurabiye:'gluten,bugday,sut,yumurta,soya,kakao',
+  ff_patates_orta:'patates', ff_patates_buyuk:'patates', ff_tavuk_burger:'gluten,bugday,tavuk,sut,yumurta,hardal,soya,susam', ff_cift_cheeseburger:'gluten,bugday,kirmizi,sut,hardal,sogan,susam',
+  ff_nugget:'tavuk,gluten,bugday,yumurta,soya', ff_citir_tavuk:'tavuk,gluten,bugday,yumurta,sut', ff_sogan_halkasi:'sogan,gluten,bugday,sut,yumurta', ff_wrap:'gluten,bugday,tavuk,sut,yumurta,hardal,domates',
+  ff_izgara_tavuk_sandvic:'gluten,bugday,tavuk,sut,hardal,domates,susam', ff_pizza_dilim:'gluten,bugday,sut,domates,kirmizi,soya', ff_tavuk_salata:'tavuk,gluten,bugday,yumurta,hardal,domates', ff_dondurma:'sut,gluten,bugday,soya'
+});
+// Otomatik planda kullanılmaz: kızartma, işlenmiş/dondurulmuş hazır ürün, şekerli paketli, fast food
+DOKTOR_DISI_EK.push('samosa','nachos','quesadilla','carbonara','mac_cheese','fish_chips','kore_tavuk','pelmeni','dond_pizza','hazir_corba','hazir_kofte','dond_patates','hazir_borek','hazir_noodle','hazir_pure',
+  'balik_kroket','hazir_sandvic','paket_kek','paket_kurabiye','ff_patates_orta','ff_patates_buyuk','ff_tavuk_burger','ff_cift_cheeseburger','ff_nugget','ff_citir_tavuk','ff_sogan_halkasi','ff_wrap',
+  'ff_izgara_tavuk_sandvic','ff_pizza_dilim','ff_tavuk_salata','ff_dondurma');
+// Hamilelikte: çiğ balık
+HAMILE_DISI_EK.push('sashimi','ceviche','poke_bowl');
+POPULER.push('butter_chicken','pad_thai','ramen','taco','burrito','carbonara','dond_pizza','hazir_corba','ff_tavuk_burger','ff_patates_orta','ff_nugget');
+OGUN_ONERI.ogle.push('dal','biryani','poke_bowl','bibimbap','gulas','hazir_mercimek_corba');
+OGUN_ONERI.aksam.push('butter_chicken','tikka_masala','pad_thai','yesil_kori','tofu_wok','paella','satay','gnocchi');

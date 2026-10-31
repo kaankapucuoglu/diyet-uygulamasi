@@ -23,6 +23,8 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.togall !== undefined){ hepsiniTogla(ds.togall === '1'); return; }
   if (ds.progkaldir){ programKaldir(); return; }
   if (ds.paylas){ yenenPaylasAc(aktif); return; }
+  if (ds.reglbas){ reglBaslat(aktif); return; }
+  if (ds.reglbit){ reglBitir(aktif); return; }
 });
 document.querySelector('.wrap').addEventListener('change', e => {
   const t = e.target;
@@ -34,7 +36,6 @@ $('ayarBtn').addEventListener('click', () => ayarlarAc());
 $('uyariBtn').addEventListener('click', uyarilarAc);
 $('hamileBtn').addEventListener('click', hamileDegistir);
 $('kocBtn').addEventListener('click', kocAc);
-$('destekBtn').addEventListener('click', destekAc);
 
 let geriFn = null, acSayac = 0;
 function ac(baslik, govde){
@@ -73,7 +74,7 @@ const SON = '__son', TUMU = '__tumu', BENZER = '__benzer';
 // Değiştir/Kıyasla için benzer yemekler: aynı tür (ad/etiket ortak kelime, ör. "ekmek") önce, sonra aynı gruptaki besin değeri en yakınlar
 // Türü değil niteliği/pişirmeyi anlatan kelimeler benzerlikte sayılmaz (ör. "tam buğday" ekmekle makarnayı eşleştirmesin)
 const NITELIK = new Set(['tam','bugday','kepekli','haslama','haslanmis','izgara','firin','tava','yarim','yagli','sekersiz','tuzsuz','sade','light','kahvalti','yemek','yemegi','zeytinyagli','yogurtlu','kimyonlu','sumakli','derisiz','suzulmus','bugulama']);
-const KAT_SIRA = ['et','balik','yumurta','sut','kahvaltilik','bitkisel','baklagil','anayemek','hamur','sandvic','salata','sebze','tahil','pilav','corba','meyve','kuruyemis','atistirmalik','tatli','icecek','sporcu','ozel'];
+const KAT_SIRA = ['et','balik','yumurta','sut','kahvaltilik','bitkisel','baklagil','anayemek','dunya','hamur','sandvic','salata','sebze','tahil','pilav','corba','meyve','kuruyemis','atistirmalik','hazir','tatli','icecek','sporcu','ozel'];
 const GRUP = {et:'protein', balik:'protein', yumurta:'protein', bitkisel:'protein'};
 function benzerler(fid, uygun = profilUygun(D.profil)){
   const f = yemek(fid);
@@ -307,6 +308,14 @@ function ayarlarAc(dilAcik = false){
       <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
       ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
     <div class="acts"><button class="btn solid" id="profilDuzenle">${T('editProfile')}</button><button class="btn" id="alerjiDuzenle">${T('editAlerji')}</button></div>
+    <div class="sec">${T('sSpor')}</div>
+    <div class="cur"><b>🏋️ ${esc(sporOzet(P.spor))}</b><br><small>${T('takLbl')}: ${(P.takviye || []).length ? P.takviye.map(k => esc(T('tk_' + k))).join(', ') : T('takYok')}</small></div>
+    ${P.spor && P.spor.gun > 0 ? `<label class="field"><span>${T('antGunT')}</span></label><div class="days ant-gunler">${[0,1,2,3,4,5,6].map(j => `<button class="day${(P.antrenmanGunleri || []).includes(j) ? ' active' : ''}" data-antgun="${j}" aria-pressed="${(P.antrenmanGunleri || []).includes(j)}"><b>${haftaGunAd(j)}</b></button>`).join('')}</div><div class="hint" style="margin:-8px 0 8px">${esc(T('antGunHint'))}</div>` : ''}
+    <div class="acts" style="margin-top:0"><button class="btn" id="sporDuzenle">${T('editSpor')}</button></div>
+    ${reglTakipli() ? `<div class="sec">${T('reglT')}</div>${reglListesi()}` : ''}
+    <div class="sec">${T('sBildirim')}</div>
+    <div class="saat-liste"><button class="saat-ek${D.ayar.hatirlatici ? ' on' : ''}" id="notTog" aria-pressed="${!!D.ayar.hatirlatici}"><span class="kutu">${D.ayar.hatirlatici ? '✓' : ''}</span>${T('notT')}</button></div>
+    <div class="hint" style="margin-top:6px">${esc(T('notHint', {ornek: T('notBody', {ogun: T('m_ogle'), liste: yemek('tavuk').ad + ', ' + yemek('salata').ad})}))}</div>
     <div class="sec">${T('sBody')}</div>
     <div class="grid3">${[['yas', 'age', 1], ['boy', 'height', 1], ['kilo', 'weight', 0.5], ['hedefKilo', 'targetW', 0.5]].map(([k, ad]) => `<label class="field"><span>${T(ad)}</span><input autocomplete="off" id="b_${k}" type="text" inputmode="decimal" value="${sayi(P[k])}"></label>`).join('')}</div>
     <div class="hint" style="margin:-4px 0 8px">${T('bodyHint')}</div>
@@ -335,6 +344,10 @@ function ayarlarAc(dilAcik = false){
     <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div>`);
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
   $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
+  $('sporDuzenle').onclick = () => { kapat(); sihirbazAc('spor'); };
+  $('notTog').onclick = () => hatirlaticiAyarla(!D.ayar.hatirlatici).then(() => { const y = $('sbody').scrollTop; ayarlarAc(); $('sbody').scrollTop = y; });
+  $('sbody').querySelectorAll('[data-antgun]').forEach(b => b.onclick = () => antrenmanGunuDegis(+b.dataset.antgun));
+  reglListesiBagla();
   saatFormuBagla();
   if ($('progKaldirBtn')) $('progKaldirBtn').onclick = () => icinden(ayarlarAc, programKaldir);
   if ($('yukleBtn')) $('yukleBtn').onclick = () => icinden(ayarlarAc, yukleAc);
@@ -424,7 +437,8 @@ function onayAc(metin, evet, ek = ''){
 // ---------- Uyarılar ----------
 function uyarilarAc(){
   const b = (ik, bas, metin) => `<div class="uyari"><h4>${ik} ${T(bas)}</h4><p>${esc(T(metin))}</p></div>`;
-  ac(T('warnTitle'), b('📊', 'wGenelT', 'wGenel') + b('🩺', 'wDoktorT', 'wDoktor') + b('🤰', 'wHamileT', 'wHamile')
+  const tri = hamileMi() ? b('🗓️', 'wTriT', 'hamileTri' + (D.profil.trimester || 1)) + b('🥬', 'hamileOneriT', 'hamileOneri') : '';
+  ac(T('warnTitle'), b('📊', 'wGenelT', 'wGenel') + b('🩺', 'wDoktorT', 'wDoktor') + b('🤰', 'wHamileT', 'wHamile') + tri
     + b('🚫', 'wAlerjiT', 'wAlerji') + b('⚖️', 'wSorumT', 'wSorum') + b('🔒', 'wVeriT', 'wVeri')
     // Kullanım koşulları ve gizlilik: maviplay.com/diyet (TR + EN)
     + `<div class="acts"><a class="btn ghost" href="https://maviplay.com/diyet/kosullar" target="_blank" rel="noopener">${T('termsLink')}</a><a class="btn ghost" href="https://maviplay.com/diyet/gizlilik" target="_blank" rel="noopener">${T('privLink')}</a></div>`);

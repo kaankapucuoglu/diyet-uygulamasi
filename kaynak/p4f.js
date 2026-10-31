@@ -3,12 +3,12 @@
 YEMEK_EK.push(
   // Atıştırmalık
   ['kraker_tam','atistirmalik',430,10,66,14,3,9,30,'','','','kraker tam buğday','Tam buğday kraker','Whole-wheat crackers','Цельнозерновые крекеры','Vollkorncracker','مقرمشات قمح كامل'],
-  ['grisini','atistirmalik',410,12,68,9.5,3,3,25,'','','','grissini çubuk ekmek','Grissini (çubuk ekmek)','Grissini (breadsticks)','Гриссини (хлебные палочки)','Grissini (Brotstangen)','أصابع الخبز (غريسيني)'],
+  ['grisini','atistirmalik',410,12,68,9.5,3,3,5,'adet:5','','','grissini çubuk ekmek','Grissini (çubuk ekmek)','Grissini (breadsticks)','Гриссини (хлебные палочки)','Grissini (Brotstangen)','أصابع الخبز (غريسيني)'],
   ['cubuk_kraker','atistirmalik',420,9,72,10,3,3,30,'','t','','kraker çubuk tuzlu','Çubuk kraker (tuzlu)','Pretzel sticks (salted)','Солёные палочки','Salzstangen','أصابع مملحة'],
   ['patates_cipsi','atistirmalik',536,7,53,34,0.5,4.4,30,'','ty','','cips patates','Patates cipsi','Potato chips','Картофельные чипсы','Kartoffelchips','رقائق البطاطس'],
   ['misir_cipsi','atistirmalik',500,7,63,24,1,5,30,'','ty','','cips mısır tortilla','Mısır cipsi','Tortilla chips','Кукурузные чипсы','Tortillachips','رقائق الذرة'],
-  ['biskuvi','atistirmalik',440,7.5,74,12.5,22,2,30,'','y','','bisküvi petibör','Sade bisküvi','Plain biscuits','Печенье (простое)','Butterkekse','بسكويت سادة'],
-  ['kepekli_biskuvi','atistirmalik',450,8,66,17,18,7,30,'','y','','bisküvi kepekli tam buğday','Kepekli bisküvi','Wholegrain biscuits','Печенье с отрубями','Vollkornkekse','بسكويت بالنخالة'],
+  ['biskuvi','atistirmalik',440,7.5,74,12.5,22,2,4,'adet:8','y','','bisküvi petibör','Sade bisküvi','Plain biscuits','Печенье (простое)','Butterkekse','بسكويت سادة'],
+  ['kepekli_biskuvi','atistirmalik',450,8,66,17,18,7,3,'adet:10','y','','bisküvi kepekli tam buğday','Kepekli bisküvi','Wholegrain biscuits','Печенье с отрубями','Vollkornkekse','بسكويت بالنخالة'],
   ['yulaf_kurabiye','atistirmalik',400,9,55,16,8,6,2,'adet:25','e','','kurabiye yulaflı şekersiz ev yapımı','Yulaflı kurabiye (şekersiz)','Oat cookies (no added sugar)','Овсяное печенье (без сахара)','Haferkekse (ohne Zucker)','كوكيز الشوفان (بدون سكر)'],
   ['tuzlu_kurabiye','atistirmalik',500,8,52,29,3,2,3,'adet:15','dy','','kurabiye tuzlu çatal','Tuzlu kurabiye','Savoury cookies','Солёное печенье','Salzgebäck','كعك مالح'],
   ['muffin_yulaf','atistirmalik',260,8,35,10,8,4,1,'adet:60','ed','','muffin kek yulaflı şekersiz','Yulaflı muffin (şekersiz)','Oat muffin (no added sugar)','Овсяный маффин (без сахара)','Hafer-Muffin (ohne Zucker)','مافن الشوفان (بدون سكر)'],
@@ -22,7 +22,7 @@ YEMEK_EK.push(
   ['kuru_meyve_bar','atistirmalik',380,7,55,14,40,6,1,'adet:35','','','bar kuru meyve şekersiz','Kuru meyve bar (şekersiz)','Fruit & nut bar (no added sugar)','Фруктово-ореховый батончик','Frucht-Nuss-Riegel (ohne Zucker)','لوح فواكه ومكسرات (بدون سكر)'],
   ['sutlu_cikolata','atistirmalik',535,7.6,59,30,52,3.4,4,'kare:5','dy','','çikolata sütlü','Sütlü çikolata','Milk chocolate','Молочный шоколад','Vollmilchschokolade','شوكولاتة بالحليب'],
   ['gofret','atistirmalik',520,6,62,27,40,2,1,'adet:35','y','','gofret çikolatalı','Gofret (çikolatalı)','Chocolate wafer','Вафли в шоколаде','Schokowaffel','ويفر بالشوكولاتة'],
-  ['kestane','kuruyemis',245,3.2,53,2.2,10.6,5.1,50,'','','','kestane közlenmiş kebap','Kestane (közlenmiş)','Roasted chestnuts','Жареные каштаны','Geröstete Maronen','كستناء مشوية'],
+  ['kestane','kuruyemis',245,3.2,53,2.2,10.6,5.1,5,'adet:10','','','kestane közlenmiş kebap','Kestane (közlenmiş)','Roasted chestnuts','Жареные каштаны','Geröstete Maronen','كستناء مشوية'],
   ['kek_ev','tatli',370,6,52,15,28,1,1,'dilim:50','dy','','kek ev yapımı sade','Kek (ev yapımı)','Homemade sponge cake','Домашний кекс','Rührkuchen (hausgemacht)','كيك منزلي'],
   ['meyve_salatasi','meyve',55,0.7,13.5,0.2,10.5,1.8,200,'','','','meyve salatası','Meyve salatası','Fruit salad','Фруктовый салат','Obstsalat','سلطة فواكه'],
   // Süt ürünü & peynir

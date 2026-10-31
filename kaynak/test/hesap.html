@@ -1,0 +1,104 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Hesap + eşitleme uçtan uca: sunucu http://127.0.0.1:8097 çalışıyor olmalı (python server/server.py 8097 --static .)
+// kaydol → kaydet() → PUT gitti mi → ikinci "cihaz" (depo temiz, giriş) → veri geldi mi → çakışma birleşmesi → paylaş / gelen kutusu → sıralama → sil
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+const ok=(k,m)=>L((k?'OK   ':'HATA ')+m);
+const API='http://127.0.0.1:8097/api';
+const api=async(m,p,body,tok)=>{const h={'Content-Type':'application/json'};if(tok)h.Authorization='Bearer '+tok;const r=await fetch(API+p,{method:m,headers:h,body:body===undefined?undefined:JSON.stringify(body)});let j=null;try{j=await r.json()}catch(e){}return {st:r.status,j};};
+const yukle=()=>new Promise(r=>{f.onload=()=>setTimeout(r,1200);f.src='../../index.html?'+Date.now();});
+// Eşitleme durumu beklenen değere gelene kadar bekle (en çok sure ms)
+const durumBekle=async(w,d,sure=9000)=>{const t0=Date.now();while(Date.now()-t0<sure){if(w.Esitle.durum===d)return true;await bekle(150);}return false;};
+localStorage.clear();
+setTimeout(async()=>{let w=f.contentWindow,d=w.document;
+const U='t'+Date.now().toString(36).slice(-7), U2=U+'b', P='sifre1234!';
+try{
+  // sunucu var mı
+  const h=await api('GET','/health');ok(h.st===200&&h.j&&h.j.ok,'sunucu /health '+h.st);
+  if(h.st!==200)throw new Error('sunucu yok: python server/server.py 8097 --static .');
+  // 1) kurulum (profil) tamamla
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Test',cins:'e',hamile:false,yas:33,boy:180,kilo:80,hedef:'koru',hedefKilo:80,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.turGoruldu=true;ciz()`);
+  await bekle(400);
+  ok(typeof w.Hesap==='object'&&typeof w.Esitle==='object','Hesap ve Esitle tanımlı');
+  ok(w.Esitle.durum==='kapali'&&d.getElementById('esitRozet')&&d.getElementById('esitRozet').hidden,'hesapsız: durum kapali, rozet gizli');
+  // 2) kaydol
+  const kul=await w.Hesap.kaydol(U,P,{kvkk:true,terms:true,health:true,ver:w.eval('RIZA_SURUM'),lb_optin:true});
+  ok(kul&&kul.username===U&&w.Hesap.durum().giris,'kaydol: '+U);
+  ok(!d.getElementById('esitRozet').hidden,'rozet görünür');
+  // 3) kaydet() → 3 sn sonra PUT
+  w.eval('suDegis(3)');
+  ok(w.Esitle.durum==='bekliyor','kaydet sonrası durum bekliyor');
+  ok(await durumBekle(w,'esit'),'PUT gitti → esit ('+w.Esitle.durum+')');
+  let r=await w.Hesap.istek('GET','/data');
+  ok(r.rev>=1&&r.data&&r.data.kayit[w.eval('bugunK()')]&&r.data.kayit[w.eval('bugunK()')].su===3,'sunucudaki veri: rev '+r.rev+' su='+(r.data&&r.data.kayit[w.eval('bugunK()')]&&r.data.kayit[w.eval('bugunK()')].su));
+  ok(w.Hesap._oturum().rev===r.rev,'yerel rev = sunucu rev '+r.rev);
+  const rozet=d.getElementById('esitRozet').textContent;ok(/☁/.test(rozet),'rozet metni: '+rozet);
+  // 4) ikinci cihaz: depo temiz, kurulum ekranı, giriş → veri gelir, kurulum atlanır
+  try{const rs=await w.navigator.serviceWorker.getRegistrations();for(const r of rs)await r.unregister();}catch(e){}   // önbellekten eski sayfa gelmesin
+  // açık IndexedDB bağlantısı silmeyi engeller → önce iframe boşaltılır, silme tamamlanana dek beklenir (aynı köken)
+  f.src='about:blank';await bekle(400);localStorage.clear();
+  await new Promise(r=>{const q=indexedDB.deleteDatabase('diyet_uygulamasi');q.onsuccess=q.onerror=q.onblocked=()=>r();setTimeout(r,3000);});
+  await yukle();w=f.contentWindow;d=w.document;await bekle(600);
+  ok(!d.getElementById('kurulum').hidden&&!w.eval('D.ayar.kurulum'),'2. cihaz: kurulum ekranı açık');
+  ok(!!d.getElementById('wzGiris'),'kurulum ekranında "Hesabım var" düğmesi');
+  await w.Hesap.gir(U,P);await w.Esitle.ilkCek();await bekle(300);
+  ok(w.eval('D.ayar.kurulum')===true&&w.eval('D.profil.ad')==='Test','giriş sonrası sunucu verisi geldi (profil Test)');
+  ok(d.getElementById('kurulum').hidden,'kurulum ekranı kapandı');
+  ok(w.eval('D.kayit')[w.eval('bugunK()')]&&w.eval('D.kayit')[w.eval('bugunK()')].su===3,'su=3 geldi');
+  ok(w.Esitle.durum==='esit','durum esit');
+  // 5) çakışma: sunucuya başka cihazdan farklı veri yazılır, yerelde de değişiklik yapılır → 409 → birleşim → yeniden gönder
+  const bugun=w.eval('bugunK()'),dun=w.eval(`gunEkle('${bugun}',-1)`);
+  const S0=w.eval('kopya(D)');S0.kayit[bugun]={...S0.kayit[bugun],su:7};S0.guncel=Date.now();
+  const rev0=w.Hesap._oturum().rev;
+  r=await w.Hesap.istek('PUT','/data',{base_rev:rev0,updated_at:S0.guncel,data:S0});ok(r.rev===rev0+1,'"öbür cihaz" su=7 yazdı, rev '+r.rev);
+  w.eval(`aktif='${dun}';yedimDegis(0);aktif=bugunK();ciz()`);   // yerel: dün kahvaltı yendi (rev ${rev0} ile gidecek → 409)
+  ok(await durumBekle(w,'esit',12000),'409 sonrası birleşim gönderildi → esit ('+w.Esitle.durum+')');
+  ok(w.eval('D.kayit')[bugun].su===7,'birleşim: bugün su=7 (sunucu) · yerel: '+w.eval('D.kayit')[bugun].su);
+  ok(w.eval('D.kayit')[dun]&&Object.values(w.eval('D.kayit')[dun].yendi).some(Boolean),'birleşim: dün yenen öğün korundu');
+  r=await w.Hesap.istek('GET','/data');ok(r.rev===rev0+2&&r.data.kayit[dun]&&r.data.kayit[bugun].su===7,'sunucuda birleşik veri rev '+r.rev);
+  ok(w.Hesap._oturum().rev===r.rev,'yerel rev güncel');
+  // 6) paylaşım: ikinci kullanıcı, program gönder, gelen kutusu
+  let k2=await api('POST','/register',{username:U2,password:P,lang:'tr',consent:{kvkk:true,terms:true,health:false,ver:w.eval('RIZA_SURUM')}});
+  ok(k2.st===200,'2. kullanıcı kaydı '+k2.st);const T2=k2.j.token;
+  w.eval("D.koc=kocBos();D.koc.a='Ali';D.koc.h='Dyt. Test';D.koc.gun[0].kahvalti=[{f:'yumurta',g:2}];D.koc.gun[0].ogle=[{f:'tavuk',g:150}]");
+  const PK=w.eval('kocPaket()');ok(PK&&PK.g.length===7,'kocPaket hazır');
+  const sh=await w.Hesap.paylas('program',U2,PK,'Test programı');ok(sh&&sh.code&&sh.code.length===8,'POST /share kod '+(sh&&sh.code));
+  let ib=await api('GET','/inbox',undefined,T2);ok(ib.st===200&&ib.j.length===1&&ib.j[0].from===U&&ib.j[0].seen===false,'2. kullanıcı gelen kutusu: 1 yeni');
+  let al=await api('GET','/share/'+sh.code,undefined,T2);ok(al.st===200&&al.j.payload.a==='Ali','alıcı paylaşımı açtı');
+  // 2. kullanıcı → 1. kullanıcıya gönderir; arayüz: gelen kutusu penceresi, satıra basınca programSor açılır
+  const geri=await api('POST','/share',{kind:'program',to:U,payload:PK,title:'Geri program'},T2);ok(geri.st===200,'2→1 paylaşım');
+  await w.Esitle.gelenKutusuSay(true);ok(w.Esitle.gelen===1,'Esitle.gelen = 1');
+  ok(/✉ 1/.test(d.getElementById('esitRozet').textContent),'rozette ✉ 1: '+d.getElementById('esitRozet').textContent);
+  w.gelenKutusuAc();await bekle(900);
+  const satir=d.querySelectorAll('#ibListe .ib-satir');ok(satir&&satir.length===1&&/Geri program/.test(satir[0].textContent),'gelen kutusu penceresi: 1 satır');
+  satir[0].click();await bekle(900);
+  ok(!!d.getElementById('impEvet')&&!!d.getElementById('impHayir'),'programSor penceresi açıldı (Evet/Hayır)');
+  d.getElementById('impHayir').click();await bekle(400);
+  ok(!!d.getElementById('ibListe'),'Hayır → gelen kutusuna geri döndü');
+  ib=await w.Hesap.gelenKutusu();ok(ib[0].seen===true,'açılan gönderi görüldü işaretlendi');
+  w.kapat();
+  // 7) sıralama (lb_optin açık): istatistik gönder, pencerede kendi satırı
+  const st=await w.Esitle.istatistikGonder(true);ok(st&&st.rank>=1,'PUT /stats rank '+(st&&st.rank));
+  w.siralamaAc();await bekle(900);
+  ok(!!d.querySelector('#lbListe .lb-satir.ben'),'sıralama penceresinde kendi satırı');
+  ok(!!d.getElementById('lbCik'),'sıralamadan ayrıl düğmesi var');
+  const lbTxt=d.getElementById('lbListe').textContent;ok(!/kcal|kg/.test(lbTxt),'sıralamada sağlık verisi yok');
+  w.kapat();
+  // 8) Ayarlar › Hesap bölümü
+  w.ayarlarAc();await bekle(300);
+  ok(!!d.getElementById('hesapBolum')&&!!d.getElementById('hsCikisBtn')&&!!d.getElementById('hsSilBtn')&&!!d.getElementById('hsLb'),'Ayarlar › Hesap bölümü (çıkış, sil, sıralama anahtarı)');
+  ok(d.getElementById('hsLb').checked===true,'sıralama anahtarı açık');
+  ok(new RegExp(U).test(d.getElementById('hesapBolum').textContent),'kullanıcı adı görünüyor');
+  w.kapat();
+  // 9) dışa aktarma
+  const ex=await w.Hesap.disaAktar();ok(ex&&ex.user&&ex.user.username===U&&ex.data&&ex.consents&&ex.consents.length>=1,'GET /export');
+  // 10) hesap silme (şifreyle) → oturum düşer, yerel veri kalır
+  await w.Hesap.sil(P);
+  ok(!w.Hesap.durum().giris&&w.Esitle.durum==='kapali','sil: oturum kapandı, durum kapali');
+  ok(d.getElementById('esitRozet').hidden,'rozet gizlendi');
+  ok(w.eval('D.ayar.kurulum')&&w.eval('D.kayit')[bugun].su===7,'yerel veri cihazda kaldı');
+  const gir=await api('POST','/login',{username:U,password:P});ok(gir.st===401,'silinen hesaba giriş 401');
+  w.eval('suDegis(2)');await bekle(200);ok(w.Esitle.durum==='kapali','hesapsız kaydet → ağ isteği yok (kapali)');
+  await api('DELETE','/account',{password:P},T2);
+}catch(e){L('HATA '+(e&&e.stack||e))}
+fetch('/SONUC_hesap',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

@@ -1,0 +1,8 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true
+  },
+  "include": ["App.tsx", "index.ts", "src/**/*.ts", "plugins/**/*.js", "app.config.js"],
+  "exclude": ["node_modules", "kaynak", "server", "web", "legal", "android", "ios", "dist", ".dev"]
+}

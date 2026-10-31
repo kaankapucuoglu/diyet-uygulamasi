@@ -1,0 +1,147 @@
+{
+  "expo": {
+    "slug": "lifefit",
+    "scheme": "lifefit",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#f3f6fb",
+    "primaryColor": "#16a36b",
+    "description": "Personal nutrition plan: meals, water, reminders and progress. Your data stays on your device.",
+    "ios": {
+      "bundleIdentifier": "com.maviplay.lifefit",
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "requireFullScreen": true,
+      "userInterfaceStyle": "light",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIRequiresFullScreen": true,
+        "UISupportedInterfaceOrientations": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ],
+        "UISupportedInterfaceOrientations~ipad": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationPortraitUpsideDown",
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ],
+        "CFBundleDevelopmentRegion": "en",
+        "CFBundleAllowMixedLocalizations": true,
+        "CFBundleLocalizations": [
+          "tr",
+          "en",
+          "ru",
+          "de",
+          "ar"
+        ]
+      },
+      "privacyManifests": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": []
+      }
+    },
+    "android": {
+      "package": "com.maviplay.lifefit",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0fa06c",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png"
+      },
+      "userInterfaceStyle": "light",
+      "softwareKeyboardLayoutMode": "resize",
+      "predictiveBackGestureEnabled": false,
+      "allowBackup": false,
+      "permissions": [
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.INTERNET",
+        "android.permission.VIBRATE"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO"
+      ]
+    },
+    "web": {
+      "backgroundColor": "#f3f6fb"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#f3f6fb",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "backgroundColor": "#f3f6fb"
+          },
+          "android": {
+            "image": "./assets/splash-icon-android.png",
+            "imageWidth": 288,
+            "dark": {
+              "image": "./assets/splash-icon-android.png",
+              "backgroundColor": "#f3f6fb"
+            }
+          }
+        }
+      ],
+      [
+        "expo-navigation-bar",
+        {
+          "style": "light",
+          "enforceContrast": false
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": false,
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": false,
+            "enableMinifyInReleaseBuilds": true
+          }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#16a36b",
+          "defaultChannel": "ogun"
+        }
+      ],
+      "./plugins/withBundledWeb.js",
+      "./plugins/withLocalReleaseSigning.js",
+      "./plugins/withCutout.js"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f76e12e6-ba92-4bfb-9a7f-f687be437a38"
+      },
+      "expo-navigation-bar": {
+        "enforceContrast": false,
+        "style": "light"
+      }
+    },
+    "owner": "maviplay"
+  }
+}
