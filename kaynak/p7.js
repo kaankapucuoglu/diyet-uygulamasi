@@ -350,13 +350,18 @@ function ayarlarAc(dilAcik = false){
     if (!(yeni.yas >= 14 && yeni.yas <= 100 && yeni.boy >= 120 && yeni.boy <= 230 && yeni.kilo >= 30 && yeni.kilo <= 300 && yeni.hedefKilo >= 30 && yeni.hedefKilo <= 300)){ toast(T('errBody')); return; }
     const degisen = ['yas', 'boy', 'kilo', 'hedefKilo'].filter(k => yeni[k] !== P[k]).map(k => `${T({yas:'age', boy:'height', kilo:'weight', hedefKilo:'targetW'}[k])}: ${sayi(P[k])} → ${sayi(yeni[k])}`);
     if (!degisen.length){ kapat(); return; }
+    const hedefKiloDegisti = yeni.hedefKilo !== P.hedefKilo;
     Object.assign(P, yeni);
-    hedefleriYenile();
     logEkle('diger', null, T('lBody', {l: degisen.join(', ')}));
-    kaydet(); ciz(); toast(T('tSaved'));
-    // Gönderilen program varsa planı bozma; yoksa yeni hedeflere göre planı yeniden hazırlamayı sor
-    if (D.program) kapat();
-    else icinden(ayarlarAc, () => onayAc(T('cBodyPlan'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); }));
+    hedefUygula(hedefKiloDegisti);
+    const y = $('sbody').scrollTop; ayarlarAc(); $('sbody').scrollTop = y;   // hedef alanları yeni değerleri göstersin
+    // Hedef kilo hedef türüyle çelişiyorsa (ör. kas kazanmak ama hedef kilo şimdikinden düşük) hedefi değiştirmeyi sor
+    const oneri = hedefKiloDegisti && hedefOnerisi(P);
+    if (oneri) icinden(ayarlarAc, () => onayAc(T(P.hedefKilo > P.kilo ? 'cHedefYukari' : 'cHedefAsagi', {h: sayi(P.hedefKilo), k: sayi(P.kilo), g: T('g_' + P.hedef), y: T('g_' + oneri)}), () => {
+      logEkle('diger', null, T('lHedef', {a: T('g_' + P.hedef), b: T('g_' + oneri)}));
+      P.hedef = oneri; if (oneri === 'ver' && !P.hiz) P.hiz = 0.5;
+      hedefUygula(false);
+    }));
   };
   $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { const y = $('sbody').scrollTop; D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(true); $('sbody').scrollTop = y; });
   $('hedefKaydet').onclick = () => {
@@ -444,6 +449,27 @@ function yazAc(){
 function hedefleriYenile(){
   const h = hedefHesapla(D.profil);
   Object.assign(D.profil, {kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su});
+}
+// Ölçü/hedef değişince: günlük hedefler yeniden hesaplanır; değiştiyse bugünden sonraki menüler yeni hedeflere göre hazırlanır
+// (bugün "yedim" denen öğünler ve geçmiş günler korunur). Diyetisyen programında hedefler ve menü programdan gelir, dokunulmaz.
+function hedefUygula(hedefKiloDegisti){
+  const P = D.profil;
+  if (D.program){ kaydet(); ciz(); toast(T('tProgHedef'), 5200); return; }
+  const anahtar = () => [P.kcal, P.protein, P.karb, P.yag].join();
+  const once = anahtar();
+  hedefleriYenile();
+  if (anahtar() !== once){ planYenile(); kaydet(); ciz(); toast(T('tPlanYeni', {b: P.kcal}), 5200); return; }
+  kaydet(); ciz();
+  // Kalori aynı kaldıysa nedenini söyle: kalori hedef türüne göre hesaplanır, hedef kilo yalnız süreyi etkiler
+  toast(hedefKiloDegisti && P.hedef ? T('tKcalAyni', {k: P.kcal, g: T('g_' + P.hedef)}) : T('tSaved'), hedefKiloDegisti ? 5200 : 2200);
+}
+// Hedef kilo şimdiki kilonun belirgin üstünde/altındaysa ve hedef türü ters yöndeyse önerilecek hedef ('' = uyumlu)
+function hedefOnerisi(P){
+  if (hamileMi() || !P.hedef) return '';
+  const fark = P.hedefKilo - P.kilo;
+  if (fark >= 1 && ['ver', 'sekil', 'koru'].includes(P.hedef)) return P.hedef === 'sekil' ? 'kas' : 'al';
+  if (fark <= -1 && ['kas', 'al', 'koru'].includes(P.hedef) && vki(P) >= 18.5) return 'ver';
+  return '';
 }
 function hamileDegistir(){
   if (hamileMi()){

@@ -225,6 +225,8 @@ $('kurulum').addEventListener('click', e => {
     W.hedef = ds.whedef; wHata = '';
     if (W.hedef === 'ver' && !(W.hedefKilo < W.kilo)) W.hedefKilo = Math.round(Math.max(W.kilo - 5, 18.5 * Math.pow(W.boy / 100, 2)));
     if (W.hedef === 'al' && !(W.hedefKilo > W.kilo)) W.hedefKilo = Math.round(W.kilo + 4);
+    if (W.hedef === 'kas' && !(W.hedefKilo >= W.kilo)) W.hedefKilo = Math.round(W.kilo + 3);   // kas kazanırken hedef kilo düşmez
+    if (W.hedef === 'koru') W.hedefKilo = W.kilo;
     wCiz(); return;
   }
   if (ds.wodak){ const o = new Set(W.odaklar || []); o.has(ds.wodak) ? o.delete(ds.wodak) : o.add(ds.wodak); W.odaklar = [...o]; wCiz(); return; }

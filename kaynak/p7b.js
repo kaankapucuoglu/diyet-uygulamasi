@@ -101,11 +101,21 @@ function togCiz(hedef, acildi, degistir){
 }
 
 // ---------- Kopyalama yardımcısı ----------
+// Dokunuş anında iki yöntem birden: eski yöntem (iPhone seçim aralığı ister) + Clipboard API. İkisi de olmazsa false.
+function kopyalaDene(metin){
+  let ok = false;
+  const t = document.createElement('textarea');
+  t.value = metin; t.setAttribute('readonly', '');
+  t.style.cssText = 'position:fixed;top:0;left:-9999px;font-size:12pt;border:0;padding:0;margin:0';
+  document.body.appendChild(t);
+  try { t.select(); t.setSelectionRange(0, metin.length); ok = document.execCommand('copy'); } catch(e){}
+  t.remove();
+  let api = Promise.resolve(false);
+  try { if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) api = navigator.clipboard.writeText(metin).then(() => true, () => false); } catch(e){}
+  return api.then(a => a || ok);
+}
 function kopyala(metin, mesaj, sure){
-  const bitti = () => toast(mesaj || T('tCopied'), sure);
-  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(metin).then(bitti, () => eskiKopya());
-  else eskiKopya();
-  function eskiKopya(){ const t = document.createElement('textarea'); t.value = metin; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); bitti(); } catch(e){} t.remove(); }
+  return kopyalaDene(metin).then(ok => { toast(ok ? mesaj || T('tCopied') : T('tCopyFail'), ok ? sure : 5200); return ok; });
 }
 
 // ---------- Destek ol ----------
@@ -541,30 +551,58 @@ async function tasiAc(){
   const gunler = kayitliGunler(D), ver = D.ayar.kurulum, ios = iosMu(), uyg = bagimsiz();
   const yer = ios ? (uyg ? 'U' : 'T') : 'G';   // U: iPhone ana ekran uygulaması, T: iPhone tarayıcı, G: diğer
   if (ver){ const kod = await paketKodla(D); tasiKod = PAYLASIM_TABAN + '#t=' + kod + '&n=' + kod.length; }   // tıklamada hazır olsun (iPhone kopyalamayı yalnız dokunuş anında izin verir)
-  const pano = !!(navigator.clipboard && navigator.clipboard.readText);
+  // iPhone'da pano okuma isteği sessizce reddedilebiliyor / küçük balon gözden kaçıyor → orada yalnız kutuya yapıştırma
+  const pano = !ios && !!(navigator.clipboard && navigator.clipboard.readText);
   const gonder = ver ? `<div class="tasi-blok">
       <h4>${T('tasiVerT')}</h4><p>${esc(T('tasiVerM' + yer))}</p>
       <div class="tasi-ozet">${T('tasiOzet', {g: gunler.length})}${gunler.length ? ` · ${esc(etiket(gunler[0]))} – ${esc(etiket(gunler[gunler.length - 1]))}` : ''}</div>
       <button class="btn solid full" id="tasiKopya">${T('tasiKopya')}</button>
-      ${navigator.share ? `<button class="btn ghost full tasi-ek" id="tasiGonder">${T('tasiGonder')}</button>` : ''}
+      <details class="tasi-elle" id="tasiElleKop"><summary>${T('tasiElleKopT')}</summary>
+        <p class="tasi-not">${esc(T('tasiElleKopM'))}</p>
+        <textarea class="search tasi-kutu" id="tasiKodKutu" rows="3" readonly></textarea>
+        <button class="btn full tasi-ek" id="tasiDosyaKaydet">${T('tasiDosyaKaydet')}</button>
+        ${navigator.share ? `<button class="btn ghost full tasi-ek" id="tasiGonder">${T('tasiGonder')}</button>` : ''}
+      </details>
     </div>` : '';
   const al = `<div class="tasi-blok">
       <h4>${T('tasiAlT')}</h4><p>${esc(T('tasiAlM'))}</p>
-      ${pano ? `<button class="btn green full" id="tasiPano">${T('tasiPanoAktar')}</button>` : ''}
-      <details class="tasi-elle" id="tasiElle"${pano ? '' : ' open'}><summary>${T('tasiElleT')}</summary>
-        <textarea class="search tasi-kutu" id="tasiYapistir" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="https://…#t=…"></textarea>
-        <button class="btn green full" style="margin-top:8px" id="tasiAlBtn">${T('tasiAlBtn')}</button></details>
+      <textarea class="search tasi-kutu" id="tasiYapistir" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="${esc(T('tasiKutuPh'))}"></textarea>
+      <div class="acts" style="margin-top:8px">${pano ? `<button class="btn" id="tasiPano">${T('tasiPanoAktar')}</button>` : ''}<button class="btn green" id="tasiAlBtn">${T('tasiAlBtn')}</button></div>
+      <details class="tasi-elle"><summary>${T('tasiDosyaT')}</summary>
+        <p class="tasi-not">${esc(T('tasiDosyaM'))}</p>
+        <button class="btn full tasi-ek" id="tasiDosyaAl">${T('tasiDosyaAl')}</button>
+        <input type="file" id="tasiDosya" accept=".json,application/json,text/plain" hidden>
+      </details>
     </div>`;
   ac('📲 ' + T('tasiT'), `<p class="tasi-neden">${esc(T(ios ? 'tasiNeden' : 'tasiNedenG'))}</p>
     ${ios ? `<div class="tasi-yer">${T(uyg ? 'tasiSimdiU' : 'tasiSimdiT')}</div>` : ''}
     ${yer === 'U' ? al + gonder : gonder + al}
     ${ver ? `<div class="hint" style="margin-top:10px">${esc(T('tasiGizli'))}</div>` : ''}`);   // ana ekran uygulamasında önce "buraya getir"
-  if ($('tasiKopya')) $('tasiKopya').onclick = () => kopyala(tasiKod, T('tasiKop' + yer), TASI_SURE);
+  if ($('tasiKodKutu')) $('tasiKodKutu').value = tasiKod;
+  if ($('tasiKopya')) $('tasiKopya').onclick = () => {
+    const b = $('tasiKopya');
+    kopyalaDene(tasiKod).then(ok => {
+      if (ok){ toast(T('tasiKop' + yer), TASI_SURE); b.textContent = T('tasiKopyalandiBtn'); b.className = 'btn green full'; return; }
+      // Otomatik olmadı: kod kutusu açılır (uzun bas → Kopyala) + dosya seçeneği
+      toast(T('tasiKopFail'), TASI_SURE); $('tasiElleKop').open = true; $('tasiKodKutu').scrollIntoView({block: 'center', behavior: 'smooth'});
+    });
+  };
+  if ($('tasiDosyaKaydet')) $('tasiDosyaKaydet').onclick = () => indir(JSON.stringify(D), `${dosyaAdi()}_tasima_${bugunK()}.json`, 'application/json');
   if ($('tasiGonder')) $('tasiGonder').onclick = () => navigator.share({title: T('tasiT'), text: tasiKod}).catch(() => {});
-  const elle = () => { $('tasiElle').open = true; };
-  const aktar = m => { if (!/#t=/.test(m || '')){ toast(T('tasiBos'), TASI_SURE); elle(); return; } icinden(tasiAc, () => tasiLinkiAc(m)); };
-  if ($('tasiPano')) $('tasiPano').onclick = () => navigator.clipboard.readText().then(m => { $('tasiYapistir').value = m || ''; aktar(m); }, () => { toast(T('tasiElle'), TASI_SURE); elle(); });
+  const aktar = m => { if (!/#t=/.test(m || '')){ toast(T('tasiBos'), TASI_SURE); return; } icinden(tasiAc, () => tasiLinkiAc(m)); };
+  // Kod yapışınca (tam ve sağlam ise) aktarma kendiliğinden başlar
+  $('tasiYapistir').addEventListener('input', e => { const r = e.target.value.match(/#t=([A-Za-z0-9_-]+)&n=(\d+)/); if (r && +r[2] === r[1].length) aktar(e.target.value); });
   $('tasiAlBtn').onclick = () => aktar($('tasiYapistir').value);
+  if ($('tasiPano')) $('tasiPano').onclick = () => navigator.clipboard.readText().then(m => { $('tasiYapistir').value = m || ''; aktar(m); }, () => toast(T('tasiElle'), TASI_SURE));
+  $('tasiDosyaAl').onclick = () => $('tasiDosya').click();
+  $('tasiDosya').onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => { let G = null; try { G = JSON.parse(r.result); } catch(_){}
+      if (!G || !enYeni(G)){ toast(T('tasiBad'), TASI_SURE); return; }
+      icinden(tasiAc, () => tasiOnayla(G)); };
+    r.readAsText(f);
+  };
 }
 async function tasiLinkiAc(metin){
   const m = String(metin || '').match(/#t=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
@@ -577,6 +615,9 @@ async function tasiLinkiAc(metin){
     $('tasiTamam').onclick = () => { if (geriFn) geriFn(); else kapat(); };
     return true;
   }
+  return tasiOnayla(G);
+}
+function tasiOnayla(G){
   onayAc(T('tasiSor', {g: kayitliGunler(G).length, a: (G.profil && G.profil.ad) || '—'}), () => verileriBirlestir(G));
   return true;
 }

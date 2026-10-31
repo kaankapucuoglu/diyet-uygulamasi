@@ -1,0 +1,51 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Hedef kilo / hedef türü: kalori ve sonraki günlerin menüleri güncellenir, çelişkide hedef değişikliği sorulur
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+const ok=(ad,kosul,ek='')=>L((kosul?'OK   ':'HATA ')+ad+(ek!==''?' · '+ek:''));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;const $=id=>d.getElementById(id);
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Kaan',cins:'e',hamile:false,yas:33,boy:180,kilo:78,hedef:'kas',hedefKilo:84,hiz:0.5,aktivite:3,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'07:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.destekVerdi=true;D.ayar.turGoruldu=true;if($('tur'))$('tur').remove();kapat()`);
+  w.eval("D.profil.hedefKilo=65;yedimDegis(0);kaydet()");   // kullanıcının durumu: kas kazanmak, 78 kg, hedef 65
+  const yarin=()=>w.eval("Math.round(topla(menuOku(gunEkle(bugunK(),1)).flatMap(o=>o.ogeler)).k)"),kcal=()=>w.eval('D.profil.kcal'),hedef=()=>w.eval('D.profil.hedef');
+  const bugunYenen=()=>w.eval("JSON.stringify(menuOku(bugunK())[0].ogeler)+kayitOku(bugunK()).yendi[menuOku(bugunK())[0].id]");
+  const toast=()=>$('toast').classList.contains('show')?$('toast').textContent:'(yok)';
+  const kaydetOlcu=async(alan,deger)=>{w.ayarlarAc();$('b_'+alan).value=deger;$('olcuKaydet').click();await bekle(150);};
+  const k0=kcal(),y0=yarin(),b0=bugunYenen();L(`     baslangic: kas, 78 kg, hedef 65 · ${k0} kcal · yarin menu ${y0} kcal`);
+  // 1) 65 → 82 (kas kazanmak ile uyumlu): kalori aynı, açıklama
+  await kaydetOlcu('hedefKilo','82');
+  ok('65→82: soru yok (kas ile uyumlu)',!$('onayEvet'));
+  ok('65→82: kalori ayni + nedeni aciklandi',kcal()===k0&&/türüne göre/.test(toast()),toast());
+  ok('Ayarlar acik, hedef alani yeni deger',!!$('olcuKaydet')&&$('b_hedefKilo').value==='82');
+  w.kapat();
+  // 2) 82 → 65 (kas kazanmak ile çelişir): "Kilo vermek" önerisi → evet → kalori düşer, yarının menüsü yeni hedefe göre, bugün yenen korunur
+  await kaydetOlcu('hedefKilo','65');
+  ok('82→65: hedef degisikligi soruldu',!!$('onayEvet'),d.querySelector('.onay-metin').textContent);
+  $('onayEvet').click();await bekle(200);
+  const k2=kcal(),y2=yarin();
+  ok('Evet → hedef Kilo vermek, kalori dustu',hedef()==='ver'&&k2<k0,`${k0} → ${k2} kcal`);
+  ok('Yarinin menusu yeni hedefe gore',Math.abs(y2-k2)<Math.abs(y0-k2),`yarin ${y0} → ${y2} kcal (hedef ${k2})`);
+  ok('Bugun yenen ogun korundu',bugunYenen()===b0);
+  ok('Bildirim: menuler yeniden hazirlandi',/yeniden hazırlandı/.test(toast()),toast());
+  // 3) Vazgeç: hedef türü değişmez, Ayarlar'a dönülür
+  await kaydetOlcu('hedefKilo','90');
+  ok('ver + hedef 90: Kilo almak onerisi',/Kilo almak/.test(d.querySelector('.onay-metin').textContent));
+  $('onayHayir').click();await bekle(100);
+  ok('Vazgec → hedef ayni (ver), Ayarlar acik',hedef()==='ver'&&!!$('olcuKaydet'));
+  w.kapat();
+  // 4) Kilo değişince (hedef türü aynı) kalori değişir → menüler kendiliğinden güncellenir, soru yok
+  w.eval("D.profil.hedef='al';D.profil.hedefKilo=90;hedefleriYenile();planYenile();kaydet()");
+  const k4=kcal();await kaydetOlcu('kilo','85');
+  ok('Kilo 78→85: soru yok, kalori ve menu guncellendi',!$('onayEvet')&&kcal()>k4&&/yeniden hazırlandı/.test(toast()),`${k4} → ${kcal()} kcal`);
+  w.kapat();
+  // 5) Diyetisyen programı: hedefler ve menü programdan, ölçü değişince ezilmez
+  w.eval("D.program={h:'Test',t:{kcal:2000}};D.profil.kcal=2000;kaydet()");
+  await kaydetOlcu('kilo','88');
+  ok('Programda kalori ezilmedi',kcal()===2000&&/Diyetisyen/.test(toast()),toast());
+  w.eval("D.program=null;kaydet()");w.kapat();
+  // 6) Kurulum: kas seçince hedef kilo şimdikinin altında kalmaz
+  w.eval("sihirbazAc('hedef');W.kilo=78;W.hedefKilo=65");d.querySelector('[data-whedef="kas"]').click();
+  ok('Kurulum: kas → hedef kilo >= kilo',w.eval('W.hedefKilo')>=78,w.eval('W.hedefKilo'));
+  w.eval('sihirbazKapat()');
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_hedef',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>
