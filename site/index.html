@@ -53,7 +53,7 @@ h1 em{font-style:normal;color:var(--green2)}
 .facts .ic{width:18px;height:18px;color:var(--green2)}
 .shots{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:18px;min-height:420px}
 .phone{width:min(250px,44vw);border-radius:34px;padding:9px;background:#0f1a2c;box-shadow:0 30px 60px rgba(19,32,54,.25)}
-.phone img{border-radius:26px;width:100%;height:auto;aspect-ratio:390/844;object-fit:cover;object-position:top;background:#eef2f7}
+.phone img,.phone video{display:block;border-radius:26px;width:100%;height:auto;aspect-ratio:390/844;object-fit:cover;object-position:top;background:#eef2f7}
 .phone.b{transform:translateY(-34px)}
 /* Bölümler */
 section{padding:64px 0}
@@ -113,7 +113,7 @@ footer .sp{margin-inline-start:auto}
   .langs button{min-width:36px;font-size:12px}
   .brand span{display:none}
   .phone{width:44vw;border-radius:26px;padding:6px}
-  .phone img{border-radius:21px}
+  .phone img,.phone video{border-radius:21px}
   .phone.b{transform:translateY(-20px)}
   .btn{width:100%}
   section{padding:46px 0}
@@ -146,8 +146,8 @@ footer .sp{margin-inline-start:auto}
     </div>
   </div>
   <div class="shots" aria-hidden="true">
-    <div class="phone"><img src="/img/tel-ana.png" alt="" width="390" height="844" loading="eager"></div>
-    <div class="phone b"><img src="/img/tel-ogun.png" alt="" width="390" height="844"></div>
+    <div class="phone"><img src="/img/tel-ogun.png" alt="" width="390" height="844" loading="eager"></div>
+    <div class="phone b"><video src="/img/kullanim.mp4" poster="/img/kullanim.jpg" width="600" height="1298" autoplay muted loop playsinline preload="auto"></video></div>
   </div>
 </div></div>
 
@@ -352,6 +352,8 @@ function yukle(){
 document.getElementById('installBtn').addEventListener('click', yukle);
 document.querySelectorAll('.js-install').forEach(b => b.addEventListener('click', yukle));
 if (matchMedia('(display-mode: standalone)').matches) location.replace('/app/');
+// Hareket azaltma açıksa kullanım videosu kendiliğinden oynamaz
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelectorAll('video[autoplay]').forEach(v => { v.removeAttribute('autoplay'); v.pause(); v.controls = true; });
 uygula();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 </script>
