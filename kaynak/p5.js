@@ -105,7 +105,7 @@ const TERCIH = {
   yumurta:['tofu'], ybeyaz:['tofu'], omlet:['tofu'], menemen:['tofu'], cilbir:['tofu'], pankek:['yulaf'],
   yogurt:['soya_yogurt'], suzme:['soya_yogurt'], kefir:['soya_sut'], sut:['soya_sut'], cacik:['soya_yogurt'], semizotu:['salata'], kereviz:['salata']
 };
-const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay']);
+const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay','smoothie','protein_shake','cappuccino','salep','limonata','kola','kola_zero']);
 // Kalori yetmezse ara öğüne eklenecek besleyici seçenekler (ilk uygun olan)
 const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]],
   [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',25]]];   // sona doğru alerjiye uygun seçenekler

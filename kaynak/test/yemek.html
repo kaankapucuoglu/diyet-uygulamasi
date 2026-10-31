@@ -1,0 +1,51 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Yeni yemekler: Sandviç grubu, aramalar, öğüne ekleme, benzerleri, alerji/hamilelik süzgeci, 5 dilde ad
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+const ok=(k,m)=>L((k?'OK   ':'HATA ')+m);
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;
+try{
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Kaan',cins:'e',hamile:false,yas:33,boy:180,kilo:80,hedef:'kas',hedefKilo:84,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.turGoruldu=true;D.ayar.hepsiKapali=false;D.ayar.kapali={};ciz()`);
+  await bekle(400);
+  ok(w.eval('YEMEKLER.length')>=530,'yemek sayisi '+w.eval('YEMEKLER.length'));
+  // Ekle penceresi (öğle)
+  const oi=w.eval(`menuOku(aktif).findIndex(o=>o.id==='ogle')`);
+  w.eval(`secimAc({mod:'ekle',oi:${oi}})`);await bekle(200);
+  const grup=d.querySelector('#kategoriler [data-grup]');if(grup){grup.click();await bekle(100);}
+  const chip=d.querySelector('#kategoriler [data-kat="sandvic"]');
+  ok(!!chip,'Sandvic grubu cipi: '+(chip?chip.textContent:'YOK'));
+  const katlar=[...d.querySelectorAll('#kategoriler [data-kat]')].map(b=>b.dataset.kat);
+  ok(katlar.indexOf('sandvic')===katlar.indexOf('hamur')+1,'sira: hamur -> sandvic');
+  if(chip){chip.click();await bekle(150);}
+  const n=d.querySelectorAll('#flist [data-fid]').length;ok(n>=40,'Sandvic grubunda '+n+' yemek; ilk 5: '+[...d.querySelectorAll('#flist [data-fid] b')].slice(0,5).map(b=>b.textContent).join(' | '));
+  const ara=async q=>{const a=d.getElementById('ara');a.value=q;a.dispatchEvent(new w.Event('input'));await bekle(120);return [...d.querySelectorAll('#flist [data-fid]')];};
+  for(const [q,en] of [['sandviç',30],['tost',6],['dürüm',8],['wrap',5],['burger',5],['börek',14],['pide',12],['pizza',4],['poğaça',5],['ekmek',20],['tavuk',45],['köfte',15],['salata',35],['kraker',3],['cips',2]]){
+    const r=await ara(q);ok(r.length>=en,`ara "${q}": ${r.length} sonuc (beklenen >= ${en}) · ilk: ${r.slice(0,3).map(b=>b.querySelector('b').textContent).join(' | ')}`);
+  }
+  // Öğüne ekle: tavuklu sandviç
+  const r=await ara('tavuklu sandviç');const b=r.find(x=>x.dataset.fid==='tavuk_sandvic');ok(!!b,'tavuk_sandvic aramada');
+  if(b){b.click();await bekle(150);
+    const birim=d.getElementById('birimYazi')?d.getElementById('birimYazi').textContent:'';L('     detay birim: '+birim+' · miktar '+d.getElementById('gramIn').value);
+    d.getElementById('onay').click();await bekle(300);
+    ok(w.eval(`menuOku(aktif)[${oi}].ogeler.some(x=>x.f==='tavuk_sandvic')`),'tavuk_sandvic ogle ogunune eklendi');
+    const satir=[...d.querySelectorAll('#ogunler .meal')][oi].textContent;ok(/Tavuklu sandviç/.test(satir),'ogun kartinda gorunuyor');
+  }
+  // Benzerleri
+  L('     benzer(tost): '+w.eval(`benzerler('tost').slice(0,6).map(f=>yemek(f).ad).join(' | ')`));
+  L('     benzer(tavuk_sandvic): '+w.eval(`benzerler('tavuk_sandvic').slice(0,6).map(f=>yemek(f).ad).join(' | ')`));
+  L('     benzer(kasarli_sandvic): '+w.eval(`benzerler('kasarli_sandvic').slice(0,6).map(f=>yemek(f).ad).join(' | ')`));
+  // Taşınan eski yemekler artık sandviç grubunda
+  ok(w.eval(`['tost','karisik_tost','tavuk_durum'].every(i=>yemek(i).kat==='sandvic')`),'tost/karisik_tost/tavuk_durum -> sandvic');
+  // Süzgeçler
+  ok(!w.eval(`profilUygun({...D.profil,alerjiler:['gluten']})(yemek('tavuk_sandvic'))`),'gluten alerjisinde tavuk_sandvic gizli');
+  ok(w.eval(`profilUygun({...D.profil,alerjiler:['gluten']})(yemek('glutensiz_ekmek'))`),'gluten alerjisinde glutensiz_ekmek gorunur');
+  ok(!w.eval(`profilUygun({...D.profil,haric:['m']})(yemek('kofte_ekmek'))`),'kirmizi et yemeyen: kofte_ekmek gizli');
+  ok(w.eval(`HAMILE_DISI.has('somonlu_sandvic')&&HAMILE_DISI.has('kokorec')`),'hamilelik disi: fume somon, kokorec');
+  ok(w.eval(`DOKTOR_DISI.has('hamburger')&&!DOKTOR_DISI.has('tavuk_sandvic')`),'planda kullanilmayan: hamburger evet, tavuk_sandvic hayir');
+  // Dil
+  for(const [i,dl] of [[1,'en'],[2,'ru'],[3,'de'],[4,'ar']]) L(`     ${dl}: `+w.eval(`yemek('tavuk_doner_durum').n[${i}]+' · '+(S.k_sandvic[${i}])`));
+  // Plan yeniden oluşturulunca hata yok, gün toplamı makul
+  w.eval(`planYenile&&planYenile()`);await bekle(300);
+  const kcal=w.eval(`menuOku(aktif).reduce((t,o)=>t+o.ogeler.reduce((s,x)=>s+besin(x.f,x.g).k,0),0)`);ok(kcal>1200&&kcal<4000,'plan yenilendi, gunluk kcal '+Math.round(kcal));
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_yemek',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>

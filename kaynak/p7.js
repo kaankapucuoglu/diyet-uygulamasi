@@ -73,7 +73,7 @@ const SON = '__son', TUMU = '__tumu', BENZER = '__benzer';
 // Değiştir/Kıyasla için benzer yemekler: aynı tür (ad/etiket ortak kelime, ör. "ekmek") önce, sonra aynı gruptaki besin değeri en yakınlar
 // Türü değil niteliği/pişirmeyi anlatan kelimeler benzerlikte sayılmaz (ör. "tam buğday" ekmekle makarnayı eşleştirmesin)
 const NITELIK = new Set(['tam','bugday','kepekli','haslama','haslanmis','izgara','firin','tava','yarim','yagli','sekersiz','tuzsuz','sade','light','kahvalti','yemek','yemegi','zeytinyagli','yogurtlu','kimyonlu','sumakli','derisiz','suzulmus','bugulama']);
-const KAT_SIRA = ['et','balik','yumurta','sut','kahvaltilik','bitkisel','baklagil','anayemek','hamur','salata','sebze','tahil','pilav','corba','meyve','kuruyemis','atistirmalik','tatli','icecek','ozel'];
+const KAT_SIRA = ['et','balik','yumurta','sut','kahvaltilik','bitkisel','baklagil','anayemek','hamur','sandvic','salata','sebze','tahil','pilav','corba','meyve','kuruyemis','atistirmalik','tatli','icecek','ozel'];
 const GRUP = {et:'protein', balik:'protein', yumurta:'protein', bitkisel:'protein'};
 function benzerler(fid, uygun = profilUygun(D.profil)){
   const f = yemek(fid);

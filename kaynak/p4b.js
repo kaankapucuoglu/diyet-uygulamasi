@@ -100,6 +100,8 @@ const YEMEK_ALERJEN = {
 const HAMILE_DISI = new Set(['yumurta_pose', 'yumurta_sahanda', 'cilbir', 'ton', 'yesilcay']);
 Object.assign(YEMEK_ALERJEN, ALERJEN_EK);
 ['rafadan', 'ton_salata', 'ciger', 'pastirma'].forEach(id => HAMILE_DISI.add(id));
+HAMILE_DISI_EK.forEach(id => HAMILE_DISI.add(id));
+DOKTOR_DISI_EK.forEach(id => DOKTOR_DISI.add(id));
 YEMEKLER.forEach(f => { if (KAT_DEGIS[f.id]) f.kat = KAT_DEGIS[f.id]; });
 YEMEKLER.forEach(f => { f.al = (YEMEK_ALERJEN[f.id] || '').split(',').filter(Boolean); });
 const alerjen = id => ALERJENLER.find(a => a.id === id);
