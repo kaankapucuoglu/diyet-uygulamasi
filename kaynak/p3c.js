@@ -129,7 +129,7 @@ Object.assign(S, {
   rpFood:["Yiyecek","Food","Продукт","Lebensmittel","الطعام"],
   rpMealTotal:["Öğün toplamı","Meal total","Итого","Summe","مجموع الوجبة"],
   rpNotEaten:["Yenmeyen öğünler","Skipped meals","Пропущенные приёмы","Ausgelassene Mahlzeiten","وجبات لم تؤكل"],
-  rpFooter:["Kişisel Diyet Planı ile hazırlandı","Made with Personal Diet Plan","Сделано в «Личный план питания»","Erstellt mit Persönlicher Diätplan","أُعدّ بواسطة خطة النظام الغذائي الشخصية"],
+  rpFooter:["LifeFit ile hazırlandı","Made with LifeFit","Создано в LifeFit","Erstellt mit LifeFit","أُعدّ باستخدام LifeFit"],
   tourBtn:["Kullanım turu", "App tour", "Обзор приложения", "App-Tour", "جولة في التطبيق"],
   tourSkip:["Geç", "Skip", "Пропустить", "Überspringen", "تخطَّ"],
   tourNext:["İleri", "Next", "Далее", "Weiter", "التالي"],

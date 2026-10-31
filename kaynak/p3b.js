@@ -15,7 +15,7 @@ Object.assign(S, {
   fbText:["Uygulamayla ilgili önerilerinizi, şikâyetlerinizi ya da hata bildirimlerinizi bize yazın. Mesajınızı okuyup dönüş yapacağız.","Send us your suggestions, complaints or bug reports about the app. We read every message and will get back to you.","Напишите нам предложения, жалобы или сообщения об ошибках. Мы читаем каждое письмо и ответим вам.","Schreib uns Vorschläge, Beschwerden oder Fehlermeldungen zur App. Wir lesen jede Nachricht und melden uns.","أرسل لنا اقتراحاتك أو شكاواك أو بلاغات الأخطاء. نقرأ كل رسالة وسنرد عليك."],
   fbOpen:["✉️ E-posta uygulamasında yaz","✉️ Write in my e-mail app","✉️ Написать в почтовом приложении","✉️ In meiner E-Mail-App schreiben","✉️ الكتابة في تطبيق البريد"],
   fbCopy:["📋 Adresi kopyala","📋 Copy address","📋 Скопировать адрес","📋 Adresse kopieren","📋 نسخ العنوان"],
-  fbSubject:["Diyet Listesi: öneri / şikâyet","Diet Plan: feedback","План питания: отзыв","Ernährungsplan: Feedback","الخطة الغذائية: ملاحظات"],
+  fbSubject:["LifeFit: öneri / şikâyet","LifeFit: feedback","LifeFit: отзыв","LifeFit: Feedback","LifeFit: ملاحظات"],
   fbBody:["Mesajınız:\n\n\n---\nUygulama dili: {dil} · Cihaz: {cihaz}","Your message:\n\n\n---\nApp language: {dil} · Device: {cihaz}","Ваше сообщение:\n\n\n---\nЯзык: {dil} · Устройство: {cihaz}","Deine Nachricht:\n\n\n---\nSprache: {dil} · Gerät: {cihaz}","رسالتك:\n\n\n---\nاللغة: {dil} · الجهاز: {cihaz}"],
   tCopied:["Adres kopyalandı","Address copied","Адрес скопирован","Adresse kopiert","تم نسخ العنوان"],
   // Uyarılar

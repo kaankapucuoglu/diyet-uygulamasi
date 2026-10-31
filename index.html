@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
-<title>Diyet Listesi</title>
+<title>LifeFit</title>
 <style>
 :root{
   --bg:#f3f6fb;--card:#fff;--line:#e4e9f1;--text:#172338;--muted:#718096;
@@ -176,8 +176,8 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .glass.full::after{height:82%}
 .glass.ekstra{border-color:#9fdcc1}
 .glass.ekstra::after{background:linear-gradient(#5fd3a0,var(--green))}
-.water-btns{display:flex;gap:8px}
-.water-btns .btn{white-space:nowrap}
+.water-btns{display:flex;flex-wrap:wrap;gap:8px}
+.water-btns .btn{white-space:normal;flex:1 1 150px;min-width:0;line-height:1.25}   /* uzun dil etiketleri (de/ru) kutudan taşmasın: sarılır, dar alanda alt alta geçer */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:5px 14px;border-radius:11px;text-align:center;line-height:1.25;
   font-weight:600;font-size:14px;background:var(--blue-soft);color:var(--blue)}
 .btn.solid{background:var(--blue);color:#fff}
@@ -693,8 +693,8 @@ const RTL = () => dil === 'ar';
 
 // Metinler: [tr, en, ru, de, ar]
 const S = {
-  app:["Diyet Listesi","Diet Plan","План питания","Ernährungsplan","خطة غذائية"],
-  eyebrow:["Kişisel diyet planı","Personal diet plan","Персональный план питания","Persönlicher Ernährungsplan","خطة غذائية شخصية"],
+  app:["LifeFit","LifeFit","LifeFit","LifeFit","LifeFit"],   // görünen ad (sabah değişebilir; app.config.js APP_NAME ile aynı tut)
+  eyebrow:["Kişisel beslenme ve sağlık planı","Personal nutrition & health plan","Личный план питания и здоровья","Persönlicher Ernährungs- und Gesundheitsplan","خطة شخصية للتغذية والصحة"],
   saved:["✓ Kaydedildi {t}","✓ Saved {t}","✓ Сохранено {t}","✓ Gespeichert {t}","✓ تم الحفظ {t}"],
   autosave:["✓ Kayıt açık","✓ Saving on","✓ Сохранение вкл.","✓ Speichern an","✓ الحفظ مفعّل"],
   storageWarn:["⚠ Bu açılışta kayıt tutulamıyor · Ayarlar › Yedek","⚠ Data can’t be saved here · Settings › Backup","⚠ Здесь нельзя сохранить данные · Настройки › Копия","⚠ Speichern hier nicht möglich · Einstellungen › Sicherung","⚠ لا يمكن الحفظ هنا · الإعدادات › النسخ الاحتياطي"],
@@ -1015,7 +1015,7 @@ Object.assign(S, {
   fbText:["Uygulamayla ilgili önerilerinizi, şikâyetlerinizi ya da hata bildirimlerinizi bize yazın. Mesajınızı okuyup dönüş yapacağız.","Send us your suggestions, complaints or bug reports about the app. We read every message and will get back to you.","Напишите нам предложения, жалобы или сообщения об ошибках. Мы читаем каждое письмо и ответим вам.","Schreib uns Vorschläge, Beschwerden oder Fehlermeldungen zur App. Wir lesen jede Nachricht und melden uns.","أرسل لنا اقتراحاتك أو شكاواك أو بلاغات الأخطاء. نقرأ كل رسالة وسنرد عليك."],
   fbOpen:["✉️ E-posta uygulamasında yaz","✉️ Write in my e-mail app","✉️ Написать в почтовом приложении","✉️ In meiner E-Mail-App schreiben","✉️ الكتابة في تطبيق البريد"],
   fbCopy:["📋 Adresi kopyala","📋 Copy address","📋 Скопировать адрес","📋 Adresse kopieren","📋 نسخ العنوان"],
-  fbSubject:["Diyet Listesi: öneri / şikâyet","Diet Plan: feedback","План питания: отзыв","Ernährungsplan: Feedback","الخطة الغذائية: ملاحظات"],
+  fbSubject:["LifeFit: öneri / şikâyet","LifeFit: feedback","LifeFit: отзыв","LifeFit: Feedback","LifeFit: ملاحظات"],
   fbBody:["Mesajınız:\n\n\n---\nUygulama dili: {dil} · Cihaz: {cihaz}","Your message:\n\n\n---\nApp language: {dil} · Device: {cihaz}","Ваше сообщение:\n\n\n---\nЯзык: {dil} · Устройство: {cihaz}","Deine Nachricht:\n\n\n---\nSprache: {dil} · Gerät: {cihaz}","رسالتك:\n\n\n---\nاللغة: {dil} · الجهاز: {cihaz}"],
   tCopied:["Adres kopyalandı","Address copied","Адрес скопирован","Adresse kopiert","تم نسخ العنوان"],
   // Uyarılar
@@ -1195,7 +1195,7 @@ Object.assign(S, {
   rpFood:["Yiyecek","Food","Продукт","Lebensmittel","الطعام"],
   rpMealTotal:["Öğün toplamı","Meal total","Итого","Summe","مجموع الوجبة"],
   rpNotEaten:["Yenmeyen öğünler","Skipped meals","Пропущенные приёмы","Ausgelassene Mahlzeiten","وجبات لم تؤكل"],
-  rpFooter:["Kişisel Diyet Planı ile hazırlandı","Made with Personal Diet Plan","Сделано в «Личный план питания»","Erstellt mit Persönlicher Diätplan","أُعدّ بواسطة خطة النظام الغذائي الشخصية"],
+  rpFooter:["LifeFit ile hazırlandı","Made with LifeFit","Создано в LifeFit","Erstellt mit LifeFit","أُعدّ باستخدام LifeFit"],
   tourBtn:["Kullanım turu", "App tour", "Обзор приложения", "App-Tour", "جولة في التطبيق"],
   tourSkip:["Geç", "Skip", "Пропустить", "Überspringen", "تخطَّ"],
   tourNext:["İleri", "Next", "Далее", "Weiter", "التالي"],
