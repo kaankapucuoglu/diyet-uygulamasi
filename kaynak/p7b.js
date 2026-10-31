@@ -101,8 +101,8 @@ function togCiz(hedef, acildi, degistir){
 }
 
 // ---------- Kopyalama yardımcısı ----------
-function kopyala(metin, mesaj){
-  const bitti = () => toast(mesaj || T('tCopied'));
+function kopyala(metin, mesaj, sure){
+  const bitti = () => toast(mesaj || T('tCopied'), sure);
   if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(metin).then(bitti, () => eskiKopya());
   else eskiKopya();
   function eskiKopya(){ const t = document.createElement('textarea'); t.value = metin; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); bitti(); } catch(e){} t.remove(); }
@@ -536,22 +536,35 @@ function yukleAc(){
 // Kod: …/app/#t=<sıkıştırılmış tüm veri>&n=<uzunluk>; alan taraf birleştirir, hiçbir gün silinmez (sunucuya veri gitmez)
 const kayitliGunler = X => Object.keys(X.kayit || {}).filter(k => { const r = X.kayit[k]; return !!r && (r.su > 0 || Object.values(r.yendi || {}).some(Boolean)); }).sort();
 let tasiKod = '';
+const TASI_SURE = 5200;   // taşıma uyarıları normal bildirimden 3 sn uzun kalır
 async function tasiAc(){
-  const gunler = kayitliGunler(D), ver = D.ayar.kurulum;
+  const gunler = kayitliGunler(D), ver = D.ayar.kurulum, ios = iosMu(), uyg = bagimsiz();
+  const yer = ios ? (uyg ? 'U' : 'T') : 'G';   // U: iPhone ana ekran uygulaması, T: iPhone tarayıcı, G: diğer
   if (ver){ const kod = await paketKodla(D); tasiKod = PAYLASIM_TABAN + '#t=' + kod + '&n=' + kod.length; }   // tıklamada hazır olsun (iPhone kopyalamayı yalnız dokunuş anında izin verir)
-  ac('📲 ' + T('tasiT'), `<div class="hint" style="margin:0 0 4px">${esc(T('tasiInfo'))}</div>
-    ${ver ? `<div class="sec">${T('tasiVer')}</div>
-    <div class="cur"><b>${T('tasiOzet', {g: gunler.length})}</b>${gunler.length ? `<br><small>${esc(etiket(gunler[0]))} – ${esc(etiket(gunler[gunler.length - 1]))}</small>` : ''}</div>
-    <div class="acts"><button class="btn solid" id="tasiKopya">${T('tasiKopya')}</button>${navigator.share ? `<button class="btn" id="tasiGonder">${T('shSend')}</button>` : ''}</div>
-    <div class="hint" style="margin-top:6px">${esc(T('tasiGizli'))}</div>` : ''}
-    <div class="sec">${T('tasiAl')}</div>
-    <textarea class="search tasi-kutu" id="tasiYapistir" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="https://…#t=…"></textarea>
-    <div class="acts">${navigator.clipboard && navigator.clipboard.readText ? `<button class="btn" id="tasiPano">${T('tasiPano')}</button>` : ''}<button class="btn green" id="tasiAlBtn">${T('tasiAlBtn')}</button></div>`);
-  if ($('tasiKopya')) $('tasiKopya').onclick = () => kopyala(tasiKod, T('tasiKopyalandi'));
+  const pano = !!(navigator.clipboard && navigator.clipboard.readText);
+  const gonder = ver ? `<div class="tasi-blok">
+      <h4>${T('tasiVerT')}</h4><p>${esc(T('tasiVerM' + yer))}</p>
+      <div class="tasi-ozet">${T('tasiOzet', {g: gunler.length})}${gunler.length ? ` · ${esc(etiket(gunler[0]))} – ${esc(etiket(gunler[gunler.length - 1]))}` : ''}</div>
+      <button class="btn solid full" id="tasiKopya">${T('tasiKopya')}</button>
+      ${navigator.share ? `<button class="btn ghost full tasi-ek" id="tasiGonder">${T('tasiGonder')}</button>` : ''}
+    </div>` : '';
+  const al = `<div class="tasi-blok">
+      <h4>${T('tasiAlT')}</h4><p>${esc(T('tasiAlM'))}</p>
+      ${pano ? `<button class="btn green full" id="tasiPano">${T('tasiPanoAktar')}</button>` : ''}
+      <details class="tasi-elle" id="tasiElle"${pano ? '' : ' open'}><summary>${T('tasiElleT')}</summary>
+        <textarea class="search tasi-kutu" id="tasiYapistir" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="https://…#t=…"></textarea>
+        <button class="btn green full" style="margin-top:8px" id="tasiAlBtn">${T('tasiAlBtn')}</button></details>
+    </div>`;
+  ac('📲 ' + T('tasiT'), `<p class="tasi-neden">${esc(T(ios ? 'tasiNeden' : 'tasiNedenG'))}</p>
+    ${ios ? `<div class="tasi-yer">${T(uyg ? 'tasiSimdiU' : 'tasiSimdiT')}</div>` : ''}
+    ${yer === 'U' ? al + gonder : gonder + al}
+    ${ver ? `<div class="hint" style="margin-top:10px">${esc(T('tasiGizli'))}</div>` : ''}`);   // ana ekran uygulamasında önce "buraya getir"
+  if ($('tasiKopya')) $('tasiKopya').onclick = () => kopyala(tasiKod, T('tasiKop' + yer), TASI_SURE);
   if ($('tasiGonder')) $('tasiGonder').onclick = () => navigator.share({title: T('tasiT'), text: tasiKod}).catch(() => {});
-  const al = m => { if (!/#t=/.test(m || '')){ toast(T('tasiBad')); return; } icinden(tasiAc, () => tasiLinkiAc(m)); };
-  if ($('tasiPano')) $('tasiPano').onclick = () => navigator.clipboard.readText().then(m => { $('tasiYapistir').value = m || ''; al(m); }, () => toast(T('tasiElle')));
-  $('tasiAlBtn').onclick = () => al($('tasiYapistir').value);
+  const elle = () => { $('tasiElle').open = true; };
+  const aktar = m => { if (!/#t=/.test(m || '')){ toast(T('tasiBos'), TASI_SURE); elle(); return; } icinden(tasiAc, () => tasiLinkiAc(m)); };
+  if ($('tasiPano')) $('tasiPano').onclick = () => navigator.clipboard.readText().then(m => { $('tasiYapistir').value = m || ''; aktar(m); }, () => { toast(T('tasiElle'), TASI_SURE); elle(); });
+  $('tasiAlBtn').onclick = () => aktar($('tasiYapistir').value);
 }
 async function tasiLinkiAc(metin){
   const m = String(metin || '').match(/#t=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
@@ -603,7 +616,7 @@ function verileriBirlestir(gelen){
   aktif = bugunK(); detayAcik = false;
   if (D.ayar.kurulum && !$('kurulum').hidden){ document.body.classList.remove('wiz-acik'); $('kurulum').hidden = true; }
   baslat2();
-  toast(T('tasiOk', {g: sayi0}));
+  toast(T('tasiOk', {g: sayi0}), TASI_SURE);
 }
 // Aynı gün iki tarafta: dolu olan esas; öbüründe yenen ama bunda yenmemiş öğünler eklenir
 function gunBirlestir(ust, alt){

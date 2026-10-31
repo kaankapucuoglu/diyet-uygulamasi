@@ -108,9 +108,9 @@ function logSatir(l, tarihGoster = true){
   const ad = l.g && l.tur === 'ekle' ? T('lt_gecmisEkle') : T('lt_' + (S['lt_' + l.tur] ? l.tur : 'diger'));
   return `<li class="log"><time>${saat}</time><div class="log-body"><span class="lb ${l.tur}">${ad}</span>${l.g && l.tur !== 'ekle' ? `<span class="lb gecmis">${T('lt_gecmis')}</span>` : ''}${tarihGoster && l.k ? `<b>${etiket(l.k)}</b> · ` : ''}${esc(l.m)}</div></li>`;
 }
-function toast(m){
+function toast(m, sure = 2200){
   const t = $('toast'); t.textContent = m; t.classList.add('show');
-  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200);
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), sure);
 }
 
 // ---------- Çizim ----------

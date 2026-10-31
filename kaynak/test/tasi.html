@@ -15,8 +15,11 @@ try{
   // Ayarlar → Verileri taşı (Geri → Ayarlar)
   w.ayarlarAc();ok('Ayarlarda Verileri tasi',!!$('tasiAcBtn'));
   $('tasiAcBtn').click();await bekle(300);
-  ok('Tasi penceresi + Geri',!!$('tasiKopya')&&!!$('tasiYapistir')&&!$('sheetGeri').hidden,d.querySelector('#sbody .cur b').textContent);
+  ok('Tasi penceresi + Geri',!!$('tasiKopya')&&!!$('tasiYapistir')&&!$('sheetGeri').hidden,d.querySelector('#sbody .tasi-ozet').textContent);
   const kod=w.eval('tasiKod');ok('Tasima kodu uretildi',/#t=z[A-Za-z0-9_-]+&n=\d+$/.test(kod),kod.length+' karakter');
+  ok('Iki kutu: Kayitlarim burada + buraya getir',d.querySelectorAll('#sbody .tasi-blok').length===2&&!!$('tasiPano'),[...d.querySelectorAll('#sbody .tasi-blok h4')].map(h=>h.textContent).join(' | '));
+  $('tasiKopya').click();await bekle(4200);const ts=$('toast');
+  ok('Kopyalandi bildirimi 4 sn sonra hala gorunur (5,2 sn)',ts.classList.contains('show'),ts.textContent);await bekle(1300);ok('5,5 sn sonra kapandi',!ts.classList.contains('show'));
   const tasma=[...d.querySelectorAll('#sheet *')].filter(e=>{const r=e.getBoundingClientRect();return r.width&&r.right>d.documentElement.clientWidth+1;}).map(e=>e.tagName+'.'+e.className);
   ok('Tasi penceresi tasma yok (375px)',!tasma.length,tasma.join(','));
   $('sheetGeri').click();await bekle(50);ok('Geri → Ayarlar',!!$('tasiAcBtn'));w.kapat();

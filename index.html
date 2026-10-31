@@ -507,7 +507,16 @@ body.klavye .toast{display:none}
 .link-yapistir{display:flex;gap:8px;margin-top:6px}
 .link-yapistir .search{flex:1;min-width:0}
 .link-yapistir .btn{flex:none}
-.tasi-kutu{display:block;margin-top:6px;min-height:74px;resize:none;font-size:16px;line-height:1.35;word-break:break-all;font-family:inherit}
+.tasi-kutu{display:block;margin-top:8px;min-height:74px;resize:none;font-size:16px;line-height:1.35;word-break:break-all;font-family:inherit}
+.tasi-neden{font-size:14px;line-height:1.5;color:#40506a}
+.tasi-yer{display:inline-block;margin-top:10px;padding:5px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:13px;font-weight:700}
+.tasi-blok{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:12px 14px 14px;background:var(--card)}
+.tasi-blok h4{font-size:16px;margin:0 0 4px}
+.tasi-blok p{font-size:13.5px;line-height:1.5;color:#40506a;margin:0 0 10px}
+.tasi-ozet{font-size:12.5px;color:var(--muted);margin:-4px 0 10px}
+.tasi-ek{margin-top:8px}
+.tasi-elle{margin-top:10px}
+.tasi-elle summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--muted)}
 .saat-liste{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .saat-satir{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px 8px 14px;border-bottom:1px solid #f0f3f8}
 .saat-satir:last-child{border-bottom:0}
@@ -1213,24 +1222,36 @@ Object.assign(S, {
   termsLink:["📄 Kullanım koşulları", "📄 Terms of use", "📄 Условия использования", "📄 Nutzungsbedingungen", "📄 شروط الاستخدام"],
   privLink:["🔒 Gizlilik politikası", "🔒 Privacy policy", "🔒 Конфиденциальность", "🔒 Datenschutz", "🔒 سياسة الخصوصية"],
   tasiT:["Verileri taşı", "Transfer data", "Перенос данных", "Daten übertragen", "نقل البيانات"],
-  tasiKisa:["iPhone’da ana ekrandaki uygulama, Chrome ve Safari kayıtları ayrı tutar. Kayıtlarını aralarında ya da yeni telefona buradan taşı.", "On iPhone, the home-screen app, Chrome and Safari keep separate records. Move your records between them or to a new phone here.", "На iPhone приложение на экране «Домой», Chrome и Safari хранят записи отдельно. Здесь можно перенести записи между ними или на новый телефон.", "Auf dem iPhone speichern die Home-Bildschirm-App, Chrome und Safari getrennt. Hier überträgst du deine Einträge zwischen ihnen oder auf ein neues Handy.", "على iPhone يحفظ التطبيق على الشاشة الرئيسية وChrome وSafari السجلات بشكل منفصل. انقل سجلاتك بينها أو إلى هاتف جديد من هنا."],
-  tasiInfo:["1) Kayıtların olduğu yerde (ör. Chrome) “Kodu kopyala”ya dokun. 2) Öbür tarafta (ör. ana ekrandaki uygulama) bu pencereyi aç, kodu yapıştır, “Aktar”a dokun. İki taraftaki kayıtlar birleşir, hiçbiri silinmez.", "1) Where your records are (e.g. Chrome), tap “Copy code”. 2) On the other side (e.g. the home-screen app), open this window, paste the code and tap “Transfer”. Records from both sides are merged; nothing is deleted.", "1) Там, где ваши записи (например, Chrome), нажмите «Скопировать код». 2) На другой стороне (например, в приложении на экране «Домой») откройте это окно, вставьте код и нажмите «Перенести». Записи объединятся, ничего не удалится.", "1) Wo deine Einträge sind (z. B. Chrome), tippe auf „Code kopieren“. 2) Auf der anderen Seite (z. B. in der Home-Bildschirm-App) öffne dieses Fenster, füge den Code ein und tippe auf „Übertragen“. Die Einträge beider Seiten werden zusammengeführt, nichts wird gelöscht.", "1) حيث توجد سجلاتك (مثل Chrome) اضغط «نسخ الرمز». 2) في الجهة الأخرى (مثل التطبيق على الشاشة الرئيسية) افتح هذه النافذة والصق الرمز واضغط «نقل». تُدمج سجلات الجهتين ولا يُحذف شيء."],
-  tasiVer:["Buradaki kayıtları gönder", "Send records from here", "Отправить записи отсюда", "Einträge von hier senden", "إرسال السجلات من هنا"],
+  tasiKisa:["Ana ekrandaki uygulamada kayıtların görünmüyor mu? iPhone, uygulama ile Chrome/Safari kayıtlarını ayrı tutar. Buradan taşıyabilirsin; hiçbir kayıt silinmez.", "Records missing in the home-screen app? iPhone keeps the app’s records separate from Chrome/Safari. Move them here; nothing is deleted.", "В приложении на экране «Домой» нет ваших записей? iPhone хранит записи приложения отдельно от Chrome/Safari. Перенесите их здесь — ничего не удалится.", "Fehlen Einträge in der Home-Bildschirm-App? Das iPhone speichert sie getrennt von Chrome/Safari. Übertrage sie hier – nichts wird gelöscht.", "سجلاتك لا تظهر في التطبيق على الشاشة الرئيسية؟ يحفظ iPhone سجلات التطبيق منفصلة عن Chrome/Safari. انقلها من هنا، ولن يُحذف شيء."],
   tasiOzet:["{g} günlük kayıt", "{g} days of records", "Записей за дней: {g}", "Einträge von {g} Tagen", "سجلات {g} يوم"],
   tasiKopya:["📋 Kodu kopyala", "📋 Copy code", "📋 Скопировать код", "📋 Code kopieren", "📋 نسخ الرمز"],
   tasiGizli:["Kod tüm kayıtlarını ve profilini içerir; yalnızca kendine gönder.", "The code contains all your records and profile; only send it to yourself.", "Код содержит все ваши записи и профиль — отправляйте его только себе.", "Der Code enthält alle Einträge und dein Profil – sende ihn nur an dich selbst.", "يحتوي الرمز على كل سجلاتك وملفك الشخصي؛ أرسله لنفسك فقط."],
-  tasiAl:["Başka yerden al", "Receive from elsewhere", "Получить из другого места", "Von woanders übernehmen", "استلام من مكان آخر"],
-  tasiPano:["📋 Panodan yapıştır", "📋 Paste from clipboard", "📋 Вставить из буфера", "📋 Aus Zwischenablage einfügen", "📋 لصق من الحافظة"],
   tasiAlBtn:["📥 Aktar", "📥 Transfer", "📥 Перенести", "📥 Übertragen", "📥 نقل"],
-  tasiKopyalandi:["Kod kopyalandı. Şimdi öbür tarafta Ayarlar → Verileri taşı’yı aç ve yapıştır.", "Code copied. Now open Settings → Transfer data on the other side and paste it.", "Код скопирован. Откройте на другой стороне Настройки → Перенос данных и вставьте его.", "Code kopiert. Öffne jetzt auf der anderen Seite Einstellungen → Daten übertragen und füge ihn ein.", "تم نسخ الرمز. افتح الآن في الجهة الأخرى الإعدادات ← نقل البيانات والصقه."],
-  tasiBad:["Taşıma kodu okunamadı. Kodun tamamını kopyalayıp yapıştırdığından emin ol.", "Couldn’t read the transfer code. Make sure you copied and pasted the whole code.", "Не удалось прочитать код переноса. Убедитесь, что скопировали и вставили код целиком.", "Der Übertragungscode konnte nicht gelesen werden. Prüfe, ob du den ganzen Code kopiert und eingefügt hast.", "تعذّرت قراءة رمز النقل. تأكد من نسخ الرمز كاملًا ولصقه."],
-  tasiElle:["Panoya erişilemedi; kutuya uzun basıp “Yapıştır”ı seç.", "Couldn’t access the clipboard; long-press the box and choose “Paste”.", "Нет доступа к буферу; нажмите и удерживайте поле и выберите «Вставить».", "Kein Zugriff auf die Zwischenablage; halte das Feld gedrückt und wähle „Einsetzen“.", "تعذّر الوصول إلى الحافظة؛ اضغط مطولًا على المربع واختر «لصق»."],
+  tasiBad:["Kod okunamadı. Öbür tarafta yeniden “Kodu kopyala”ya bas ve tekrar dene.", "Couldn’t read the code. Tap “Copy code” again on the other side and retry.", "Не удалось прочитать код. Снова нажмите «Скопировать код» на другой стороне и повторите.", "Code nicht lesbar. Tippe auf der anderen Seite erneut auf „Code kopieren“ und versuche es nochmal.", "تعذّرت قراءة الرمز. اضغط «نسخ الرمز» مجددًا في الجهة الأخرى وحاول ثانية."],
+  tasiElle:["Pano açılamadı. Aşağıdaki kutuya uzun bas, “Yapıştır”ı seç, sonra “Aktar”a bas.", "Couldn’t open the clipboard. Long-press the box below, choose “Paste”, then tap “Transfer”.", "Не удалось открыть буфер. Нажмите и удерживайте поле ниже, выберите «Вставить», затем нажмите «Перенести».", "Zwischenablage nicht verfügbar. Halte das Feld unten gedrückt, wähle „Einsetzen“ und tippe dann auf „Übertragen“.", "تعذّر فتح الحافظة. اضغط مطولًا على المربع أدناه واختر «لصق» ثم اضغط «نقل»."],
   tasiSor:["Gelen kodda {g} günlük kayıt var ({a}). Bu kayıtlar buradakilerle birleştirilecek; hiçbir kayıt silinmez. Aktarılsın mı?", "The code has {g} days of records ({a}). They will be merged with the records here; nothing is deleted. Transfer now?", "В коде записи за дней: {g} ({a}). Они будут объединены с записями здесь, ничего не удалится. Перенести?", "Der Code enthält Einträge von {g} Tagen ({a}). Sie werden mit den Einträgen hier zusammengeführt, nichts wird gelöscht. Jetzt übertragen?", "يحتوي الرمز على سجلات {g} يوم ({a}). ستُدمج مع السجلات هنا ولن يُحذف شيء. هل تريد النقل الآن؟"],
   tasiOk:["✅ Kayıtlar aktarıldı ({g} gün)", "✅ Records transferred ({g} days)", "✅ Записи перенесены (дней: {g})", "✅ Einträge übertragen ({g} Tage)", "✅ تم نقل السجلات ({g} يوم)"],
   lTasi:["Kayıtlar aktarıldı: {g} gün (birleştirildi)", "Records transferred: {g} days (merged)", "Записи перенесены: дней {g} (объединено)", "Einträge übertragen: {g} Tage (zusammengeführt)", "تم نقل السجلات: {g} يوم (دمج)"],
   tasiWiz:["📲 Kayıtlarım başka yerde, aktar", "📲 My records are elsewhere, transfer", "📲 Мои записи в другом месте — перенести", "📲 Meine Einträge sind woanders – übertragen", "📲 سجلاتي في مكان آخر، نقل"],
   ayriT:["Kayıtlar bu uygulamada ayrı tutulur", "This app keeps its own records", "Это приложение хранит записи отдельно", "Diese App speichert getrennt", "هذا التطبيق يحفظ سجلاته بشكل منفصل"],
-  ayriM:["iPhone, ana ekrana eklenen uygulamanın kayıtlarını Chrome ve Safari’den ayrı saklar. Tarayıcıda girdiğin kayıtlar burada görünmez; silinmediler, tarayıcıda duruyorlar. Aktarmak için tarayıcıda Ayarlar → Verileri taşı → Kodu kopyala, sonra burada Verileri taşı → Aktar.", "iPhone stores the home-screen app’s records separately from Chrome and Safari. Records you entered in the browser don’t show here; they aren’t deleted, they’re still in the browser. To move them: in the browser, Settings → Transfer data → Copy code, then here Transfer data → Transfer.", "iPhone хранит записи приложения на экране «Домой» отдельно от Chrome и Safari. Записи, введённые в браузере, здесь не видны; они не удалены, они в браузере. Чтобы перенести: в браузере Настройки → Перенос данных → Скопировать код, затем здесь Перенос данных → Перенести.", "Das iPhone speichert die Einträge der Home-Bildschirm-App getrennt von Chrome und Safari. Im Browser eingegebene Einträge erscheinen hier nicht; sie sind nicht gelöscht, sondern im Browser. Zum Übertragen: im Browser Einstellungen → Daten übertragen → Code kopieren, dann hier Daten übertragen → Übertragen.", "يحفظ iPhone سجلات التطبيق المضاف إلى الشاشة الرئيسية بشكل منفصل عن Chrome وSafari. السجلات التي أدخلتها في المتصفح لا تظهر هنا؛ لم تُحذف، فهي ما زالت في المتصفح. للنقل: في المتصفح الإعدادات ← نقل البيانات ← نسخ الرمز، ثم هنا نقل البيانات ← نقل."],
+  ayriM:["iPhone, ana ekrandaki uygulamanın kayıtlarını Chrome ve Safari’den ayrı tutar. Tarayıcıda girdiğin kayıtlar burada görünmez ama silinmedi. Taşımak için: tarayıcıda Ayarlar → Verileri taşı → Kodu kopyala; sonra burada Verileri taşı → Yapıştır ve aktar.", "iPhone keeps the home-screen app’s records separate from Chrome and Safari. Records you entered in the browser don’t show here, but they aren’t deleted. To move them: in the browser, Settings → Transfer data → Copy code; then here, Transfer data → Paste and transfer.", "iPhone хранит записи приложения на экране «Домой» отдельно от Chrome и Safari. Записи из браузера здесь не видны, но они не удалены. Чтобы перенести: в браузере Настройки → Перенос данных → Скопировать код; затем здесь Перенос данных → Вставить и перенести.", "Das iPhone speichert die Einträge der Home-Bildschirm-App getrennt von Chrome und Safari. Im Browser eingegebene Einträge erscheinen hier nicht, sind aber nicht gelöscht. Zum Übertragen: im Browser Einstellungen → Daten übertragen → Code kopieren; dann hier Daten übertragen → Einfügen und übertragen.", "يحفظ iPhone سجلات التطبيق على الشاشة الرئيسية منفصلة عن Chrome وSafari. السجلات التي أدخلتها في المتصفح لا تظهر هنا لكنها لم تُحذف. للنقل: في المتصفح الإعدادات ← نقل البيانات ← نسخ الرمز، ثم هنا نقل البيانات ← لصق ونقل."],
+  tasiNeden:["iPhone, ana ekrandaki uygulamanın kayıtlarını Chrome ve Safari’den ayrı tutar; biri ötekinin kayıtlarını görmez. İki adımda taşıyabilirsin, hiçbir kayıt silinmez.", "iPhone keeps the home-screen app’s records separate from Chrome and Safari; one can’t see the other’s. Move them in two steps; nothing is deleted.", "iPhone хранит записи приложения на экране «Домой» отдельно от Chrome и Safari — они не видят записи друг друга. Перенесите их в два шага, ничего не удалится.", "Das iPhone speichert die Einträge der Home-Bildschirm-App getrennt von Chrome und Safari; keiner sieht die des anderen. Übertrage sie in zwei Schritten – nichts wird gelöscht.", "يحفظ iPhone سجلات التطبيق على الشاشة الرئيسية منفصلة عن Chrome وSafari، فلا يرى أحدهما سجلات الآخر. انقلها بخطوتين، ولن يُحذف شيء."],
+  tasiNedenG:["Kayıtlarını yeni bir telefona ya da başka bir tarayıcıya iki adımda taşıyabilirsin; hiçbir kayıt silinmez.", "Move your records to a new phone or another browser in two steps; nothing is deleted.", "Перенесите записи на новый телефон или в другой браузер в два шага — ничего не удалится.", "Übertrage deine Einträge in zwei Schritten auf ein neues Handy oder in einen anderen Browser – nichts wird gelöscht.", "انقل سجلاتك إلى هاتف جديد أو متصفح آخر بخطوتين، ولن يُحذف شيء."],
+  tasiSimdiU:["📍 Şu an: ana ekrandaki uygulama", "📍 You are in: the home-screen app", "📍 Сейчас: приложение на экране «Домой»", "📍 Du bist in: der Home-Bildschirm-App", "📍 أنت الآن في: التطبيق على الشاشة الرئيسية"],
+  tasiSimdiT:["📍 Şu an: tarayıcı (Chrome/Safari)", "📍 You are in: the browser (Chrome/Safari)", "📍 Сейчас: браузер (Chrome/Safari)", "📍 Du bist in: dem Browser (Chrome/Safari)", "📍 أنت الآن في: المتصفح (Chrome/Safari)"],
+  tasiVerT:["📤 Kayıtlarım burada", "📤 My records are here", "📤 Мои записи здесь", "📤 Meine Einträge sind hier", "📤 سجلاتي هنا"],
+  tasiVerMT:["Bu düğmeye bas, sonra ana ekrandaki uygulamayı aç ve orada “Yapıştır ve aktar”a bas.", "Tap this button, then open the home-screen app and tap “Paste and transfer” there.", "Нажмите эту кнопку, затем откройте приложение на экране «Домой» и нажмите там «Вставить и перенести».", "Tippe auf diese Taste, öffne dann die Home-Bildschirm-App und tippe dort auf „Einfügen und übertragen“.", "اضغط هذا الزر، ثم افتح التطبيق على الشاشة الرئيسية واضغط هناك «لصق ونقل»."],
+  tasiVerMU:["Bu düğmeye bas, sonra Chrome’da (ya da Safari’de) uygulamanın sayfasını aç ve orada “Yapıştır ve aktar”a bas.", "Tap this button, then open the app’s page in Chrome (or Safari) and tap “Paste and transfer” there.", "Нажмите эту кнопку, затем откройте страницу приложения в Chrome (или Safari) и нажмите там «Вставить и перенести».", "Tippe auf diese Taste, öffne dann die Seite der App in Chrome (oder Safari) und tippe dort auf „Einfügen und übertragen“.", "اضغط هذا الزر، ثم افتح صفحة التطبيق في Chrome (أو Safari) واضغط هناك «لصق ونقل»."],
+  tasiVerMG:["Bu düğmeye bas, sonra kodu öbür telefona ya da tarayıcıya geçir ve orada “Yapıştır ve aktar”a bas.", "Tap this button, then take the code to the other phone or browser and tap “Paste and transfer” there.", "Нажмите эту кнопку, затем перенесите код на другой телефон или в браузер и нажмите там «Вставить и перенести».", "Tippe auf diese Taste, bring den Code dann aufs andere Handy oder in den anderen Browser und tippe dort auf „Einfügen und übertragen“.", "اضغط هذا الزر، ثم انقل الرمز إلى الهاتف أو المتصفح الآخر واضغط هناك «لصق ونقل»."],
+  tasiGonder:["📤 Başka telefona gönder", "📤 Send to another phone", "📤 Отправить на другой телефон", "📤 An anderes Handy senden", "📤 إرسال إلى هاتف آخر"],
+  tasiAlT:["📥 Kayıtlarımı buraya getir", "📥 Bring my records here", "📥 Перенести записи сюда", "📥 Einträge hierher holen", "📥 جلب سجلاتي إلى هنا"],
+  tasiAlM:["Öbür tarafta “Kodu kopyala”ya bastıysan şimdi bu düğmeye bas. Kayıtlar buradakilerle birleşir.", "If you tapped “Copy code” on the other side, tap this button now. The records are merged with the ones here.", "Если на другой стороне вы нажали «Скопировать код», нажмите эту кнопку. Записи объединятся с имеющимися здесь.", "Wenn du auf der anderen Seite auf „Code kopieren“ getippt hast, tippe jetzt auf diese Taste. Die Einträge werden mit denen hier zusammengeführt.", "إذا ضغطت «نسخ الرمز» في الجهة الأخرى فاضغط هذا الزر الآن. ستُدمج السجلات مع الموجودة هنا."],
+  tasiPanoAktar:["📋 Yapıştır ve aktar", "📋 Paste and transfer", "📋 Вставить и перенести", "📋 Einfügen und übertragen", "📋 لصق ونقل"],
+  tasiElleT:["Olmadı mı? Kodu elle yapıştır", "Didn’t work? Paste the code manually", "Не получилось? Вставьте код вручную", "Hat nicht geklappt? Code von Hand einfügen", "لم ينجح؟ الصق الرمز يدويًا"],
+  tasiKopT:["✅ Kod kopyalandı. Şimdi ana ekrandaki uygulamayı aç: Ayarlar → Verileri taşı → Yapıştır ve aktar.", "✅ Code copied. Now open the home-screen app: Settings → Transfer data → Paste and transfer.", "✅ Код скопирован. Теперь откройте приложение на экране «Домой»: Настройки → Перенос данных → Вставить и перенести.", "✅ Code kopiert. Öffne jetzt die Home-Bildschirm-App: Einstellungen → Daten übertragen → Einfügen und übertragen.", "✅ تم نسخ الرمز. افتح الآن التطبيق على الشاشة الرئيسية: الإعدادات ← نقل البيانات ← لصق ونقل."],
+  tasiKopU:["✅ Kod kopyalandı. Şimdi tarayıcıyı (Chrome/Safari) aç: Ayarlar → Verileri taşı → Yapıştır ve aktar.", "✅ Code copied. Now open the browser (Chrome/Safari): Settings → Transfer data → Paste and transfer.", "✅ Код скопирован. Теперь откройте браузер (Chrome/Safari): Настройки → Перенос данных → Вставить и перенести.", "✅ Code kopiert. Öffne jetzt den Browser (Chrome/Safari): Einstellungen → Daten übertragen → Einfügen und übertragen.", "✅ تم نسخ الرمز. افتح الآن المتصفح (Chrome/Safari): الإعدادات ← نقل البيانات ← لصق ونقل."],
+  tasiKopG:["✅ Kod kopyalandı. Öbür tarafta: Ayarlar → Verileri taşı → Yapıştır ve aktar.", "✅ Code copied. On the other side: Settings → Transfer data → Paste and transfer.", "✅ Код скопирован. На другой стороне: Настройки → Перенос данных → Вставить и перенести.", "✅ Code kopiert. Auf der anderen Seite: Einstellungen → Daten übertragen → Einfügen und übertragen.", "✅ تم نسخ الرمز. في الجهة الأخرى: الإعدادات ← نقل البيانات ← لصق ونقل."],
+  tasiBos:["Panoda kod yok. Önce öbür tarafta “Kodu kopyala”ya bas.", "No code on the clipboard. First tap “Copy code” on the other side.", "В буфере нет кода. Сначала нажмите «Скопировать код» на другой стороне.", "Kein Code in der Zwischenablage. Tippe zuerst auf der anderen Seite auf „Code kopieren“.", "لا يوجد رمز في الحافظة. اضغط أولًا «نسخ الرمز» في الجهة الأخرى."],
   rpBad:["Paylaşım linki açılamadı (eksik ya da bozuk kopyalanmış olabilir).","The shared link couldn’t be opened (it may be incomplete or broken).","Не удалось открыть ссылку (возможно, она скопирована не полностью).","Der Link konnte nicht geöffnet werden (evtl. unvollständig kopiert).","تعذّر فتح الرابط (ربما نُسخ ناقصاً أو تالفاً)."]
 });
 // ---------- Ek yemekler: Türk mutfağı, kahvaltılık, hamur işi, tatlı, kuruyemiş ve kurutulmuş meyveler ----------
@@ -2296,9 +2317,9 @@ function logSatir(l, tarihGoster = true){
   const ad = l.g && l.tur === 'ekle' ? T('lt_gecmisEkle') : T('lt_' + (S['lt_' + l.tur] ? l.tur : 'diger'));
   return `<li class="log"><time>${saat}</time><div class="log-body"><span class="lb ${l.tur}">${ad}</span>${l.g && l.tur !== 'ekle' ? `<span class="lb gecmis">${T('lt_gecmis')}</span>` : ''}${tarihGoster && l.k ? `<b>${etiket(l.k)}</b> · ` : ''}${esc(l.m)}</div></li>`;
 }
-function toast(m){
+function toast(m, sure = 2200){
   const t = $('toast'); t.textContent = m; t.classList.add('show');
-  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200);
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), sure);
 }
 
 // ---------- Çizim ----------
@@ -3163,8 +3184,8 @@ function togCiz(hedef, acildi, degistir){
 }
 
 // ---------- Kopyalama yardımcısı ----------
-function kopyala(metin, mesaj){
-  const bitti = () => toast(mesaj || T('tCopied'));
+function kopyala(metin, mesaj, sure){
+  const bitti = () => toast(mesaj || T('tCopied'), sure);
   if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(metin).then(bitti, () => eskiKopya());
   else eskiKopya();
   function eskiKopya(){ const t = document.createElement('textarea'); t.value = metin; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); bitti(); } catch(e){} t.remove(); }
@@ -3598,22 +3619,35 @@ function yukleAc(){
 // Kod: …/app/#t=<sıkıştırılmış tüm veri>&n=<uzunluk>; alan taraf birleştirir, hiçbir gün silinmez (sunucuya veri gitmez)
 const kayitliGunler = X => Object.keys(X.kayit || {}).filter(k => { const r = X.kayit[k]; return !!r && (r.su > 0 || Object.values(r.yendi || {}).some(Boolean)); }).sort();
 let tasiKod = '';
+const TASI_SURE = 5200;   // taşıma uyarıları normal bildirimden 3 sn uzun kalır
 async function tasiAc(){
-  const gunler = kayitliGunler(D), ver = D.ayar.kurulum;
+  const gunler = kayitliGunler(D), ver = D.ayar.kurulum, ios = iosMu(), uyg = bagimsiz();
+  const yer = ios ? (uyg ? 'U' : 'T') : 'G';   // U: iPhone ana ekran uygulaması, T: iPhone tarayıcı, G: diğer
   if (ver){ const kod = await paketKodla(D); tasiKod = PAYLASIM_TABAN + '#t=' + kod + '&n=' + kod.length; }   // tıklamada hazır olsun (iPhone kopyalamayı yalnız dokunuş anında izin verir)
-  ac('📲 ' + T('tasiT'), `<div class="hint" style="margin:0 0 4px">${esc(T('tasiInfo'))}</div>
-    ${ver ? `<div class="sec">${T('tasiVer')}</div>
-    <div class="cur"><b>${T('tasiOzet', {g: gunler.length})}</b>${gunler.length ? `<br><small>${esc(etiket(gunler[0]))} – ${esc(etiket(gunler[gunler.length - 1]))}</small>` : ''}</div>
-    <div class="acts"><button class="btn solid" id="tasiKopya">${T('tasiKopya')}</button>${navigator.share ? `<button class="btn" id="tasiGonder">${T('shSend')}</button>` : ''}</div>
-    <div class="hint" style="margin-top:6px">${esc(T('tasiGizli'))}</div>` : ''}
-    <div class="sec">${T('tasiAl')}</div>
-    <textarea class="search tasi-kutu" id="tasiYapistir" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="https://…#t=…"></textarea>
-    <div class="acts">${navigator.clipboard && navigator.clipboard.readText ? `<button class="btn" id="tasiPano">${T('tasiPano')}</button>` : ''}<button class="btn green" id="tasiAlBtn">${T('tasiAlBtn')}</button></div>`);
-  if ($('tasiKopya')) $('tasiKopya').onclick = () => kopyala(tasiKod, T('tasiKopyalandi'));
+  const pano = !!(navigator.clipboard && navigator.clipboard.readText);
+  const gonder = ver ? `<div class="tasi-blok">
+      <h4>${T('tasiVerT')}</h4><p>${esc(T('tasiVerM' + yer))}</p>
+      <div class="tasi-ozet">${T('tasiOzet', {g: gunler.length})}${gunler.length ? ` · ${esc(etiket(gunler[0]))} – ${esc(etiket(gunler[gunler.length - 1]))}` : ''}</div>
+      <button class="btn solid full" id="tasiKopya">${T('tasiKopya')}</button>
+      ${navigator.share ? `<button class="btn ghost full tasi-ek" id="tasiGonder">${T('tasiGonder')}</button>` : ''}
+    </div>` : '';
+  const al = `<div class="tasi-blok">
+      <h4>${T('tasiAlT')}</h4><p>${esc(T('tasiAlM'))}</p>
+      ${pano ? `<button class="btn green full" id="tasiPano">${T('tasiPanoAktar')}</button>` : ''}
+      <details class="tasi-elle" id="tasiElle"${pano ? '' : ' open'}><summary>${T('tasiElleT')}</summary>
+        <textarea class="search tasi-kutu" id="tasiYapistir" rows="3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="https://…#t=…"></textarea>
+        <button class="btn green full" style="margin-top:8px" id="tasiAlBtn">${T('tasiAlBtn')}</button></details>
+    </div>`;
+  ac('📲 ' + T('tasiT'), `<p class="tasi-neden">${esc(T(ios ? 'tasiNeden' : 'tasiNedenG'))}</p>
+    ${ios ? `<div class="tasi-yer">${T(uyg ? 'tasiSimdiU' : 'tasiSimdiT')}</div>` : ''}
+    ${yer === 'U' ? al + gonder : gonder + al}
+    ${ver ? `<div class="hint" style="margin-top:10px">${esc(T('tasiGizli'))}</div>` : ''}`);   // ana ekran uygulamasında önce "buraya getir"
+  if ($('tasiKopya')) $('tasiKopya').onclick = () => kopyala(tasiKod, T('tasiKop' + yer), TASI_SURE);
   if ($('tasiGonder')) $('tasiGonder').onclick = () => navigator.share({title: T('tasiT'), text: tasiKod}).catch(() => {});
-  const al = m => { if (!/#t=/.test(m || '')){ toast(T('tasiBad')); return; } icinden(tasiAc, () => tasiLinkiAc(m)); };
-  if ($('tasiPano')) $('tasiPano').onclick = () => navigator.clipboard.readText().then(m => { $('tasiYapistir').value = m || ''; al(m); }, () => toast(T('tasiElle')));
-  $('tasiAlBtn').onclick = () => al($('tasiYapistir').value);
+  const elle = () => { $('tasiElle').open = true; };
+  const aktar = m => { if (!/#t=/.test(m || '')){ toast(T('tasiBos'), TASI_SURE); elle(); return; } icinden(tasiAc, () => tasiLinkiAc(m)); };
+  if ($('tasiPano')) $('tasiPano').onclick = () => navigator.clipboard.readText().then(m => { $('tasiYapistir').value = m || ''; aktar(m); }, () => { toast(T('tasiElle'), TASI_SURE); elle(); });
+  $('tasiAlBtn').onclick = () => aktar($('tasiYapistir').value);
 }
 async function tasiLinkiAc(metin){
   const m = String(metin || '').match(/#t=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
@@ -3665,7 +3699,7 @@ function verileriBirlestir(gelen){
   aktif = bugunK(); detayAcik = false;
   if (D.ayar.kurulum && !$('kurulum').hidden){ document.body.classList.remove('wiz-acik'); $('kurulum').hidden = true; }
   baslat2();
-  toast(T('tasiOk', {g: sayi0}));
+  toast(T('tasiOk', {g: sayi0}), TASI_SURE);
 }
 // Aynı gün iki tarafta: dolu olan esas; öbüründe yenen ama bunda yenmemiş öğünler eklenir
 function gunBirlestir(ust, alt){
