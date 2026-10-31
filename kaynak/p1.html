@@ -535,7 +535,7 @@ body.klavye .toast{display:none}
 .saat-onizle li.ara{color:var(--muted)}
 
 /* Kurulum sihirbazı */
-.wiz{position:fixed;inset:0;top:var(--vv-top,0px);bottom:auto;height:var(--vv-h,100%);z-index:40;overflow-y:auto;-webkit-overflow-scrolling:touch;
+.wiz{position:fixed;inset:0;top:var(--vv-top,0px);bottom:auto;height:var(--vv-h,100%);z-index:40;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
   background:radial-gradient(1200px 500px at 50% -10%,#dfe9ff 0%,var(--bg) 60%);padding:max(16px,env(safe-area-inset-top)) 14px calc(20px + env(safe-area-inset-bottom))}
 .wiz[hidden]{display:none}
 .wiz-in{max-width:620px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}

@@ -331,10 +331,13 @@ function gorunenAlan(){
   const odak = document.activeElement;
   const yaziAlani = odak && /^(INPUT|TEXTAREA)$/.test(odak.tagName) && odak.type !== 'file';
   if (!yaziAlani) enBuyukYukseklik = Math.max(enBuyukYukseklik, v.height, window.innerHeight);
+  const klavye = !!yaziAlani && v.height < (enBuyukYukseklik || window.innerHeight) * 0.85;
+  document.body.classList.toggle('klavye', klavye);
+  // Kurulum ve pencereler YALNIZ klavye açıkken görünen alana oturtulur. Klavye yokken iPhone'un esneme (lastik) kaydırması
+  // offsetTop'u oynatır; ona göre konumlanan ekran parmağın tersine kayıyordu (ilk açılışta dil seçerken görüldü).
   const r = document.documentElement.style;
-  r.setProperty('--vv-h', v.height + 'px');
-  r.setProperty('--vv-top', v.offsetTop + 'px');
-  document.body.classList.toggle('klavye', !!yaziAlani && v.height < (enBuyukYukseklik || window.innerHeight) * 0.85);
+  if (klavye){ r.setProperty('--vv-h', v.height + 'px'); r.setProperty('--vv-top', Math.max(0, v.offsetTop) + 'px'); }
+  else { r.removeProperty('--vv-h'); r.removeProperty('--vv-top'); }
 }
 window.addEventListener('orientationchange', () => { enBuyukYukseklik = 0; setTimeout(gorunenAlan, 300); });
 if (window.visualViewport){

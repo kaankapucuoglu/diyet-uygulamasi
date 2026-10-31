@@ -1,6 +1,6 @@
 // Çevrimdışı çalışma: ilk açılışta uygulama dosyaları telefona kaydedilir, sonra internetsiz de açılır.
 // Yeni sürüm yayınlarken SURUM'u artır; eski önbellek silinir.
-const SURUM = 'diyet-v24';
+const SURUM = 'diyet-v25';
 const DOSYALAR = ['./', './index.html', './manifest.webmanifest', './icons/diyet.svg', './icons/diyet-192.png', './icons/diyet-512.png', './icons/diyet-maskable-512.png', './icons/diyet-apple-180.png'];
 
 self.addEventListener('install', e => {
