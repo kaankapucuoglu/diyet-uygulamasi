@@ -342,7 +342,8 @@ function ayarlarAc(dilAcik = false){
     <input type="file" id="dosyaSec" accept=".json,application/json" hidden>
     </div><div class="ayar-blok" data-ak="yasal"><div class="sec">${T('sYasal')}</div><div class="hint hukuk-satir">${['gizlilik:cLinkPriv', 'aydinlatma:cLinkKvkk', 'kosullar:cLinkTerms'].map(x => { const [f, k] = x.split(':'); return `<a href="legal/${f}.html#${dil}" target="_blank" rel="noopener">${esc(T(k))}</a>`; }).join(' · ')}</div>
     </div><div class="ayar-blok" data-ak="sifirla"><div class="sec">${T('sReset')}</div>
-    <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div></div>`);
+    <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div>
+    <button class="btn danger full" style="margin-top:8px" id="hepsiniSil">${T('resetAll')}</button><div class="hint" style="margin-top:6px">${esc(T('resetAllHint'))}</div></div>`);
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
   $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
   $('sporDuzenle').onclick = () => { kapat(); sihirbazAc('spor'); };
@@ -410,6 +411,15 @@ function ayarlarAc(dilAcik = false){
     onayAc(T('cResetMenu'), () => { planYenile(); kaydet(); ciz(); toast(T('tSaved')); }));
   $('kayitSifirla').onclick = () => icinden(ayarlarAc, () =>
     onayAc(T('cResetRec'), () => { D.kayit = {}; logEkle('diger', null, T('lResetRec')); kaydet(); ciz(); toast(T('tRecDel')); }));
+  // Tüm verileri sil: profil, sağlık bilgileri, kayıtlar, programlar, taslaklar — bu cihazdaki her şey (kullanıcı 01.11: veriler yalnız cihazda; silme hakkı)
+  $('hepsiniSil').onclick = () => icinden(ayarlarAc, () =>
+    onayAc(T('cResetAll'), async () => {
+      try { Object.keys(localStorage).filter(k => k.startsWith(ANAHTAR) || k.startsWith(ESKI_ANAHTAR)).forEach(k => localStorage.removeItem(k)); } catch(e){}
+      try { const db = await idbAc(); db.transaction('veri', 'readwrite').objectStore('veri').clear(); } catch(e){}
+      if (window.__LF_NATIVE && window.__lfCancelAll) try { window.__lfCancelAll(); } catch(e){}
+      D = varsayilanDurum();
+      setTimeout(() => location.reload(), 300);
+    }));
 }
 // Profilden haftalık şablonu yeniden üret; bugün ve sonrasının özel menülerini temizle (geçmiş korunur)
 function planYenile(){
