@@ -215,6 +215,7 @@ function wBitir(){
   aktif = bugunK(); detayAcik = false;
   sihirbazKapat();
   toast('👋 ' + selam());
+  if (window.__LF_NATIVE && D.ayar.hatirlatici === undefined) D.ayar.hatirlatici = true;   // telefon uygulamasında hatırlatıcılar varsayılan açık
   bekleyenProgramYukle();   // linkle gelen program: profil tamamlanınca otomatik yüklenir
   turKontrol();
 }

@@ -442,7 +442,28 @@ const SABIT_ICECEK = ['ayran', 'maden_suyu', 'bitki_cayi', 'kahve', 'cay', 'yesi
 // Porsiyon aralığı [en az, en çok]: adet birimlide adet, diğerlerinde gram (ara öğünde et ve yumurta daha küçük).
 // s: kalori hedefi ölçeği (2200 kcal = 1, en çok 1,7): yüksek hedefte üst sınırlar ve ana öğün et/tahıl alt sınırı büyür
 function porsiyonAralik(f, ogunId, s = 1){
-  const ara = ARA_IDLER.has(ogunId), ust = (b, tavan) => Math.min(tavan || 1e9, Math.round(b * s)), alt = a => Math.round(a * (1 + (s - 1) * 0.8));
+  const ara = ARA_IDLER.has(ogunId);
+  if (ara){
+    // Ara öğün: tek oturuşta yenebilecek porsiyon; kalori gerekiyorsa kalem büyümez, 3. kalem eklenir (araTamamla)
+    if (f.a){
+      if (f.kat === 'meyve') return f.a <= 20 ? [2, 5] : f.id === 'avokado' ? [0.5, 0.5] : f.a >= 100 ? [1, 1] : [1, 2];
+      if (f.kat === 'yumurta') return [1, 2];
+      if (f.kat === 'tahil') return [1, 2];
+      if (f.kat === 'atistirmalik') return [1, 3];
+      return [1, 2];
+    }
+    if (SIVI.has(f.id)) return [150, 250];
+    switch (f.kat){
+      case 'kuruyemis': return ['zeytinyagi', 'keten', 'chia'].includes(f.id) ? [5, 10] : f.id === 'fistikezme' ? [10, 20] : [10, 30];
+      case 'sut': return f.id === 'lor' ? [30, 80] : [100, 200];
+      case 'tahil': return f.id === 'yulaf' ? [30, 50] : [30, 60];
+      case 'meyve': return [100, 200];
+      case 'atistirmalik': return f.id === 'leblebi' ? [20, 30] : [100, 150];
+      case 'et': case 'balik': case 'bitkisel': return [60, 100];
+      default: return [10, 200];
+    }
+  }
+  const ust = (b, tavan) => Math.min(tavan || 1e9, Math.round(b * s)), alt = a => Math.round(a * (1 + (s - 1) * 0.8));
   if (f.a){
     if (f.kat === 'yumurta') return [ara || s < 1.3 ? 1 : 2, ara ? 2 : ust(3, 4)];
     if (f.kat === 'tahil') return f.b === 'dilim' ? [1, ogunId === 'kahvalti' ? ust(3, 4) : ust(2, 3)] : f.id === 'lavas' ? [0.5, 1] : [1, ust(3, 4)];
@@ -488,20 +509,25 @@ function aksamIcecekEkle(gun, izinli){
   const id = (yogurtlu ? ['maden_suyu', 'bitki_cayi'] : ['ayran', 'maden_suyu', 'bitki_cayi']).find(x => izinli(yemek(x)));
   if (id) o.ogeler.push({f: id, g: id === 'ayran' ? 200 : 1});
 }
-// Ara öğün en çok 2 kalem (takviye ve içecek hariç): biri ana kalem, diğeri farklı rolden tamamlayıcı; atılan kalori kalanlara paylaşılır
+// Ara öğün en çok 3 kalem (takviye ve içecek hariç): ana kalem + farklı rolden tamamlayıcılar; atılan kalori kalanlara paylaşılır.
+// Kullanıcı 01.11: 2 kalemde miktarlar çok büyüdü (310 g kefir) → ara öğün porsiyonu tavanlı, gerekirse 3. kalem
+const ARA_EN_COK = 3;
 function araSadele(gun, sabit, por){
   const kcal = it => besin(it.f, it.g).k;
   const ana = it => { const f = yemek(it.f); return f.kat === 'sut' || rol(f) === 'P' || ['atistirmalik', 'tahil'].includes(f.kat); };
   for (const o of gun){
     if (!ARA_IDLER.has(o.id)) continue;
     const sayilan = o.ogeler.filter(it => !sabit.has(it.f));
-    if (sayilan.length <= 2) continue;
+    if (sayilan.length <= ARA_EN_COK) continue;
     const sirali = [...sayilan].sort((a, b) => (ana(b) - ana(a)) || (kcal(b) - kcal(a)));   // ana kalem (yoğurt, kefir, süzme, leblebi…) önce
-    const ilk = sirali[0], ikinci = sirali.slice(1).find(it => rol(yemek(it.f)) !== rol(yemek(ilk.f))) || sirali[1];
-    const atilan = sayilan.filter(it => it !== ilk && it !== ikinci), ek = atilan.reduce((s, it) => s + kcal(it), 0);
+    // ana kalem + farklı rollerden tamamlayıcılar (en çok ARA_EN_COK kalem)
+    const tut = [sirali[0]];
+    for (const it of sirali.slice(1)) if (tut.length < ARA_EN_COK && !tut.some(x => rol(yemek(x.f)) === rol(yemek(it.f)))) tut.push(it);
+    for (const it of sirali.slice(1)) if (tut.length < ARA_EN_COK && !tut.includes(it)) tut.push(it);
+    const atilan = sayilan.filter(it => !tut.includes(it)), ek = atilan.reduce((s, it) => s + kcal(it), 0);
     o.ogeler = o.ogeler.filter(it => !atilan.includes(it));
-    const tk = kcal(ilk) + kcal(ikinci);
-    if (tk > 0) for (const it of [ilk, ikinci]) it.g = por(yemek(it.f), o.id, it.g * (tk + ek) / tk);
+    const tk = tut.reduce((s, it) => s + kcal(it), 0);
+    if (tk > 0) for (const it of tut) it.g = por(yemek(it.f), o.id, it.g * (tk + ek) / tk);
   }
 }
 function gunuOlcekle(gun, p, izinli){
@@ -543,13 +569,15 @@ function gunuOlcekle(gun, p, izinli){
     const ek = KAHVALTI_EK.find(([f]) => izinli(yemek(f)) && !o.ogeler.some(it => it.f === f));
     if (ek){ o.ogeler.push({f: ek[0], g: ek[1]}); kAyarla(); yAyarla(1, 2); }
   }
-  // d) tek kalemli ara öğüne farklı rolden bir tamamlayıcı (ara öğün yine en çok 2 kalem)
-  for (const o of gun){
+  // d) ara öğünlere farklı rolden tamamlayıcı (en çok ARA_EN_COK kalem; kalem büyütmek yerine çeşit)
+  for (let tur = 0; tur < 2; tur++) for (const o of gun){
     if (!eksik()) break;
     if (!ARA_IDLER.has(o.id)) continue;
     const say = o.ogeler.filter(it => !sabit.has(it.f));
-    if (say.length !== 1) continue;
-    const r0 = rol(yemek(say[0].f)), ek = ARA_TAMAMLAYICI.find(([f]) => izinli(yemek(f)) && rol(yemek(f)) !== r0 && !o.ogeler.some(it => it.f === f));
+    if (!say.length || say.length >= ARA_EN_COK) continue;
+    const roller = new Set(say.map(it => rol(yemek(it.f))));
+    const ek = ARA_TAMAMLAYICI.find(([f]) => izinli(yemek(f)) && !roller.has(rol(yemek(f))) && !o.ogeler.some(it => it.f === f))
+      || ARA_TAMAMLAYICI.find(([f]) => izinli(yemek(f)) && !o.ogeler.some(it => it.f === f));
     if (ek) o.ogeler.push({f: ek[0], g: ek[1]});
   }
   // 5) Şeker sınırı aşılıyorsa şekerli kalemleri (meyve, süt ürünü, tatlı) azalt, kaloriyi tahılla geri tamamla

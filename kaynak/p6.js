@@ -153,7 +153,7 @@ function ciz(){
   $('ust').textContent = T('eyebrow');
   $('baslik').textContent = selam();
   $('lAyar').textContent = T('settings'); $('lUyari').textContent = T('warnBtn');
-  $('lKoc').textContent = T('kocBtn');
+  $('lKoc').textContent = T('kocBtn'); $('lSira').textContent = T('hsSira');
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';

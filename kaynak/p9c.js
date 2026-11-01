@@ -157,8 +157,7 @@ function reklamBolumuEkle(){
   if (!yerelKabuk()) return;
   const sb = $('sbody'); if (!sb || $('reklamBolum')) return;
   const kutu = document.createElement('div'); kutu.id = 'reklamBolum';
-  const hesap = $('hesapBolum'), ilk = sb.querySelector('.sec');
-  if (hesap) hesap.insertAdjacentElement('afterend', kutu); else if (ilk) sb.insertBefore(kutu, ilk); else sb.appendChild(kutu);
+  sb.appendChild(kutu);   // yeri ayarSirala() belirler (kullanım turunun altı)
   reklamBolumuCiz();
   // Kapanmamış (onaylanmamış / bekleyen) işlemleri kabuktan yeniden iste — ayarlar içi yeniden çizimlerde en çok 20 sn'de bir
   if (Date.now() - Reklam.sonSupur > 20000){ Reklam.sonSupur = Date.now(); lfGonder({t: 'iap:sweep'}); }
@@ -245,4 +244,36 @@ if (yerelKabuk()){
     const kuyruk = Array.isArray(window[q]) ? window[q].splice(0) : [];
     kuyruk.forEach(m => { try { f(m); } catch(e){ console.warn('kabuk mesajı işlenemedi', e); } });
   }
+}
+
+// ---------- Ayarlar sırası (kullanıcı 01.11): sık kullanılanlar üstte, gereksizler aşağıda; en altta hesap ve sıfırla ----------
+const AYAR_SIRA = ['ust', 'tur', 'reklam', 'program', 'tasi', 'yedek', 'olcu', 'saat', 'hedef', 'profil', 'regl', 'yukle', 'spor', 'antrenman', 'bildirim', 'hesap', 'sifirla'];
+let rkGozlemci = null;
+function ayarSirala(){
+  const sb = $('sbody'); if (!sb) return;
+  const bul = k => k === 'reklam' ? $('reklamBolum') : k === 'hesap' ? $('hesapBolum') : sb.querySelector(`:scope > .ayar-blok[data-ak="${k}"]`);
+  for (const k of AYAR_SIRA){ const el = bul(k); if (el) sb.appendChild(el); }
+  rkTitresimKur();
+}
+// Reklamlar kartı: ayarlar açılınca bir kez titrer; aşağı kaydırılıp yeniden göründüğünde ("Reklamları kaldır") tekrar titrer
+function rkTitresimKur(){
+  if (rkGozlemci){ rkGozlemci.disconnect(); rkGozlemci = null; }
+  const el = $('reklamBolum'), sb = $('sbody');
+  if (!el || !sb || reklamsizMi()) return;
+  el.classList.add('rk-kutu');
+  const titret = () => { el.classList.remove('titre'); void el.offsetWidth; el.classList.add('titre'); };
+  el.addEventListener('animationend', () => el.classList.remove('titre'));
+  let ayrildi = true;   // ilk görünüşte titresin
+  if (!('IntersectionObserver' in window)){ setTimeout(titret, 350); return; }
+  rkGozlemci = new IntersectionObserver(girdiler => {
+    for (const g of girdiler){
+      if (g.isIntersecting && g.intersectionRatio >= 0.6){ if (ayrildi){ ayrildi = false; setTimeout(titret, 250); } }
+      else if (!g.isIntersecting) ayrildi = true;
+    }
+  }, {root: sb, threshold: [0, 0.6]});
+  rkGozlemci.observe(el);
+}
+{
+  const ayarlarAcS0 = ayarlarAc;
+  ayarlarAc = function(){ const r = ayarlarAcS0.apply(this, arguments); ayarSirala(); return r; };
 }

@@ -33,6 +33,7 @@ document.querySelector('.wrap').addEventListener('change', e => {
 $('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') kapat(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
 $('ayarBtn').addEventListener('click', () => ayarlarAc());
+$('siraBtn').addEventListener('click', () => siralamaAc());   // ana sayfa 🏆 Sıralama (ayarlardakiyle aynı ekran)
 $('uyariBtn').addEventListener('click', uyarilarAc);
 $('hamileBtn').addEventListener('click', hamileDegistir);
 $('kocBtn').addEventListener('click', kocAc);
@@ -299,49 +300,49 @@ function ayarlarAc(dilAcik = false){
   dilAcik = dilAcik === true;
   const P = D.profil, h = P.hedef ? hedefHesapla(P) : null;
   const alan = k => `<label class="field"><span>${T(HEDEF_ETIKET[k])}</span><input autocomplete="off" autocorrect="off" spellcheck="false" id="p_${k}" type="number" inputmode="numeric" value="${P[k]}"></label>`;
-  ac(T('setTitle'), `
+  ac(T('setTitle'), `<div class="ayar-blok" data-ak="ust">
     <div class="ayar-ust"><button class="btn" id="logAc">📋 ${T('logs')}</button><button class="btn" id="yazAcBtn">✉️ ${T('fbBtn')}</button><button class="btn dil-ac" id="dilAc" aria-expanded="${!!dilAcik}">🌐 ${dil.toUpperCase()} <i>▾</i></button></div>
     <div id="dilListe" ${dilAcik ? '' : 'hidden'}>${dilListesi(dil)}</div>
-    <button class="btn ghost full" style="margin-top:8px" id="turAc">🧭 ${T('tourBtn')}</button>
-    <div class="sec">${T('sProfile')}</div>
+    </div><div class="ayar-blok" data-ak="tur"><button class="btn ghost full" style="margin-top:8px" id="turAc">🧭 ${T('tourBtn')}</button>
+    </div><div class="ayar-blok" data-ak="profil"><div class="sec">${T('sProfile')}</div>
     <div class="cur"><b>${esc(P.ad || '—')}</b> · ${P.cins ? T(P.cins === 'k' ? 'female' : 'male') : ''} · ${P.yas} · ${P.boy} cm · ${sayi(P.kilo)} kg${h ? ` · ${T('bmi')} ${sayi(h.vki)}` : ''}<br>
       <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
       ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
     <div class="acts"><button class="btn solid" id="profilDuzenle">${T('editProfile')}</button><button class="btn" id="alerjiDuzenle">${T('editAlerji')}</button></div>
-    <div class="sec">${T('sSpor')}</div>
+    </div><div class="ayar-blok" data-ak="spor"><div class="sec">${T('sSpor')}</div>
     <div class="cur"><b>🏋️ ${esc(sporOzet(P.spor))}</b><br><small>${T('takLbl')}: ${(P.takviye || []).length ? P.takviye.map(k => esc(T('tk_' + k))).join(', ') : T('takYok')}</small></div>
-    ${P.spor && P.spor.gun > 0 ? `<label class="field"><span>${T('antGunT')}</span></label><div class="days ant-gunler">${[0,1,2,3,4,5,6].map(j => `<button class="day${(P.antrenmanGunleri || []).includes(j) ? ' active' : ''}" data-antgun="${j}" aria-pressed="${(P.antrenmanGunleri || []).includes(j)}"><b>${haftaGunAd(j)}</b></button>`).join('')}</div><div class="hint" style="margin:-8px 0 8px">${esc(T('antGunHint'))}</div>` : ''}
     <div class="acts" style="margin-top:0"><button class="btn" id="sporDuzenle">${T('editSpor')}</button></div>
-    ${reglTakipli() ? `<div class="sec">${T('reglT')}</div>${reglListesi()}` : ''}
-    <div class="sec">${T('sBildirim')}</div>
+    ${P.spor && P.spor.gun > 0 ? `</div><div class="ayar-blok" data-ak="antrenman"><div class="sec">${T('antGunT')}</div><div class="days ant-gunler">${[0,1,2,3,4,5,6].map(j => `<button class="day${(P.antrenmanGunleri || []).includes(j) ? ' active' : ''}" data-antgun="${j}" aria-pressed="${(P.antrenmanGunleri || []).includes(j)}"><b>${haftaGunAd(j)}</b></button>`).join('')}</div><div class="hint" style="margin:-8px 0 8px">${esc(T('antGunHint'))}</div>` : ''}
+    ${reglTakipli() ? `</div><div class="ayar-blok" data-ak="regl"><div class="sec">${T('reglT')}</div>${reglListesi()}` : ''}
+    </div><div class="ayar-blok" data-ak="bildirim"><div class="sec">${T('sBildirim')}</div>
     <div class="saat-liste"><button class="saat-ek${D.ayar.hatirlatici ? ' on' : ''}" id="notTog" aria-pressed="${!!D.ayar.hatirlatici}"><span class="kutu">${D.ayar.hatirlatici ? '✓' : ''}</span>${T('notT')}</button></div>
-    <div class="hint" style="margin-top:6px">${esc(T('notHint', {ornek: T('notBody', {ogun: T('m_ogle'), liste: yemek('tavuk').ad + ', ' + yemek('salata').ad})}))}</div>
-    <div class="sec">${T('sBody')}</div>
+    <div class="hint" style="margin-top:6px">${esc(T('notHint', {ornek: T('notBody', {ik: OGUN_IKON.ogle, ogun: T('m_ogle'), liste: yemek('tavuk').ad + ', ' + yemek('salata').ad})}))}</div>
+    </div><div class="ayar-blok" data-ak="olcu"><div class="sec">${T('sBody')}</div>
     <div class="grid3">${[['yas', 'age', 1], ['boy', 'height', 1], ['kilo', 'weight', 0.5], ['hedefKilo', 'targetW', 0.5]].map(([k, ad]) => `<label class="field"><span>${T(ad)}</span><input autocomplete="off" id="b_${k}" type="text" inputmode="decimal" value="${sayi(P[k])}"></label>`).join('')}</div>
     <div class="hint" style="margin:-4px 0 8px">${T('bodyHint')}</div>
     <button class="btn full" id="olcuKaydet">${T('bodySave')}</button>
-    <div class="sec">${T('sSaat')}</div>
+    </div><div class="ayar-blok" data-ak="saat"><div class="sec">${T('sSaat')}</div>
     ${saatFormu()}
-    <div class="sec">${T('sTargets')}</div>
+    </div><div class="ayar-blok" data-ak="hedef"><div class="sec">${T('sTargets')}</div>
     <div class="grid3">${HEDEF_KEYS.filter(k => k !== 'su' && k !== 'bardak').map(alan).join('')}
       <label class="field"><span>${T('bardakSu')}</span><div class="ikili"><input autocomplete="off" id="p_bardak" type="text" inputmode="numeric" value="${P.bardak}" aria-label="${esc(T('tGlass'))}"><b>/</b><input autocomplete="off" id="p_su" type="text" inputmode="numeric" value="${P.su}" aria-label="${esc(T('tWater'))}"></div></label></div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
-    <div class="sec">${T('sProg')}</div>
+    </div><div class="ayar-blok" data-ak="program"><div class="sec">${T('sProg')}</div>
     ${D.program ? `<div class="acts" style="margin-top:0;margin-bottom:8px"><button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button></div>` : ''}
     <div class="hint">${esc(T('impPasteHint'))}</div>
     <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
-    ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `<div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
-    <div class="sec">${T('tasiT')}</div>
+    ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `</div><div class="ayar-blok" data-ak="yukle"><div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
+    </div><div class="ayar-blok" data-ak="tasi"><div class="sec">${T('tasiT')}</div>
     <div class="hint">${esc(T('tasiKisa'))}</div>
     <button class="btn solid full" style="margin-top:8px" id="tasiAcBtn">📲 ${T('tasiT')}</button>
-    <div class="sec">${T('sBackup')}</div>
+    </div><div class="ayar-blok" data-ak="yedek"><div class="sec">${T('sBackup')}</div>
     <div class="tip">${T('backupTip')}</div>
     <div class="acts"><button class="btn" id="yedekIndir">${T('dlBackup')}</button><button class="btn" id="yedekYukle">${T('ulBackup')}</button></div>
     <button class="btn ghost full" style="margin-top:8px" id="htmlIndir">${T('dlHtml')}</button>
     <div class="hint" style="margin-top:6px">${T('htmlHint')}</div>
     <input type="file" id="dosyaSec" accept=".json,application/json" hidden>
-    <div class="sec">${T('sReset')}</div>
-    <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div>`);
+    </div><div class="ayar-blok" data-ak="sifirla"><div class="sec">${T('sReset')}</div>
+    <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div></div>`);
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
   $('alerjiDuzenle').onclick = () => { kapat(); sihirbazAc('alerji'); };
   $('sporDuzenle').onclick = () => { kapat(); sihirbazAc('spor'); };

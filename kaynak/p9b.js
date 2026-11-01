@@ -229,8 +229,7 @@ ayarlarAc = function(dilAcik){ ayarlarAc0(dilAcik); hesapBolumuEkle(); };
 function hesapBolumuEkle(){
   const sb = $('sbody'); if (!sb || $('hesapBolum')) return;
   const kutu = document.createElement('div'); kutu.id = 'hesapBolum';
-  const ilk = sb.querySelector('.sec');   // profil başlığından önce
-  if (ilk) sb.insertBefore(kutu, ilk); else sb.appendChild(kutu);
+  sb.appendChild(kutu);   // yeri ayarSirala() belirler (sıfırla bölümünün üstü)
   hesapBolumuCiz();
 }
 function esitDurumYazi(){

@@ -660,6 +660,39 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
   .wnav.koc-nav .btn{font-size:13.5px;padding:4px 6px}
   .wnav.koc-nav .btn.ghost{flex:1 1 0;min-width:0}
 }
+
+/* Program hazırla: kayıtlı programlar, danışan bilgileri, kısıt çipleri, enerji dağılımı, sorumluluk notu */
+.koc-arsiv-satir{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 10px}
+.koc-arsiv-satir .chip{font-size:12.5px;padding:6px 11px;white-space:nowrap}
+.koc-danisan{border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin:4px 0 8px;background:#fbfcfe}
+.koc-danisan summary{cursor:pointer;font-weight:700;font-size:13.5px;color:#40506a;padding:4px 0}
+.koc-danisan .seg{margin:0 0 8px}
+.koc-danisan select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:#fff;font:inherit;font-size:14px;color:var(--text);min-height:40px}
+.koc-kisit{margin:4px 0 10px}
+.koc-kisit .chip{font-size:12.5px;padding:6px 10px}
+.koc-dagilim{margin-top:8px;font-size:12.5px}
+.koc-uyari{margin-top:8px;font-size:12px;line-height:1.45}
+.koc-arsiv-liste{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.koc-arsiv-li{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--card)}
+.koc-arsiv-li>div:first-child{min-width:0}
+.koc-arsiv-li b{display:block;overflow-wrap:anywhere}
+.koc-arsiv-li small{display:block;color:var(--muted);font-size:12px}
+.koc-arsiv-li .acts .btn{flex:0 0 auto;min-height:36px;padding:0 12px}
+.prog-bant a{color:var(--blue);font-weight:700}
+
+/* Ana sayfa: selamın sağında 🏆 Sıralama */
+.selam-satir{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 auto}
+.selam-satir h1{flex:1 1 auto;min-width:0;margin:0;overflow-wrap:anywhere}
+.sira-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;padding:7px 11px;border-radius:99px;background:var(--gold-soft);color:var(--gold);font-weight:800;font-size:13px;border:1px solid #f3dca4;white-space:nowrap;line-height:1.1}
+.sira-btn:active{transform:scale(.96)}
+@media (max-width:1180px){ .top-row .selam-satir{order:1;width:100%} .top-row .selam-satir h1{order:0} }
+@media (max-width:380px){ .sira-btn{padding:6px 9px;font-size:12px} }
+/* Ayarlar › Reklamlar kartı: belirgin kart + titreşim */
+#reklamBolum.rk-kutu{border:1.5px solid #9fdcc1;background:#f2fbf6;border-radius:14px;padding:2px 12px 12px;margin:12px 0 6px}
+#reklamBolum.rk-kutu .sec{margin-top:10px}
+@keyframes rkTitre{0%,100%{transform:translateX(0) rotate(0)}12%{transform:translateX(-5px) rotate(-1deg)}25%{transform:translateX(5px) rotate(1deg)}38%{transform:translateX(-4px) rotate(-.6deg)}51%{transform:translateX(4px) rotate(.6deg)}64%{transform:translateX(-2px)}77%{transform:translateX(2px)}}
+#reklamBolum.titre{animation:rkTitre .75s ease-in-out}
+@media (prefers-reduced-motion:reduce){ @keyframes rkNabiz{0%,100%{box-shadow:0 0 0 0 rgba(22,163,107,0)}50%{box-shadow:0 0 0 6px rgba(22,163,107,.25)}} #reklamBolum.titre{animation:rkNabiz .9s ease-in-out} }
 </style>
 </head>
 <body>
@@ -667,7 +700,7 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
   <header class="top">
     <div class="eyebrow"><span id="ust"></span></div>
     <div class="top-row">
-      <h1 id="baslik"></h1>
+      <div class="selam-satir"><h1 id="baslik"></h1><button class="sira-btn" id="siraBtn" type="button">🏆 <span id="lSira"></span></button></div>
       <div class="top-btns">
         <button class="tool-btn" id="uyariBtn"><span>⚠️</span><small id="lUyari"></small></button>
         <button class="tool-btn" id="kocBtn"><span>👩‍⚕️</span><small id="lKoc"></small></button>
