@@ -96,7 +96,7 @@ const HAFTA_4 = [
   [[['pankek',150],['suzme',100],['yumurta',1]], [['biftek',150],['patates_firin',100],['salata',150]],
    [['suzme',150],['portakal',1]], [['tavuk_kofte',180],['izgarasebze',200],['cacik',150]], [['yogurt',150],['keten',5],['galeta',1]]]
 ];
-const TEMEL_HAFTALAR = [ORNEK_PLAN, HAFTA_2, HAFTA_3, HAFTA_4];
+const TEMEL_HAFTALAR = [ORNEK_PLAN, HAFTA_2, HAFTA_3, HAFTA_4, HAFTA_5, HAFTA_6, HAFTA_7, HAFTA_8];   // 5–8: p4i.js (Akdeniz, sporcu, ev yemekleri, Karadeniz–Ege)
 // Yenmeyen/sınırlı yemek için öncelikli karşılıklar (sırayla ilk izinli olan)
 const TERCIH = {
   beyazp:['lor','tofu'], kasar:['lor','tofu'], zeytin:['ceviz','badem'], ton:['tavuk_hasl','levrek','tofu'], leblebi:['kabak_cek','badem'],
@@ -109,6 +109,7 @@ const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay','smoot
   'sut_yagsiz','laktozsuz_sut','keci_sutu','ayran_light','badem_sutu','yulaf_sutu','hindistan_sutu','pirinc_sutu','americano','espresso','iced_latte','mocha','matcha_latte','chai_latte',
   'sicak_cikolata','nar_suyu','havuc_suyu','meyve_suyu_paket','yesil_smoothie','milkshake','kombucha','boza','meyveli_soda','ice_tea','enerji_icecegi','enerji_zero','bira','kirmizi_sarap','beyaz_sarap','raki',
   'protein_sut','sporcu_icecegi']);
+SIVI_EK.forEach(id => SIVI.add(id));   // p4i.js içecekleri
 // Kalori yetmezse ara öğüne eklenecek besleyici seçenekler (ilk uygun olan)
 const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]],
   [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',3]]];   // sona doğru alerjiye uygun seçenekler
