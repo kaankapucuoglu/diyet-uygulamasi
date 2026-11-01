@@ -641,7 +641,9 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 /* Program hazırlama: dönem seçici (aktif hafta / aktif ay), ay günleri şeridi, araç çipleri, alt düğmeler, dönem penceresi */
 .koc-sec-row{display:flex;align-items:center;justify-content:space-between;gap:6px 10px;flex-wrap:wrap}
 .koc-sec-row>span{min-width:0}
-.koc-auto{flex:0 0 auto;margin-inline-start:auto;min-height:32px;padding:5px 12px;font-size:12.5px;font-weight:700;text-transform:none;letter-spacing:0;border-radius:99px;line-height:1.2;white-space:nowrap}
+.koc-hedef-row{flex-wrap:nowrap;gap:8px;margin-bottom:6px}
+.koc-hedef-row>span{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.koc-auto{flex:0 0 auto;margin-inline-start:auto;min-height:30px;padding:4px 10px;font-size:12px;font-weight:700;text-transform:none;letter-spacing:0;border-radius:99px;line-height:1.2;white-space:nowrap}
 .seg{display:inline-flex;background:#eef2f8;border-radius:99px;padding:3px;gap:2px}
 .seg-btn{border:0;background:transparent;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;color:#40506a;text-transform:none;letter-spacing:0;white-space:nowrap;line-height:1.2}
 .seg-btn.on{background:var(--green);color:#fff}
@@ -1136,7 +1138,7 @@ Object.assign(S, {
   kocAuthorPh:["ör. Dyt. Ayşe Yılmaz","e.g. Jane Doe, RD","напр. диетолог Анна","z. B. Anna Müller, Ernährungsberaterin","مثال: أخصائية التغذية سارة"],
   kocNote:["Genel not (isteğe bağlı)","General note (optional)","Общая заметка (необязательно)","Allgemeine Notiz (optional)","ملاحظة عامة (اختياري)"],
   kocNotePh:["ör. Günde 2,5 L su için. Kızartma yok, yemekleri fırında veya haşlama yapın.","e.g. Drink 2.5 L water a day. No frying; bake or boil.","напр. Пейте 2,5 л воды в день. Без жарки.","z. B. 2,5 L Wasser pro Tag. Nicht frittieren.","مثال: اشرب 2.5 لتر ماء يومياً. بدون قلي."],
-  kocTargets:["Günlük hedefler (isteğe bağlı)","Daily targets (optional)","Дневные цели (необязательно)","Tagesziele (optional)","الأهداف اليومية (اختياري)"],
+  kocTargets:["Günlük hedef","Daily targets","Дневные цели","Tagesziele","الأهداف اليومية"],
   kocMeals:["Öğünler ve saatler","Meals and times","Приёмы пищи и время","Mahlzeiten und Zeiten","الوجبات والمواعيد"],
   kocAra0:["Kuşluk ara öğünü ekle (kahvaltı ile öğle arası)","Add a morning snack (between breakfast and lunch)","Добавить второй завтрак","Vormittagssnack hinzufügen","أضف وجبة خفيفة صباحية"],
   kocDays:["Günler","Days","Дни","Tage","الأيام"],
@@ -4709,7 +4711,7 @@ function kocCiz(){
       <div class="grid2"><label class="field"><span>${T('kocClient')}</span><input data-kf="a" autocomplete="off" maxlength="40" value="${esc(K.a)}"></label>
       <label class="field"><span>${T('kocAuthor')}</span><input data-kf="h" autocomplete="off" maxlength="60" placeholder="${esc(T('kocAuthorPh'))}" value="${esc(K.h)}"></label></div>
       <label class="field"><span>${T('kocNote')}</span><textarea data-kf="n" rows="2" maxlength="400" placeholder="${esc(T('kocNotePh'))}">${esc(K.n)}</textarea></label>
-      <div class="sec koc-sec-row" style="margin-top:4px"><span>${T('kocTargets')}</span><button class="btn green koc-auto" data-kauto="1">${T('kocAuto')}</button></div>
+      <div class="sec koc-sec-row koc-hedef-row" style="margin-top:4px"><span>${T('kocTargets')}</span><button class="btn green koc-auto" data-kauto="1">${T('kocAuto')}</button></div>
       <div class="grid4">${hedefAlan('kcal', T('tKcal'))}${hedefAlan('protein', T('tProtein'))}${hedefAlan('karb', T('tCarb'))}${hedefAlan('yag', T('tFat'))}</div>
     </div>
     <div class="sec">${T('kocMeals')}</div>

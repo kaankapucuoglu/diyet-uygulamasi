@@ -49,7 +49,7 @@ Object.assign(S, {
   kocAuthorPh:["ör. Dyt. Ayşe Yılmaz","e.g. Jane Doe, RD","напр. диетолог Анна","z. B. Anna Müller, Ernährungsberaterin","مثال: أخصائية التغذية سارة"],
   kocNote:["Genel not (isteğe bağlı)","General note (optional)","Общая заметка (необязательно)","Allgemeine Notiz (optional)","ملاحظة عامة (اختياري)"],
   kocNotePh:["ör. Günde 2,5 L su için. Kızartma yok, yemekleri fırında veya haşlama yapın.","e.g. Drink 2.5 L water a day. No frying; bake or boil.","напр. Пейте 2,5 л воды в день. Без жарки.","z. B. 2,5 L Wasser pro Tag. Nicht frittieren.","مثال: اشرب 2.5 لتر ماء يومياً. بدون قلي."],
-  kocTargets:["Günlük hedefler (isteğe bağlı)","Daily targets (optional)","Дневные цели (необязательно)","Tagesziele (optional)","الأهداف اليومية (اختياري)"],
+  kocTargets:["Günlük hedef","Daily targets","Дневные цели","Tagesziele","الأهداف اليومية"],
   kocMeals:["Öğünler ve saatler","Meals and times","Приёмы пищи и время","Mahlzeiten und Zeiten","الوجبات والمواعيد"],
   kocAra0:["Kuşluk ara öğünü ekle (kahvaltı ile öğle arası)","Add a morning snack (between breakfast and lunch)","Добавить второй завтрак","Vormittagssnack hinzufügen","أضف وجبة خفيفة صباحية"],
   kocDays:["Günler","Days","Дни","Tage","الأيام"],
