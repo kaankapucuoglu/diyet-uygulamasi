@@ -115,25 +115,59 @@ async function scheduleNotify(m: NotifyMsg): Promise<string> {
   return id;
 }
 
-// ---------- dosya indirme → paylaş sayfası ----------
+// ---------- dosya indirme → kullanıcı klasör seçer → oraya kaydedilir ----------
+// 02.11: önce "İndirildi" yazıp sonra paylaş sayfası açılıyordu. Artık önce konum seçtirilir; yalnız dosya yazılınca
+// web tarafına {ok:true} döner ("İndirildi" bildirimi o zaman çıkar). Vazgeçilirse {ok:false, cancel:true} → sessiz.
+// Seçici yoksa / açılamazsa eski yol: önbellek + paylaş sayfası ({ok:true, shared:true} → "İndirildi" yazılmaz).
 type DownloadMsg = { name?: string; data?: string; b64?: string; mime?: string };
+type DownloadResult = { ok: boolean; name?: string; cancel?: boolean; shared?: boolean; err?: string };
 
-async function saveAndShare(m: DownloadMsg): Promise<string> {
+function downloadMeta(m: DownloadMsg) {
   const name = String(m.name || 'liferoutine.txt').replace(/[\\/:*?"<>|\u0000-\u001f]+/g, '_').slice(0, 120) || 'liferoutine.txt';
   const ext = (name.split('.').pop() || '').toLowerCase();
   const mime = String(m.mime || '').split(';')[0].trim()
     || ({ json: 'application/json', html: 'text/html', htm: 'text/html', txt: 'text/plain', csv: 'text/csv', pdf: 'application/pdf', png: 'image/png' } as Record<string, string>)[ext]
     || 'application/octet-stream';
+  return { name, mime };
+}
+function writeContent(f: File, m: DownloadMsg) {
+  if (m.b64 != null) f.write(String(m.b64), { encoding: 'base64' });
+  else f.write(String(m.data ?? ''));
+}
+const isCancel = (e: any) => /cancel/i.test(String((e && (e.code || e.message)) || e));
+
+async function saveToPickedFolder(m: DownloadMsg): Promise<DownloadResult> {
+  const { name, mime } = downloadMeta(m);
+  let dir: Directory;
+  try { dir = await Directory.pickDirectoryAsync(); }
+  catch (e) {
+    if (isCancel(e)) return { ok: false, cancel: true };
+    return shareFallback(m);                    // seçici bu cihazda yok → paylaş sayfası
+  }
+  if (!dir) return { ok: false, cancel: true };
+  let f: File;
+  if (Platform.OS === 'android') f = dir.createFile(name, mime);   // SAF klasörü: aynı ad varsa sistem "(1)" ekler
+  else {
+    const dot = name.lastIndexOf('.'), kok = dot > 0 ? name.slice(0, dot) : name, uz = dot > 0 ? name.slice(dot) : '';
+    f = new File(dir, name);
+    for (let i = 2; f.exists && i < 100; i++) f = new File(dir, `${kok} (${i})${uz}`);
+    f.create();
+  }
+  writeContent(f, m);
+  return { ok: true, name: f.name || name };
+}
+
+async function shareFallback(m: DownloadMsg): Promise<DownloadResult> {
+  const { name, mime } = downloadMeta(m);
   const dir = new Directory(Paths.cache, 'paylas');
   dir.create({ intermediates: true, idempotent: true });
   const f = new File(dir, name);
   if (f.exists) f.delete();
-  if (m.b64 != null) f.write(String(m.b64), { encoding: 'base64' });
-  else f.write(String(m.data ?? ''));
+  writeContent(f, m);
   if (!(await Sharing.isAvailableAsync())) throw new Error('Paylaşım bu cihazda kullanılamıyor');
   const UTI = mime === 'application/json' ? 'public.json' : mime === 'text/html' ? 'public.html' : mime.startsWith('text/') ? 'public.plain-text' : undefined;
   await Sharing.shareAsync(f.uri, { mimeType: mime, dialogTitle: name, UTI });
-  return name;
+  return { ok: true, name, shared: true };
 }
 
 function Shell() {
@@ -239,10 +273,10 @@ function Shell() {
         }
         break;
       case 'openUrl': openExternal(String(m.url || '')); break;
-      // dosya indirme (program HTML / JSON "verimi indir") → yerel dosya + paylaş sayfası
+      // dosya indirme (program HTML / JSON yedek) → klasör seç + kaydet
       case 'download':
-        saveAndShare(m).then(
-          (name) => call('__lfOnDownload', { ok: true, name }),
+        saveToPickedFolder(m).then(
+          (r) => call('__lfOnDownload', r),
           (err) => call('__lfOnDownload', { ok: false, err: String((err && err.message) || err) }),
         );
         break;
@@ -315,6 +349,9 @@ function Shell() {
         mediaCapturePermissionGrantType="deny"
         // kaydırma var (uzun sayfa); esneme / yakınlaştırma yok
         bounces={false}
+        // iOS yeni mimaride (Fabric) decelerationRate verilmezse yerel değişken 0 kalıyor → ana sayfa parmak kalkınca anında
+        // duruyordu (atalet yok). "normal" = 0.998 (Safari ile aynı); iç kaydırma kutuları (Program hazırla) etkilenmiyordu.
+        decelerationRate="normal"
         overScrollMode="never"
         showsHorizontalScrollIndicator={false}
         setBuiltInZoomControls={false}

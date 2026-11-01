@@ -8,7 +8,7 @@
  *   Geri bildirimler (web tanımlarsa çağrılır): __lfOnPermission(granted:boolean), __lfOnNotifyResult({id, ok, err}),
  *     __lfOnNotificationTap({id, ...data}) → kullanıcı bildirime dokunup uygulamayı açtı (ek yönlendirme yapılmaz).
  * - İndirme: <a download href="blob:|data:|file:"> tıklaması KENDİLİĞİNDEN yakalanır (uygulamadaki indir() değişmeden çalışır) ve
- *   __lfDownload(name, content, mime) → yerel dosya (önbellek) + paylaş sayfası (Dosyalara kaydet / WhatsApp / e-posta…); __lfOnDownload({ok, name, err}).
+ *   __lfDownload(name, content, mime) → kullanıcı klasör seçer, dosya oraya yazılır (seçici yoksa paylaş sayfası); __lfOnDownload({ok, name, cancel, shared, err}).
  * - Dış bağlantı (https/mailto/tel/sms/whatsapp): tarayıcı / ilgili uygulama. window.open(url) aynı; window.open('') → null
  *   (yazdırma penceresi açılamaz → uygulama kendi yedeğiyle HTML indirmeye düşer → paylaş sayfası).
  * - file:// üzerinden fetch() yok (Chromium/WebKit) → XHR ile Response üreten fetch sarmalı.

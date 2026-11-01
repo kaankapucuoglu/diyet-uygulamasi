@@ -405,6 +405,19 @@ function ogeEkle(oi, f, g){
   kaydet(); ciz();
   toast(gecmisMi(aktif) ? T('tAddedPast', {d: etiket(aktif)}) : T('tAdded', {y: y.ad}));
 }
+// Çoklu seçimle birden çok yemeği tek seferde ekler (tek kayıt, tek çizim, tek bildirim)
+function ogelerEkle(oi, liste){
+  if (liste.length === 1) return ogeEkle(oi, liste[0][0], liste[0][1]);
+  const o = menuYaz(aktif)[oi];
+  liste.forEach(([f, g]) => {
+    const y = yemek(f);
+    o.ogeler.push({f, g});
+    sonSecimKaydet(o.id, f); miktarHatirla(o.id, f, g);
+    logEkle('ekle', aktif, T('lAdd', {o: ogunAd(o), y: y.ad, m: miktarYazi(y, g)}));
+  });
+  kaydet(); ciz();
+  toast(gecmisMi(aktif) ? T('tAddedPast', {d: etiket(aktif)}) : T('tCokluEklendi', {n: liste.length}));
+}
 function ogeDegis(oi, ii, f, g){
   const o = menuYaz(aktif)[oi], eski = o.ogeler[ii];
   if (eski.f === f && eski.g === g) return;

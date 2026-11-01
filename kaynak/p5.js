@@ -110,6 +110,7 @@ const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay','smoot
   'sicak_cikolata','nar_suyu','havuc_suyu','meyve_suyu_paket','yesil_smoothie','milkshake','kombucha','boza','meyveli_soda','ice_tea','enerji_icecegi','enerji_zero','bira','kirmizi_sarap','beyaz_sarap','raki',
   'protein_sut','sporcu_icecegi']);
 SIVI_EK.forEach(id => SIVI.add(id));   // p4i.js içecekleri
+SIVI_EK2.forEach(id => SIVI.add(id));  // p4j.js içecekleri (ayran, kefir, sütlü içecekler)
 // Kalori yetmezse ara öğüne eklenecek besleyici seçenekler (ilk uygun olan)
 const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]],
   [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',3]]];   // sona doğru alerjiye uygun seçenekler

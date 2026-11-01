@@ -94,7 +94,7 @@ function benzerler(fid, uygun = profilUygun(D.profil)){
 // opts.ogun + opts.sonra: başkası için program ekranı (profil filtresi yok, seçim geri çağrıyla döner)
 function secimAc(opts){
   const ogun = opts.ogun || menuOku(aktif)[opts.oi];
-  SE = {...opts, ogunId: ogun.id, q:'', sec:null, g:0};
+  SE = {...opts, ogunId: ogun.id, q:'', sec:null, g:0, coklu: new Map()};   // coklu: işaretlenen yemekler (kimlik → miktar)
   SE.uygun = opts.koc ? () => true : profilUygun(D.profil);
   SE.son = sonSecilenler(ogun.id).filter(f => SE.uygun(yemek(f)));
   SE.mevcut = SE.ii !== undefined ? {...ogun.ogeler[SE.ii]} : null;
@@ -118,6 +118,40 @@ function mevcutKart(){
   const f = yemek(SE.mevcut.f);
   return `<div class="cur"><small>${T('current')}</small><b>${esc(f.ad)} · ${miktarYazi(f, SE.mevcut.g)}</b><br><small>${bilgi(besin(SE.mevcut.f, SE.mevcut.g))}</small></div>`;
 }
+// Dokunmatikte güvenilir dokunuş: kaydırma yavaşlarken ilk dokunuş yalnız kaydırmayı durdurup "click" üretmiyordu
+// ("Bununla değiştir" iki basışta çalışıyordu, 02.11). Kısa ve kıpırdamadan biten dokunuş doğrudan işlem sayılır.
+function hizliTik(el, fn){
+  if (!el) return;
+  let x0 = null, y0 = 0, t0 = 0, son = 0;
+  el.addEventListener('touchstart', e => { const t = e.changedTouches[0]; x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); }, {passive: true});
+  el.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const t = e.changedTouches[0], ok = Math.abs(t.clientX - x0) < 12 && Math.abs(t.clientY - y0) < 12 && Date.now() - t0 < 800;
+    x0 = null;
+    if (!ok || el.disabled) return;
+    e.preventDefault(); son = Date.now(); fn(e);
+  });
+  el.addEventListener('click', e => { if (Date.now() - son < 900) return; fn(e); });
+}
+// Çoklu ekleme: işaretlenen yemeğin varsayılan miktarı = bu öğünde en son kullanılan miktar, yoksa yemeğin varsayılanı
+const cokluMiktar = id => (!SE.koc && D.miktar && D.miktar[SE.ogunId] && D.miktar[SE.ogunId][id]) || yemek(id).d;
+function cokluCubuk(){
+  const c = $('cokluBar'); if (!c) return;
+  const n = SE.coklu.size;
+  c.hidden = !n;
+  if (n) $('cokluEkle').textContent = T('cokluEkle', {n});
+}
+function cokluUygula(){
+  const liste = [...SE.coklu].filter(([, g]) => g > 0);
+  if (!liste.length) return;
+  kapat();
+  if (SE.sonraCoklu) SE.sonraCoklu(liste);
+  else if (SE.sonra) liste.forEach(([f, g]) => SE.sonra(f, g));
+  else {
+    capaEl = $('ogunler').querySelectorAll('.meal')[SE.oi] || null;
+    ogelerEkle(SE.oi, liste);
+  }
+}
 function listeGorunumu(){
   const lejant = `<div class="legend"><span><i style="background:var(--green)"></i>${T('good')}</span><span><i style="background:var(--red)"></i>${T('bad')}</span><span>${T('legendRule')}</span></div>`;
   const ipu = SE.mevcut ? `<div class="hint" style="margin-top:6px">${T('diffsFor', {g: yuv(gramOf(yemek(SE.mevcut.f), SE.mevcut.g))})}</div>${lejant}` : '';
@@ -125,12 +159,18 @@ function listeGorunumu(){
     <input class="search" id="ara" type="text" inputmode="search" enterkeyhint="search" name="yemek-ara" role="searchbox" aria-autocomplete="list" placeholder="${esc(T('searchPh'))}" value="${esc(SE.q)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" data-lpignore="true">
     <div class="chips" id="kategoriler"></div>${ipu}
     <div class="found" id="bulunan"></div>
-    <ul class="flist" id="flist"></ul>
-    <button class="btn ghost full" style="margin-top:12px" id="ozelEkle">${T('addCustom')}</button>`;
+    ${SE.mod === 'ekle' ? `<div class="hint coklu-ipucu">${esc(T('cokluIpucu'))}</div>` : ''}
+    <ul class="flist${SE.mod === 'ekle' ? ' coklu' : ''}" id="flist"></ul>
+    <button class="btn ghost full" style="margin-top:12px" id="ozelEkle">${T('addCustom')}</button>
+    ${SE.mod === 'ekle' ? `<div class="acts alt-sabit" id="cokluBar" hidden><button class="btn ghost" id="cokluTemizle">${T('cokluTemizle')}</button><button class="btn green" id="cokluEkle"></button></div>` : ''}`;
   $('ara').addEventListener('input', e => { SE.q = e.target.value; listeCiz(); });
+  if ($('cokluBar')){
+    hizliTik($('cokluEkle'), cokluUygula);
+    $('cokluTemizle').onclick = () => { SE.coklu.clear(); listeCiz(); };
+  }
   $('ozelEkle').addEventListener('click', ozelYemekFormu);
   // Klavye açıkken sonuca/gruba dokununca arama kutusu odağı bırakmasın: liste kaymaz, ilk dokunuş tutar
-  $('sbody').onmousedown = e => { if (document.activeElement && document.activeElement.id === 'ara' && e.target.closest('.frow, .chip')) e.preventDefault(); };
+  $('sbody').onmousedown = e => { if (document.activeElement && document.activeElement.id === 'ara' && e.target.closest('.frow, .chip, .fcek, #cokluBar')) e.preventDefault(); };
   geriAyarla(null);
   kategoriCiz(); listeCiz();
 }
@@ -174,9 +214,16 @@ function listeCiz(){
     const alt = eski ? farkPilleri(eski, besin(f.id, esdegerMiktar(f.id))) : '';
     const n = (sayac[f.id] ? `<em>${T('times', {n: sayac[f.id].n})}</em>` : '') + (uygun(f) ? '' : `<em class="uyg">${T('uygunDegil')}</em>`);
     const ip = ipucu(f);
-    return `<li><button class="frow" data-fid="${f.id}"><b>${isaretle(f.ad, A)}${n}</b><small>100 ${T('g')}: ${f.k} ${T('kcal')} · ${T('aP')} ${sayi(f.p)} · ${T('aK')} ${sayi(f.c)} · ${T('aS')} ${sayi(f.s)} · ${T('aY')} ${sayi(f.y)}${ip ? ' · ' + esc(ip) : ''}</small>${alt}</button></li>`;
+    const kutu = SE.mod === 'ekle' ? `<label class="fcek"><input type="checkbox" data-coklu="${f.id}"${SE.coklu.has(f.id) ? ' checked' : ''} aria-label="${esc(T('cokluSec', {y: f.ad}))}"></label>` : '';
+    return `<li>${kutu}<button class="frow" data-fid="${f.id}"><b>${isaretle(f.ad, A)}${n}</b><small>100 ${T('g')}: ${f.k} ${T('kcal')} · ${T('aP')} ${sayi(f.p)} · ${T('aK')} ${sayi(f.c)} · ${T('aS')} ${sayi(f.s)} · ${T('aY')} ${sayi(f.y)}${ip ? ' · ' + esc(ip) : ''}</small>${alt}</button></li>`;
   }).join('') : `<li class="empty">${T('noResult')}</li>`;
-  $('flist').querySelectorAll('[data-fid]').forEach(b => b.onclick = () => { if ($('ara')) $('ara').blur(); SE.sec = b.dataset.fid; SE.g = esdegerMiktar(SE.sec); detayGorunumu(); });
+  $('flist').querySelectorAll('[data-fid]').forEach(b => b.onclick = () => { if ($('ara')) $('ara').blur(); SE.sec = b.dataset.fid; SE.g = SE.coklu.get(SE.sec) || (SE.mod === 'ekle' ? cokluMiktar(SE.sec) : esdegerMiktar(SE.sec)); detayGorunumu(); });
+  $('flist').querySelectorAll('[data-coklu]').forEach(c => c.onchange = () => {
+    const id = c.dataset.coklu;
+    if (c.checked) SE.coklu.set(id, cokluMiktar(id)); else SE.coklu.delete(id);
+    cokluCubuk();
+  });
+  cokluCubuk();
 }
 function kiyasKarti(eskiF, eskiM, yeniF, yeniM){
   const eski = besin(eskiF.id, eskiM), yeni = besin(yeniF.id, yeniM);
@@ -198,8 +245,10 @@ function kiyasKarti(eskiF, eskiM, yeniF, yeniM){
 }
 function detayGorunumu(){
   const f = yemek(SE.sec), adim = f.a ? 1 : 10;
+  const secimli = SE.mod === 'ekle' && [...SE.coklu.keys()].some(k => k !== SE.sec);   // başka işaretli yemek varsa
   const butonlar = {
-    ekle: `<button class="btn green" id="onay">${T('addToMeal')}</button>`,
+    ekle: secimli ? `<button class="btn ghost" id="secimeEkle">${T('cokluSecimeEkle')}</button><button class="btn green" id="onay">${T('cokluEkle', {n: new Set([...SE.coklu.keys(), SE.sec]).size})}</button>`
+      : `<button class="btn green" id="onay">${T('addToMeal')}</button>`,
     degis: `<button class="btn green" id="onay">${T('replaceWith')}</button>`,
     kiyas: `<button class="btn ghost" id="kapatBtn">${T('justCompare')}</button><button class="btn green" id="onay">${T('replaceWith')}</button>`
   }[SE.mod];
@@ -213,8 +262,8 @@ function detayGorunumu(){
     </div>
     <div class="hint" style="text-align:center" id="birimYazi"></div>
     <div id="karsi"></div>
-    <div class="acts">${butonlar}</div>
-    <button class="btn ghost full" style="margin-top:8px" id="geri">${T('backList')}</button>`;
+    <button class="btn ghost full" style="margin-top:12px" id="geri">${T('backList')}</button>
+    <div class="acts alt-sabit">${butonlar}</div>`;
   const yenile = () => {
     $('birimYazi').textContent = f.a ? `${birimAd(f)} (≈ ${yuv(gramOf(f, SE.g))} ${T('g')})` : T('gram');
     $('karsi').innerHTML = SE.mevcut
@@ -229,13 +278,18 @@ function detayGorunumu(){
   $('geri').onclick = listeGorunumu;
   geriAyarla(listeGorunumu);
   if ($('kapatBtn')) $('kapatBtn').onclick = kapat;
-  $('onay').onclick = () => {
+  if ($('secimeEkle')) $('secimeEkle').onclick = () => {
     if (!(SE.g > 0)){ toast(T('tZero')); return; }
+    SE.coklu.set(SE.sec, SE.g); listeGorunumu();
+  };
+  hizliTik($('onay'), () => {
+    if (!(SE.g > 0)){ toast(T('tZero')); return; }
+    if (secimli){ SE.coklu.set(SE.sec, SE.g); cokluUygula(); return; }
     kapat();
     if (!SE.sonra) capaEl = $('ogunler').querySelectorAll('.meal')[SE.oi] || null;   // eklenen öğün ekranda yerinde kalsın
     if (SE.sonra) SE.sonra(SE.sec, SE.g);
     else if (SE.mod === 'ekle') ogeEkle(SE.oi, SE.sec, SE.g); else ogeDegis(SE.oi, SE.ii, SE.sec, SE.g);
-  };
+  });
   yenile();
   $('sbody').scrollTop = 0;
 }
@@ -326,10 +380,6 @@ function ayarlarAc(dilAcik = false){
     <div class="grid3">${HEDEF_KEYS.filter(k => k !== 'su' && k !== 'bardak').map(alan).join('')}
       <label class="field"><span>${T('bardakSu')}</span><div class="ikili"><input autocomplete="off" id="p_bardak" type="text" inputmode="numeric" value="${P.bardak}" aria-label="${esc(T('tGlass'))}"><b>/</b><input autocomplete="off" id="p_su" type="text" inputmode="numeric" value="${P.su}" aria-label="${esc(T('tWater'))}"></div></label></div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
-    </div><div class="ayar-blok" data-ak="program"><div class="sec">${T('sProg')}</div>
-    ${D.program ? `<div class="acts" style="margin-top:0;margin-bottom:8px"><button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button></div>` : ''}
-    <div class="hint">${esc(T('impPasteHint'))}</div>
-    <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
     ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `</div><div class="ayar-blok" data-ak="yukle"><div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
     </div><div class="ayar-blok" data-ak="tasi"><div class="sec">${T('tasiT')}</div>
     <div class="hint">${esc(T('tasiKisa'))}</div>
@@ -351,14 +401,12 @@ function ayarlarAc(dilAcik = false){
   $('sbody').querySelectorAll('[data-antgun]').forEach(b => b.onclick = () => antrenmanGunuDegis(+b.dataset.antgun));
   reglListesiBagla();
   saatFormuBagla();
-  if ($('progKaldirBtn')) $('progKaldirBtn').onclick = () => icinden(ayarlarAc, programKaldir);
   if ($('yukleBtn')) $('yukleBtn').onclick = () => icinden(ayarlarAc, yukleAc);
   $('logAc').onclick = () => icinden(ayarlarAc, loglarAc);
   $('yazAcBtn').onclick = () => icinden(ayarlarAc, yazAc);
   $('turAc').onclick = () => { kapat(); turBaslat(); };
   $('tasiAcBtn').onclick = () => icinden(ayarlarAc, tasiAc);
   $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); };
-  $('linkYukle').onclick = () => icinden(ayarlarAc, async () => { if (!(await programLinkiAc($('linkYapistir').value))) toast(T('impBad')); });
   $('olcuKaydet').onclick = () => {
     const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;
     const yeni = {yas: Math.round(oku('yas')), boy: Math.round(oku('boy')), kilo: Math.round(oku('kilo') * 2) / 2, hedefKilo: Math.round(oku('hedefKilo') * 2) / 2};
@@ -435,8 +483,14 @@ function indir(icerik, ad, tip){
   const a = document.createElement('a'); a.href = url; a.download = ad;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 3000);
-  toast(T('tDownloaded', {f: ad}));
+  // Telefon uygulamasında kabuk önce klasör seçtirir; "İndirildi" yalnız dosya kaydedilince (__lfOnDownload) yazılır.
+  if (!window.__LF_NATIVE) toast(T('tDownloaded', {f: ad}));
 }
+window.__lfOnDownload = r => {
+  if (!r) return;
+  if (r.ok && !r.shared) toast(T('tDownloaded', {f: r.name || ''}));
+  else if (!r.ok && !r.cancel) toast(T('tDownloadErr'));
+};
 
 // ---------- Onay penceresi (X, Esc ya da dışarı dokununca kapanır) ----------
 function onayAc(metin, evet, ek = ''){

@@ -462,6 +462,14 @@ body.klavye .sheet:has(#ara) .cur,body.klavye .sheet:has(#ara) .legend,body.klav
 body.klavye .sheet-head{padding-top:8px;padding-bottom:6px}
 .flist{list-style:none}
 .frow{display:block;width:100%;text-align:start;padding:10px 4px;border-bottom:1px solid #f0f3f8}
+/* Çoklu seçim: satırın solunda işaret kutusu; altta sabit "Seçilenleri ekle" çubuğu */
+.flist.coklu li{display:flex;align-items:stretch}
+.flist.coklu .frow{flex:1;min-width:0}
+.fcek{display:flex;align-items:center;justify-content:center;flex:0 0 40px;border-bottom:1px solid #f0f3f8;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.fcek input{width:22px;height:22px;margin:0;accent-color:var(--green);cursor:pointer}
+.coklu-ipucu{margin:2px 0 4px}
+.acts.alt-sabit{position:sticky;bottom:-14px;z-index:3;margin:12px -16px -14px;padding:10px 16px 12px;background:var(--card);box-shadow:0 -10px 14px -12px rgba(15,23,42,.35)}
+.acts.alt-sabit[hidden]{display:none}
 .frow:active{background:#f7f9fc}
 .frow b{font-size:15px;display:block}
 .frow b em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--gold);background:var(--gold-soft);padding:1px 6px;border-radius:6px;margin-inline-start:6px}
@@ -687,12 +695,12 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 .sira-btn:active{transform:scale(.96)}
 @media (max-width:1180px){ .top-row .selam-satir{order:1;width:100%} .top-row .selam-satir h1{order:0} }
 @media (max-width:380px){ .sira-btn{padding:6px 9px;font-size:12px} }
-/* Ayarlar › Reklamlar kartı: belirgin kart + titreşim */
+/* Ayarlar › Reklamlar kartı: belirgin kart; titreşim yalnız "Reklamları kaldır" düğmesinde */
 #reklamBolum.rk-kutu{border:1.5px solid #9fdcc1;background:#f2fbf6;border-radius:14px;padding:2px 12px 12px;margin:12px 0 6px}
 #reklamBolum.rk-kutu .sec{margin-top:10px}
 @keyframes rkTitre{0%,100%{transform:translateX(0) rotate(0)}12%{transform:translateX(-5px) rotate(-1deg)}25%{transform:translateX(5px) rotate(1deg)}38%{transform:translateX(-4px) rotate(-.6deg)}51%{transform:translateX(4px) rotate(.6deg)}64%{transform:translateX(-2px)}77%{transform:translateX(2px)}}
-#reklamBolum.titre{animation:rkTitre .75s ease-in-out}
-@media (prefers-reduced-motion:reduce){ @keyframes rkNabiz{0%,100%{box-shadow:0 0 0 0 rgba(22,163,107,0)}50%{box-shadow:0 0 0 6px rgba(22,163,107,.25)}} #reklamBolum.titre{animation:rkNabiz .9s ease-in-out} }
+#rkAlBtn.titre{animation:rkTitre .75s ease-in-out}
+@media (prefers-reduced-motion:reduce){ @keyframes rkNabiz{0%,100%{box-shadow:0 0 0 0 rgba(22,163,107,0)}50%{box-shadow:0 0 0 6px rgba(22,163,107,.25)}} #rkAlBtn.titre{animation:rkNabiz .9s ease-in-out} }
 
 /* Selam: "Ad Bey/Hanım," + "hoş geldiniz 😊" bölünmez parçalar; ad 8 harften uzunsa ikinci parça alt satıra */
 #baslik .sl1,#baslik .sl2{white-space:nowrap}
@@ -709,6 +717,13 @@ html,body{touch-action:manipulation}
 .meal.kapali .koc-not{display:none}
 .koc-al-ara{width:100%;margin:2px 0 8px}
 .koc-al-sonuc{max-height:220px;overflow:auto;display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 6px}
+/* Alerji listesi: her zaman görünen kaydırma rayı (sağda) */
+.koc-al-kap{position:relative;margin-bottom:10px}
+.koc-al-kap .koc-al-sonuc{padding-inline-end:18px;scrollbar-width:none;margin-bottom:0}
+.koc-al-kap .koc-al-sonuc::-webkit-scrollbar{display:none}
+.kayma-ray{position:absolute;top:2px;bottom:6px;inset-inline-end:2px;width:8px;border-radius:99px;background:#e5eaf2;touch-action:none;cursor:pointer}
+.kayma-ray i{position:absolute;left:0;right:0;top:0;border-radius:99px;background:#8d9bb2;min-height:28px}
+.kayma-ray[hidden]{display:none}
 /* Takvim penceresi */
 .tk-ust{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
 .tk-ust b{font-size:16px}
@@ -818,7 +833,7 @@ const S = {
   daySummary:["{d} · Gün özeti","{d} · Day summary","{d} · Итоги дня","{d} · Tagesübersicht","{d} · ملخص اليوم"],
   pastRecord:["Geçmiş kayıt","Past record","Прошлая запись","Vergangener Eintrag","سجل سابق"],
   eatenMeals:["Yenen öğünler ({n}/{t}):","Meals eaten ({n}/{t}):","Съедено приёмов пищи ({n}/{t}):","Gegessene Mahlzeiten ({n}/{t}):","الوجبات المتناولة ({n}/{t}):"],
-  noEaten:["Bu gün için “yedim” işaretlenmiş öğün yok.","No meals marked as eaten on this day.","В этот день нет отмеченных приёмов пищи.","An diesem Tag wurde keine Mahlzeit als gegessen markiert.","لا توجد وجبات مسجلة كمتناولة في هذا اليوم."],
+  noEaten:["Bu gün için “Yedim” olarak işaretlenmiş öğün yok.","No meals marked as eaten on this day.","В этот день нет отмеченных приёмов пищи.","An diesem Tag wurde keine Mahlzeit als gegessen markiert.","لا توجد وجبات مسجلة كمتناولة في هذا اليوم."],
   showDetail:["▾ Detay göster (öğünler, düzenle)","▾ Show details (meals, edit)","▾ Подробнее (приёмы пищи, изменить)","▾ Details anzeigen (Mahlzeiten, bearbeiten)","▾ عرض التفاصيل (الوجبات، تعديل)"],
   hideDetail:["▴ Detayı gizle","▴ Hide details","▴ Скрыть","▴ Details ausblenden","▴ إخفاء التفاصيل"],
   ate:["Yedim","Eaten","Съел","Gegessen","أكلت"],
@@ -857,7 +872,7 @@ const S = {
   lChange:["{o}: {a} → {b}","{o}: {a} → {b}","{o}: {a} → {b}","{o}: {a} → {b}","{o}: {a} ← {b}"],
   lAmount:["{o} · {y}: {a} → {b}","{o} · {y}: {a} → {b}","{o} · {y}: {a} → {b}","{o} · {y}: {a} → {b}","{o} · {y}: {a} ← {b}"],
   lAte:["{o} yendi olarak işaretlendi ({k} kcal: {l})","{o} marked as eaten ({k} kcal: {l})","{o}: отмечено как съеденное ({k} ккал: {l})","{o} als gegessen markiert ({k} kcal: {l})","تم تسجيل {o} كمتناولة ({k} سعرة: {l})"],
-  lUnate:["{o} için “yedim” işareti kaldırıldı","“Eaten” mark removed from {o}","Отметка «съел» снята: {o}","„Gegessen“ entfernt: {o}","أزيلت علامة «أكلت» من {o}"],
+  lUnate:["{o} için “Yedim” işareti kaldırıldı","“Eaten” mark removed from {o}","Отметка «съел» снята: {o}","„Gegessen“ entfernt: {o}","أزيلت علامة «أكلت» من {o}"],
   lWater:["Su: {a} → {b} bardak ({l} L)","Water: {a} → {b} glasses ({l} L)","Вода: {a} → {b} стак. ({l} л)","Wasser: {a} → {b} Gläser ({l} L)","الماء: {a} ← {b} أكواب ({l} لتر)"],
   lTemplate:["{gun} şablonu bu günün menüsüyle güncellendi","{gun} template updated from this day’s menu","Шаблон ({gun}) обновлён по меню этого дня","{gun}-Vorlage aus dem Tagesmenü aktualisiert","تم تحديث قالب {gun} من قائمة هذا اليوم"],
   lRevert:["Günün menüsü {gun} şablonuna döndürüldü","Day’s menu reset to the {gun} template","Меню дня возвращено к шаблону ({gun})","Tagesmenü auf {gun}-Vorlage zurückgesetzt","أعيدت قائمة اليوم إلى قالب {gun}"],
@@ -867,6 +882,12 @@ const S = {
   lResetRec:["Tüm yedim/su kayıtları silindi","All eaten/water records deleted","Все записи о еде и воде удалены","Alle Ess- und Wassereinträge gelöscht","حُذفت كل سجلات الأكل والماء"],
   lPlan:["Yeni plan oluşturuldu: {h} · {k} kcal · protein {p} g","New plan created: {h} · {k} kcal · protein {p} g","Создан новый план: {h} · {k} ккал · белки {p} г","Neuer Plan erstellt: {h} · {k} kcal · Eiweiß {p} g","تم إنشاء خطة جديدة: {h} · {k} سعرة · بروتين {p} غ"],
   tAdded:["{y} eklendi","{y} added","{y}: добавлено","{y} hinzugefügt","تمت إضافة {y}"],
+  tCokluEklendi:["{n} yemek eklendi","{n} foods added","Добавлено продуктов: {n}","{n} Lebensmittel hinzugefügt","تمت إضافة {n} من الأطعمة"],
+  cokluEkle:["✓ Seçilenleri ekle ({n})","✓ Add selected ({n})","✓ Добавить выбранное ({n})","✓ Auswahl hinzufügen ({n})","✓ أضف المحدد ({n})"],
+  cokluTemizle:["Seçimi temizle","Clear selection","Сбросить выбор","Auswahl aufheben","مسح التحديد"],
+  cokluSecimeEkle:["＋ Seçime ekle","＋ Add to selection","＋ Добавить к выбору","＋ Zur Auswahl","＋ أضف إلى التحديد"],
+  cokluSec:["{y}: seç","Select {y}","Выбрать: {y}","{y} auswählen","اختيار {y}"],
+  cokluIpucu:["Birden çok yemek eklemek için soldaki kutuları işaretleyin, sonra alttaki “Seçilenleri ekle” düğmesine basın.","To add several foods, tick the boxes on the left, then tap “Add selected” below.","Чтобы добавить несколько продуктов, отметьте их слева и нажмите «Добавить выбранное» внизу.","Um mehrere Lebensmittel hinzuzufügen, markieren Sie die Kästchen links und tippen Sie dann unten auf „Auswahl hinzufügen“.","لإضافة عدة أطعمة، حدّد المربعات ثم اضغط «أضف المحدد» في الأسفل."],
   tAddedPast:["{d} kaydına eklendi","Added to {d}","Добавлено в {d}","Zu {d} hinzugefügt","أضيف إلى {d}"],
   tReplaced:["{y} ile değiştirildi","Swapped for {y}","Заменено на {y}","Durch {y} ersetzt","استُبدل بـ {y}"],
   tRemoved:["{y} kaldırıldı","{y} removed","{y}: удалено","{y} entfernt","حُذف {y}"],
@@ -877,6 +898,7 @@ const S = {
   tBackupOk:["Yedek yüklendi","Backup restored","Копия загружена","Sicherung geladen","تم تحميل النسخة"],
   tBackupBad:["Bu dosya geçerli bir yedek değil","Not a valid backup file","Это не файл резервной копии","Keine gültige Sicherungsdatei","هذا الملف ليس نسخة احتياطية صالحة"],
   tDownloaded:["İndirildi: {f}","Downloaded: {f}","Скачано: {f}","Heruntergeladen: {f}","تم التنزيل: {f}"],
+  tDownloadErr:["Dosya kaydedilemedi. Lütfen tekrar deneyin.","The file could not be saved. Please try again.","Не удалось сохранить файл. Попробуйте ещё раз.","Die Datei konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.","تعذّر حفظ الملف. يُرجى المحاولة مرة أخرى."],
   tRecDel:["Kayıtlar silindi","Records deleted","Записи удалены","Einträge gelöscht","حُذفت السجلات"],
   pAdd:["{o} · Yemek ekle","{o} · Add food","{o} · Добавить","{o} · Hinzufügen","{o} · إضافة طعام"],
   pChange:["{o} · Yemeği değiştir","{o} · Swap food","{o} · Заменить","{o} · Tauschen","{o} · استبدال الطعام"],
@@ -911,7 +933,7 @@ const S = {
   cHint:["Paketin üzerindeki 100 g değerlerini yaz. Adetle yeniyorsa adet ağırlığını da yaz.","Enter the values per 100 g from the label. If eaten by the piece, also enter the piece weight.","Введите значения на 100 г с упаковки. Если едите поштучно — укажите вес штуки.","Werte pro 100 g vom Etikett eingeben. Bei Stückware auch das Stückgewicht.","أدخل القيم لكل 100 غ من الملصق. إذا كان يؤكل بالقطعة فأدخل وزن القطعة أيضاً."],
   cName:["Yemek adı (haşlama, ızgara, fırın, tava yazabilirsin)","Food name (you can add boiled, grilled, baked, fried)","Название (можно указать: отварной, гриль, запечённый)","Name (z. B. gekocht, gegrillt, Ofen, gebraten)","اسم الطعام (يمكنك كتابة مسلوق، مشوي، بالفرن، مقلي)"],
   cNamePh:["ör. Ev yapımı granola","e.g. Homemade granola","напр. Домашняя гранола","z. B. Selbstgemachtes Müsli","مثال: جرانولا منزلية"],
-  cPiece:["1 adet kaç gram? (boşsa gram)","Grams per piece (blank = grams)","Вес 1 шт., г (пусто = граммы)","Gramm pro Stück (leer = Gramm)","وزن القطعة بالغرام (فارغ = غرام)"],
+  cPiece:["1 adet kaç gram? (boş bırakırsan gramla ölçülür)","Grams per piece (blank = grams)","Вес 1 шт., г (пусто = граммы)","Gramm pro Stück (leer = Gramm)","وزن القطعة بالغرام (فارغ = غرام)"],
   cDefault:["Varsayılan miktar","Default amount","Количество по умолчанию","Standardmenge","الكمية الافتراضية"],
   cancel:["← Vazgeç","← Cancel","← Отмена","← Abbrechen","→ إلغاء"],
   save:["Kaydet","Save","Сохранить","Speichern","حفظ"],
@@ -935,24 +957,24 @@ const S = {
   dlBackup:["⬇ Yedeği indir (JSON)","⬇ Download backup (JSON)","⬇ Скачать копию (JSON)","⬇ Sicherung herunterladen (JSON)","⬇ تنزيل النسخة (JSON)"],
   ulBackup:["⬆ Yedeği yükle (JSON)","⬆ Restore backup (JSON)","⬆ Загрузить копию (JSON)","⬆ Sicherung laden (JSON)","⬆ استعادة النسخة (JSON)"],
   dlHtml:["📄 Verilerimle indir (HTML)","📄 Download with my data (HTML)","📄 Скачать с моими данными (HTML)","📄 Mit meinen Daten herunterladen (HTML)","📄 تنزيل مع بياناتي (HTML)"],
-  htmlHint:["Bu dosya listeni içinde taşır; başka telefonda açınca her şey aynen gelir.","This file carries your list inside; open it on another phone and everything is there.","Файл содержит ваш список; на другом телефоне всё откроется как есть.","Diese Datei enthält deine Liste; auf einem anderen Handy ist alles wieder da.","يحمل هذا الملف قائمتك؛ افتحه على هاتف آخر وستجد كل شيء."],
+  htmlHint:["Bu dosya listeni de içerir; başka bir telefonda açınca her şey olduğu gibi gelir.","This file carries your list inside; open it on another phone and everything is there.","Файл содержит ваш список; на другом телефоне всё откроется как есть.","Diese Datei enthält deine Liste; auf einem anderen Handy ist alles wieder da.","يحمل هذا الملف قائمتك؛ افتحه على هاتف آخر وستجد كل شيء."],
   sReset:["Sıfırla","Reset","Сброс","Zurücksetzen","إعادة الضبط"],
   resetMenu:["Menüyü profilime göre yeniden oluştur","Rebuild menu from my profile","Пересоздать меню по профилю","Menü aus meinem Profil neu erstellen","أعد إنشاء القائمة حسب ملفي"],
   resetRec:["Yedim/su kayıtlarını sil","Delete eaten/water records","Удалить записи еды и воды","Ess-/Wassereinträge löschen","احذف سجلات الأكل والماء"],
-  cResetMenu:["Haftalık menü profilinize göre yeniden oluşturulur; bugün ve sonrasına ait özel menüler silinir. Geçmiş kayıtlar korunur. Emin misin?","The weekly menu will be rebuilt from your profile; custom menus from today on are removed. Past records are kept. Continue?","Недельное меню будет пересоздано по профилю; меню с сегодняшнего дня удалятся. Прошлые записи сохранятся. Продолжить?","Das Wochenmenü wird aus deinem Profil neu erstellt; eigene Menüs ab heute werden entfernt. Vergangenes bleibt. Fortfahren?","سيُعاد إنشاء القائمة الأسبوعية حسب ملفك وتُحذف القوائم الخاصة من اليوم فصاعداً. تبقى السجلات السابقة. متابعة؟"],
-  cResetRec:["Tüm günlerin “yedim”, su ve gün menüsü kayıtları silinecek. Emin misin?","All eaten, water and day-menu records will be deleted. Continue?","Все записи о еде, воде и меню дней будут удалены. Продолжить?","Alle Ess-, Wasser- und Tagesmenü-Einträge werden gelöscht. Fortfahren?","ستُحذف كل سجلات الأكل والماء وقوائم الأيام. متابعة؟"],
+  cResetMenu:["Haftalık menü profiline göre yeniden oluşturulur; bugün ve sonrasına ait özel menüler silinir. Geçmiş kayıtlar korunur. Emin misin?","The weekly menu will be rebuilt from your profile; custom menus from today on are removed. Past records are kept. Continue?","Недельное меню будет пересоздано по профилю; меню с сегодняшнего дня удалятся. Прошлые записи сохранятся. Продолжить?","Das Wochenmenü wird aus deinem Profil neu erstellt; eigene Menüs ab heute werden entfernt. Vergangenes bleibt. Fortfahren?","سيُعاد إنشاء القائمة الأسبوعية حسب ملفك وتُحذف القوائم الخاصة من اليوم فصاعداً. تبقى السجلات السابقة. متابعة؟"],
+  cResetRec:["Tüm günlerin “Yedim”, su ve gün menüsü kayıtları silinecek. Emin misin?","All eaten, water and day-menu records will be deleted. Continue?","Все записи о еде, воде и меню дней будут удалены. Продолжить?","Alle Ess-, Wasser- und Tagesmenü-Einträge werden gelöscht. Fortfahren?","ستُحذف كل سجلات الأكل والماء وقوائم الأيام. متابعة؟"],
   resetAll:["🗑 Tüm verilerimi sil","🗑 Delete all my data","🗑 Удалить все мои данные","🗑 Alle meine Daten löschen","🗑 احذف كل بياناتي"],
   resetAllHint:["Verileriniz yalnız bu cihazda tutulur; bu düğme hepsini kalıcı olarak siler.","Your data is kept only on this device; this button deletes all of it permanently.","Ваши данные хранятся только на этом устройстве; эта кнопка удаляет их безвозвратно.","Ihre Daten liegen nur auf diesem Gerät; diese Schaltfläche löscht sie dauerhaft.","تُحفظ بياناتك على هذا الجهاز فقط؛ يحذفها هذا الزر نهائياً."],
   cResetAll:["Bu cihazdaki tüm verileriniz (profil, sağlık bilgileri, yedim/su kayıtları, programlar ve taslaklar) kalıcı olarak silinecek ve uygulama ilk kurulum ekranına dönecek. Bu işlem geri alınamaz. Onaylıyor musunuz?","All your data on this device (profile, health details, eaten/water records, plans and drafts) will be permanently deleted and the app will return to the setup screen. This cannot be undone. Do you confirm?","Все ваши данные на этом устройстве (профиль, сведения о здоровье, записи еды и воды, планы и черновики) будут безвозвратно удалены, приложение вернётся к начальной настройке. Отменить нельзя. Подтверждаете?","Alle Ihre Daten auf diesem Gerät (Profil, Gesundheitsangaben, Ess- und Wassereinträge, Pläne und Entwürfe) werden dauerhaft gelöscht, und die App kehrt zur Einrichtung zurück. Dies kann nicht rückgängig gemacht werden. Bestätigen?","سيتم حذف كل بياناتك على هذا الجهاز نهائياً (الملف الشخصي، المعلومات الصحية، سجلات الأكل والماء، الخطط والمسودات) وسيعود التطبيق إلى شاشة الإعداد. لا يمكن التراجع. هل توافق؟"],
   bey:["Bey","","","",""], hanim:["Hanım","","","",""],
-  foot:["Değerler 100 g başına ortalama besin değerleridir. Tüm değişiklikler bu cihazda otomatik kaydedilir. Bu uygulama tıbbi tavsiye yerine geçmez.","Values are average nutrition per 100 g. All changes are saved automatically on this device. This app is not medical advice.","Значения — средняя пищевая ценность на 100 г. Все изменения сохраняются на этом устройстве. Приложение не заменяет консультацию врача.","Werte sind durchschnittliche Nährwerte pro 100 g. Alle Änderungen werden auf diesem Gerät gespeichert. Diese App ersetzt keine ärztliche Beratung.","القيم متوسطات غذائية لكل 100 غ. تُحفظ كل التغييرات تلقائياً على هذا الجهاز. هذا التطبيق لا يغني عن استشارة الطبيب."],
+  foot:["Besin değerleri 100 g için ortalama değerlerdir. Tüm değişiklikler bu cihazda otomatik kaydedilir. Bu uygulama tıbbi tavsiye yerine geçmez.","Values are average nutrition per 100 g. All changes are saved automatically on this device. This app is not medical advice.","Значения — средняя пищевая ценность на 100 г. Все изменения сохраняются на этом устройстве. Приложение не заменяет консультацию врача.","Werte sind durchschnittliche Nährwerte pro 100 g. Alle Änderungen werden auf diesem Gerät gespeichert. Diese App ersetzt keine ärztliche Beratung.","القيم متوسطات غذائية لكل 100 غ. تُحفظ كل التغييرات تلقائياً على هذا الجهاز. هذا التطبيق لا يغني عن استشارة الطبيب."],
   // Öğünler
   m_kahvalti:["Kahvaltı","Breakfast","Завтрак","Frühstück","الفطور"],
   m_ogle:["Öğle Yemeği","Lunch","Обед","Mittagessen","الغداء"],
   m_ara1:["Ara Öğün","Snack","Перекус","Snack","وجبة خفيفة"],
   m_ara2:["Ara Öğün","Snack","Перекус","Snack","وجبة خفيفة"],
   m_aksam:["Akşam Yemeği","Dinner","Ужин","Abendessen","العشاء"],
-  m_gece:["Gece Ara Öğün","Evening snack","Вечерний перекус","Abendsnack","وجبة خفيفة مسائية"],
+  m_gece:["Gece Ara Öğünü","Evening snack","Вечерний перекус","Abendsnack","وجبة خفيفة مسائية"],
   // Kategoriler
   k_et:["Et & Tavuk","Meat & Poultry","Мясо и птица","Fleisch & Geflügel","لحوم ودواجن"],
   k_balik:["Balık & Deniz Ürünü","Fish & Seafood","Рыба и морепродукты","Fisch & Meeresfrüchte","أسماك ومأكولات بحرية"],
@@ -1020,9 +1042,9 @@ Object.assign(S, {
   g_koru:["Kilomu korumak","Maintain weight","Поддерживать вес","Gewicht halten","الحفاظ على الوزن"],
   gd_koru:["Dengeli ve sağlıklı beslenin, kilonuz sabit kalsın.","Eat balanced and healthy, keep your weight stable.","Сбалансированное питание без изменения веса.","Ausgewogen essen, Gewicht stabil halten.","تغذية متوازنة وصحية مع ثبات الوزن."],
   g_kas:["Kas kazanmak","Build muscle","Набрать мышцы","Muskeln aufbauen","بناء العضلات"],
-  gd_kas:["Hafif kalori fazlası ve yüksek protein; direnç antrenmanıyla birlikte.","Slight calorie surplus and high protein, together with strength training.","Небольшой профицит и много белка вместе с силовыми тренировками.","Leichter Überschuss und viel Eiweiß, zusammen mit Krafttraining.","فائض بسيط في السعرات وبروتين عالٍ مع تمارين المقاومة."],
+  gd_kas:["Direnç antrenmanıyla birlikte hafif kalori fazlası ve yüksek protein.","Slight calorie surplus and high protein, together with strength training.","Небольшой профицит и много белка вместе с силовыми тренировками.","Leichter Überschuss und viel Eiweiß, zusammen mit Krafttraining.","فائض بسيط في السعرات وبروتين عالٍ مع تمارين المقاومة."],
   g_al:["Kilo almak","Gain weight","Набрать вес","Zunehmen","زيادة الوزن"],
-  gd_al:["Sağlıklı yoldan kilo alın; besleyici ek öğünlerle.","Gain weight the healthy way with nutritious extra snacks.","Здоровый набор веса с питательными перекусами.","Gesund zunehmen mit nährstoffreichen Snacks.","زد وزنك بطريقة صحية مع وجبات خفيفة مغذية."],
+  gd_al:["Besleyici ek öğünlerle sağlıklı yoldan kilo alın.","Gain weight the healthy way with nutritious extra snacks.","Здоровый набор веса с питательными перекусами.","Gesund zunehmen mit nährstoffreichen Snacks.","زد وزنك بطريقة صحية مع وجبات خفيفة مغذية."],
   g_seker:["Kan şekeri dengesi","Blood sugar balance","Контроль сахара","Blutzucker-Balance","توازن سكر الدم"],
   gd_seker:["Doktor listesi kuralları: düşük şeker, tam tahıl, düzenli öğün (insülin direnci, diyabet riski).","Doctor-list rules: low sugar, whole grains, regular meals (insulin resistance, diabetes risk).","Правила врача: мало сахара, цельные злаки, режим питания (инсулинорезистентность, риск диабета).","Regeln vom Arzt: wenig Zucker, Vollkorn, feste Mahlzeiten (Insulinresistenz, Diabetesrisiko).","قواعد قائمة الطبيب: سكر قليل، حبوب كاملة، وجبات منتظمة (مقاومة الأنسولين، خطر السكري)."],
   wActT:["Günlük hareket düzeyiniz","Your daily activity","Ваша активность","Deine tägliche Aktivität","مستوى نشاطك اليومي"],
@@ -1040,7 +1062,7 @@ Object.assign(S, {
   perWeek:["{n} kg/hafta","{n} kg/week","{n} кг/нед.","{n} kg/Woche","{n} كغ/أسبوع"],
   weeks:["Tahmini süre: ~{n} hafta","Estimated time: ~{n} weeks","Примерный срок: ~{n} нед.","Geschätzte Dauer: ~{n} Wochen","المدة التقديرية: ~{n} أسبوع"],
   wPrefT:["Yemediğiniz şeyler var mı?","Anything you don’t eat?","Что вы не едите?","Was isst du nicht?","هل هناك أطعمة لا تأكلها؟"],
-  wPrefS:["İşaretlediklerinizin yerine benzer besin değerinde alternatif konur.","Marked items are replaced with alternatives of similar nutrition.","Отмеченное заменим похожими по составу продуктами.","Markiertes wird durch nährstoffähnliche Alternativen ersetzt.","سيُستبدل ما تحدده ببدائل ذات قيمة غذائية مشابهة."],
+  wPrefS:["İşaretlediklerinizin yerine besin değeri benzer yiyecekler konur.","Marked items are replaced with alternatives of similar nutrition.","Отмеченное заменим похожими по составу продуктами.","Markiertes wird durch nährstoffähnliche Alternativen ersetzt.","سيُستبدل ما تحدده ببدائل ذات قيمة غذائية مشابهة."],
   everything:["Hepsini yerim","I eat everything","Ем всё","Ich esse alles","آكل كل شيء"],
   vegetarian:["Vejetaryen","Vegetarian","Вегетарианец","Vegetarisch","نباتي"],
   vegan:["Vegan","Vegan","Веган","Vegan","نباتي صرف"],
@@ -1061,13 +1083,13 @@ Object.assign(S, {
   goalLbl:["Hedef","Goal","Цель","Ziel","الهدف"],
   method:["Nasıl hesaplandı?","How is this calculated?","Как это рассчитано?","Wie wird das berechnet?","كيف تم الحساب؟"],
   methodTxt:[
-    "Bazal metabolizma: Mifflin-St Jeor denklemi (Amerikan Beslenme ve Diyetetik Akademisi’nin önerdiği, en isabetli formül).|Günlük harcama: FAO/WHO aktivite katsayıları (1,2–1,9).|Kilo verme: haftada 0,25–0,75 kg (1 kg yağ ≈ 7700 kcal); açık en fazla %25, alt sınır kadında 1200, erkekte 1500 kcal.|Kas kazanma %10, kilo alma %15 kalori fazlasıyla.|Protein: ISSN önerisi, hedefe göre 1,2–2,0 g/kg (VKİ 25 üstündeyse ideal kiloya göre).|Yağ kalorinin %28’i (kan şekeri hedefinde %30), karbonhidrat kalan kısım (IOM AMDR aralıkları).|Şeker DSÖ önerisi doğrultusunda sınırlı: doğal şeker dâhil kalorinin %13’ü (kan şekeri hedefinde %10).|Lif: 1000 kcal başına 14 g. Su: kg başına 35 ml (+500 ml hareketliyse). VKİ sınıfları: DSÖ.",
+    "Bazal metabolizma: Mifflin-St Jeor denklemi (Amerikan Beslenme ve Diyetetik Akademisi’nin önerdiği, en isabetli formül).|Günlük harcama: FAO/DSÖ aktivite katsayıları (1,2–1,9).|Kilo verme: haftada 0,25–0,75 kg (1 kg yağ ≈ 7700 kcal); kalori açığı en fazla %25, alt sınır kadında 1200, erkekte 1500 kcal.|Kas kazanma: %10, kilo alma: %15 kalori fazlası.|Protein: ISSN önerisine göre, hedefe bağlı olarak 1,2–2,0 g/kg (VKİ 25’in üstündeyse ideal kiloya göre).|Yağ: kalorinin %28’i (kan şekeri hedefinde %30); karbonhidrat: kalan kısım (IOM AMDR aralıkları).|Şeker: DSÖ önerisi doğrultusunda sınırlı; doğal şeker dâhil kalorinin %13’ü (kan şekeri hedefinde %10).|Lif: 1000 kcal başına 14 g. Su: kg başına 35 ml (hareketliyse +500 ml). VKİ sınıfları: DSÖ.",
     "Basal metabolic rate: Mifflin-St Jeor equation (the most accurate formula, recommended by the Academy of Nutrition and Dietetics).|Daily energy use: FAO/WHO activity factors (1.2–1.9).|Weight loss: 0.25–0.75 kg per week (1 kg fat ≈ 7700 kcal); deficit at most 25%, floor 1200 kcal for women, 1500 kcal for men.|Muscle gain +10%, weight gain +15% calories.|Protein: ISSN guidance, 1.2–2.0 g/kg depending on the goal (ideal weight used if BMI > 25).|Fat 28% of calories (30% for blood sugar), carbohydrates the rest (IOM AMDR ranges).|Sugar limited in line with WHO: 13% of calories incl. natural sugars (10% for blood sugar).|Fiber: 14 g per 1000 kcal. Water: 35 ml per kg (+500 ml if active). BMI classes: WHO.",
     "Базальный обмен: формула Миффлина — Сан Жеора (самая точная, рекомендована Академией питания и диетологии США).|Суточный расход: коэффициенты активности ФАО/ВОЗ (1,2–1,9).|Похудение: 0,25–0,75 кг в неделю (1 кг жира ≈ 7700 ккал); дефицит не более 25%, минимум 1200 ккал для женщин и 1500 для мужчин.|Набор мышц +10%, набор веса +15% калорий.|Белок: по рекомендациям ISSN, 1,2–2,0 г/кг в зависимости от цели (при ИМТ > 25 — на идеальный вес).|Жиры 28% калорий (30% при контроле сахара), углеводы — остальное (диапазоны AMDR).|Сахар ограничен по рекомендации ВОЗ: 13% калорий с учётом натурального (10% при контроле сахара).|Клетчатка: 14 г на 1000 ккал. Вода: 35 мл на кг (+500 мл при активности). Классы ИМТ: ВОЗ.",
     "Grundumsatz: Mifflin-St-Jeor-Formel (die genaueste, empfohlen von der Academy of Nutrition and Dietetics).|Tagesbedarf: FAO/WHO-Aktivitätsfaktoren (1,2–1,9).|Abnehmen: 0,25–0,75 kg pro Woche (1 kg Fett ≈ 7700 kcal); Defizit höchstens 25 %, Untergrenze 1200 kcal für Frauen, 1500 kcal für Männer.|Muskelaufbau +10 %, Zunehmen +15 % Kalorien.|Eiweiß: nach ISSN 1,2–2,0 g/kg je nach Ziel (bei BMI > 25 auf Idealgewicht bezogen).|Fett 28 % der Kalorien (30 % bei Blutzucker-Ziel), Kohlenhydrate der Rest (AMDR-Bereiche).|Zucker nach WHO begrenzt: 13 % der Kalorien inkl. natürlichem Zucker (10 % bei Blutzucker-Ziel).|Ballaststoffe: 14 g pro 1000 kcal. Wasser: 35 ml pro kg (+500 ml wenn aktiv). BMI-Klassen: WHO.",
     "معدل الأيض الأساسي: معادلة ميفلين-سانت جيور (الأدق، وتوصي بها أكاديمية التغذية وعلم الحميات الأمريكية).|الاستهلاك اليومي: معاملات النشاط لمنظمة الأغذية والزراعة ومنظمة الصحة العالمية (1.2–1.9).|إنقاص الوزن: 0.25–0.75 كغ أسبوعياً (1 كغ دهون ≈ 7700 سعرة)؛ العجز 25% كحد أقصى، والحد الأدنى 1200 سعرة للنساء و1500 للرجال.|بناء العضلات +10%، زيادة الوزن +15% من السعرات.|البروتين: وفق توصيات ISSN بين 1.2 و2.0 غ/كغ حسب الهدف (حسب الوزن المثالي إذا تجاوز المؤشر 25).|الدهون 28% من السعرات (30% لهدف سكر الدم) والكربوهيدرات الباقي (نطاقات AMDR).|السكر محدود وفق منظمة الصحة العالمية: 13% من السعرات مع السكر الطبيعي (10% لهدف سكر الدم).|الألياف: 14 غ لكل 1000 سعرة. الماء: 35 مل لكل كغ (+500 مل للنشطين). تصنيف المؤشر: منظمة الصحة العالمية."
   ],
-  disclaimer:["Bu uygulama tıbbi tavsiye yerine geçmez. Hamilelik, emzirme, 18 yaş altı, diyabet veya kronik hastalık durumunda doktorunuza danışın.","This app is not medical advice. If you are pregnant, breastfeeding, under 18, diabetic or have a chronic condition, consult your doctor.","Приложение не заменяет консультацию врача. При беременности, кормлении грудью, возрасте до 18 лет, диабете или хронических заболеваниях обратитесь к врачу.","Diese App ersetzt keine ärztliche Beratung. Bei Schwangerschaft, Stillzeit, unter 18, Diabetes oder chronischen Erkrankungen ärztlichen Rat einholen.","هذا التطبيق لا يغني عن استشارة الطبيب. في حالات الحمل أو الرضاعة أو العمر دون 18 أو السكري أو الأمراض المزمنة استشر طبيبك."],
+  disclaimer:["Bu uygulama tıbbi tavsiye yerine geçmez. Hamileyseniz, emziriyorsanız, 18 yaşından küçükseniz, diyabetiniz ya da kronik bir hastalığınız varsa doktorunuza danışın.","This app is not medical advice. If you are pregnant, breastfeeding, under 18, diabetic or have a chronic condition, consult your doctor.","Приложение не заменяет консультацию врача. При беременности, кормлении грудью, возрасте до 18 лет, диабете или хронических заболеваниях обратитесь к врачу.","Diese App ersetzt keine ärztliche Beratung. Bei Schwangerschaft, Stillzeit, unter 18, Diabetes oder chronischen Erkrankungen ärztlichen Rat einholen.","هذا التطبيق لا يغني عن استشارة الطبيب. في حالات الحمل أو الرضاعة أو العمر دون 18 أو السكري أو الأمراض المزمنة استشر طبيبك."],
   wOdakT:["Ek sağlık odakları","Extra health focus","Дополнительно о здоровье","Zusätzlicher Gesundheitsfokus","تركيز صحي إضافي"],
   wOdakS:["İsteğe bağlı · birden fazla seçebilirsiniz. Kilo hedefinizin üstüne ek kural olarak uygulanır.","Optional · choose as many as you need. Applied as extra rules on top of your weight goal.","Необязательно · можно выбрать несколько. Применяется дополнительно к цели по весу.","Optional · Mehrfachauswahl möglich. Gilt zusätzlich zu deinem Gewichtsziel.","اختياري · يمكنك اختيار أكثر من واحد. تُطبَّق كقواعد إضافية فوق هدف الوزن."],
   od_seker:["Düşük şeker, tam tahıl, karbonhidrat en çok %40 (doktor listesi kuralları).","Low sugar, whole grains, carbs at most 40% (doctor-list rules).","Мало сахара, цельные злаки, углеводы не более 40% (правила врача).","Wenig Zucker, Vollkorn, max. 40 % Kohlenhydrate (Arztregeln).","سكر قليل، حبوب كاملة، كربوهيدرات 40% كحد أقصى (قواعد الطبيب)."],
@@ -1086,7 +1108,7 @@ Object.assign(S, {
   errGoal:["Lütfen bir seçim yapın.","Please choose an option.","Выберите вариант.","Bitte eine Option wählen.","يرجى اختيار خيار."],
   errTarget:["Hedef kilo bu hedefle uyumlu değil.","Target weight doesn’t match this goal.","Целевой вес не соответствует цели.","Zielgewicht passt nicht zum Ziel.","الوزن المستهدف لا يتوافق مع هذا الهدف."],
   warn18:["18 yaş altı için bu plan bir uzman eşliğinde uygulanmalıdır.","Under 18: follow this plan only with professional guidance.","До 18 лет — только под наблюдением специалиста.","Unter 18: nur mit fachlicher Begleitung umsetzen.","لمن هم دون 18 عاماً: يُتبع فقط بإشراف مختص."],
-  warnLow:["VKİ’niz zayıf aralığında; kilo vermek ve sıkılaşma önerilmez.","Your BMI is in the underweight range; losing weight isn’t recommended.","ИМТ ниже нормы — худеть не рекомендуется.","Dein BMI liegt im Untergewicht – Abnehmen wird nicht empfohlen.","مؤشر كتلتك في نطاق نقص الوزن؛ لا يُنصح بإنقاص الوزن."]
+  warnLow:["VKİ’niz zayıf aralıkta; kilo verme ve sıkılaşma önerilmez.","Your BMI is in the underweight range; losing weight isn’t recommended.","ИМТ ниже нормы — худеть не рекомендуется.","Dein BMI liegt im Untergewicht – Abnehmen wird nicht empfohlen.","مؤشر كتلتك في نطاق نقص الوزن؛ لا يُنصح بإنقاص الوزن."]
 });
 // Uyarılar, hamilelik, alerji, geri bildirim, onay penceresi ve log sayfalama metinleri
 Object.assign(S, {
@@ -1102,7 +1124,7 @@ Object.assign(S, {
   confirmT:["Onay","Confirm","Подтверждение","Bestätigung","تأكيد"],
   // Geri bildirim
   fbTitle:["✉️ Öneri ve şikâyetleriniz","✉️ Suggestions & feedback","✉️ Предложения и отзывы","✉️ Vorschläge & Feedback","✉️ الاقتراحات والملاحظات"],
-  fbText:["Uygulamayla ilgili önerilerinizi, şikâyetlerinizi ya da hata bildirimlerinizi bize yazın. Mesajınızı okuyup dönüş yapacağız.","Send us your suggestions, complaints or bug reports about the app. We read every message and will get back to you.","Напишите нам предложения, жалобы или сообщения об ошибках. Мы читаем каждое письмо и ответим вам.","Schreib uns Vorschläge, Beschwerden oder Fehlermeldungen zur App. Wir lesen jede Nachricht und melden uns.","أرسل لنا اقتراحاتك أو شكاواك أو بلاغات الأخطاء. نقرأ كل رسالة وسنرد عليك."],
+  fbText:["Uygulamayla ilgili önerilerinizi, şikâyetlerinizi ya da hata bildirimlerinizi bize yazın. Mesajınızı okuyup size yanıt vereceğiz.","Send us your suggestions, complaints or bug reports about the app. We read every message and will get back to you.","Напишите нам предложения, жалобы или сообщения об ошибках. Мы читаем каждое письмо и ответим вам.","Schreib uns Vorschläge, Beschwerden oder Fehlermeldungen zur App. Wir lesen jede Nachricht und melden uns.","أرسل لنا اقتراحاتك أو شكاواك أو بلاغات الأخطاء. نقرأ كل رسالة وسنرد عليك."],
   fbOpen:["✉️ E-posta uygulamasında yaz","✉️ Write in my e-mail app","✉️ Написать в почтовом приложении","✉️ In meiner E-Mail-App schreiben","✉️ الكتابة في تطبيق البريد"],
   fbCopy:["📋 Adresi kopyala","📋 Copy address","📋 Скопировать адрес","📋 Adresse kopieren","📋 نسخ العنوان"],
   fbSubject:["LifeRoutine: öneri / şikâyet","LifeRoutine: feedback","LifeRoutine: отзыв","LifeRoutine: Feedback","LifeRoutine: ملاحظات"],
@@ -1113,7 +1135,7 @@ Object.assign(S, {
   wGenelT:["Öneriler tahminidir","Suggestions are estimates","Рекомендации приблизительны","Empfehlungen sind Schätzungen","الاقتراحات تقديرية"],
   wGenel:["Bu uygulamadaki kalori ve besin değerleri, internette yayımlanan ortalama gıda verilerine ve uluslararası beslenme kılavuzlarına dayanan tahminlerdir. Gerçek değerler ürüne, markaya, porsiyona ve pişirme şekline göre değişir.","Calorie and nutrient values in this app are estimates based on average food data published online and international nutrition guidelines. Real values vary by product, brand, portion and cooking method.","Калорийность и пищевая ценность в приложении — приблизительные данные из открытых источников и международных рекомендаций. Реальные значения зависят от продукта, марки, порции и способа приготовления.","Kalorien- und Nährwerte in dieser App sind Schätzungen auf Basis öffentlich verfügbarer Durchschnittswerte und internationaler Ernährungsrichtlinien. Tatsächliche Werte hängen von Produkt, Marke, Portion und Zubereitung ab.","قيم السعرات والمغذيات في هذا التطبيق تقديرات تعتمد على متوسط بيانات الأغذية المنشورة على الإنترنت والإرشادات الغذائية الدولية، وتختلف القيم الفعلية حسب المنتج والعلامة والحصة وطريقة الطهي."],
   wDoktorT:["Doktor ve diyetisyen kontrolü","Doctor & dietitian supervision","Контроль врача и диетолога","Ärztliche & diätologische Kontrolle","إشراف الطبيب وأخصائي التغذية"],
-  wDoktor:["Diyet listesini doktorunuz veya diyetisyeniniz kontrol etmeden uygulamayın. Kronik hastalığınız (diyabet, böbrek, kalp, tiroit vb.), düzenli kullandığınız ilaçlar, 18 yaş altı, emzirme ya da yeme bozukluğu öyküsü varsa mutlaka uzmana danışın.","Do not follow this plan without your doctor's or dietitian's approval. If you have a chronic condition (diabetes, kidney, heart, thyroid, etc.), take regular medication, are under 18, breastfeeding or have a history of eating disorders, always consult a professional.","Не следуйте плану без одобрения врача или диетолога. При хронических заболеваниях (диабет, почки, сердце, щитовидная железа и др.), постоянном приёме лекарств, возрасте до 18 лет, грудном вскармливании или расстройствах пищевого поведения обязательно проконсультируйтесь со специалистом.","Folge diesem Plan nicht ohne Zustimmung deines Arztes oder Ernährungsberaters. Bei chronischen Erkrankungen (Diabetes, Niere, Herz, Schilddrüse usw.), regelmäßiger Medikamenteneinnahme, unter 18, in der Stillzeit oder bei Essstörungen in der Vorgeschichte unbedingt fachlichen Rat einholen.","لا تتبع هذه الخطة دون موافقة طبيبك أو أخصائي التغذية. استشر مختصاً دائماً إذا كان لديك مرض مزمن (السكري أو الكلى أو القلب أو الغدة الدرقية وغيرها) أو تتناول أدوية بانتظام أو كان عمرك أقل من 18 عاماً أو كنتِ مرضعاً أو لديك تاريخ من اضطرابات الأكل."],
+  wDoktor:["Diyet listesini doktorunuz veya diyetisyeniniz kontrol etmeden uygulamayın. Kronik bir hastalığınız (diyabet, böbrek, kalp, tiroit vb.), düzenli kullandığınız ilaçlar ya da yeme bozukluğu öykünüz varsa, emziriyorsanız veya 18 yaşından küçükseniz mutlaka uzmana danışın.","Do not follow this plan without your doctor's or dietitian's approval. If you have a chronic condition (diabetes, kidney, heart, thyroid, etc.), take regular medication, are under 18, breastfeeding or have a history of eating disorders, always consult a professional.","Не следуйте плану без одобрения врача или диетолога. При хронических заболеваниях (диабет, почки, сердце, щитовидная железа и др.), постоянном приёме лекарств, возрасте до 18 лет, грудном вскармливании или расстройствах пищевого поведения обязательно проконсультируйтесь со специалистом.","Folge diesem Plan nicht ohne Zustimmung deines Arztes oder Ernährungsberaters. Bei chronischen Erkrankungen (Diabetes, Niere, Herz, Schilddrüse usw.), regelmäßiger Medikamenteneinnahme, unter 18, in der Stillzeit oder bei Essstörungen in der Vorgeschichte unbedingt fachlichen Rat einholen.","لا تتبع هذه الخطة دون موافقة طبيبك أو أخصائي التغذية. استشر مختصاً دائماً إذا كان لديك مرض مزمن (السكري أو الكلى أو القلب أو الغدة الدرقية وغيرها) أو تتناول أدوية بانتظام أو كان عمرك أقل من 18 عاماً أو كنتِ مرضعاً أو لديك تاريخ من اضطرابات الأكل."],
   wSorumT:["Sorumluluk reddi","Disclaimer","Отказ от ответственности","Haftungsausschluss","إخلاء المسؤولية"],
   wSorum:["Bu uygulama tıbbi tavsiye, teşhis veya tedavi yerine geçmez. Uygulamanın kullanımından doğabilecek doğrudan veya dolaylı hiçbir sonuç için geliştirici yasal sorumluluk kabul etmez. Uygulamayı kullanarak bu koşulları kabul etmiş sayılırsınız.","This app is not a substitute for medical advice, diagnosis or treatment. The developer accepts no legal liability for any direct or indirect consequences of using the app. By using the app you accept these terms.","Приложение не заменяет медицинскую консультацию, диагностику или лечение. Разработчик не несёт юридической ответственности за любые прямые или косвенные последствия его использования. Используя приложение, вы принимаете эти условия.","Diese App ersetzt keine ärztliche Beratung, Diagnose oder Behandlung. Der Entwickler übernimmt keinerlei rechtliche Haftung für direkte oder indirekte Folgen der Nutzung. Mit der Nutzung akzeptierst du diese Bedingungen.","هذا التطبيق لا يغني عن الاستشارة الطبية أو التشخيص أو العلاج، ولا يتحمل المطوّر أي مسؤولية قانونية عن أي نتائج مباشرة أو غير مباشرة لاستخدامه. باستخدامك التطبيق فإنك توافق على هذه الشروط."],
   wHamileT:["Hamileler için","For pregnant women","Для беременных","Für Schwangere","للحوامل"],
@@ -1134,7 +1156,7 @@ Object.assign(S, {
   btnHamile:["🤰 Hamileyim","🤰 I'm pregnant","🤰 Я беременна","🤰 Ich bin schwanger","🤰 أنا حامل"],
   btnHamileDegil:["Hamile değilim","I'm not pregnant","Я не беременна","Ich bin nicht schwanger","لست حاملاً"],
   cHamileOn:["Hamilelik moduna geçilsin mi? Öğünleriniz yaşınıza, kilonuza, boyunuza ve alerjilerinize göre hamileliğe uygun olarak yeniden hazırlanacak; kilo verme hedefi uygulanmayacak.","Switch to pregnancy mode? Your meals will be rebuilt for pregnancy based on your age, weight, height and allergies; no weight-loss target will be applied.","Включить режим беременности? Приёмы пищи будут пересобраны для беременности с учётом возраста, веса, роста и аллергий; цель по снижению веса не применяется.","Schwangerschaftsmodus einschalten? Deine Mahlzeiten werden passend zur Schwangerschaft nach Alter, Gewicht, Größe und Allergien neu erstellt; es gilt kein Abnehmziel.","هل تريدين التبديل إلى وضع الحمل؟ ستُعاد إعداد وجباتك بما يناسب الحمل حسب عمرك ووزنك وطولك وحساسيتك، ولن يُطبَّق هدف إنقاص الوزن."],
-  cHamileOff:["Hamile değilsiniz; artık yaşınıza, kilonuza, boyunuza ve alerjilerinize uygun yemekler listelenecektir. Onaylıyor musunuz?","You are not pregnant; from now on meals suited to your age, weight, height and allergies will be listed. Do you confirm?","Вы не беременны; теперь будут подбираться блюда с учётом вашего возраста, веса, роста и аллергий. Подтверждаете?","Du bist nicht schwanger; ab jetzt werden Gerichte passend zu Alter, Gewicht, Größe und Allergien angezeigt. Bestätigen?","لستِ حاملاً؛ ستُعرض من الآن الأطعمة المناسبة لعمرك ووزنك وطولك وحساسيتك. هل تؤكدين؟"],
+  cHamileOff:["Hamilelik modu kapatılacak; artık yaşınıza, kilonuza, boyunuza ve alerjilerinize uygun yemekler listelenecek. Onaylıyor musunuz?","You are not pregnant; from now on meals suited to your age, weight, height and allergies will be listed. Do you confirm?","Вы не беременны; теперь будут подбираться блюда с учётом вашего возраста, веса, роста и аллергий. Подтверждаете?","Du bist nicht schwanger; ab jetzt werden Gerichte passend zu Alter, Gewicht, Größe und Allergien angezeigt. Bestätigen?","لستِ حاملاً؛ ستُعرض من الآن الأطعمة المناسبة لعمرك ووزنك وطولك وحساسيتك. هل تؤكدين؟"],
   lHamileOn:["Hamilelik modu açıldı ({t}. trimester); menü hamileliğe uygun yeniden hazırlandı","Pregnancy mode on (trimester {t}); menu rebuilt for pregnancy","Режим беременности включён ({t}-й триместр); меню пересобрано","Schwangerschaftsmodus an ({t}. Trimester); Menü neu erstellt","تم تفعيل وضع الحمل (الثلث {t})؛ أعيد إعداد القائمة"],
   lHamileOff:["Hamilelik modu kapatıldı; menü profile göre yeniden hazırlandı","Pregnancy mode off; menu rebuilt from profile","Режим беременности выключен; меню пересобрано по профилю","Schwangerschaftsmodus aus; Menü aus Profil neu erstellt","تم إيقاف وضع الحمل؛ أعيد إعداد القائمة حسب الملف"],
   gHamile:["Hamilelik ({t}. trimester)","Pregnancy (trimester {t})","Беременность ({t}-й триместр)","Schwangerschaft ({t}. Trimester)","الحمل (الثلث {t})"],
@@ -1161,7 +1183,7 @@ Object.assign(S, {
   k_atistirmalik:["Atıştırmalık","Snacks","Перекусы","Snacks","وجبات خفيفة"],
   k_tatli:["Tatlı","Desserts","Десерты","Desserts","الحلويات"],
   u_bardak:["bardak","glass","стакан","Glas","كوب"],
-  m_ara0:["Kuşluk Ara Öğün","Morning snack","Второй завтрак","Vormittagssnack","وجبة خفيفة صباحية"],
+  m_ara0:["Kuşluk Ara Öğünü","Morning snack","Второй завтрак","Vormittagssnack","وجبة خفيفة صباحية"],
   recent:["⭐ Önerilenler","⭐ Suggested","⭐ Рекомендуемые","⭐ Vorschläge","⭐ مقترحات"],
   // Öğünleri gizle / göster
   hideAll:["▴ Öğünleri gizle","▴ Collapse meals","▴ Свернуть приёмы пищи","▴ Mahlzeiten einklappen","▴ طي الوجبات"],
@@ -1181,7 +1203,7 @@ Object.assign(S, {
   lBody:["Vücut ölçüleri güncellendi: {l}","Body measurements updated: {l}","Параметры тела обновлены: {l}","Körpermaße aktualisiert: {l}","تم تحديث قياسات الجسم: {l}"],
   // Öğün saatleri
   wSaatT:["Öğün saatlerin","Your meal times","Время приёмов пищи","Deine Essenszeiten","مواعيد وجباتك"],
-  wSaatS:["Kahvaltı, öğle ve akşam yemeği saatini seç; ara öğünleri bunlara göre biz ayarlarız.","Pick your breakfast, lunch and dinner times; we’ll place the snacks around them.","Выберите время завтрака, обеда и ужина; перекусы расставим сами.","Wähle Frühstück, Mittag- und Abendessen; die Snacks planen wir passend dazu.","اختر مواعيد الفطور والغداء والعشاء، وسنضبط الوجبات الخفيفة وفقها."],
+  wSaatS:["Kahvaltı, öğle ve akşam yemeği saatlerini seç; ara öğünleri bunlara göre biz ayarlarız.","Pick your breakfast, lunch and dinner times; we’ll place the snacks around them.","Выберите время завтрака, обеда и ужина; перекусы расставим сами.","Wähle Frühstück, Mittag- und Abendessen; die Snacks planen wir passend dazu.","اختر مواعيد الفطور والغداء والعشاء، وسنضبط الوجبات الخفيفة وفقها."],
   saatAra:["Ara öğünler (otomatik)","Snacks (automatic)","Перекусы (автоматически)","Snacks (automatisch)","الوجبات الخفيفة (تلقائياً)"],
   saatHata:["Saatler sırayla olmalı: kahvaltı → öğle → akşam.","Times must be in order: breakfast → lunch → dinner.","Время должно идти по порядку: завтрак → обед → ужин.","Die Zeiten müssen in Reihenfolge sein: Frühstück → Mittag → Abend.","يجب أن تكون المواعيد بالترتيب: الفطور ← الغداء ← العشاء."],
   sSaat:["Öğün saatleri","Meal times","Время приёмов пищи","Essenszeiten","مواعيد الوجبات"],
@@ -1198,13 +1220,13 @@ Object.assign(S, {
   // Destek ol
   // Diyetisyen / antrenör: başkası için program
   kocBtn:["Program hazırla","Create plan","Составить план","Plan erstellen","إعداد خطة"],
-  kocTitle:["👩‍⚕️ Hasta ve danışan için beslenme programı","👩‍⚕️ Meal plan for patients and clients","👩‍⚕️ План питания для пациентов и клиентов","👩‍⚕️ Ernährungsplan für Patienten und Klienten","👩‍⚕️ خطة غذائية للمرضى والعملاء"],
-  kocIntro:["Bu sayfadan hastanız veya danışanınız için günlük, haftalık veya aylık program oluşturabilirsiniz. Link açılınca program kişinin uygulamasına yüklenir. Kendi planınız değişmez.","On this page you can create a daily, weekly or monthly plan for your patient or client. When the link is opened, the plan is loaded into their app. Your own plan does not change.","На этой странице можно составить дневной, недельный или месячный план для пациента или клиента. По ссылке план загружается в его приложение. Ваш собственный план не меняется.","Auf dieser Seite erstellen Sie einen Tages-, Wochen- oder Monatsplan für Ihren Patienten oder Klienten. Beim Öffnen des Links wird der Plan in seine App geladen. Ihr eigener Plan ändert sich nicht.","من هذه الصفحة يمكنك إعداد خطة يومية أو أسبوعية أو شهرية لمريضك أو عميلك. عند فتح الرابط تُحمَّل الخطة في تطبيقه. خطتك الخاصة لا تتغير."],
+  kocTitle:["👩‍⚕️ Hastanız veya danışanınız için beslenme programı oluşturun","👩‍⚕️ Create a meal plan for your patient or client","👩‍⚕️ Составьте план питания для пациента или клиента","👩‍⚕️ Erstellen Sie einen Ernährungsplan für Ihren Patienten oder Klienten","👩‍⚕️ أنشئ خطة غذائية لمريضك أو عميلك"],
+  kocIntro:["Bu sayfadan günlük, haftalık veya aylık program hazırlayabilirsiniz. Program bitince “Paylaşım linki oluştur” düğmesine basın ve linki hastanıza veya danışanınıza gönderin. Kişi linki açtığında program kendi uygulamasına yüklenir. Sizin planınız değişmez.","Here you can prepare a daily, weekly or monthly plan. When the plan is finished, tap “Create share link” and send the link to your patient or client. When they open the link, the plan is loaded into their own app. Your plan does not change.","Здесь можно составить план на день, неделю или месяц. Когда план готов, нажмите «Создать ссылку» и отправьте ссылку пациенту или клиенту. Когда он откроет ссылку, план загрузится в его приложение. Ваш план не меняется.","Hier erstellen Sie einen Tages-, Wochen- oder Monatsplan. Wenn der Plan fertig ist, tippen Sie auf „Link erstellen“ und senden Sie den Link an Ihren Patienten oder Klienten. Öffnet er den Link, wird der Plan in seine eigene App geladen. Ihr eigener Plan ändert sich nicht.","يمكنك هنا إعداد خطة يومية أو أسبوعية أو شهرية. عند اكتمال الخطة اضغط «إنشاء رابط المشاركة» وأرسل الرابط إلى مريضك أو عميلك. عندما يفتح الرابط تُحمَّل الخطة في تطبيقه. خطتك لا تتغير."],
   kocClient:["Hasta / danışan adı","Patient / client name","Имя пациента / клиента","Name des Patienten / Klienten","اسم المريض / العميل"],
   kocAuthor:["Hazırlayan (adınız, unvanınız)","Prepared by (your name, title)","Составитель (имя, должность)","Erstellt von (Name, Titel)","أعدّها (اسمك، صفتك)"],
   kocAuthorPh:["ör. Dyt. Ayşe Yılmaz","e.g. Jane Doe, RD","напр. диетолог Анна","z. B. Anna Müller, Ernährungsberaterin","مثال: أخصائية التغذية سارة"],
   kocNote:["Genel not (isteğe bağlı)","General note (optional)","Общая заметка (необязательно)","Allgemeine Notiz (optional)","ملاحظة عامة (اختياري)"],
-  kocNotePh:["ör. Günde 2,5 L su için. Kızartma yok, yemekleri fırında veya haşlama yapın.","e.g. Drink 2.5 L water a day. No frying; bake or boil.","напр. Пейте 2,5 л воды в день. Без жарки.","z. B. 2,5 L Wasser pro Tag. Nicht frittieren.","مثال: اشرب 2.5 لتر ماء يومياً. بدون قلي."],
+  kocNotePh:["ör. Günde 2,5 L su için. Kızartma yok; yemekleri fırında pişirin ya da haşlayın.","e.g. Drink 2.5 L water a day. No frying; bake or boil.","напр. Пейте 2,5 л воды в день. Без жарки.","z. B. 2,5 L Wasser pro Tag. Nicht frittieren.","مثال: اشرب 2.5 لتر ماء يومياً. بدون قلي."],
   kocTargets:["Günlük hedef","Daily targets","Дневные цели","Tagesziele","الأهداف اليومية"],
   kocMeals:["Öğünler ve saatler","Meals and times","Приёмы пищи и время","Mahlzeiten und Zeiten","الوجبات والمواعيد"],
   kocAra0:["Kuşluk ara öğünü ekle (kahvaltı ile öğle arası)","Add a morning snack (between breakfast and lunch)","Добавить второй завтрак","Vormittagssnack hinzufügen","أضف وجبة خفيفة صباحية"],
@@ -1224,7 +1246,7 @@ Object.assign(S, {
   cKocCopyMonth:["Bu günün yemekleri ayın diğer günlerine kopyalanacak; o günlerdeki mevcut veriler değişecektir. Onaylıyor musunuz?","This day’s foods will be copied to the other days of the month; their current entries will change. Do you confirm?","Блюда этого дня будут скопированы на другие дни месяца; их текущие данные изменятся. Подтверждаете?","Die Speisen dieses Tages werden auf die anderen Tage des Monats kopiert; deren Einträge ändern sich. Bestätigen?","ستُنسخ أطعمة هذا اليوم إلى بقية أيام الشهر وستتغير بياناتها الحالية. هل توافق؟"],
   cKocCopyMonthEmpty:["Bu gün boş olduğu için ayın diğer günlerindeki veriler de temizlenecektir. Onaylıyor musunuz?","This day is empty, so the other days of the month will be cleared too. Do you confirm?","Этот день пуст, поэтому остальные дни месяца тоже будут очищены. Подтверждаете?","Dieser Tag ist leer, daher werden auch die anderen Tage des Monats geleert. Bestätigen?","هذا اليوم فارغ، لذا ستُمسح بقية أيام الشهر أيضاً. هل توافق؟"],
   cKocCopyPrev:["Önceki günün yemekleri bu güne kopyalanacak; bu günün mevcut verileri değişecektir. Onaylıyor musunuz?","The previous day’s foods will be copied to this day; its current entries will change. Do you confirm?","Блюда предыдущего дня будут скопированы на этот день; его текущие данные изменятся. Подтверждаете?","Die Speisen des Vortags werden auf diesen Tag kopiert; seine Einträge ändern sich. Bestätigen?","ستُنسخ أطعمة اليوم السابق إلى هذا اليوم وستتغير بياناته الحالية. هل توافق؟"],
-  cKocToWeek:["Haftalık programa geçilecek; her hafta günü için ayın ilk örneği kalacak, diğer günlerdeki farklı yemekler kaldırılacaktır. Onaylıyor musunuz?","Switching to a weekly plan: for each weekday the month’s first entry is kept and different foods on other days are removed. Do you confirm?","Переход на недельный план: для каждого дня недели останется первый вариант месяца, остальные отличия будут удалены. Подтверждаете?","Wechsel zum Wochenplan: Für jeden Wochentag bleibt der erste Eintrag des Monats, abweichende Speisen anderer Tage werden entfernt. Bestätigen?","سيتم التحويل إلى خطة أسبوعية: يبقى أول إدخال في الشهر لكل يوم من أيام الأسبوع وتُحذف الأطعمة المختلفة في الأيام الأخرى. هل توافق؟"],
+  cKocToWeek:["Haftalık programa geçilecek. Haftanın her günü için aydaki ilk örnek (ör. ilk pazartesi) kalacak, diğer haftalardaki farklı yemekler kaldırılacaktır. Onaylıyor musunuz?","Switching to a weekly plan: for each weekday the month’s first entry is kept and different foods on other days are removed. Do you confirm?","Переход на недельный план: для каждого дня недели останется первый вариант месяца, остальные отличия будут удалены. Подтверждаете?","Wechsel zum Wochenplan: Für jeden Wochentag bleibt der erste Eintrag des Monats, abweichende Speisen anderer Tage werden entfernt. Bestätigen?","سيتم التحويل إلى خطة أسبوعية: يبقى أول إدخال في الشهر لكل يوم من أيام الأسبوع وتُحذف الأطعمة المختلفة في الأيام الأخرى. هل توافق؟"],
   kocContact:["İletişim bilginiz (telefon veya e-posta)","Your contact details (phone or email)","Ваши контакты (телефон или e-mail)","Ihre Kontaktdaten (Telefon oder E-Mail)","بيانات التواصل الخاصة بك (هاتف أو بريد)"],
   kocContactPh:["ör. 0532 000 00 00","e.g. +90 532 000 00 00","напр. +90 532 000 00 00","z. B. +90 532 000 00 00","مثلاً ‎+90 532 000 00 00"],
   kocNext:["Sonraki kontrol tarihi","Next check-up date","Дата следующего визита","Nächster Kontrolltermin","موعد المراجعة القادمة"],
@@ -1280,7 +1302,7 @@ Object.assign(S, {
   kocAutoT:["Otomatik program","Automatic plan","Автоматический план","Automatischer Plan","خطة تلقائية"],
   kocAutoQ:["Günlük hedeflerinize ve öğün saatlerinize göre tüm öğünler otomatik doldurulacak; günlere eklediğiniz yemeklerin yerine yenileri gelecek. Onaylıyor musunuz?","All meals will be filled in automatically based on your daily targets and meal times; foods already added to the days will be replaced. Do you confirm?","Все приёмы пищи будут заполнены автоматически по вашим дневным целям и времени приёмов; уже добавленные блюда будут заменены. Подтверждаете?","Alle Mahlzeiten werden anhand Ihrer Tagesziele und Essenszeiten automatisch befüllt; bereits eingetragene Speisen werden ersetzt. Bestätigen?","ستُملأ كل الوجبات تلقائياً وفق أهدافك اليومية ومواعيد الوجبات، وستُستبدل الأطعمة المضافة إلى الأيام. هل توافق؟"],
   kocAutoInfo:["Hedef: {k} kcal · {m} öğün ({s})","Target: {k} kcal · {m} meals ({s})","Цель: {k} ккал · {m} приёмов ({s})","Ziel: {k} kcal · {m} Mahlzeiten ({s})","الهدف: {k} سعرة · {m} وجبات ({s})"],
-  kocAutoNeed:["Lütfen önce günlük hedefleri doldurun; en az kalori hedefi gerekir.","Please fill in the daily targets first; at least the calorie target is required.","Сначала заполните дневные цели; нужна как минимум цель по калориям.","Bitte zuerst die Tagesziele ausfüllen; mindestens das Kalorienziel ist nötig.","يرجى إدخال الأهداف اليومية أولاً؛ هدف السعرات مطلوب على الأقل."],
+  kocAutoNeed:["Lütfen önce günlük hedefleri doldurun; en azından kalori hedefi gereklidir.","Please fill in the daily targets first; at least the calorie target is required.","Сначала заполните дневные цели; нужна как минимум цель по калориям.","Bitte zuerst die Tagesziele ausfüllen; mindestens das Kalorienziel ist nötig.","يرجى إدخال الأهداف اليومية أولاً؛ هدف السعرات مطلوب على الأقل."],
   kocPeriodQ:["Program hangi döneme yayılsın?","Which period should the plan cover?","На какой период составить план?","Für welchen Zeitraum soll der Plan gelten?","ما الفترة التي تغطيها الخطة؟"],
   kocAutoDone:["{n} günlük program oluşturuldu ✓","{n}-day plan generated ✓","План на {n} дн. создан ✓","{n}-Tage-Plan erstellt ✓","تم إنشاء خطة {n} يوماً ✓"],
   impPerWeek:["aktif haftaya (pazartesiden pazara) öğün öğün","for the current week (Monday–Sunday), meal by meal","на текущую неделю (пн–вс), по приёмам пищи","für die aktuelle Woche (Montag–Sonntag), Mahlzeit für Mahlzeit","للأسبوع الحالي (الاثنين–الأحد) وجبةً بوجبة"],
@@ -1290,13 +1312,13 @@ Object.assign(S, {
   kocAdd:["+ Yemek ekle","+ Add food","+ Добавить блюдо","+ Lebensmittel hinzufügen","+ إضافة طعام"],
   kocDayTotal:["Gün toplamı","Day total","Итого за день","Tagessumme","مجموع اليوم"],
   kocLink:["🔗 Paylaşım linki oluştur","🔗 Create share link","🔗 Создать ссылку","🔗 Link erstellen","🔗 إنشاء رابط المشاركة"],
-  kocLinkReady:["Link hazır. Kişiye WhatsApp, SMS ya da e-postayla gönderin. Açınca programı onaylayıp yükler.","Link ready. Send it by WhatsApp, SMS or e-mail. The person confirms and loads the plan.","Ссылка готова. Отправьте её в WhatsApp, SMS или по почте. Человек подтвердит и загрузит план.","Link fertig. Per WhatsApp, SMS oder E-Mail senden. Die Person bestätigt und lädt den Plan.","الرابط جاهز. أرسله عبر واتساب أو رسالة أو بريد. يؤكد الشخص ويحمّل الخطة."],
+  kocLinkReady:["Link hazır. Kişiye WhatsApp, SMS ya da e-postayla gönderin. Kişi linki açınca programı onaylayıp yükler.","Link ready. Send it by WhatsApp, SMS or e-mail. The person confirms and loads the plan.","Ссылка готова. Отправьте её в WhatsApp, SMS или по почте. Человек подтвердит и загрузит план.","Link fertig. Per WhatsApp, SMS oder E-Mail senden. Die Person bestätigt und lädt den Plan.","الرابط جاهز. أرسله عبر واتساب أو رسالة أو بريد. يؤكد الشخص ويحمّل الخطة."],
   kocCopyLink:["📋 Linki kopyala","📋 Copy link","📋 Копировать ссылку","📋 Link kopieren","📋 نسخ الرابط"],
   kocWhatsapp:["WhatsApp ile gönder","Send via WhatsApp","Отправить в WhatsApp","Per WhatsApp senden","إرسال عبر واتساب"],
   kocShare:["📤 Paylaş","📤 Share","📤 Поделиться","📤 Teilen","📤 مشاركة"],
   kocPrint:["🖨 Yazdır / PDF","🖨 Print / PDF","🖨 Печать / PDF","🖨 Drucken / PDF","🖨 طباعة / PDF"],
   kocNew:["＋ Yeni program","＋ New plan","＋ Новый план","＋ Neuer Plan","＋ خطة جديدة"],
-  cKocNew:["Şu anki taslak silinip boş bir program açılacak. Emin misin?","The current draft will be cleared. Continue?","Текущий черновик будет очищен. Продолжить?","Der aktuelle Entwurf wird geleert. Fortfahren?","سيتم مسح المسودة الحالية. متابعة؟"],
+  cKocNew:["Şu anki taslak silinip boş bir program açılacak. Emin misiniz?","The current draft will be cleared. Continue?","Текущий черновик будет очищен. Продолжить?","Der aktuelle Entwurf wird geleert. Fortfahren?","سيتم مسح المسودة الحالية. متابعة؟"],
   kocEmpty:["Önce en az bir öğüne yemek ekleyin.","Add food to at least one meal first.","Сначала добавьте блюдо хотя бы в один приём пищи.","Füge zuerst mindestens einer Mahlzeit etwas hinzu.","أضف طعاماً إلى وجبة واحدة على الأقل أولاً."],
   kocShareMsg:["{a} için hazırladığım beslenme programı: {u}","Meal plan I prepared for {a}: {u}","План питания для {a}: {u}","Ernährungsplan für {a}: {u}","خطة غذائية أعددتها لـ {a}: {u}"],
   kocDraft:["Taslak bu cihazda otomatik kaydedilir.","The draft is saved automatically on this device.","Черновик автоматически сохраняется на этом устройстве.","Der Entwurf wird automatisch auf diesem Gerät gespeichert.","تُحفظ المسودة تلقائياً على هذا الجهاز."],
@@ -1319,7 +1341,7 @@ Object.assign(S, {
   cProgRemove:["Gönderilen program kaldırılacak ve önceki planın geri gelecek. Emin misin?","The received plan will be removed and your previous plan restored. Continue?","Присланный план будет удалён, вернётся прежний. Продолжить?","Der erhaltene Plan wird entfernt und dein vorheriger Plan wiederhergestellt. Fortfahren?","ستتم إزالة الخطة المرسلة واستعادة خطتك السابقة. متابعة؟"],
   lProgRemove:["Gönderilen program kaldırıldı","Received plan removed","Присланный план удалён","Erhaltener Plan entfernt","تمت إزالة الخطة المرسلة"],
   impPaste:["🔗 Program linki yapıştır","🔗 Paste plan link","🔗 Вставить ссылку на план","🔗 Plan-Link einfügen","🔗 لصق رابط الخطة"],
-  impPasteHint:["Size gönderilen program linki açılınca program yüklenmediyse: linki kopyalayın, aşağıdaki kutuya yapıştırın ve “Yükle”ye basın. (iPhone’da uygulamayı ana ekrandaki simgeden kullanıyorsanız, WhatsApp’taki link Safari’de açılır ve program uygulamaya gelmez; bu durumda linki buraya yapıştırın.)","If a plan link sent to you didn’t load the plan: copy the link, paste it into the box below and tap “Load”. (On iPhone, if you use the app from the home-screen icon, links from WhatsApp open in Safari and the plan doesn’t reach the app — paste the link here instead.)","Если присланная ссылка не загрузила план: скопируйте её, вставьте в поле ниже и нажмите «Загрузить». (На iPhone, если вы открываете приложение со значка на экране «Домой», ссылка из WhatsApp открывается в Safari и план не попадает в приложение — вставьте её сюда.)","Wenn ein zugesandter Plan-Link den Plan nicht geladen hat: Link kopieren, unten einfügen und „Laden“ tippen. (Auf dem iPhone öffnen sich WhatsApp-Links in Safari, nicht in der App vom Home-Bildschirm — dann den Link hier einfügen.)","إذا لم يُحمِّل رابط الخطة المرسل إليك الخطة: انسخ الرابط والصقه في المربع أدناه واضغط «تحميل». (على آيفون، إذا كنت تستخدم التطبيق من أيقونة الشاشة الرئيسية، يُفتح رابط واتساب في سفاري ولا تصل الخطة إلى التطبيق — الصق الرابط هنا.)"],
+  impPasteHint:["Size gönderilen linki açtığınızda program yüklenmediyse linki kopyalayın, aşağıdaki kutuya yapıştırın ve “Yükle”ye basın. (iPhone’da uygulamayı ana ekrandaki simgeden kullanıyorsanız, WhatsApp’taki link Safari’de açılır ve program uygulamaya gelmez; bu durumda linki buraya yapıştırın.)","If a plan link sent to you didn’t load the plan: copy the link, paste it into the box below and tap “Load”. (On iPhone, if you use the app from the home-screen icon, links from WhatsApp open in Safari and the plan doesn’t reach the app — paste the link here instead.)","Если присланная ссылка не загрузила план: скопируйте её, вставьте в поле ниже и нажмите «Загрузить». (На iPhone, если вы открываете приложение со значка на экране «Домой», ссылка из WhatsApp открывается в Safari и план не попадает в приложение — вставьте её сюда.)","Wenn ein zugesandter Plan-Link den Plan nicht geladen hat: Link kopieren, unten einfügen und „Laden“ tippen. (Auf dem iPhone öffnen sich WhatsApp-Links in Safari, nicht in der App vom Home-Bildschirm — dann den Link hier einfügen.)","إذا لم يُحمِّل رابط الخطة المرسل إليك الخطة: انسخ الرابط والصقه في المربع أدناه واضغط «تحميل». (على آيفون، إذا كنت تستخدم التطبيق من أيقونة الشاشة الرئيسية، يُفتح رابط واتساب في سفاري ولا تصل الخطة إلى التطبيق — الصق الرابط هنا.)"],
   impPasteBtn:["Yükle","Load","Загрузить","Laden","تحميل"],
   // Uygulama olarak yükle
   instBtn:["📲 Uygulama olarak yükle","📲 Install as app","📲 Установить как приложение","📲 Als App installieren","📲 التثبيت كتطبيق"],
@@ -1347,7 +1369,7 @@ Object.assign(S, {
   shBtn:["📤 Paylaş","📤 Share","📤 Поделиться","📤 Teilen","📤 مشاركة"],
   shTitle:["Yediklerimi gönder","Send what I ate","Отправить, что я съел(а)","Gegessenes senden","أرسل ما أكلته"],
   shMeals:["{n} öğün","{n} meals","приёмов: {n}","{n} Mahlzeiten","{n} وجبات"],
-  shInfo:["Linke dokunan kişi o gün öğün öğün, saatiyle neler yediğini belge olarak görür ve PDF olarak kaydedebilir. Bilgiler linkin içindedir, sunucuya gönderilmez.","Whoever taps the link sees what you ate that day, meal by meal with times, as a document and can save it as PDF. The data is inside the link; nothing is sent to a server.","Получатель увидит по ссылке, что вы ели в этот день — по приёмам пищи и времени — в виде документа и сможет сохранить его в PDF. Данные внутри ссылки, на сервер ничего не отправляется.","Wer auf den Link tippt, sieht als Dokument, was du an dem Tag gegessen hast – Mahlzeit für Mahlzeit mit Uhrzeit – und kann es als PDF speichern. Die Daten stecken im Link, nichts geht an einen Server.","من يفتح الرابط يرى ما أكلته في ذلك اليوم، وجبةً وجبة مع الأوقات، كمستند ويمكنه حفظه PDF. البيانات داخل الرابط ولا تُرسل إلى أي خادم."],
+  shInfo:["Linke dokunan kişi, o gün senin öğün öğün, saatiyle neler yediğini bir belgede görür ve PDF olarak kaydedebilir. Bilgiler linkin içindedir, sunucuya gönderilmez.","Whoever taps the link sees what you ate that day, meal by meal with times, as a document and can save it as PDF. The data is inside the link; nothing is sent to a server.","Получатель увидит по ссылке, что вы ели в этот день — по приёмам пищи и времени — в виде документа и сможет сохранить его в PDF. Данные внутри ссылки, на сервер ничего не отправляется.","Wer auf den Link tippt, sieht als Dokument, was du an dem Tag gegessen hast – Mahlzeit für Mahlzeit mit Uhrzeit – und kann es als PDF speichern. Die Daten stecken im Link, nichts geht an einen Server.","من يفتح الرابط يرى ما أكلته في ذلك اليوم، وجبةً وجبة مع الأوقات، كمستند ويمكنه حفظه PDF. البيانات داخل الرابط ولا تُرسل إلى أي خادم."],
   shSend:["📤 Gönder","📤 Send","📤 Отправить","📤 Senden","📤 إرسال"],
   shCopy:["📋 Linki kopyala","📋 Copy link","📋 Копировать ссылку","📋 Link kopieren","📋 نسخ الرابط"],
   shPreview:["👁 Önizle","👁 Preview","👁 Предпросмотр","👁 Vorschau","👁 معاينة"],
@@ -1367,9 +1389,9 @@ Object.assign(S, {
   tur1T:["👋 Hoş geldin!", "👋 Welcome!", "👋 Добро пожаловать!", "👋 Willkommen!", "👋 أهلاً بك!"],
   tur1:["Uygulamayı 1 dakikada tanıyalım. İstemezsen “Geç”e bas; bu tur bir daha çıkmaz (Ayarlar’dan yeniden açabilirsin).", "Let’s get to know the app in a minute. Tap “Skip” if you like; this tour won’t show again (you can reopen it in Settings).", "Познакомимся с приложением за минуту. Можно нажать «Пропустить» — тур больше не появится (его можно открыть в Настройках).", "Lerne die App in einer Minute kennen. Mit „Überspringen“ endet die Tour und erscheint nicht wieder (in den Einstellungen erneut aufrufbar).", "لنتعرّف على التطبيق في دقيقة. اضغط «تخطَّ» إن شئت؛ لن تظهر هذه الجولة مجدداً (يمكنك فتحها من الإعدادات)."],
   tur2T:["📅 Günler", "📅 Days", "📅 Дни", "📅 Tage", "📅 الأيام"],
-  tur2:["Bir güne dokun: geçmiş günlerde o günün özeti, gelecekte menüsü görünür. ‹ › ile haftalar arasında geçersin; alttaki nokta o gün kayıt olduğunu gösterir.", "Tap a day: past days show that day’s summary, future days show the menu. Use ‹ › to switch weeks; a dot means there are records that day.", "Нажмите на день: для прошлых дней — итоги, для будущих — меню. ‹ › — смена недели; точка означает, что в этот день есть записи.", "Tippe auf einen Tag: vergangene Tage zeigen die Zusammenfassung, kommende das Menü. Mit ‹ › wechselst du die Woche; ein Punkt bedeutet Einträge an dem Tag.", "اضغط على يوم: الأيام الماضية تعرض ملخصها، والقادمة تعرض قائمتها. استخدم ‹ › للتنقل بين الأسابيع؛ النقطة تعني وجود سجلات في ذلك اليوم."],
+  tur2:["Bir güne dokun: geçmiş günlerde o günün özeti, gelecek günlerde menüsü görünür. ‹ › ile haftalar arasında geçiş yaparsın; alttaki nokta, o gün için kayıt bulunduğunu gösterir.", "Tap a day: past days show that day’s summary, future days show the menu. Use ‹ › to switch weeks; a dot means there are records that day.", "Нажмите на день: для прошлых дней — итоги, для будущих — меню. ‹ › — смена недели; точка означает, что в этот день есть записи.", "Tippe auf einen Tag: vergangene Tage zeigen die Zusammenfassung, kommende das Menü. Mit ‹ › wechselst du die Woche; ein Punkt bedeutet Einträge an dem Tag.", "اضغط على يوم: الأيام الماضية تعرض ملخصها، والقادمة تعرض قائمتها. استخدم ‹ › للتنقل بين الأسابيع؛ النقطة تعني وجود سجلات في ذلك اليوم."],
   tur3T:["🔝 Üst menü", "🔝 Top menu", "🔝 Верхнее меню", "🔝 Menü oben", "🔝 القائمة العلوية"],
-  tur3:["Uyarılar (önemli sağlık notları), Destek ol, Program hazırla (diyetisyen ya da antrenör olarak başkasına program yap) ve Ayarlar.", "Warnings (important health notes), Support us, Create a plan (make a plan for someone else as a dietitian or coach) and Settings.", "Предупреждения (важные заметки о здоровье), Поддержать, Составить план (для другого человека — как диетолог или тренер) и Настройки.", "Hinweise (wichtige Gesundheitshinweise), Unterstützen, Plan erstellen (als Ernährungsberater oder Trainer für andere) und Einstellungen.", "التنبيهات (ملاحظات صحية مهمة)، ادعمنا، إعداد خطة (لشخص آخر كأخصائي تغذية أو مدرب) والإعدادات."],
+  tur3:["Burada şunlar var: Uyarılar (önemli sağlık notları), Destek ol, Program hazırla (hastan veya danışanın için beslenme programı oluştur) ve Ayarlar.", "Warnings (important health notes), Support us, Create a plan (make a plan for someone else as a dietitian or coach) and Settings.", "Предупреждения (важные заметки о здоровье), Поддержать, Составить план (для другого человека — как диетолог или тренер) и Настройки.", "Hinweise (wichtige Gesundheitshinweise), Unterstützen, Plan erstellen (als Ernährungsberater oder Trainer für andere) und Einstellungen.", "التنبيهات (ملاحظات صحية مهمة)، ادعمنا، إعداد خطة (لشخص آخر كأخصائي تغذية أو مدرب) والإعدادات."],
   tur4T:["📊 Bugün yenen", "📊 Eaten today", "📊 Съедено сегодня", "📊 Heute gegessen", "📊 ما أُكل اليوم"],
   tur4:["“Yedim” dediğin öğünlerin toplamı: kalori, protein, karbonhidrat, şeker, yağ ve lif. Çubuklar hedefine ne kadar kaldığını gösterir.", "The total of the meals you marked “Ate”: calories, protein, carbs, sugar, fat and fiber. The bars show how far you are from your targets.", "Сумма отмеченных приёмов пищи: калории, белки, углеводы, сахар, жиры и клетчатка. Полосы показывают, сколько осталось до цели.", "Summe der als „Gegessen“ markierten Mahlzeiten: Kalorien, Eiweiß, Kohlenhydrate, Zucker, Fett und Ballaststoffe. Die Balken zeigen den Abstand zum Ziel.", "مجموع الوجبات التي علّمتها «أكلت»: السعرات والبروتين والكربوهيدرات والسكر والدهون والألياف. تُظهر الأشرطة ما تبقّى لهدفك."],
   tur5T:["📤 Paylaş", "📤 Share", "📤 Поделиться", "📤 Teilen", "📤 مشاركة"],
@@ -1379,9 +1401,9 @@ Object.assign(S, {
   tur7T:["🍽️ Öğün", "🍽️ Meal", "🍽️ Приём пищи", "🍽️ Mahlzeit", "🍽️ الوجبة"],
   tur7:["Saate dokunup öğün saatini değiştir. Yedikten sonra “Yedim”e bas. Sağdaki ok öğünü gizler ya da gösterir.", "Tap the time to change the meal time. After eating, tap “Ate”. The arrow on the right hides or shows the meal.", "Нажмите на время, чтобы изменить его. После еды нажмите «Съел(а)». Стрелка справа скрывает или показывает приём.", "Tippe auf die Uhrzeit, um sie zu ändern. Nach dem Essen auf „Gegessen“ tippen. Der Pfeil rechts blendet die Mahlzeit aus oder ein.", "اضغط على الوقت لتغييره. بعد الأكل اضغط «أكلت». السهم على اليمين يخفي الوجبة أو يُظهرها."],
   tur8T:["➖➕ Miktar", "➖➕ Amount", "➖➕ Количество", "➖➕ Menge", "➖➕ الكمية"],
-  tur8:["− / + ile miktarı azaltıp artır ya da sayıyı yaz. Değiştirdiğin miktar sonraki günlerde de hatırlanır.", "Use − / + to change the amount or type a number. The amount you choose is remembered on the following days.", "Меняйте количество кнопками − / + или введите число. Выбранное количество запоминается на следующие дни.", "Mit − / + die Menge ändern oder eine Zahl eingeben. Die Menge wird für die folgenden Tage gemerkt.", "غيّر الكمية بـ − / + أو اكتب رقماً. تُحفظ الكمية التي تختارها للأيام التالية."],
+  tur8:["− / + ile miktarı azalt ya da artır; istersen sayıyı kendin yaz. Değiştirdiğin miktar sonraki günlerde de hatırlanır.", "Use − / + to change the amount or type a number. The amount you choose is remembered on the following days.", "Меняйте количество кнопками − / + или введите число. Выбранное количество запоминается на следующие дни.", "Mit − / + die Menge ändern oder eine Zahl eingeben. Die Menge wird für die folgenden Tage gemerkt.", "غيّر الكمية بـ − / + أو اكتب رقماً. تُحفظ الكمية التي تختارها للأيام التالية."],
   tur9T:["⇄ Kıyasla", "⇄ Compare", "⇄ Сравнить", "⇄ Vergleichen", "⇄ قارن"],
-  tur9:["Bu yemeği başka bir yemekle karşılaştır: protein, kalori, şeker… hangisi daha iyi, yeşil ve kırmızıyla görürsün; istersen tek dokunuşla değiştirirsin.", "Compare this food with another: protein, calories, sugar… green and red show which is better; swap it with one tap if you like.", "Сравните блюдо с другим: белки, калории, сахар… зелёный и красный покажут, что лучше; замена — одним касанием.", "Vergleiche dieses Lebensmittel mit einem anderen: Eiweiß, Kalorien, Zucker … Grün und Rot zeigen, was besser ist; Tausch mit einem Tipp.", "قارن هذا الطعام بآخر: البروتين والسعرات والسكر… الأخضر والأحمر يبيّنان الأفضل؛ واستبدله بلمسة إن شئت."],
+  tur9:["Bu yemeği başka bir yemekle karşılaştır: protein, kalori, şeker… bakımından hangisinin daha iyi olduğunu yeşil ve kırmızı renklerle görürsün. İstersen tek dokunuşla değiştirebilirsin.", "Compare this food with another: protein, calories, sugar… green and red show which is better; swap it with one tap if you like.", "Сравните блюдо с другим: белки, калории, сахар… зелёный и красный покажут, что лучше; замена — одним касанием.", "Vergleiche dieses Lebensmittel mit einem anderen: Eiweiß, Kalorien, Zucker … Grün und Rot zeigen, was besser ist; Tausch mit einem Tipp.", "قارن هذا الطعام بآخر: البروتين والسعرات والسكر… الأخضر والأحمر يبيّنان الأفضل؛ واستبدله بلمسة إن شئت."],
   tur10T:["↻ Değiştir", "↻ Swap", "↻ Заменить", "↻ Tauschen", "↻ استبدل"],
   tur10:["Yemeği benzer yemeklerle değiştir (ör. bir ekmeği başka bir ekmekle).", "Swap the food for a similar one (e.g. one bread for another).", "Замените блюдо похожим (например, один хлеб другим).", "Tausche das Lebensmittel gegen ein ähnliches (z. B. ein Brot gegen ein anderes).", "استبدل الطعام بطعام مشابه (مثلاً خبز بآخر)."],
   tur11T:["✕ Kaldır", "✕ Remove", "✕ Удалить", "✕ Entfernen", "✕ إزالة"],
@@ -1437,7 +1459,7 @@ Object.assign(S, {
   cHedefYukari:["Hedef kilon ({h} kg) şu anki kilondan ({k} kg) fazla ama hedefin “{g}”. Hedefini “{y}” yapayım mı? Günlük kalori ve menüler buna göre güncellenir.", "Your target weight ({h} kg) is above your current weight ({k} kg), but your goal is “{g}”. Change your goal to “{y}”? Daily calories and menus will update.", "Ваш целевой вес ({h} кг) больше текущего ({k} кг), но цель — «{g}». Сменить цель на «{y}»? Калории и меню обновятся.", "Dein Zielgewicht ({h} kg) liegt über deinem aktuellen Gewicht ({k} kg), aber dein Ziel ist „{g}“. Ziel auf „{y}“ ändern? Kalorien und Menüs werden angepasst.", "وزنك المستهدف ({h} كغ) أعلى من وزنك الحالي ({k} كغ) لكن هدفك «{g}». هل أغيّر هدفك إلى «{y}»؟ ستُحدَّث السعرات والقوائم."],
   cHedefAsagi:["Hedef kilon ({h} kg) şu anki kilondan ({k} kg) az ama hedefin “{g}”. Hedefini “{y}” yapayım mı? Günlük kalori ve menüler buna göre güncellenir.", "Your target weight ({h} kg) is below your current weight ({k} kg), but your goal is “{g}”. Change your goal to “{y}”? Daily calories and menus will update.", "Ваш целевой вес ({h} кг) меньше текущего ({k} кг), но цель — «{g}». Сменить цель на «{y}»? Калории и меню обновятся.", "Dein Zielgewicht ({h} kg) liegt unter deinem aktuellen Gewicht ({k} kg), aber dein Ziel ist „{g}“. Ziel auf „{y}“ ändern? Kalorien und Menüs werden angepasst.", "وزنك المستهدف ({h} كغ) أقل من وزنك الحالي ({k} كغ) لكن هدفك «{g}». هل أغيّر هدفك إلى «{y}»؟ ستُحدَّث السعرات والقوائم."],
   tPlanYeni:["✅ Günlük hedefin {b} kcal; bugünden sonraki menüler yeni hedeflere göre yeniden hazırlandı (bugün yediklerin korundu).", "✅ Your daily target is {b} kcal; menus from today on were rebuilt for the new targets (what you ate today is kept).", "✅ Ваша дневная цель — {b} ккал; меню с сегодняшнего дня пересобраны под новые цели (съеденное сегодня сохранено).", "✅ Dein Tagesziel ist {b} kcal; die Menüs ab heute wurden für die neuen Ziele neu erstellt (heute Gegessenes bleibt).", "✅ هدفك اليومي {b} سعرة؛ أُعيد إعداد القوائم من اليوم وفق الأهداف الجديدة (ما أكلته اليوم محفوظ)."],
-  tKcalAyni:["Kaydedildi. Günlük hedefin aynı kaldı ({k} kcal): “{g}” hedefinde kalori, hedef kiloya göre değil hedefin türüne göre hesaplanır; hedef kilo yalnız süreyi etkiler.", "Saved. Your daily target is unchanged ({k} kcal): for “{g}”, calories depend on the goal type, not the target weight; the target weight only affects the timeline.", "Сохранено. Дневная цель не изменилась ({k} ккал): для цели «{g}» калории зависят от типа цели, а не от целевого веса; целевой вес влияет только на срок.", "Gespeichert. Dein Tagesziel bleibt gleich ({k} kcal): Bei „{g}“ hängen die Kalorien vom Zieltyp ab, nicht vom Zielgewicht; das Zielgewicht beeinflusst nur die Dauer.", "تم الحفظ. هدفك اليومي لم يتغير ({k} سعرة): في هدف «{g}» تعتمد السعرات على نوع الهدف لا على الوزن المستهدف؛ الوزن المستهدف يؤثر على المدة فقط."],
+  tKcalAyni:["Kaydedildi. Günlük hedefin aynı kaldı ({k} kcal). “{g}” hedefinde kalori, hedef kiloya göre değil, hedefin türüne göre hesaplanır; hedef kilo yalnız süreyi etkiler.", "Saved. Your daily target is unchanged ({k} kcal): for “{g}”, calories depend on the goal type, not the target weight; the target weight only affects the timeline.", "Сохранено. Дневная цель не изменилась ({k} ккал): для цели «{g}» калории зависят от типа цели, а не от целевого веса; целевой вес влияет только на срок.", "Gespeichert. Dein Tagesziel bleibt gleich ({k} kcal): Bei „{g}“ hängen die Kalorien vom Zieltyp ab, nicht vom Zielgewicht; das Zielgewicht beeinflusst nur die Dauer.", "تم الحفظ. هدفك اليومي لم يتغير ({k} سعرة): في هدف «{g}» تعتمد السعرات على نوع الهدف لا على الوزن المستهدف؛ الوزن المستهدف يؤثر على المدة فقط."],
   tProgHedef:["Kaydedildi. Diyetisyen programını kullandığın için kalori hedefin ve menülerin değişmedi.", "Saved. Because you follow a dietitian’s program, your calorie target and menus stay the same.", "Сохранено. Так как вы следуете программе диетолога, цель по калориям и меню не изменились.", "Gespeichert. Da du einem Programm deiner Ernährungsberatung folgst, bleiben Kalorienziel und Menüs gleich.", "تم الحفظ. لأنك تتبع برنامج أخصائي التغذية، لم يتغير هدف السعرات والقوائم."],
   lHedef:["Hedef değişti: {a} → {b}", "Goal changed: {a} → {b}", "Цель изменена: {a} → {b}", "Ziel geändert: {a} → {b}", "تغيّر الهدف: {a} ← {b}"],
   rpBad:["Paylaşım linki açılamadı (eksik ya da bozuk kopyalanmış olabilir).","The shared link couldn’t be opened (it may be incomplete or broken).","Не удалось открыть ссылку (возможно, она скопирована не полностью).","Der Link konnte nicht geöffnet werden (evtl. unvollständig kopiert).","تعذّر فتح الرابط (ربما نُسخ ناقصاً أو تالفاً)."]
@@ -1459,7 +1481,7 @@ Object.assign(S, {
   sporEkNot:["Haftada {g} gün antrenman için günlük kalori yaklaşık %{n} artırıldı.","Daily calories raised by about {n}% for {g} training days a week.","Калории увеличены примерно на {n}% для {g} тренировок в неделю.","Tageskalorien für {g} Trainingstage pro Woche um ca. {n}% erhöht.","زيدت السعرات اليومية بنحو {n}% لـ {g} أيام تمرين في الأسبوع."],
   // Sihirbaz: takviye
   wTakT:["Takviye kullanıyor musun?","Do you use supplements?","Принимаете ли вы добавки?","Nimmst du Supplements?","هل تستخدم مكملات غذائية؟"],
-  wTakS:["Seçtiklerin plana otomatik eklenir (antrenman günleri ve öğünlere göre). Ayarlar'dan değiştirebilirsin.","Your picks are added to the plan automatically (by training days and meals). You can change them in Settings.","Выбранное добавляется в план автоматически (по дням тренировок и приёмам пищи). Изменить можно в настройках.","Deine Auswahl wird automatisch in den Plan eingefügt (nach Trainingstagen und Mahlzeiten). Änderbar in den Einstellungen.","تُضاف اختياراتك إلى الخطة تلقائياً (حسب أيام التمرين والوجبات). يمكنك تغييرها من الإعدادات."],
+  wTakS:["Seçtiklerin antrenman günlerine ve öğünlere göre plana otomatik eklenir. Ayarlar'dan değiştirebilirsin.","Your picks are added to the plan automatically (by training days and meals). You can change them in Settings.","Выбранное добавляется в план автоматически (по дням тренировок и приёмам пищи). Изменить можно в настройках.","Deine Auswahl wird automatisch in den Plan eingefügt (nach Trainingstagen und Mahlzeiten). Änderbar in den Einstellungen.","تُضاف اختياراتك إلى الخطة تلقائياً (حسب أيام التمرين والوجبات). يمكنك تغييرها من الإعدادات."],
   takYok:["Hayır, kullanmıyorum","No, I don’t","Нет, не принимаю","Nein","لا، لا أستخدم"],
   takVar:["Evet, kullanıyorum","Yes, I do","Да, принимаю","Ja","نعم، أستخدم"],
   tk_whey:["Whey / izolat protein","Whey / isolate protein","Сывороточный протеин / изолят","Whey / Isolat-Protein","واي / بروتين معزول"],
@@ -1483,7 +1505,7 @@ Object.assign(S, {
   sporYok:["Düzenli spor yok","No regular sport","Без регулярного спорта","Kein regelmäßiger Sport","لا رياضة منتظمة"],
   sporHafta:["Haftada {n} gün · {t}","{n} days a week · {t}","{n} дн./нед. · {t}","{n} Tage/Woche · {t}","{n} أيام في الأسبوع · {t}"],
   antGunT:["Antrenman günleri","Training days","Дни тренировок","Trainingstage","أيام التمرين"],
-  antGunHint:["Takviyeler ve antrenman önerileri bu günlere göre planlanır; değişince menü yeniden hazırlanır.","Supplements and training tips follow these days; changing them rebuilds the menu.","Добавки и советы по тренировкам привязаны к этим дням; при изменении меню пересобирается.","Supplements und Trainingstipps richten sich nach diesen Tagen; bei Änderung wird das Menü neu erstellt.","تُخطط المكملات ونصائح التمرين وفق هذه الأيام؛ عند تغييرها تُعاد صياغة القائمة."],
+  antGunHint:["Takviyeler ve antrenman önerileri bu günlere göre planlanır; günleri değiştirirsen menü yeniden hazırlanır.","Supplements and training tips follow these days; changing them rebuilds the menu.","Добавки и советы по тренировкам привязаны к этим дням; при изменении меню пересобирается.","Supplements und Trainingstipps richten sich nach diesen Tagen; bei Änderung wird das Menü neu erstellt.","تُخطط المكملات ونصائح التمرين وفق هذه الأيام؛ عند تغييرها تُعاد صياغة القائمة."],
   editSpor:["🏋️ Spor & takviyeyi düzenle","🏋️ Edit sport & supplements","🏋️ Изменить спорт и добавки","🏋️ Sport & Supplements bearbeiten","🏋️ تعديل الرياضة والمكملات"],
   lSpor:["Spor/takviye güncellendi: {l}","Sport/supplements updated: {l}","Спорт/добавки обновлены: {l}","Sport/Supplements aktualisiert: {l}","تم تحديث الرياضة/المكملات: {l}"],
   lAntGun:["Antrenman günleri: {l}","Training days: {l}","Дни тренировок: {l}","Trainingstage: {l}","أيام التمرين: {l}"],
@@ -1517,7 +1539,7 @@ Object.assign(S, {
   reglIsaret:["🩸 Regl ({n}. gün)","🩸 Period (day {n})","🩸 Месячные ({n}-й день)","🩸 Periode (Tag {n})","🩸 الدورة (اليوم {n})"],
   reglBasIsaret:["🩸 Regl başladı","🩸 Period started","🩸 Начало месячных","🩸 Periode begonnen","🩸 بدأت الدورة"],
   reglBitIsaret:["Regl bitti","Period ended","Конец месячных","Periode beendet","انتهت الدورة"],
-  reglTip:["Demir + C vitamini eşleştir (kırmızı et, baklagil, ıspanak + portakal/kivi), magnezyum al (kabak çekirdeği, bitter çikolata), su +500 ml, tuz ve kafeini azalt.","Pair iron with vitamin C (red meat, legumes, spinach + orange/kiwi), add magnesium (pumpkin seeds, dark chocolate), water +500 ml, cut salt and caffeine.","Сочетайте железо с витамином C (красное мясо, бобовые, шпинат + апельсин/киви), магний (тыквенные семечки, горький шоколад), вода +500 мл, меньше соли и кофеина.","Eisen mit Vitamin C kombinieren (rotes Fleisch, Hülsenfrüchte, Spinat + Orange/Kiwi), Magnesium (Kürbiskerne, Zartbitter), Wasser +500 ml, weniger Salz und Koffein.","اجمع الحديد مع فيتامين C (لحم أحمر، بقوليات، سبانخ + برتقال/كيوي)، مغنيسيوم (بذور اليقطين، شوكولاتة داكنة)، ماء +500 مل، وقلّل الملح والكافيين."],
+  reglTip:["Demirli besinleri C vitaminiyle eşleştir (kırmızı et, baklagil, ıspanak + portakal/kivi), magnezyum al (kabak çekirdeği, bitter çikolata), 500 ml fazladan su iç, tuzu ve kafeini azalt.","Pair iron with vitamin C (red meat, legumes, spinach + orange/kiwi), add magnesium (pumpkin seeds, dark chocolate), water +500 ml, cut salt and caffeine.","Сочетайте железо с витамином C (красное мясо, бобовые, шпинат + апельсин/киви), магний (тыквенные семечки, горький шоколад), вода +500 мл, меньше соли и кофеина.","Eisen mit Vitamin C kombinieren (rotes Fleisch, Hülsenfrüchte, Spinat + Orange/Kiwi), Magnesium (Kürbiskerne, Zartbitter), Wasser +500 ml, weniger Salz und Koffein.","اجمع الحديد مع فيتامين C (لحم أحمر، بقوليات، سبانخ + برتقال/كيوي)، مغنيسيوم (بذور اليقطين، شوكولاتة داكنة)، ماء +500 مل، وقلّل الملح والكافيين."],
   reglNot:["Genel beslenme ipucudur, tıbbi öneri değildir; yoğun şikâyette hekime ya da diyetisyene danış.","General nutrition tip, not medical advice; see a doctor or dietitian for severe symptoms.","Общий совет по питанию, не медицинская рекомендация; при сильных симптомах обратитесь к врачу.","Allgemeiner Ernährungstipp, keine medizinische Beratung; bei starken Beschwerden Arzt/Ernährungsberatung aufsuchen.","نصيحة غذائية عامة وليست مشورة طبية؛ عند الأعراض الشديدة استشر الطبيب أو أخصائي التغذية."],
   reglSuNot:["Regl: su hedefi +500 ml","Period: water goal +500 ml","Месячные: цель по воде +500 мл","Periode: Wasserziel +500 ml","الدورة: هدف الماء +500 مل"],
   lReglBas:["Regl başladı ({d})","Period started ({d})","Начались месячные ({d})","Periode begonnen ({d})","بدأت الدورة ({d})"],
@@ -1536,10 +1558,10 @@ Object.assign(S, {
   // Öğün hatırlatıcı bildirimleri
   sBildirim:["Bildirimler","Notifications","Уведомления","Benachrichtigungen","الإشعارات"],
   notT:["Öğün hatırlatıcısı","Meal reminders","Напоминания о еде","Essens-Erinnerungen","تذكير الوجبات"],
-  notHint:["Öğün saatinde bildirim gelir, ör. “{ornek}”. 4–5 saat kayıt girmezsen su ve ara öğünler için tatlı bir hatırlatma da gelir. Web sürümünde yalnız uygulama açıkken çalışır; telefon uygulamasında her zaman.","You get a notification at meal time, e.g. “{ornek}”. If you log nothing for 4–5 hours, you also get a friendly nudge about water and snacks. On the web it works only while the app is open; always in the phone app.","Уведомление приходит во время приёма пищи, напр. «{ornek}». Если 4–5 часов ничего не отмечено, придёт дружеское напоминание о воде и перекусах. В веб-версии — только при открытом приложении; в мобильном — всегда.","Zur Essenszeit kommt eine Benachrichtigung, z. B. „{ornek}“. Wenn du 4–5 Stunden nichts einträgst, kommt außerdem eine freundliche Erinnerung an Wasser und Snacks. Im Web nur bei geöffneter App; in der Handy-App immer.","يصلك إشعار في وقت الوجبة، مثل «{ornek}». وإذا لم تسجّل شيئاً لمدة 4–5 ساعات يصلك تذكير لطيف بالماء والوجبات الخفيفة. في نسخة الويب يعمل فقط أثناء فتح التطبيق؛ وفي تطبيق الهاتف دائماً."],
-  dSuYok:["💧 Bugün henüz su içmedin gibi görünüyor. Bir bardak suyla başlayalım mı? 😊|🥤 Su molası zamanı! Vücudun sana teşekkür edecek 💙|💧 Bir bardak su, enerjin için harika bir başlangıç ✨","💧 Looks like you haven’t had any water yet today. Shall we start with a glass? 😊|🥤 Water break! Your body will thank you 💙|💧 A glass of water is a great boost for your energy ✨","💧 Похоже, сегодня ты ещё не пил(а) воду. Начнём со стакана? 😊|🥤 Время попить воды! Тело скажет спасибо 💙|💧 Стакан воды — отличный заряд энергии ✨","💧 Sieht aus, als hättest du heute noch nichts getrunken. Fangen wir mit einem Glas Wasser an? 😊|🥤 Zeit für eine Wasserpause! Dein Körper dankt es dir 💙|💧 Ein Glas Wasser ist ein toller Energieschub ✨","💧 يبدو أنك لم تشرب الماء اليوم بعد. هل نبدأ بكوب؟ 😊|🥤 حان وقت استراحة الماء! سيشكرك جسمك 💙|💧 كوب ماء بداية رائعة لطاقتك ✨"],
+  notHint:["Öğün saatinde bildirim gelir, ör. “{ornek}”. 4–5 saat kayıt girmezsen su ve ara öğünler için tatlı bir hatırlatma da gelir. Hatırlatıcı web sürümünde yalnız uygulama açıkken, telefon uygulamasında ise her zaman çalışır.","You get a notification at meal time, e.g. “{ornek}”. If you log nothing for 4–5 hours, you also get a friendly nudge about water and snacks. On the web it works only while the app is open; always in the phone app.","Уведомление приходит во время приёма пищи, напр. «{ornek}». Если 4–5 часов ничего не отмечено, придёт дружеское напоминание о воде и перекусах. В веб-версии — только при открытом приложении; в мобильном — всегда.","Zur Essenszeit kommt eine Benachrichtigung, z. B. „{ornek}“. Wenn du 4–5 Stunden nichts einträgst, kommt außerdem eine freundliche Erinnerung an Wasser und Snacks. Im Web nur bei geöffneter App; in der Handy-App immer.","يصلك إشعار في وقت الوجبة، مثل «{ornek}». وإذا لم تسجّل شيئاً لمدة 4–5 ساعات يصلك تذكير لطيف بالماء والوجبات الخفيفة. في نسخة الويب يعمل فقط أثناء فتح التطبيق؛ وفي تطبيق الهاتف دائماً."],
+  dSuYok:["💧 Bugün henüz su içmemişsin gibi görünüyor. Bir bardak suyla başlayalım mı? 😊|🥤 Su molası zamanı! Vücudun sana teşekkür edecek 💙|💧 Bir bardak su, enerjin için harika bir başlangıç ✨","💧 Looks like you haven’t had any water yet today. Shall we start with a glass? 😊|🥤 Water break! Your body will thank you 💙|💧 A glass of water is a great boost for your energy ✨","💧 Похоже, сегодня ты ещё не пил(а) воду. Начнём со стакана? 😊|🥤 Время попить воды! Тело скажет спасибо 💙|💧 Стакан воды — отличный заряд энергии ✨","💧 Sieht aus, als hättest du heute noch nichts getrunken. Fangen wir mit einem Glas Wasser an? 😊|🥤 Zeit für eine Wasserpause! Dein Körper dankt es dir 💙|💧 Ein Glas Wasser ist ein toller Energieschub ✨","💧 يبدو أنك لم تشرب الماء اليوم بعد. هل نبدأ بكوب؟ 😊|🥤 حان وقت استراحة الماء! سيشكرك جسمك 💙|💧 كوب ماء بداية رائعة لطاقتك ✨"],
   dSuAz:["💦 Bugün {n}/{h} bardak su içtin; birkaç yudum daha iyi gelir 😊|🥤 Su hedefinin yarısına gelmedin ({n}/{h}). Bir bardak daha? 💙","💦 You’ve had {n}/{h} glasses of water today; a few more sips will help 😊|🥤 You’re not halfway to your water goal yet ({n}/{h}). One more glass? 💙","💦 Сегодня выпито {n}/{h} стаканов воды; ещё пара глотков не помешает 😊|🥤 До половины нормы воды ещё далеко ({n}/{h}). Ещё стакан? 💙","💦 Heute {n}/{h} Gläser Wasser; ein paar Schlucke mehr tun gut 😊|🥤 Noch nicht die Hälfte deines Wasserziels ({n}/{h}). Noch ein Glas? 💙","💦 شربت اليوم {n}/{h} أكواب ماء؛ بضع رشفات أخرى ستفيدك 😊|🥤 لم تصل إلى نصف هدف الماء بعد ({n}/{h}). كوب آخر؟ 💙"],
-  dAra:["🍎 {ogun} vaktini aksatma! Planında: {liste} 😋|🥜 Ara öğün vakti; {ogun} için {liste} seni bekliyor 💪|🍏 Küçük bir mola: {ogun} vakti geçti, {liste} ile enerjini tazele ✨","🍎 Don’t skip your {ogun}! On your plan: {liste} 😋|🥜 Snack time; {liste} is waiting for your {ogun} 💪|🍏 Quick break: {ogun} time has passed, recharge with {liste} ✨","🍎 Не пропускай «{ogun}»! В плане: {liste} 😋|🥜 Время перекуса; {liste} ждёт тебя («{ogun}») 💪|🍏 Небольшая пауза: время «{ogun}» прошло, подкрепись — {liste} ✨","🍎 Lass „{ogun}“ nicht ausfallen! Auf dem Plan: {liste} 😋|🥜 Snackzeit; {liste} wartet auf dich ({ogun}) 💪|🍏 Kleine Pause: {ogun} ist vorbei, tank auf mit {liste} ✨","🍎 لا تفوّت {ogun}! في خطتك: {liste} 😋|🥜 وقت الوجبة الخفيفة؛ {liste} بانتظارك ({ogun}) 💪|🍏 استراحة قصيرة: فات وقت {ogun}، جدّد طاقتك مع {liste} ✨"],
+  dAra:["🍎 {ogun} vaktini aksatma! Planında: {liste} 😋|🥜 Ara öğün vakti geldi! {liste} seni bekliyor 💪|🍏 Küçük bir mola: {ogun} vakti geçti, {liste} ile enerjini tazele ✨","🍎 Don’t skip your {ogun}! On your plan: {liste} 😋|🥜 Snack time! {liste} is waiting for you 💪|🍏 Quick break: {ogun} time has passed, recharge with {liste} ✨","🍎 Не пропускай «{ogun}»! В плане: {liste} 😋|🥜 Время перекуса! {liste} ждёт тебя 💪|🍏 Небольшая пауза: время «{ogun}» прошло, подкрепись — {liste} ✨","🍎 Lass „{ogun}“ nicht ausfallen! Auf dem Plan: {liste} 😋|🥜 Snackzeit! {liste} wartet auf dich 💪|🍏 Kleine Pause: {ogun} ist vorbei, tank auf mit {liste} ✨","🍎 لا تفوّت {ogun}! في خطتك: {liste} 😋|🥜 حان وقت الوجبة الخفيفة! {liste} بانتظارك 💪|🍏 استراحة قصيرة: فات وقت {ogun}، جدّد طاقتك مع {liste} ✨"],
   dAna:["🍽 {ogun} henüz işaretlenmedi. Yedin mi? Kaydetmeyi unutma 😊|🥗 {ogun} nasıl geçti? İşaretlersen günün dengesini görürsün 💚","🍽 {ogun} isn’t ticked yet. Did you eat? Don’t forget to log it 😊|🥗 How was {ogun}? Tick it to see your day’s balance 💚","🍽 «{ogun}» ещё не отмечен. Ты поел(а)? Не забудь отметить 😊|🥗 Как прошёл «{ogun}»? Отметь, чтобы видеть баланс дня 💚","🍽 „{ogun}“ ist noch nicht abgehakt. Schon gegessen? Vergiss das Eintragen nicht 😊|🥗 Wie war „{ogun}“? Abhaken zeigt dir die Tagesbilanz 💚","🍽 لم تؤشّر على {ogun} بعد. هل أكلت؟ لا تنسَ التسجيل 😊|🥗 كيف كان {ogun}؟ سجّله لترى توازن يومك 💚"],
   dGenel:["🌿 Bir süredir kayıt yok. Öğünlerini ve suyunu işaretlemeyi unutma 💚|✨ Hedefine bir adım daha! Bugünkü öğünlerini işaretlemeye ne dersin? 😊","🌿 Nothing logged for a while. Don’t forget your meals and water 💚|✨ One more step to your goal! How about ticking today’s meals? 😊","🌿 Давно нет записей. Не забудь отметить еду и воду 💚|✨ Ещё шаг к цели! Отметим сегодняшние приёмы пищи? 😊","🌿 Eine Weile nichts eingetragen. Denk an Mahlzeiten und Wasser 💚|✨ Ein Schritt näher am Ziel! Hakst du die heutigen Mahlzeiten ab? 😊","🌿 لا تسجيلات منذ فترة. لا تنسَ وجباتك والماء 💚|✨ خطوة أخرى نحو هدفك! ما رأيك بتسجيل وجبات اليوم؟ 😊"],
   notBody:["{ik} {ogun} vakti! 😋 Planında: {liste}","{ik} Time for {ogun}! 😋 On your plan: {liste}","{ik} Время: {ogun}! 😋 В плане: {liste}","{ik} Zeit für {ogun}! 😋 Auf deinem Plan: {liste}","{ik} حان وقت {ogun}! 😋 في خطتك: {liste}"],
@@ -1552,7 +1574,7 @@ Object.assign(S, {
 Object.assign(S, {
   // Ayarlar › Hesap
   hsT:["Hesap","Account","Аккаунт","Konto","الحساب"],
-  hsIntro:["Hesap açarsan verilerin yedeklenir ve telefon ile tablet arasında eşitlenir. Hesapsız kullanım da mümkündür; kişisel ve sağlık verilerin cihazında kalır.","With an account your data is backed up and synced between phone and tablet. You can also use the app without one; your personal and health data stay on your device.","С аккаунтом данные сохраняются и синхронизируются между телефоном и планшетом. Можно и без аккаунта — личные и медицинские данные остаются на устройстве.","Mit einem Konto werden deine Daten gesichert und zwischen Handy und Tablet abgeglichen. Auch ohne Konto nutzbar; persönliche und Gesundheitsdaten bleiben auf dem Gerät.","مع حساب تُحفظ بياناتك وتتزامن بين الهاتف واللوحي. يمكن الاستخدام بدون حساب أيضاً؛ تبقى بياناتك الشخصية والصحية على جهازك."],
+  hsIntro:["Hesap açarsan verilerin yedeklenir ve telefon ile tablet arasında eşitlenir. Hesapsız da kullanabilirsin; o zaman kişisel ve sağlık verilerin cihazında kalır.","With an account your data is backed up and synced between phone and tablet. You can also use the app without one; your personal and health data stay on your device.","С аккаунтом данные сохраняются и синхронизируются между телефоном и планшетом. Можно и без аккаунта — личные и медицинские данные остаются на устройстве.","Mit einem Konto werden deine Daten gesichert und zwischen Handy und Tablet abgeglichen. Auch ohne Konto nutzbar; persönliche und Gesundheitsdaten bleiben auf dem Gerät.","مع حساب تُحفظ بياناتك وتتزامن بين الهاتف واللوحي. يمكن الاستخدام بدون حساب أيضاً؛ تبقى بياناتك الشخصية والصحية على جهازك."],
   hsGiris:["Giriş yap","Log in","Войти","Anmelden","تسجيل الدخول"],
   hsKaydol:["Kaydol","Sign up","Регистрация","Registrieren","إنشاء حساب"],
   hsCikis:["Çıkış yap","Log out","Выйти","Abmelden","تسجيل الخروج"],
@@ -1621,7 +1643,7 @@ Object.assign(S, {
   cRizaBilgi:["Rızanı istediğin zaman Ayarlar › Hesap’tan geri çekebilirsin; sunucudaki sağlık verin silinir, cihazındaki kalır.","You can withdraw consent any time in Settings › Account; health data on the server is deleted, data on your device is kept.","Согласие можно отозвать в Настройки › Аккаунт; данные о здоровье на сервере удаляются, на устройстве остаются.","Du kannst die Einwilligung jederzeit unter Einstellungen › Konto widerrufen; Gesundheitsdaten auf dem Server werden gelöscht, auf dem Gerät bleiben sie.","يمكنك سحب موافقتك في أي وقت من الإعدادات › الحساب؛ تُحذف بيانات الصحة من الخادم وتبقى على جهازك."],
   cRizaCek:["Sağlık verisi rızasını geri çek","Withdraw health-data consent","Отозвать согласие на данные о здоровье","Einwilligung zu Gesundheitsdaten widerrufen","سحب الموافقة على بيانات الصحة"],
   cRizaVer:["Sağlık verisi rızası ver (eşitlemeyi aç)","Give health-data consent (enable sync)","Дать согласие на данные о здоровье (включить синхронизацию)","Einwilligung zu Gesundheitsdaten erteilen (Abgleich aktivieren)","منح الموافقة على بيانات الصحة (تشغيل المزامنة)"],
-  cRizaCekSor:["Rıza geri çekilince sunucudaki sağlık verin silinir ve eşitleme durur. Cihazındaki veriler kalır. Devam?","Withdrawing consent deletes your health data on the server and stops syncing. Data on your device is kept. Continue?","После отзыва данные о здоровье на сервере удаляются, синхронизация прекращается. Данные на устройстве остаются. Продолжить?","Beim Widerruf werden deine Gesundheitsdaten auf dem Server gelöscht und der Abgleich stoppt. Die Daten auf dem Gerät bleiben. Fortfahren?","عند سحب الموافقة تُحذف بيانات الصحة من الخادم وتتوقف المزامنة. تبقى بيانات جهازك. هل تريد المتابعة؟"],
+  cRizaCekSor:["Rızanı geri çekersen sunucudaki sağlık verin silinir ve eşitleme durur. Cihazındaki veriler kalır. Devam edilsin mi?","Withdrawing consent deletes your health data on the server and stops syncing. Data on your device is kept. Continue?","После отзыва данные о здоровье на сервере удаляются, синхронизация прекращается. Данные на устройстве остаются. Продолжить?","Beim Widerruf werden deine Gesundheitsdaten auf dem Server gelöscht und der Abgleich stoppt. Die Daten auf dem Gerät bleiben. Fortfahren?","عند سحب الموافقة تُحذف بيانات الصحة من الخادم وتتوقف المزامنة. تبقى بيانات جهازك. هل تريد المتابعة؟"],
   cRizaYok:["Sağlık verisi rızası verilmedi; eşitleme kapalı","No health-data consent; sync is off","Нет согласия на данные о здоровье; синхронизация выключена","Keine Einwilligung zu Gesundheitsdaten; Abgleich aus","لا توجد موافقة على بيانات الصحة؛ المزامنة متوقفة"],
   // Gelen kutusu
   ibT:["Gelen kutusu","Inbox","Входящие","Posteingang","الوارد"],
@@ -1668,7 +1690,7 @@ Object.assign(S, {
 Object.assign(S, {
   // Başlık ve giriş (3 cümle: ne topluyoruz, nerede, neden rıza)
   cTitle:["Hesap açmadan önce","Before you create an account","Перед созданием аккаунта","Bevor du ein Konto anlegst","قبل إنشاء الحساب"],
-  cIntro:["Hesap açarsan profilin, öğün ve su kayıtların, tartı ve ölçülerin cihazların arasında eşitlenmek için Almanya'daki (AB içi) sunucumuza yazılır. Bu bilgiler sağlık verisi sayılır; işlenmeleri ve yurt dışına aktarılmaları için açık rızan gerekir. Bu veriler reklam için kullanılmaz, üçüncü taraflarla paylaşılmaz ve takip yapılmaz; verilerini istediğin zaman indirebilir veya silebilirsin.",
+  cIntro:["Hesap açarsan profilin, öğün ve su kayıtların, tartı ve ölçülerin cihazların arasında eşitlenmek için Almanya'daki (AB içi) sunucumuza yazılır. Bu bilgiler sağlık verisi sayılır; işlenmeleri ve yurt dışına aktarılmaları için açık rızan gerekir. Bu veriler reklam için kullanılmaz, üçüncü taraflarla paylaşılmaz ve takip amacıyla işlenmez; verilerini istediğin zaman indirebilir veya silebilirsin.",
     "If you create an account, your profile, meal and water logs, weigh-ins and measurements are stored on our server in Germany (within the EU) so they sync across your devices. This is health data, so we need your explicit consent to process it and transfer it abroad. This data is never used for advertising or shared with third parties, and there is no tracking; you can download or delete your data at any time.",
     "Если вы создадите аккаунт, ваш профиль, записи о еде и воде, взвешивания и замеры будут сохраняться на нашем сервере в Германии (в ЕС) для синхронизации между устройствами. Это данные о здоровье, поэтому для их обработки и передачи за рубеж нужно ваше явное согласие. Эти данные не используются для рекламы и не передаются третьим лицам, слежки нет; вы можете скачать или удалить свои данные в любой момент.",
     "Legst du ein Konto an, werden dein Profil, deine Mahlzeiten- und Wasserprotokolle sowie Wiegungen und Maße auf unserem Server in Deutschland (in der EU) gespeichert, damit sie zwischen deinen Geräten synchron bleiben. Das sind Gesundheitsdaten; für ihre Verarbeitung und Übermittlung ins Ausland brauchen wir deine ausdrückliche Einwilligung. Diese Daten werden nie für Werbung genutzt oder an Dritte weitergegeben, und es gibt kein Tracking; du kannst deine Daten jederzeit herunterladen oder löschen.",
@@ -1682,7 +1704,7 @@ Object.assign(S, {
   cBoxTermsLink:["Kullanım koşullarını","terms of use","условия использования","Nutzungsbedingungen","شروط الاستخدام"],
   cBoxAge:["16 yaşından büyüğüm.","I am over 16 years old.","Мне больше 16 лет.","Ich bin über 16 Jahre alt.","أنا أكبر من 16 عاماً."],
   cBoxLb:["Sıralamaya katılmak istiyorum: yalnız kullanıcı adım ve seri gün sayım görünür (isteğe bağlı; Ayarlar'dan değiştirilebilir).","I want to join the leaderboard: only my username and streak are shown (optional; can be changed in Settings).","Хочу участвовать в рейтинге: видны только моё имя пользователя и серия дней (необязательно; меняется в настройках).","Ich möchte an der Rangliste teilnehmen: Nur mein Benutzername und meine Serie sind sichtbar (optional; in den Einstellungen änderbar).","أريد الانضمام إلى الترتيب: يظهر اسم المستخدم وعدد أيام سلسلتي فقط (اختياري؛ يمكن تغييره من الإعدادات)."],
-  cNeedAll:["Devam etmek için işaretli olmayan zorunlu kutuları işaretle.","Tick the required boxes to continue.","Отметьте обязательные пункты, чтобы продолжить.","Bitte die Pflichtfelder ankreuzen, um fortzufahren.","علّم الخانات الإلزامية للمتابعة."],
+  cNeedAll:["Devam etmek için zorunlu kutuların hepsini işaretle.","Tick the required boxes to continue.","Отметьте обязательные пункты, чтобы продолжить.","Bitte die Pflichtfelder ankreuzen, um fortzufahren.","علّم الخانات الإلزامية للمتابعة."],
 
   // Düğmeler
   cAccept:["Kabul et ve hesap aç","Accept and create account","Принять и создать аккаунт","Zustimmen und Konto anlegen","أوافق وأنشئ الحساب"],
@@ -3122,6 +3144,280 @@ const HAFTA_8 = [
   [[['muz_yumurta_pankek',200],['suzme',100],['ceviz',10],['beyazp_light',1]], [['kabak_dolma',3],['yogurt',150],['salata',150]],
    [['kefir_light',250],['findik',10]], [['tavuk_sis',180],['pirinc_hasl',100],['cacik',150]], [['chia_puding_meyve',150]]]
 ];
+// ---------- Ek yemekler 8: Proteinli/meyveli yoğurt, ayran-kefir-sütlü içecekler, peynir çeşitleri, ara öğün kombinasyonları, bisküvi-kraker-kek-kurabiye, pastane (cevizli çörek, açma, poğaça), eksik ev yemekleri, sebze, çorba, pilav ----------
+// Sütunlar YEMEK_SATIR ile aynı (bkz. p4.js). Değerler 100 g içindir (TÜRKOMP / USDA FoodData Central temelli; kombinasyonlar bileşen ağırlıklarından hesaplandı).
+// Kızartma, işlenmiş, şekerli, tuzlu çerez ve kuru tartım kalemleri otomatik plana girmez (DOKTOR_DISI_EK); aramadan ve kategoriden eklenir.
+YEMEK_EK.push(
+  // Proteinli, meyveli ve özel yoğurtlar
+  ['protein_yogurt_cilek','sut',72,9,7,0.8,6,0.3,150,'','d','','proteinli yoğurt çilekli meyveli protein yüksek proteinli light sporcu','Proteinli yoğurt (çilekli)','High-protein yogurt (strawberry)','Высокобелковый йогурт (клубничный)','Proteinjoghurt (Erdbeere)','زبادي عالي البروتين (بالفراولة)'],
+  ['protein_yogurt_seftali','sut',72,9,7,0.8,6,0.3,150,'','d','','proteinli yoğurt şeftalili meyveli protein yüksek proteinli light sporcu','Proteinli yoğurt (şeftalili)','High-protein yogurt (peach)','Высокобелковый йогурт (персиковый)','Proteinjoghurt (Pfirsich)','زبادي عالي البروتين (بالخوخ)'],
+  ['protein_yogurt_orman','sut',72,9,7,0.8,6,0.5,150,'','d','','proteinli yoğurt orman meyveli böğürtlen yaban mersini protein light sporcu','Proteinli yoğurt (orman meyveli)','High-protein yogurt (mixed berries)','Высокобелковый йогурт (лесные ягоды)','Proteinjoghurt (Waldbeeren)','زبادي عالي البروتين (بالتوت المشكل)'],
+  ['cilekli_yogurt','sut',92,3.3,14,2.5,13,0.3,125,'','d','','çilekli yoğurt meyveli yoğurt şekerli market kase','Çilekli yoğurt','Strawberry yogurt','Клубничный йогурт','Erdbeerjoghurt','زبادي بالفراولة'],
+  ['seftalili_yogurt','sut',92,3.3,14,2.5,13,0.3,125,'','d','','şeftalili yoğurt meyveli yoğurt şekerli market kase','Şeftalili yoğurt','Peach yogurt','Персиковый йогурт','Pfirsichjoghurt','زبادي بالخوخ'],
+  ['orman_meyveli_yogurt','sut',92,3.3,14,2.5,13,0.5,125,'','d','','orman meyveli yoğurt meyveli yoğurt şekerli market kase','Orman meyveli yoğurt','Mixed berry yogurt','Йогурт с лесными ягодами','Waldbeerjoghurt','زبادي بالتوت المشكل'],
+  ['yogurt_cilek_ev','sut',40,2.7,6.1,1,5,0.8,250,'','d','','yoğurt çilek taze meyveli şekersiz ev yapımı ara öğün diyet','Yoğurt + taze çilek (şekersiz)','Yogurt with fresh strawberries (no sugar)','Йогурт со свежей клубникой (без сахара)','Joghurt mit frischen Erdbeeren (ohne Zucker)','زبادي بالفراولة الطازجة (بدون سكر)'],
+  ['suzme_meyve','sut',70,6.1,6.8,2.1,5.7,0.7,230,'','d','','süzme yoğurt meyve şekersiz ara öğün protein diyet kase','Süzme yoğurt + meyve (şekersiz)','Strained yogurt with fruit (no sugar)','Процеженный йогурт с фруктами (без сахара)','Abgetropfter Joghurt mit Obst (ohne Zucker)','زبادي مصفى بالفواكه (بدون سكر)'],
+  ['keci_yogurdu','sut',64,3.6,4.5,3.5,4.5,0,150,'','d','','keçi yoğurdu keçi sütü yoğurt','Keçi yoğurdu','Goat milk yogurt','Йогурт из козьего молока','Ziegenjoghurt','زبادي حليب الماعز'],
+  ['koyun_yogurdu','sut',100,5.5,5,6.5,5,0,150,'','dy','','koyun yoğurdu koyun sütü yoğurt tam yağlı','Koyun yoğurdu','Sheep milk yogurt','Йогурт из овечьего молока','Schafsjoghurt','زبادي حليب الغنم'],
+  ['laktozsuz_yogurt','sut',60,3.6,4.5,3,4.5,0,150,'','d','','laktozsuz yoğurt laktoz intoleransı','Laktozsuz yoğurt','Lactose-free yogurt','Безлактозный йогурт','Laktosefreier Joghurt','زبادي خالٍ من اللاكتوز'],
+  ['kaymakli_yogurt','sut',80,3.5,4.5,5.5,4.5,0,150,'','dy','','kaymaklı yoğurt tam yağlı kaymak tabakalı','Kaymaklı yoğurt (tam yağlı)','Cream-top yogurt (full-fat)','Йогурт со сливочной пенкой (жирный)','Joghurt mit Rahmschicht (vollfett)','زبادي بالقشطة (كامل الدسم)'],
+  // Ayran, kefir & sütlü içecekler
+  ['yayik_ayran','sut',32,1.6,2.8,1.6,2.8,0,250,'','dt','bardak:250','yayık ayranı köpüklü ayran içecek yoğurt','Yayık ayranı','Churned ayran (yayık)','Пахтаный айран (яйык)','Butter-Ayran (Yayık)','عيران مخضوض (يايك)'],
+  ['protein_ayran','sut',38,4.5,3,0.8,3,0,250,'','dt','bardak:250','proteinli ayran yüksek proteinli içecek sporcu','Proteinli ayran','High-protein ayran','Высокобелковый айран','Protein-Ayran','عيران عالي البروتين'],
+  ['muzlu_sut','sut',70,3,11,1.5,10.5,0,200,'','d','bardak:200','muzlu süt hazır şekerli aromalı içecek çocuk','Muzlu süt (hazır)','Banana milk (ready-made)','Банановое молоко (готовое)','Bananenmilch (fertig)','حليب بالموز (جاهز)'],
+  ['cilekli_sut','sut',70,3,11,1.5,10.5,0,200,'','d','bardak:200','çilekli süt hazır şekerli aromalı içecek çocuk','Çilekli süt (hazır)','Strawberry milk (ready-made)','Клубничное молоко (готовое)','Erdbeermilch (fertig)','حليب بالفراولة (جاهز)'],
+  ['sut_muz_ev','sut',60,2.6,10.9,1.1,7.3,0.9,250,'','d','bardak:250','muzlu süt ev yapımı şekersiz blender ara öğün','Muzlu süt (ev yapımı, şekersiz)','Homemade banana milk (no sugar)','Домашнее банановое молоко (без сахара)','Hausgemachte Bananenmilch (ohne Zucker)','حليب بالموز منزلي (بدون سكر)'],
+  ['balli_sut','sut',55,3.2,7.4,1.5,7.4,0,200,'','d','bardak:200','ballı süt sıcak süt bal gece','Ballı süt','Milk with honey','Молоко с мёдом','Milch mit Honig','حليب بالعسل'],
+  ['zerdecalli_sut','sut',48,3.3,5,1.6,4.8,0.2,200,'','d','bardak:200','zerdeçallı süt altın süt golden milk tarçınlı şekersiz gece','Zerdeçallı süt (şekersiz)','Turmeric milk (golden milk, no sugar)','Куркумное молоко (без сахара)','Kurkumamilch (Goldene Milch, ohne Zucker)','حليب بالكركم (بدون سكر)'],
+  ['kakao_sut','sut',52,3.7,6.1,1.8,4.7,0.8,200,'','d','bardak:200','sütlü kakao sıcak kakao şekersiz şeker ilavesiz gece','Sütlü kakao (şeker ilavesiz)','Hot cocoa with milk (no added sugar)','Какао на молоке (без сахара)','Kakao mit Milch (ohne Zuckerzusatz)','كاكاو بالحليب (بدون سكر مضاف)'],
+  // Lor, labne & peynir çeşitleri
+  ['lor_yagsiz','sut',72,13,3,0.8,3,0,50,'','d','yk:15','lor peyniri yağsız light diyet protein kahvaltı','Lor peyniri (yağsız)','Fat-free curd cheese (lor)','Обезжиренный творожный сыр (лор)','Magerer Quarkkäse (Lor)','جبن قريش خالي الدسم'],
+  ['lor_dereotu','sut',128,11.4,2.9,8.1,2.9,0.2,60,'','d','yk:15','dereotlu lor zeytinyağlı lor ezmesi kahvaltı','Dereotlu lor (zeytinyağlı)','Curd cheese with dill & olive oil','Творожный сыр с укропом и оливковым маслом','Quarkkäse mit Dill & Olivenöl','جبن قريش بالشبت وزيت الزيتون'],
+  ['krem_peynir_tam','sut',230,5.5,4,21.5,3.5,0,30,'','dy','yk:20','krem peynir tam yağlı sürülebilir peynir kahvaltı','Krem peynir (tam yağlı)','Cream cheese (full-fat)','Сливочный сыр (жирный)','Frischkäse (Doppelrahmstufe)','جبنة كريمية (كاملة الدسم)'],
+  ['civil','sut',215,27,1.5,11,1,0,30,'','dt','kibrit:30','civil peyniri çeçil tel peynir erzurum kahvaltı','Civil peyniri (çeçil)','Civil cheese (string cheese, çeçil)','Сыр чечил (косичка)','Civil-Käse (Fadenkäse, Çeçil)','جبنة جديلة (تشيتشيل)'],
+  ['mavi_peynir','sut',353,21,2.3,29,0.5,0,20,'','dty','','mavi peynir küflü peynir rokfor gorgonzola','Mavi küflü peynir (rokfor tipi)','Blue cheese (Roquefort-style)','Голубой сыр с плесенью (типа рокфор)','Blauschimmelkäse (Roquefort-Art)','جبنة زرقاء (نوع روكفور)'],
+  ['gouda','sut',356,25,2.2,27,2.2,0,1,'dilim:20','dty','','gouda peyniri sarı peynir dilim kahvaltı','Gouda peyniri','Gouda cheese','Сыр гауда','Gouda','جبنة غودا'],
+  ['ricotta','sut',174,11,3,13,0.3,0,50,'','d','yk:20','ricotta peyniri taze peynir lor','Ricotta peyniri','Ricotta','Рикотта','Ricotta','جبنة ريكوتا'],
+  ['mini_peynir','sut',305,22,0.5,24,0,0,1,'adet:20','dty','','mini peynir tekli paket atıştırmalık peynir çocuk beslenme','Mini peynir (tekli paket)','Mini cheese (single snack portion)','Мини-сыр (порционный)','Mini-Käse (Snackportion)','جبنة صغيرة (حصة فردية)'],
+  ['eritme_peynir','sut',300,16,5,24,4,0,1,'dilim:18','dty','','dilim eritme peynir tost peyniri hamburger peyniri işlenmiş','Dilim eritme peynir (tost peyniri)','Processed cheese slice','Плавленый сыр (ломтики)','Schmelzkäsescheibe','جبنة شرائح مطبوخة'],
+  // Sporcu: proteinli ürünler
+  ['protein_puding_vanilya','sporcu',82,10,7,1.5,4,0,200,'','d','','proteinli puding vanilyalı protein tatlı sporcu','Proteinli puding (vanilyalı)','High-protein pudding (vanilla)','Высокобелковый пудинг (ванильный)','Proteinpudding (Vanille)','بودنغ عالي البروتين (بالفانيليا)'],
+  ['protein_sut_kakao','sporcu',70,8,6,1.5,5,0.5,250,'','d','kutu:250','proteinli süt kakaolu çikolatalı hazır protein içecek sporcu','Proteinli süt (kakaolu, hazır)','High-protein chocolate milk (ready-made)','Высокобелковое шоколадное молоко (готовое)','Protein-Kakaomilch (fertig)','حليب بالكاكاو عالي البروتين (جاهز)'],
+  ['protein_gofret','sporcu',430,25,38,20,12,5,1,'adet:40','d','','proteinli gofret protein wafer sporcu atıştırmalık','Proteinli gofret','Protein wafer bar','Протеиновые вафли','Protein-Waffel','ويفر بالبروتين'],
+  ['probar_sekersiz','sporcu',350,33,30,14,3,6,1,'adet:55','d','','protein bar şekersiz şeker ilavesiz yüksek proteinli sporcu','Protein bar (şeker ilavesiz)','Protein bar (no added sugar)','Протеиновый батончик (без сахара)','Proteinriegel (ohne Zuckerzusatz)','لوح بروتين (بدون سكر مضاف)'],
+  ['mug_cake','sporcu',255,29.9,17.1,8.2,2,3,1,'adet:120','ed','','proteinli kupa kek mug cake whey yulaf mikrodalga sporcu tatlı','Proteinli kupa kek (mug cake)','Protein mug cake','Протеиновый кекс в кружке','Protein-Tassenkuchen (Mug Cake)','كيك الكوب بالبروتين'],
+  // Ara öğün: kuruyemiş, kuru meyve ve peynir kombinasyonları
+  ['kayisi_badem','atistirmalik',354,9.3,49.3,17,36.8,9.1,36,'','','','kuru kayısı badem ara öğün kuruyemiş kuru meyve','Kuru kayısı + badem','Dried apricots & almonds','Курага с миндалём','Getrocknete Aprikosen & Mandeln','مشمش مجفف ولوز'],
+  ['leblebi_uzum','atistirmalik',330,12.6,68.5,2.8,30.5,7.9,40,'','','cay:40','leblebi kuru üzüm çerez ara öğün','Leblebi + kuru üzüm','Roasted chickpeas & raisins','Жареный нут с изюмом','Geröstete Kichererbsen & Rosinen','حمص محمص وزبيب'],
+  ['findik_uzum','atistirmalik',463,9,48,30.8,31.7,6.7,30,'','','','fındık kuru üzüm çerez ara öğün kuruyemiş','Fındık + kuru üzüm','Hazelnuts & raisins','Фундук с изюмом','Haselnüsse & Rosinen','بندق وزبيب'],
+  ['trail_mix','atistirmalik',480,11.4,38.8,33.2,24.4,7.8,30,'','','','kuruyemiş kuru meyve karışımı tuzsuz trail mix öğrenci karışımı badem fındık ceviz kaju üzüm kayısı','Kuruyemiş + kuru meyve karışımı (tuzsuz)','Mixed nuts & dried fruit (unsalted trail mix)','Смесь орехов и сухофруктов (несолёная)','Studentenfutter (ungesalzen)','خليط المكسرات والفواكه المجففة (غير مملح)'],
+  ['cerez_karisik','atistirmalik',495,24.3,32.7,32,3,9.6,30,'','t','','karışık çerez leblebi yer fıstığı çekirdek tuzlu kavrulmuş','Karışık çerez (leblebi, fıstık, çekirdek, tuzlu)','Mixed salted snack nuts (roasted chickpeas, peanuts, seeds)','Солёная смесь (нут, арахис, семечки)','Gesalzene Knabbermischung (Kichererbsen, Erdnüsse, Kerne)','مكسرات مشكلة مملحة (حمص، فول سوداني، بذور)'],
+  ['sekerli_leblebi','atistirmalik',380,10,78,3,50,6,30,'','','','şekerli leblebi beyaz leblebi şeker kaplı çerez','Şekerli leblebi','Sugar-coated roasted chickpeas','Нут в сахарной глазури (леблеби)','Kichererbsen mit Zuckerglasur','حمص محمص مغطى بالسكر'],
+  ['hurma_fistik','atistirmalik',400,11.2,53.8,19.5,44.1,7.2,26,'','','','hurma fıstık ezmesi ara öğün sporcu antrenman öncesi','Hurma + fıstık ezmesi','Dates with peanut butter','Финики с арахисовой пастой','Datteln mit Erdnussbutter','تمر بزبدة الفول السوداني'],
+  ['muz_fistik','atistirmalik',145,3.8,22.7,5.8,11.9,3,135,'','','','muz fıstık ezmesi ara öğün sporcu antrenman öncesi','Muz + fıstık ezmesi','Banana with peanut butter','Банан с арахисовой пастой','Banane mit Erdnussbutter','موز بزبدة الفول السوداني'],
+  ['elma_ceviz','atistirmalik',95,1.4,14,4.8,9.9,2.7,1,'adet:140','','','elma ceviz ara öğün diyet','Elma + ceviz','Apple & walnuts','Яблоко с грецкими орехами','Apfel & Walnüsse','تفاح وجوز'],
+  ['peynir_ceviz','atistirmalik',315,16.5,5,26.8,1.8,1.7,40,'','dt','','beyaz peynir ceviz ara öğün kahvaltı diyet','Beyaz peynir + ceviz','White cheese & walnuts','Белый сыр с грецкими орехами','Weißkäse & Walnüsse','جبنة بيضاء وجوز'],
+  ['lor_meyve','atistirmalik',75,6.5,9,1.9,6.5,1,200,'','d','','lor peyniri meyve kasesi ara öğün protein diyet şekersiz','Lor peyniri + meyve kasesi','Curd cheese & fruit bowl','Творожный сыр с фруктами','Quarkkäse mit Obst','جبن قريش مع الفواكه'],
+  ['patlak_labne','atistirmalik',226,7.4,33.5,6.7,2.8,1.5,48,'','d','','pirinç patlağı labne light ara öğün diyet','Pirinç patlağı + labne (light)','Rice cakes with light labneh','Рисовые хлебцы с лабне (лайт)','Reiswaffeln mit Labneh (light)','كعك الأرز مع لبنة خفيفة'],
+  ['ton_kraker','atistirmalik',220,20.6,21.7,5.7,1,3,60,'','ft','','ton balıklı kraker tam buğday ara öğün protein','Ton balıklı kraker','Tuna on wholegrain crackers','Тунец на цельнозерновых крекерах','Thunfisch auf Vollkorncrackern','تونة على مقرمشات القمح الكامل'],
+  ['simit_peynir','atistirmalik',277,11.6,42.8,7.1,3.4,2.3,1,'adet:130','dt','','simit beyaz peynir ara öğün kahvaltı çay yanı','Simit + beyaz peynir','Simit with white cheese','Симит с белым сыром','Simit mit Weißkäse','سميت مع جبنة بيضاء'],
+  ['granola_kase','atistirmalik',114,6.6,12.9,4.1,6.4,1.5,260,'','d','','süzme yoğurt granola meyve kase bowl ara öğün kahvaltı','Süzme yoğurt, granola ve meyve kasesi','Greek yogurt bowl with granola & fruit','Боул из греческого йогурта с гранолой и фруктами','Joghurt-Bowl mit Granola & Obst','وعاء زبادي مصفى مع الجرانولا والفواكه'],
+  ['acai_kase','atistirmalik',120,2.5,20,4,12,4,300,'','','','açai kasesi acai bowl meyve granola smoothie bowl','Açai kasesi (meyveli, granolalı)','Açaí bowl (with fruit & granola)','Асаи-боул (с фруктами и гранолой)','Açaí-Bowl (mit Obst & Granola)','وعاء الأساي (بالفواكه والجرانولا)'],
+  // Ara öğün: bar, kraker, bisküvi, cips & şekerleme
+  ['musli_bar','atistirmalik',400,6,68,12,30,5,1,'adet:25','','','müsli bar meyveli tahıl bar ara öğün','Müsli bar (meyveli)','Muesli bar (with fruit)','Мюсли-батончик (с фруктами)','Müsliriegel (mit Früchten)','لوح ميوسلي (بالفواكه)'],
+  ['kuruyemis_bar','atistirmalik',520,15,30,40,15,7,1,'adet:40','','','kuruyemiş bar bademli fındıklı bar ara öğün','Kuruyemiş bar (bademli, fındıklı)','Nut bar (almonds & hazelnuts)','Ореховый батончик (миндаль, фундук)','Nussriegel (Mandeln & Haselnüsse)','لوح المكسرات (لوز وبندق)'],
+  ['yulaf_kraker','atistirmalik',430,10,62,16,3,8,30,'','','','yulaflı kraker yulaf krakeri ara öğün','Yulaflı kraker','Oat crackers','Овсяные крекеры','Hafercracker','مقرمشات الشوفان'],
+  ['kraker_tuzlu','atistirmalik',480,8,63,20,6,2.5,30,'','ty','','kraker tuzlu sade yuvarlak kraker çerez','Kraker (tuzlu, sade)','Salted crackers (plain)','Солёные крекеры','Salzcracker','مقرمشات مملحة (سادة)'],
+  ['biskuvi_sekersiz','atistirmalik',440,9,64,17,3,9,3,'adet:10','','','tam tahıllı bisküvi şeker ilavesiz şekersiz diyabetik diyet','Tam tahıllı bisküvi (şeker ilavesiz)','Wholegrain biscuits (no added sugar)','Цельнозерновое печенье (без сахара)','Vollkornkekse (ohne Zuckerzusatz)','بسكويت الحبوب الكاملة (بدون سكر مضاف)'],
+  ['yulaf_biskuvi','atistirmalik',470,7,66,19,20,6,3,'adet:12','y','','yulaflı bisküvi hazır paketli','Yulaflı bisküvi (hazır)','Oat biscuits (packaged)','Овсяное печенье (магазинное)','Haferkekse (abgepackt)','بسكويت الشوفان (معبأ)'],
+  ['kremali_biskuvi','atistirmalik',480,5,68,21,35,2,3,'adet:12','y','','kremalı bisküvi sandviç bisküvi kakaolu vanilyalı','Kremalı bisküvi','Cream-filled biscuits','Печенье с кремовой начинкой','Kekse mit Cremefüllung','بسكويت محشو بالكريمة'],
+  ['cikolatali_biskuvi','atistirmalik',500,6,64,24,35,3,2,'adet:15','y','','çikolata kaplı bisküvi çikolatalı bisküvi','Çikolata kaplı bisküvi','Chocolate-coated biscuits','Печенье в шоколадной глазури','Schokoladenkekse (überzogen)','بسكويت مغطى بالشوكولاتة'],
+  ['incirli_biskuvi','atistirmalik',370,4,70,9,40,4,2,'adet:18','','','incirli bisküvi incir dolgulu bisküvi','İncir dolgulu bisküvi','Fig-filled biscuits','Печенье с инжирной начинкой','Feigenkekse (gefüllt)','بسكويت محشو بالتين'],
+  ['bebe_biskuvi','atistirmalik',430,8,76,10.5,22,2.5,4,'adet:6','','','bebe bisküvisi çocuk bisküvisi sade','Bebe bisküvisi','Plain baby biscuits','Детское печенье','Babykekse','بسكويت الأطفال'],
+  ['muz_yulaf_kurabiye','atistirmalik',210,6.5,43,2.5,12,5.7,2,'adet:25','','','muzlu yulaflı kurabiye şekersiz iki malzemeli fit diyet','Muzlu yulaflı kurabiye (şekersiz)','Banana oat cookies (no sugar)','Бананово-овсяное печенье (без сахара)','Bananen-Hafer-Kekse (ohne Zucker)','كوكيز الموز والشوفان (بدون سكر)'],
+  ['fit_kek','atistirmalik',280,8,40,10,12,4,1,'dilim:60','e','','yulaflı muzlu kek şekersiz fit kek ev yapımı diyet','Yulaflı muzlu kek (şekersiz, ev yapımı)','Oat & banana cake (no sugar, homemade)','Овсяно-банановый кекс (без сахара, домашний)','Hafer-Bananen-Kuchen (ohne Zucker, hausgemacht)','كيك الشوفان والموز (بدون سكر، منزلي)'],
+  ['bitter85','atistirmalik',580,11,22,48,12,13,2,'kare:5','','','bitter çikolata yüzde 85 kakao yoğun','Bitter çikolata (%85)','Dark chocolate (85%)','Горький шоколад (85%)','Zartbitterschokolade (85 %)','شوكولاتة داكنة (85%)'],
+  ['bitter55','atistirmalik',545,6,55,33,45,7,2,'kare:5','','','bitter çikolata yüzde 55 yarı bitter','Bitter çikolata (%55)','Dark chocolate (55%)','Тёмный шоколад (55%)','Halbbitterschokolade (55 %)','شوكولاتة داكنة (55%)'],
+  ['muz_cipsi','atistirmalik',519,2.3,58.4,33.6,35.3,7.7,20,'','y','','muz cipsi kurutulmuş muz kızarmış çerez','Muz cipsi','Banana chips','Банановые чипсы','Bananenchips','رقائق الموز'],
+  ['light_cips','atistirmalik',440,6.5,72,14,3,5,25,'','t','','fırında patates cipsi light az yağlı cips','Fırında patates cipsi (az yağlı)','Baked potato chips (reduced fat)','Запечённые картофельные чипсы (с пониженным жиром)','Gebackene Kartoffelchips (fettreduziert)','رقائق بطاطس مخبوزة (قليلة الدهن)'],
+  ['jelibon','atistirmalik',343,6.9,77,0.2,46,0,25,'','','','jelibon şekerleme meyveli jöle şeker','Jelibon (meyveli)','Gummy candies (fruit jelly)','Жевательный мармелад','Fruchtgummi','حلوى الجيلي بالفواكه'],
+  // Tatlılar: sütlü tatlı, kek, kurabiye & şerbetli
+  ['vanilya_puding','tatli',120,3,20,3,15,0,150,'','d','','vanilyalı puding sütlü tatlı','Vanilyalı puding','Vanilla pudding','Ванильный пудинг','Vanillepudding','بودنغ الفانيليا'],
+  ['light_muhallebi','tatli',70,3.5,11,1.5,5,0,150,'','d','','muhallebi light tatlandırıcılı şekersiz diyet sütlü tatlı','Muhallebi (light, tatlandırıcılı)','Milk pudding (light, with sweetener)','Молочный пудинг (лайт, с подсластителем)','Milchpudding (light, mit Süßstoff)','مهلبية (لايت، بمحلٍّ صناعي)'],
+  ['frozen_yogurt','tatli',135,3.5,24,3,22,0,100,'','d','','dondurulmuş yoğurt frozen yogurt dondurma','Dondurulmuş yoğurt (frozen yogurt)','Frozen yogurt','Замороженный йогурт','Frozen Joghurt','زبادي مجمد'],
+  ['nice_cream','tatli',92,1.6,21.5,0.6,13,2.3,150,'','d','','muzlu dondurma şekersiz ev yapımı dondurulmuş muz fit tatlı','Muzlu dondurma (şekersiz, ev yapımı)','Banana nice cream (homemade, no sugar)','Банановое мороженое (домашнее, без сахара)','Bananeneis (hausgemacht, ohne Zucker)','آيس كريم الموز (منزلي، بدون سكر)'],
+  ['kemalpasa','tatli',280,5,55,5,45,0.5,2,'adet:30','','','kemalpaşa tatlısı şerbetli peynir tatlısı','Kemalpaşa tatlısı','Kemalpaşa (cheese dumplings in syrup)','Кемальпаша (сырные шарики в сиропе)','Kemalpaşa (Käsebällchen in Sirup)','حلوى كمال باشا (كرات الجبن بالشراب)'],
+  ['kalburabasti','tatli',400,5,55,18,35,1.5,2,'adet:30','y','','kalburabastı şerbetli tatlı cevizli','Kalburabastı','Kalburabastı (syrup-soaked walnut pastry)','Калбурабасты (печенье в сиропе с орехами)','Kalburabastı (Sirupgebäck mit Walnüssen)','كالبورابستي (معجنات بالجوز والشراب)'],
+  ['sutlu_nuriye','tatli',320,6,40,15,28,1,2,'adet:40','y','','sütlü nuriye baklava sütlü şerbet fındıklı','Sütlü nuriye','Sütlü nuriye (milk-syrup baklava)','Сютлю нурие (пахлава с молочным сиропом)','Sütlü Nuriye (Baklava mit Milchsirup)','نورية بالحليب (بقلاوة بشراب الحليب)'],
+  ['ekler','tatli',262,6.4,24,15.7,14,0.6,1,'adet:50','edy','','ekler çikolatalı pastane tatlı','Ekler (çikolatalı)','Chocolate éclair','Эклер (шоколадный)','Schokoladen-Eclair','إكلير بالشوكولاتة'],
+  ['mozaik_pasta','tatli',460,5,55,25,35,2,1,'dilim:50','dy','','mozaik pasta bisküvili kakaolu pasta','Mozaik pasta','Chocolate biscuit cake (mosaic cake)','Шоколадная колбаса из печенья (мозаика)','Mosaikkuchen (Keks-Schokoladen-Kuchen)','كيك الموزاييك (بسكويت وشوكولاتة)'],
+  ['havuclu_kek','tatli',360,5,45,18,28,1.5,1,'dilim:60','ey','','havuçlu cevizli kek tarçınlı kek dilimi','Havuçlu cevizli kek','Carrot & walnut cake','Морковный кекс с грецкими орехами','Karotten-Walnuss-Kuchen','كيك الجزر والجوز'],
+  ['elmali_kek','tatli',340,5,50,14,28,1.5,1,'dilim:60','ey','','elmalı tarçınlı kek kek dilimi','Elmalı tarçınlı kek','Apple cinnamon cake','Яблочный кекс с корицей','Apfel-Zimt-Kuchen','كيك التفاح والقرفة'],
+  ['islak_kek','tatli',400,5,55,18,35,2.5,1,'dilim:70','edy','','ıslak kek kakaolu soslu kek dilimi','Islak kek (kakaolu)','Wet chocolate cake (ıslak kek)','Влажный шоколадный кекс','Saftiger Schokokuchen (Islak Kek)','الكيك المبلل بالكاكاو'],
+  ['cikolatali_muffin','tatli',420,6,52,22,30,2,1,'adet:90','edy','','çikolatalı muffin kek pastane','Çikolatalı muffin','Chocolate muffin','Шоколадный маффин','Schokoladenmuffin','مافن بالشوكولاتة'],
+  ['donut','tatli',420,5,50,22,22,1.5,1,'adet:65','y','','donut şekerli kaplamalı pastane','Donut (şekerli kaplamalı)','Glazed doughnut','Пончик в глазури','Donut (glasiert)','دونات مزجج'],
+  ['cevizli_kurabiye','tatli',490,6,55,28,25,2,2,'adet:20','y','','cevizli kurabiye ev yapımı pastane','Cevizli kurabiye','Walnut cookies','Печенье с грецкими орехами','Walnusskekse','كوكيز بالجوز'],
+  ['tahinli_kurabiye','tatli',490,8,52,28,22,3,2,'adet:20','','','tahinli kurabiye ev yapımı','Tahinli kurabiye','Tahini cookies','Печенье с тахини','Tahini-Kekse','كوكيز بالطحينة'],
+  ['kakaolu_kurabiye','tatli',485,6,60,25,28,3,2,'adet:20','y','','kakaolu kurabiye çikolatalı ev yapımı','Kakaolu kurabiye (ev yapımı)','Cocoa cookies (homemade)','Печенье с какао (домашнее)','Kakaokekse (hausgemacht)','كوكيز بالكاكاو (منزلية)'],
+  ['elmali_kurabiye','tatli',420,5,55,20,20,2,2,'adet:30','y','','elmalı kurabiye tarçınlı ev yapımı','Elmalı kurabiye','Apple-filled cookies','Печенье с яблочной начинкой','Apfelkekse (gefüllt)','كوكيز محشوة بالتفاح'],
+  ['acibadem','tatli',460,9,60,20,50,3,2,'adet:15','','','acıbadem kurabiyesi bademli kurabiye','Acıbadem kurabiyesi','Turkish almond cookies (acıbadem)','Миндальное печенье (аджибадем)','Mandelmakronen (Acıbadem)','كوكيز اللوز التركي'],
+  ['hosaf','tatli',75,0.5,18,0.1,16,1,200,'','','','hoşaf komposto kuru meyve kayısı üzüm erik','Hoşaf (kuru meyve, az şekerli)','Hoşaf (dried fruit compote, lightly sweetened)','Хошаф (компот из сухофруктов, малосладкий)','Hoşaf (Trockenobst-Kompott, leicht gesüßt)','خوشاف (كومبوت الفواكه المجففة، قليل السكر)'],
+  // Pastane & hamur işi
+  ['cevizli_corek','hamur',400,7,48,20,16,2.5,1,'adet:90','y','','cevizli çörek pastane çörek tatlı çörek','Cevizli çörek','Walnut çörek (sweet walnut bun)','Сдобная булочка с грецкими орехами (чёрек)','Walnuss-Çörek (süßes Hefegebäck)','كعكة الجوز (تشوريك)'],
+  ['paskalya_coregi','hamur',350,8,52,12,15,2,1,'dilim:50','e','','paskalya çöreği mahlepli çörek örgü çörek pastane','Paskalya çöreği','Turkish sweet braided bread (paskalya çöreği)','Сдобный плетёный хлеб (пасхальный чёрек)','Türkischer Hefezopf (Paskalya Çöreği)','خبز مضفور حلو (تشوريك)'],
+  ['kiymali_pogaca','hamur',350,10,38,18,3,1.5,1,'adet:80','my','','kıymalı poğaça pastane','Kıymalı poğaça','Minced meat poğaça','Погача с мясным фаршем','Poğaça mit Hackfleisch','بوغاتشا باللحم المفروم'],
+  ['yulafli_pogaca','hamur',300,11,38,12,3,5,1,'adet:70','d','','yulaflı poğaça fit poğaça peynirli ev yapımı diyet','Yulaflı poğaça (fit, peynirli)','Oat poğaça (fit, with cheese)','Овсяная погача с сыром (фит)','Hafer-Poğaça (fit, mit Käse)','بوغاتشا الشوفان (صحية، بالجبن)'],
+  ['peynirli_acma','hamur',380,9,42,20,5,1.5,1,'adet:90','dy','','peynirli açma pastane kahvaltı','Peynirli açma','Açma with cheese','Ачма с сыром','Açma mit Käse','أتشما بالجبن'],
+  ['zeytinli_acma','hamur',380,7,45,20,4,2,1,'adet:90','ty','','zeytinli açma pastane kahvaltı','Zeytinli açma','Açma with olives','Ачма с оливками','Açma mit Oliven','أتشما بالزيتون'],
+  ['cikolatali_kruvasan','hamur',420,6.5,45,24,16,2.5,1,'adet:70','dy','','çikolatalı kruvasan pastane','Çikolatalı kruvasan','Chocolate croissant','Круассан с шоколадом','Schokocroissant','كرواسون بالشوكولاتة'],
+  ['gul_boregi','hamur',290,9,27,16,2,1,1,'adet:80','dy','','gül böreği peynirli börek el açması','Gül böreği (peynirli)','Rose börek (cheese-filled spiral)','Бёрек-розочка с сыром','Rosen-Börek (mit Käse)','بوريك الوردة (بالجبن)'],
+  ['tarcinli_rulo','hamur',380,6,55,15,25,2,1,'adet:90','dy','','tarçınlı rulo çörek tarçınlı çörek cinnamon roll pastane','Tarçınlı rulo çörek','Cinnamon roll','Булочка с корицей','Zimtschnecke','لفائف القرفة'],
+  ['cavdar_simit','hamur',290,10,50,7,4,6.5,1,'adet:90','','','çavdarlı simit susamlı','Çavdarlı simit','Rye simit','Ржаной симит','Roggen-Simit','سميت بالجاودار'],
+  // Ekmek & tahıl
+  ['cok_tahilli','tahil',250,10,40,4.5,4,7,2,'dilim:30','','','çok tahıllı ekmek tahıllı ekmek tohumlu','Çok tahıllı ekmek','Multigrain bread','Многозерновой хлеб','Mehrkornbrot','خبز متعدد الحبوب'],
+  ['tandir_ekmek','tahil',255,8.5,52,1.5,2,2.5,1,'dilim:50','','','tandır ekmeği köy ekmeği','Tandır ekmeği','Tandır bread','Тандырный хлеб','Tandır-Brot','خبز التنور'],
+  ['cevizli_ekmek','tahil',280,9,40,9,3,5,2,'dilim:30','','','cevizli ekmek','Cevizli ekmek','Walnut bread','Хлеб с грецкими орехами','Walnussbrot','خبز بالجوز'],
+  ['zeytinli_ekmek','tahil',265,8,45,6,2.5,3,2,'dilim:30','t','','zeytinli ekmek','Zeytinli ekmek','Olive bread','Хлеб с оливками','Olivenbrot','خبز بالزيتون'],
+  ['kepekli_gevrek','tahil',340,10,66,2.5,16,15,30,'','','','kepekli gevrek kahvaltılık gevrek lifli bran','Kepekli kahvaltılık gevrek','Bran flakes (breakfast cereal)','Отрубные хлопья (сухой завтрак)','Kleieflocken (Frühstücksflocken)','رقائق النخالة (حبوب الإفطار)'],
+  ['galeta_sade','tahil',400,11,74,5.5,5,4,2,'adet:10','','','galeta sade dilimli peksimet','Galeta (sade)','Rusks (plain)','Сухари (простые)','Zwieback (natur)','خبز محمص (سادة)'],
+  // İçecekler
+  ['su_kefiri','icecek',18,0.2,4.5,0,3.5,0,250,'','','bardak:250','su kefiri probiyotik fermente içecek','Su kefiri','Water kefir','Водный кефир (тибетский гриб)','Wasserkefir','كفير الماء'],
+  ['kefir_smoothie','icecek',78,3.6,11.5,1.9,5.6,1.1,250,'','d','bardak:250','kefirli smoothie muzlu yulaflı ara öğün','Kefirli muzlu yulaflı smoothie','Kefir smoothie (banana & oats)','Смузи на кефире (банан и овсянка)','Kefir-Smoothie (Banane & Hafer)','سموذي الكفير (موز وشوفان)'],
+  ['yulaf_smoothie','icecek',81,3.5,14.3,1.5,6.9,1.4,300,'','d','bardak:300','sütlü muzlu yulaflı smoothie ara öğün kahvaltı','Sütlü muzlu yulaf smoothie','Banana oat smoothie (with milk)','Бананово-овсяный смузи на молоке','Bananen-Hafer-Smoothie (mit Milch)','سموذي الموز والشوفان بالحليب'],
+  ['hazir_soguk_kahve','icecek',60,2.5,9,1.5,8.5,0,250,'','d','kutu:250','soğuk kahve hazır şişe kutu sütlü şekerli','Soğuk kahve (hazır, şişe/kutu)','Ready-to-drink iced coffee (bottle/can)','Холодный кофе (готовый, в бутылке)','Eiskaffee (trinkfertig, Flasche/Dose)','قهوة مثلجة جاهزة (زجاجة/علبة)'],
+  ['sutlu_turk_kahvesi','icecek',50,3.4,5,1.6,4.8,0,1,'fincan:70','d','','sütlü türk kahvesi sütle pişmiş kahve şekersiz','Sütlü Türk kahvesi (şekersiz)','Turkish coffee made with milk (no sugar)','Кофе по-турецки на молоке (без сахара)','Türkischer Kaffee mit Milch (ohne Zucker)','قهوة تركية بالحليب (بدون سكر)'],
+  ['frappe','icecek',90,1.5,14,3,13,0,1,'fincan:350','d','','frappe buzlu kahve kremalı şekerli','Frappe (buzlu kahve, şekerli)','Frappé (blended iced coffee, sweetened)','Фраппе (сладкий)','Frappé (gesüßt)','فرابيه (محلّى)'],
+  ['visne_nektari','icecek',55,0.3,13,0,12,0.1,1,'bardak:200','','','vişne nektarı vişne suyu paketli meyve suyu','Vişne nektarı (paketli)','Sour cherry nectar (packaged)','Вишнёвый нектар (пакетированный)','Sauerkirschnektar (abgepackt)','عصير الكرز الحامض (نكتار معبأ)'],
+  ['zencefil_cayi','icecek',2,0.1,0.5,0,0.2,0,1,'fincan:200','','','zencefilli limonlu çay bitki çayı şekersiz','Zencefilli limonlu çay (şekersiz)','Ginger lemon tea (unsweetened)','Имбирный чай с лимоном (без сахара)','Ingwer-Zitronen-Tee (ungesüßt)','شاي الزنجبيل بالليمون (بدون سكر)'],
+  // Et & şarküteri
+  ['dana_jambon','et',115,18,1.5,4,1,0,3,'dilim:10','mt','','dana jambon şarküteri kahvaltı sandviç','Dana jambon','Beef ham (sliced)','Говяжья ветчина (ломтики)','Rinderschinken (Scheiben)','لحم بقري مطبوخ (شرائح)'],
+  ['tavuk_sucuk','et',275,16,3,22,1,0,3,'dilim:10','cty','','tavuk sucuk piliç sucuk kahvaltı','Tavuk sucuk','Chicken sucuk (sausage)','Куриный суджук','Hähnchen-Sucuk','سجق دجاج'],
+  ['kiyma_orta','et',250,24,0,17,0,0,100,'','my','','dana kıyma orta yağlı sote kırmızı et','Dana kıyma (orta yağlı, sote)','Minced beef (medium-fat, sautéed)','Говяжий фарш (средней жирности, обжаренный)','Rinderhack (mittelfett, angebraten)','لحم بقري مفروم (متوسط الدهن، مقلي)'],
+  ['tavuk_but_hasl','et',152,24,0,6,0,0,150,'','c','','tavuk but haşlama derisiz piliç','Tavuk but (haşlama, derisiz)','Chicken thigh (boiled, skinless)','Куриное бедро (отварное, без кожи)','Hähnchenkeule (gekocht, ohne Haut)','فخذ دجاج (مسلوق، بدون جلد)'],
+  // Balık & deniz ürünü
+  ['istavrit_izgara','balik',155,20,0,8,0,0,150,'','f','','istavrit ızgara deniz ürünü','İstavrit (ızgara)','Horse mackerel (grilled)','Ставрида (гриль)','Stöcker (gegrillt)','سمك الصوريل (مشوي)'],
+  ['cipura_firin','balik',140,22,0,6,0,0,200,'','f','','çipura fırın deniz ürünü','Çipura (fırın)','Sea bream (baked)','Дорадо (запечённая)','Dorade (Ofen)','دنيس (بالفرن)'],
+  ['somon_bug','balik',190,21,1,11,0.5,0.2,150,'','f','','somon buğulama haşlama deniz ürünü','Somon (buğulama)','Salmon (steamed)','Лосось (на пару)','Lachs (gedünstet)','سلمون (على البخار)'],
+  ['karides_sote','balik',150,20,1.5,7,0.5,0.2,150,'','fd','','karides sote tereyağlı sarımsaklı deniz ürünü','Karides sote (tereyağlı)','Sautéed shrimp (with butter)','Креветки соте (на сливочном масле)','Garnelen in Butter (sautiert)','روبيان سوتيه (بالزبدة)'],
+  ['panga_firin','balik',90,15,0,3,0,0,200,'','f','','panga fileto pangasius fırın beyaz balık','Panga fileto (fırın)','Pangasius fillet (baked)','Филе пангасиуса (запечённое)','Pangasiusfilet (Ofen)','فيليه سمك البانجا (بالفرن)'],
+  // Yumurta & bitkisel
+  ['kabakli_yumurta','yumurta',100,6,3,7,2,0.8,200,'','e','','kabaklı yumurta kabak sote kahvaltı tava','Kabaklı yumurta','Eggs with zucchini','Яйца с кабачками','Eier mit Zucchini','بيض بالكوسا'],
+  ['avokado_yumurta','yumurta',165,6.7,5.8,13.8,0.8,4.2,1,'adet:120','e','','fırında avokadolu yumurta avokado kahvaltı','Fırında avokadolu yumurta','Baked egg in avocado','Яйцо, запечённое в авокадо','Im Ofen gebackenes Ei in Avocado','بيض مخبوز في الأفوكادو'],
+  ['tofu_scramble','bitkisel',130,12,3,8,1,1.5,150,'','','','tofu çırpma vegan yumurta yerine sebzeli kahvaltı','Sebzeli tofu çırpma (vegan)','Tofu scramble (vegan, with vegetables)','Скрэмбл из тофу (веганский, с овощами)','Tofu-Rührei (vegan, mit Gemüse)','توفو مخفوق (نباتي، بالخضار)'],
+  // Baklagil: kuru tartım
+  ['nohut_kuru','baklagil',378,20.5,63,6,11,12.2,50,'','','','nohut kuru tartım çiğ pişmemiş sporcu meal prep','Nohut (kuru tartım)','Chickpeas (dry weight)','Нут (вес в сухом виде)','Kichererbsen (Trockengewicht)','حمص (الوزن جافاً)'],
+  ['mercimek_kuru','baklagil',358,24,63,2.2,2,11,50,'','','','kırmızı mercimek kuru tartım çiğ pişmemiş','Kırmızı mercimek (kuru tartım)','Red lentils (dry weight)','Красная чечевица (вес в сухом виде)','Rote Linsen (Trockengewicht)','عدس أحمر (الوزن جافاً)'],
+  ['kfasulye_kuru','baklagil',333,23,60,0.9,2.2,15,50,'','','','kuru fasulye kuru tartım çiğ pişmemiş','Kuru fasulye (kuru tartım)','White beans (dry weight)','Белая фасоль (вес в сухом виде)','Weiße Bohnen (Trockengewicht)','فاصولياء بيضاء (الوزن جافة)'],
+  // Ana yemek
+  ['oturtma','anayemek',110,5.5,6,7,3.5,2.5,250,'','my','','patlıcan oturtma kıymalı patlıcan fırın','Patlıcan oturtma','Eggplant oturtma (with minced meat)','Отуртма (баклажаны с фаршем)','Auberginen-Oturtma (mit Hackfleisch)','أوتورتما الباذنجان (باللحم المفروم)'],
+  ['patates_yemegi','anayemek',90,1.8,13,3.5,2,1.8,250,'','','','patates yemeği etsiz salçalı sulu','Patates yemeği (etsiz, salçalı)','Potato stew (meatless, with tomato paste)','Тушёный картофель (без мяса, с томатной пастой)','Kartoffeleintopf (ohne Fleisch, mit Tomatenmark)','يخنة البطاطس (بدون لحم، بمعجون الطماطم)'],
+  ['tavuk_bezelye','anayemek',95,8,8,3.5,3,3,250,'','c','','tavuklu bezelye yemeği piliç havuçlu','Tavuklu bezelye','Peas with chicken','Горошек с курицей','Erbsen mit Hähnchen','بازلاء بالدجاج'],
+  ['tavuk_nohut','anayemek',125,10,12,4,2,4,250,'','c','','tavuklu nohut yemeği piliç','Tavuklu nohut','Chickpeas with chicken','Нут с курицей','Kichererbsen mit Hähnchen','حمص بالدجاج'],
+  // Pilav, makarna & patates
+  ['sehriyeli_bulgur','pilav',130,3.8,22,3,0.4,4,150,'','','servis:50','şehriyeli bulgur pilavı','Şehriyeli bulgur pilavı','Bulgur pilaf with vermicelli','Булгур с вермишелью','Bulgur-Pilaw mit Fadennudeln','برغل بالشعيرية'],
+  ['bezelyeli_pilav','pilav',150,3.5,26,3.5,1,1.5,150,'','','servis:50','bezelyeli pirinç pilavı','Bezelyeli pirinç pilavı','Rice pilaf with peas','Рисовый плов с горошком','Reis-Pilaw mit Erbsen','أرز بالبازلاء'],
+  ['tavuklu_bulgur','pilav',145,8,18,4,0.8,3.5,250,'','c','','tavuklu bulgur pilavı piliç','Tavuklu bulgur pilavı','Bulgur pilaf with chicken','Булгур с курицей','Bulgur-Pilaw mit Hähnchen','برغل بالدجاج'],
+  ['kinoa_pilav','pilav',125,4.2,19,3.5,1,2.8,150,'','','','sebzeli kinoa pilavı','Sebzeli kinoa pilavı','Quinoa pilaf with vegetables','Киноа с овощами','Quinoa-Pilaw mit Gemüse','كينوا بالخضار'],
+  ['kremali_makarna','pilav',180,5.5,22,8,1.5,1.2,250,'','dy','','kremalı mantarlı makarna krema','Kremalı mantarlı makarna','Creamy mushroom pasta','Паста со сливочно-грибным соусом','Nudeln mit Pilz-Sahne-Soße','معكرونة بالكريمة والفطر'],
+  ['tereyagli_makarna','pilav',180,5.5,30,4.5,0.6,1.8,200,'','y','','tereyağlı makarna sade makarna spagetti','Tereyağlı makarna','Buttered pasta','Макароны со сливочным маслом','Nudeln mit Butter','معكرونة بالزبدة'],
+  ['patates_baharatli','pilav',115,2,18,4,0.8,2.2,150,'','','','fırın baharatlı patates elma dilim zeytinyağlı','Fırın baharatlı patates (elma dilim)','Oven-roasted spiced potato wedges','Запечённые картофельные дольки со специями','Ofenkartoffelspalten (gewürzt)','بطاطس مشوية بالفرن متبلة'],
+  // Çorbalar
+  ['tavuk_sebze_corba','corba',42,3.5,4.5,1.2,1.5,1,250,'','c','kepce:125','tavuklu sebze çorbası piliç havuç patates','Tavuklu sebze çorbası','Chicken & vegetable soup','Куриный суп с овощами','Hühnersuppe mit Gemüse','شوربة الدجاج بالخضار'],
+  ['terbiyeli_tavuk_corba','corba',55,4,5,2,0.5,0.3,250,'','ce','kepce:125','terbiyeli tavuk çorbası limonlu yumurtalı ekşili','Terbiyeli tavuk çorbası','Chicken soup with egg-lemon sauce','Куриный суп с яично-лимонной заправкой','Hühnersuppe mit Ei-Zitronen-Legierung','شوربة الدجاج بصلصة البيض والليمون'],
+  ['kereviz_corba','corba',42,1.2,5,2,2,1.5,250,'','d','kepce:125','kereviz çorbası sebze çorbası','Kereviz çorbası','Celeriac soup','Суп из сельдерея','Selleriesuppe','شوربة الكرفس'],
+  ['bezelye_corba','corba',55,3,7.5,1.5,2.5,2.2,250,'','','kepce:125','bezelye çorbası sebze çorbası','Bezelye çorbası','Pea soup','Суп из зелёного горошка','Erbsensuppe','شوربة البازلاء'],
+  // Salata
+  ['semizotu_salata','salata',55,1.8,3.5,4,1,1,150,'','','','semizotu salatası zeytinyağlı limonlu','Semizotu salatası (zeytinyağlı)','Purslane salad (with olive oil)','Салат из портулака (с оливковым маслом)','Portulaksalat (mit Olivenöl)','سلطة البقلة (بزيت الزيتون)'],
+  ['domates_salata','salata',48,0.9,4.5,3,2.8,1.2,150,'','','','soğanlı domates salatası zeytinyağlı','Soğanlı domates salatası','Tomato & onion salad','Салат из помидоров с луком','Tomaten-Zwiebel-Salat','سلطة الطماطم والبصل'],
+  ['meksika_salata','salata',100,4,14,3.5,3,4,150,'','','','mısırlı fasulyeli salata meksika salatası kırmızı fasulye','Mısırlı fasulyeli salata (Meksika usulü)','Mexican salad (corn & kidney beans)','Мексиканский салат (кукуруза и фасоль)','Mexikanischer Salat (Mais & Kidneybohnen)','سلطة مكسيكية (ذرة وفاصولياء حمراء)'],
+  // Sebze
+  ['sebze_sote','sebze',55,1.5,6,3,3.5,2.2,200,'','','','karışık sebze sote kabak biber havuç tava','Karışık sebze sote','Sautéed mixed vegetables','Овощи соте (ассорти)','Gemischtes Pfannengemüse','خضار مشكلة سوتيه'],
+  ['kabak_sote','sebze',45,1.3,3.5,3,2,1.1,200,'','','','kabak sote zeytinyağlı sarımsaklı','Kabak sote','Sautéed zucchini','Кабачки соте','Zucchini aus der Pfanne','كوسا سوتيه'],
+  ['havuc_hasl','sebze',35,0.8,8.2,0.2,3.5,3,100,'','','','havuç haşlama garnitür','Havuç (haşlama)','Carrots (boiled)','Морковь (отварная)','Karotten (gekocht)','جزر (مسلوق)'],
+  ['garnitur','sebze',55,3,10,0.4,4,3.5,100,'','','','garnitür bezelye havuç mısır haşlama','Garnitür (bezelye, havuç, mısır)','Mixed vegetable side (peas, carrots & corn)','Овощной гарнир (горошек, морковь, кукуруза)','Gemüsebeilage (Erbsen, Karotten & Mais)','طبق جانبي من الخضار (بازلاء وجزر وذرة)'],
+  ['mantar_izgara','sebze',28,3.1,3.3,0.5,1.7,1,150,'','','','mantar ızgara közde','Mantar (ızgara)','Mushrooms (grilled)','Грибы (гриль)','Champignons (gegrillt)','فطر (مشوي)'],
+  ['pazi_hasl','sebze',22,1.9,4.1,0.1,1.1,2.1,150,'','','','pazı haşlama yeşil yapraklı sebze','Pazı (haşlama)','Swiss chard (boiled)','Мангольд (отварной)','Mangold (gekocht)','سلق (مسلوق)'],
+  ['semizotu_cig','sebze',23,2,3.4,0.4,1,1,100,'','','','semizotu çiğ yeşillik','Semizotu (çiğ)','Purslane (raw)','Портулак (сырой)','Portulak (roh)','بقلة (نيئة)'],
+  // Hazır & sandviç
+  ['konserve_sarma','hazir',150,2.5,20,7,2,2,100,'','','','yaprak sarma konserve zeytinyağlı hazır','Zeytinyağlı yaprak sarma (konserve)','Stuffed vine leaves in olive oil (canned)','Долма в виноградных листьях (консервы)','Gefüllte Weinblätter in Olivenöl (Konserve)','ورق عنب محشي بزيت الزيتون (معلب)'],
+  ['mikrodalga_misir','hazir',480,8,55,25,1,9,30,'','ty','','mikrodalga patlamış mısır tereyağlı paket','Mikrodalga patlamış mısır (tereyağlı)','Microwave popcorn (butter flavour)','Попкорн для микроволновки (со сливочным вкусом)','Mikrowellen-Popcorn (Butter)','فشار الميكروويف (بنكهة الزبدة)'],
+  ['beyazp_tost','sandvic',188,12.3,20.1,6.6,2.8,2.9,1,'adet:110','dt','','beyaz peynirli tost tam buğday peynirli tost kahvaltı','Beyaz peynirli tost (tam buğday)','White cheese toastie (whole-wheat)','Тост с белым сыром (цельнозерновой)','Weißkäse-Toast (Vollkorn)','توست بالجبنة البيضاء (قمح كامل)'],
+  ['sucuk_ekmek','sandvic',285,10.4,27.5,14.6,3.2,1.7,1,'adet:190','mty','','sucuk ekmek yarım ekmek arası sokak','Sucuk ekmek (yarım ekmek)','Grilled sucuk in bread (half loaf)','Суджук в хлебе (полбатона)','Sucuk im Brot (halbes Brot)','سجق تركي في الخبز (نصف رغيف)'],
+  // Kuruyemiş
+  ['antep_tuzlu','kuruyemis',570,20,28,45,7.7,10,30,'','t','','antep fıstığı kavrulmuş tuzlu çerez','Antep fıstığı (kavrulmuş, tuzlu)','Pistachios (roasted, salted)','Фисташки (жареные, солёные)','Pistazien (geröstet, gesalzen)','فستق حلبي (محمص ومملح)'],
+  ['kaju_tuzlu','kuruyemis',580,15,33,46,5,3,30,'','t','','kaju kavrulmuş tuzlu çerez','Kaju (kavrulmuş, tuzlu)','Cashews (roasted, salted)','Кешью (жареный, солёный)','Cashewkerne (geröstet, gesalzen)','كاجو (محمص ومملح)'],
+  // Meyve
+  ['pitaya','meyve',60,1.2,13,0.4,8,3,150,'','','','ejder meyvesi pitaya egzotik meyve','Ejder meyvesi (pitaya)','Dragon fruit (pitaya)','Питахайя (драконий фрукт)','Drachenfrucht (Pitaya)','فاكهة التنين (بيتايا)'],
+  ['papaya','meyve',43,0.5,11,0.3,7.8,1.7,150,'','','','papaya egzotik meyve','Papaya','Papaya','Папайя','Papaya','بابايا'],
+  ['lici','meyve',66,0.8,16.5,0.4,15.2,1.3,100,'','','','liçi egzotik meyve','Liçi','Lychee','Личи','Litschi','ليتشي'],
+  ['musmula','meyve',47,0.5,10.6,0.2,8,5,4,'adet:25','','','muşmula döngel kış meyvesi','Muşmula','Medlar','Мушмула','Mispel','زعرور (مشملة)'],
+  ['goji','meyve',349,14.3,77,0.4,46,13,15,'','','yk:10','goji meyvesi kuru goji berry kurutulmuş','Goji meyvesi (kuru)','Goji berries (dried)','Ягоды годжи (сушёные)','Goji-Beeren (getrocknet)','توت الغوجي (مجفف)']
+);
+Object.assign(ALERJEN_EK, {
+  protein_yogurt_cilek:'sut,cilek,tatlandirici', protein_yogurt_seftali:'sut,tatlandirici', protein_yogurt_orman:'sut,cilek,tatlandirici',
+  cilekli_yogurt:'sut,cilek', seftalili_yogurt:'sut', orman_meyveli_yogurt:'sut,cilek', yogurt_cilek_ev:'sut,cilek', suzme_meyve:'sut',
+  keci_yogurdu:'sut', koyun_yogurdu:'sut', laktozsuz_yogurt:'sut', kaymakli_yogurt:'sut',
+  yayik_ayran:'sut', protein_ayran:'sut', muzlu_sut:'sut,muz', cilekli_sut:'sut,cilek,gida_boyasi', sut_muz_ev:'sut,muz', balli_sut:'sut,bal', zerdecalli_sut:'sut,tarcin', kakao_sut:'sut,kakao',
+  lor_yagsiz:'sut', lor_dereotu:'sut,zeytin', krem_peynir_tam:'sut', civil:'sut', mavi_peynir:'sut,histamin', gouda:'sut,histamin', ricotta:'sut', mini_peynir:'sut', eritme_peynir:'sut',
+  protein_puding_vanilya:'sut,tatlandirici', protein_sut_kakao:'sut,kakao,tatlandirici', protein_gofret:'sut,gluten,bugday,soya,kakao,tatlandirici', probar_sekersiz:'sut,soya,kakao,tatlandirici',
+  mug_cake:'sut,yumurta,gluten,yulaf,kakao',
+  kayisi_badem:'kayisi,sulfit,kuruyemis,badem', leblebi_uzum:'nohut,uzum,sulfit', findik_uzum:'kuruyemis,findik,uzum,sulfit', trail_mix:'kuruyemis,badem,findik,ceviz,kaju,uzum,kayisi,sulfit',
+  cerez_karisik:'nohut,yerfistigi,kabak_cekirdegi,aycekirdegi', sekerli_leblebi:'nohut,gida_boyasi', hurma_fistik:'hurma,yerfistigi', muz_fistik:'muz,yerfistigi', elma_ceviz:'elma,kuruyemis,ceviz',
+  peynir_ceviz:'sut,kuruyemis,ceviz', lor_meyve:'sut', patlak_labne:'pirinc,sut', ton_kraker:'balik,gluten,bugday,histamin,nikel', simit_peynir:'gluten,bugday,susam,uzum,sut',
+  granola_kase:'sut,gluten,yulaf,kuruyemis', acai_kase:'muz,gluten,yulaf',
+  musli_bar:'gluten,yulaf,kuruyemis', kuruyemis_bar:'kuruyemis,badem,findik,bal', yulaf_kraker:'gluten,yulaf,bugday', kraker_tuzlu:'gluten,bugday', biskuvi_sekersiz:'gluten,bugday,yulaf,tatlandirici',
+  yulaf_biskuvi:'gluten,yulaf,bugday', kremali_biskuvi:'gluten,bugday,sut,kakao', cikolatali_biskuvi:'gluten,bugday,sut,kakao,soya', incirli_biskuvi:'gluten,bugday,incir', bebe_biskuvi:'gluten,bugday,sut',
+  muz_yulaf_kurabiye:'muz,gluten,yulaf', fit_kek:'gluten,yulaf,muz,yumurta,sut', bitter85:'kakao,sut,kafein', bitter55:'kakao,sut,kafein', muz_cipsi:'muz', light_cips:'patates', jelibon:'gida_boyasi',
+  vanilya_puding:'sut', light_muhallebi:'sut,tatlandirici', frozen_yogurt:'sut', nice_cream:'muz,sut', kemalpasa:'gluten,bugday,sut,yumurta', kalburabasti:'gluten,bugday,kuruyemis,ceviz,sut,yumurta',
+  sutlu_nuriye:'gluten,bugday,sut,kuruyemis,findik', ekler:'gluten,bugday,sut,yumurta,kakao', mozaik_pasta:'gluten,bugday,sut,kakao,yumurta', havuclu_kek:'gluten,bugday,yumurta,havuc,kuruyemis,ceviz,tarcin',
+  elmali_kek:'gluten,bugday,yumurta,elma,tarcin,sut', islak_kek:'gluten,bugday,yumurta,sut,kakao', cikolatali_muffin:'gluten,bugday,yumurta,sut,kakao', donut:'gluten,bugday,sut,yumurta,soya',
+  cevizli_kurabiye:'gluten,bugday,kuruyemis,ceviz,sut,yumurta', tahinli_kurabiye:'gluten,bugday,susam', kakaolu_kurabiye:'gluten,bugday,kakao,sut,yumurta', elmali_kurabiye:'gluten,bugday,elma,tarcin,sut,yumurta',
+  acibadem:'kuruyemis,badem,yumurta', hosaf:'kayisi,uzum,sulfit',
+  cevizli_corek:'gluten,bugday,kuruyemis,ceviz,sut,yumurta', paskalya_coregi:'gluten,bugday,sut,yumurta', kiymali_pogaca:'gluten,bugday,kirmizi,sut,yumurta,sogan', yulafli_pogaca:'gluten,yulaf,bugday,sut,yumurta',
+  peynirli_acma:'gluten,bugday,sut,yumurta', zeytinli_acma:'gluten,bugday,sut,yumurta,zeytin', cikolatali_kruvasan:'gluten,bugday,sut,yumurta,kakao,soya', gul_boregi:'gluten,bugday,sut,yumurta',
+  tarcinli_rulo:'gluten,bugday,sut,yumurta,tarcin', cavdar_simit:'gluten,bugday,cavdar,susam,uzum',
+  cok_tahilli:'gluten,bugday,cavdar,yulaf,keten,susam', tandir_ekmek:'gluten,bugday', cevizli_ekmek:'gluten,bugday,kuruyemis,ceviz', zeytinli_ekmek:'gluten,bugday,zeytin', kepekli_gevrek:'gluten,bugday,arpa',
+  galeta_sade:'gluten,bugday',
+  su_kefiri:'', kefir_smoothie:'sut,muz,gluten,yulaf', yulaf_smoothie:'sut,muz,gluten,yulaf', hazir_soguk_kahve:'kafein,sut', sutlu_turk_kahvesi:'kafein,sut', frappe:'kafein,sut', visne_nektari:'', zencefil_cayi:'narenciye',
+  dana_jambon:'kirmizi,histamin', tavuk_sucuk:'tavuk,sarimsak,kimyon,biber,histamin', kiyma_orta:'kirmizi', tavuk_but_hasl:'tavuk',
+  istavrit_izgara:'balik', cipura_firin:'balik', somon_bug:'balik', karides_sote:'kabuklu,sut,sarimsak', panga_firin:'balik',
+  kabakli_yumurta:'yumurta,kabak', avokado_yumurta:'yumurta,avokado', tofu_scramble:'soya,biber,sogan',
+  nohut_kuru:'nohut', mercimek_kuru:'mercimek', kfasulye_kuru:'fasulye',
+  oturtma:'patlican,kirmizi,domates,biber,sogan', patates_yemegi:'patates,domates,sogan,biber', tavuk_bezelye:'tavuk,bezelye,havuc,patates,sogan,domates', tavuk_nohut:'tavuk,nohut,sogan,domates',
+  sehriyeli_bulgur:'gluten,bugday', bezelyeli_pilav:'pirinc,bezelye', tavuklu_bulgur:'tavuk,gluten,bugday,domates', kinoa_pilav:'havuc,bezelye,sogan,zeytin', kremali_makarna:'gluten,bugday,sut,mantar',
+  tereyagli_makarna:'gluten,bugday,sut', patates_baharatli:'patates,zeytin,biber',
+  tavuk_sebze_corba:'tavuk,havuc,patates,kabak,sogan', terbiyeli_tavuk_corba:'tavuk,yumurta,narenciye,gluten,bugday,pirinc', kereviz_corba:'kereviz,sut,patates,sogan', bezelye_corba:'bezelye,patates,sogan',
+  semizotu_salata:'domates,sogan,zeytin,narenciye', domates_salata:'domates,sogan,zeytin', meksika_salata:'misir,fasulye,biber,domates,sogan,zeytin',
+  sebze_sote:'kabak,biber,havuc,sogan,zeytin', kabak_sote:'kabak,zeytin,sarimsak', havuc_hasl:'havuc', garnitur:'bezelye,havuc,misir', mantar_izgara:'mantar', pazi_hasl:'', semizotu_cig:'',
+  konserve_sarma:'pirinc,uzum,sogan,zeytin,nane', mikrodalga_misir:'misir,sut', beyazp_tost:'gluten,bugday,sut,domates', sucuk_ekmek:'kirmizi,gluten,bugday,sarimsak,kimyon,biber,domates,histamin',
+  antep_tuzlu:'kuruyemis,antepfistigi', kaju_tuzlu:'kuruyemis,kaju',
+  pitaya:'', papaya:'', lici:'', musmula:'', goji:'sulfit'
+});
+// Kategori düzeltmeleri (yanlış grupta duranlar): dünya mutfağı yemekleri "Ana Yemek"ten Dünya Mutfağı'na, meyveli yoğurt süt ürünlerine, fava mezelere
+Object.assign(KAT_DEGIS, {sushi:'dunya', chili:'dunya', lazanya:'dunya', risotto:'dunya', nohut_kori:'dunya', tavuk_fajita:'dunya', tavuk_teriyaki:'dunya', meyveli_yogurt:'sut', fava:'salata'});
+// Otomatik planda kullanılmaz: şekerli meyveli yoğurt/aromalı süt, işlenmiş peynir/şarküteri, tuzlu çerez, bisküvi-cips-şekerleme, pastane tatlıları, kremalı makarna, hazır kalemler ve kuru tartım
+DOKTOR_DISI_EK.push('cilekli_yogurt','seftalili_yogurt','orman_meyveli_yogurt','muzlu_sut','cilekli_sut','balli_sut','eritme_peynir','protein_gofret',
+  'cerez_karisik','sekerli_leblebi','bitter55','muz_cipsi','light_cips','jelibon','kraker_tuzlu','yulaf_biskuvi','kremali_biskuvi','cikolatali_biskuvi','incirli_biskuvi','bebe_biskuvi',
+  'vanilya_puding','frozen_yogurt','kemalpasa','kalburabasti','sutlu_nuriye','ekler','mozaik_pasta','havuclu_kek','elmali_kek','islak_kek','cikolatali_muffin','donut',
+  'cevizli_kurabiye','tahinli_kurabiye','kakaolu_kurabiye','elmali_kurabiye','acibadem','hosaf','cevizli_corek','paskalya_coregi','cikolatali_kruvasan','tarcinli_rulo',
+  'hazir_soguk_kahve','frappe','visne_nektari','dana_jambon','tavuk_sucuk','nohut_kuru','mercimek_kuru','kfasulye_kuru','kremali_makarna','konserve_sarma','mikrodalga_misir','sucuk_ekmek',
+  'antep_tuzlu','kaju_tuzlu');
+// Hamilelikte önerilmeyenler: küflü peynir, çiğ sütten yapılabilen geleneksel peynir, şarküteri (listeria), konserve ton
+HAMILE_DISI_EK.push('mavi_peynir','civil','dana_jambon','ton_kraker');
+POPULER.push('cevizli_corek','protein_yogurt_cilek','cilekli_yogurt','yayik_ayran','muzlu_sut','balli_sut','peynir_ceviz','simit_peynir','leblebi_uzum','trail_mix','cerez_karisik',
+  'peynirli_acma','kiymali_pogaca','cikolatali_kruvasan','gul_boregi','cevizli_kurabiye','havuclu_kek','islak_kek','mozaik_pasta','kemalpasa','beyazp_tost','sutlu_turk_kahvesi',
+  'tavuk_nohut','oturtma','patates_yemegi','sehriyeli_bulgur','bezelyeli_pilav','terbiyeli_tavuk_corba','domates_salata','sebze_sote','cipura_firin','istavrit_izgara','dana_jambon','bitter85');
+OGUN_ONERI.kahvalti.push('lor_yagsiz','lor_dereotu','civil','mini_peynir','cok_tahilli','tandir_ekmek','cevizli_ekmek','zeytinli_ekmek','cavdar_simit','yulafli_pogaca','kabakli_yumurta',
+  'avokado_yumurta','tofu_scramble','beyazp_tost');
+OGUN_ONERI.ara0.push('protein_yogurt_cilek','protein_yogurt_seftali','protein_yogurt_orman','yogurt_cilek_ev','suzme_meyve','granola_kase','lor_meyve','kayisi_badem','leblebi_uzum','findik_uzum',
+  'hurma_fistik','muz_fistik','elma_ceviz','peynir_ceviz','patlak_labne','ton_kraker','yulaf_kraker','biskuvi_sekersiz','muz_yulaf_kurabiye','kefir_smoothie','yulaf_smoothie','sut_muz_ev',
+  'protein_ayran','papaya','pitaya','musmula','lici');
+OGUN_ONERI.ogle.push('tavuk_nohut','tavuk_bezelye','oturtma','patates_yemegi','tavuklu_bulgur','kinoa_pilav','sehriyeli_bulgur','bezelyeli_pilav','tavuk_sebze_corba','terbiyeli_tavuk_corba',
+  'kereviz_corba','bezelye_corba','semizotu_salata','domates_salata','meksika_salata','cipura_firin','panga_firin','istavrit_izgara');
+OGUN_ONERI.ara1.push('protein_yogurt_cilek','protein_yogurt_seftali','protein_yogurt_orman','yogurt_cilek_ev','suzme_meyve','lor_meyve','trail_mix','kuruyemis_bar','musli_bar','hurma_fistik',
+  'muz_fistik','elma_ceviz','peynir_ceviz','patlak_labne','ton_kraker','yulaf_kraker','biskuvi_sekersiz','fit_kek','muz_yulaf_kurabiye','bitter85','kefir_smoothie','yulaf_smoothie','protein_ayran',
+  'protein_sut_kakao','probar_sekersiz','mug_cake','protein_puding_vanilya','light_muhallebi','nice_cream','papaya','pitaya','lici','musmula');
+OGUN_ONERI.aksam.push('cipura_firin','somon_bug','panga_firin','istavrit_izgara','karides_sote','tavuk_but_hasl','tavuk_bezelye','tavuk_nohut','oturtma','sebze_sote','kabak_sote','havuc_hasl',
+  'garnitur','mantar_izgara','pazi_hasl','semizotu_salata','domates_salata','patates_baharatli','kinoa_pilav','kereviz_corba','bezelye_corba','tavuk_sebze_corba','terbiyeli_tavuk_corba');
+OGUN_ONERI.gece.push('zerdecalli_sut','kakao_sut','laktozsuz_yogurt','keci_yogurdu','yogurt_cilek_ev','protein_puding_vanilya','light_muhallebi','zencefil_cayi','protein_yogurt_orman');
+// Entegrasyon notu (bu dosya p4i.js ile p4.js arasına girer; aşağıdaki kümeler sonraki parçalarda tanımlı olduğundan buradan değiştirilemez):
+// - p5.js SIVI kümesine eklenmeli (içecek yalnız içecekle değişsin, porsiyon ml olarak ölçeklensin): SIVI_EK2.forEach(id => SIVI.add(id));
+// - p4b.js LAKTOZ_DUSUK kümesine eklenmeli (laktozsuz yoğurt, olgun/yarı sert peynir): LAKTOZ_DUSUK_EK2.forEach(id => LAKTOZ_DUSUK.add(id));
+const SIVI_EK2 = ['yayik_ayran','protein_ayran','muzlu_sut','cilekli_sut','sut_muz_ev','balli_sut','zerdecalli_sut','kakao_sut','protein_sut_kakao','su_kefiri','kefir_smoothie','yulaf_smoothie',
+  'hazir_soguk_kahve','sutlu_turk_kahvesi','frappe','visne_nektari','zencefil_cayi'];
+const LAKTOZ_DUSUK_EK2 = ['laktozsuz_yogurt','gouda','mavi_peynir','mini_peynir'];
+
+// Yeni ara öğün seçenekleri "Önerilenler"de görünsün (02.11): liste yalnız ilk 45 öneriyi gösteriyor, sona eklenenler hiç
+// görünmüyordu. İlk 6 eski önerinin ardından yeni ve eski seçenekler sırayla dizilir; kalan eski öneriler sonra gelir.
+function oneriOneAl(ogun, ids){
+  const l = OGUN_ONERI[ogun]; if (!l) return;
+  const kalan = l.filter(id => !ids.includes(id)), sonuc = kalan.slice(0, 6), son = kalan.slice(6);
+  for (let i = 0; i < Math.max(ids.length, son.length); i++){ if (i < ids.length) sonuc.push(ids[i]); if (i < son.length) sonuc.push(son[i]); }
+  l.splice(0, l.length, ...new Set(sonuc));
+}
+oneriOneAl('ara0', ['protein_yogurt_cilek', 'yogurt_cilek_ev', 'kayisi_badem', 'meyveli_yogurt', 'elma_ceviz', 'leblebi_uzum', 'protein_yogurt_orman', 'peynir_ceviz', 'findik_uzum', 'suzme_meyve', 'muz_fistik', 'kefir_smoothie', 'lor_meyve']);
+oneriOneAl('ara1', ['protein_yogurt_cilek', 'kayisi_badem', 'meyveli_yogurt', 'trail_mix', 'elma_ceviz', 'protein_yogurt_orman', 'leblebi_uzum', 'hurma_fistik', 'yogurt_cilek_ev', 'peynir_ceviz', 'protein_ayran', 'muz_fistik', 'suzme_meyve', 'lor_meyve', 'kefir_smoothie']);
+oneriOneAl('gece', ['zerdecalli_sut', 'laktozsuz_yogurt', 'yogurt_cilek_ev', 'protein_puding_vanilya']);
 // ---------- Yemekler ----------
 // [id, kategori, kcal, protein, karb, yağ, şeker, lif (100 g), varsayılan miktar, 'birim:gram', içerik (m kırmızı et, c tavuk, f balık, e yumurta, d süt), porsiyon notu, arama kelimeleri, tr, en, ru, de, ar]
 const YEMEK_SATIR = [
@@ -3427,6 +3723,7 @@ const ALERJEN_EK2 = {
 // Kurala bağlı etiketler: içerik alerjenine göre türetilir
 const LAKTOZ_DUSUK = new Set(['kasar','kasar_light','cheddar','parmesan','tulum','orgu_peyniri','dil_peyniri','keci_peyniri','hellim','cerkez_peyniri','ezine','beyazp','beyazp_tam','mozzarella','tereyagi','ghee','whey_izolat','laktozsuz_sut','kazein']);
 LAKTOZ_DUSUK_EK.forEach(id => LAKTOZ_DUSUK.add(id));   // p4i.js olgun peynirler
+LAKTOZ_DUSUK_EK2.forEach(id => LAKTOZ_DUSUK.add(id));  // p4j.js laktozsuz yoğurt, olgun peynirler
 const HISTAMIN_KAYNAK = ['domates','ispanak','patlican','avokado','cilek','kakao'], FODMAP_KAYNAK = ['sogan','sarimsak','bugday','nohut','mercimek','fasulye','bezelye','elma','armut','bal','karnabahar','mantar','kayisi','incir'];
 const NIKEL_KAYNAK = ['kakao','kuruyemis','soya','yulaf','nohut','mercimek','fasulye','ispanak'];
 YEMEKLER.forEach(f => {
@@ -3552,6 +3849,7 @@ const SIVI = new Set(['sut','kefir','ayran','soya_sut','kahve','yesilcay','smoot
   'sicak_cikolata','nar_suyu','havuc_suyu','meyve_suyu_paket','yesil_smoothie','milkshake','kombucha','boza','meyveli_soda','ice_tea','enerji_icecegi','enerji_zero','bira','kirmizi_sarap','beyaz_sarap','raki',
   'protein_sut','sporcu_icecegi']);
 SIVI_EK.forEach(id => SIVI.add(id));   // p4i.js içecekleri
+SIVI_EK2.forEach(id => SIVI.add(id));  // p4j.js içecekleri (ayran, kefir, sütlü içecekler)
 // Kalori yetmezse ara öğüne eklenecek besleyici seçenekler (ilk uygun olan)
 const EK_SECENEK = [[['yulaf',50],['sut',250],['fistikezme',15]], [['yulaf',50],['soya_sut',250],['fistikezme',15]], [['tamekmek',2],['fistikezme',20],['domates',100]],
   [['badem',30],['galeta',2]], [['tpatates',200],['zeytinyagi',5]], [['kinoa',150],['nohut',80]], [['muz',1],['ceviz',20]], [['patlak',4],['hurma',3]]];   // sona doğru alerjiye uygun seçenekler
@@ -4479,6 +4777,19 @@ function ogeEkle(oi, f, g){
   kaydet(); ciz();
   toast(gecmisMi(aktif) ? T('tAddedPast', {d: etiket(aktif)}) : T('tAdded', {y: y.ad}));
 }
+// Çoklu seçimle birden çok yemeği tek seferde ekler (tek kayıt, tek çizim, tek bildirim)
+function ogelerEkle(oi, liste){
+  if (liste.length === 1) return ogeEkle(oi, liste[0][0], liste[0][1]);
+  const o = menuYaz(aktif)[oi];
+  liste.forEach(([f, g]) => {
+    const y = yemek(f);
+    o.ogeler.push({f, g});
+    sonSecimKaydet(o.id, f); miktarHatirla(o.id, f, g);
+    logEkle('ekle', aktif, T('lAdd', {o: ogunAd(o), y: y.ad, m: miktarYazi(y, g)}));
+  });
+  kaydet(); ciz();
+  toast(gecmisMi(aktif) ? T('tAddedPast', {d: etiket(aktif)}) : T('tCokluEklendi', {n: liste.length}));
+}
 function ogeDegis(oi, ii, f, g){
   const o = menuYaz(aktif)[oi], eski = o.ogeler[ii];
   if (eski.f === f && eski.g === g) return;
@@ -4630,7 +4941,7 @@ function benzerler(fid, uygun = profilUygun(D.profil)){
 // opts.ogun + opts.sonra: başkası için program ekranı (profil filtresi yok, seçim geri çağrıyla döner)
 function secimAc(opts){
   const ogun = opts.ogun || menuOku(aktif)[opts.oi];
-  SE = {...opts, ogunId: ogun.id, q:'', sec:null, g:0};
+  SE = {...opts, ogunId: ogun.id, q:'', sec:null, g:0, coklu: new Map()};   // coklu: işaretlenen yemekler (kimlik → miktar)
   SE.uygun = opts.koc ? () => true : profilUygun(D.profil);
   SE.son = sonSecilenler(ogun.id).filter(f => SE.uygun(yemek(f)));
   SE.mevcut = SE.ii !== undefined ? {...ogun.ogeler[SE.ii]} : null;
@@ -4654,6 +4965,40 @@ function mevcutKart(){
   const f = yemek(SE.mevcut.f);
   return `<div class="cur"><small>${T('current')}</small><b>${esc(f.ad)} · ${miktarYazi(f, SE.mevcut.g)}</b><br><small>${bilgi(besin(SE.mevcut.f, SE.mevcut.g))}</small></div>`;
 }
+// Dokunmatikte güvenilir dokunuş: kaydırma yavaşlarken ilk dokunuş yalnız kaydırmayı durdurup "click" üretmiyordu
+// ("Bununla değiştir" iki basışta çalışıyordu, 02.11). Kısa ve kıpırdamadan biten dokunuş doğrudan işlem sayılır.
+function hizliTik(el, fn){
+  if (!el) return;
+  let x0 = null, y0 = 0, t0 = 0, son = 0;
+  el.addEventListener('touchstart', e => { const t = e.changedTouches[0]; x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); }, {passive: true});
+  el.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const t = e.changedTouches[0], ok = Math.abs(t.clientX - x0) < 12 && Math.abs(t.clientY - y0) < 12 && Date.now() - t0 < 800;
+    x0 = null;
+    if (!ok || el.disabled) return;
+    e.preventDefault(); son = Date.now(); fn(e);
+  });
+  el.addEventListener('click', e => { if (Date.now() - son < 900) return; fn(e); });
+}
+// Çoklu ekleme: işaretlenen yemeğin varsayılan miktarı = bu öğünde en son kullanılan miktar, yoksa yemeğin varsayılanı
+const cokluMiktar = id => (!SE.koc && D.miktar && D.miktar[SE.ogunId] && D.miktar[SE.ogunId][id]) || yemek(id).d;
+function cokluCubuk(){
+  const c = $('cokluBar'); if (!c) return;
+  const n = SE.coklu.size;
+  c.hidden = !n;
+  if (n) $('cokluEkle').textContent = T('cokluEkle', {n});
+}
+function cokluUygula(){
+  const liste = [...SE.coklu].filter(([, g]) => g > 0);
+  if (!liste.length) return;
+  kapat();
+  if (SE.sonraCoklu) SE.sonraCoklu(liste);
+  else if (SE.sonra) liste.forEach(([f, g]) => SE.sonra(f, g));
+  else {
+    capaEl = $('ogunler').querySelectorAll('.meal')[SE.oi] || null;
+    ogelerEkle(SE.oi, liste);
+  }
+}
 function listeGorunumu(){
   const lejant = `<div class="legend"><span><i style="background:var(--green)"></i>${T('good')}</span><span><i style="background:var(--red)"></i>${T('bad')}</span><span>${T('legendRule')}</span></div>`;
   const ipu = SE.mevcut ? `<div class="hint" style="margin-top:6px">${T('diffsFor', {g: yuv(gramOf(yemek(SE.mevcut.f), SE.mevcut.g))})}</div>${lejant}` : '';
@@ -4661,12 +5006,18 @@ function listeGorunumu(){
     <input class="search" id="ara" type="text" inputmode="search" enterkeyhint="search" name="yemek-ara" role="searchbox" aria-autocomplete="list" placeholder="${esc(T('searchPh'))}" value="${esc(SE.q)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" data-lpignore="true">
     <div class="chips" id="kategoriler"></div>${ipu}
     <div class="found" id="bulunan"></div>
-    <ul class="flist" id="flist"></ul>
-    <button class="btn ghost full" style="margin-top:12px" id="ozelEkle">${T('addCustom')}</button>`;
+    ${SE.mod === 'ekle' ? `<div class="hint coklu-ipucu">${esc(T('cokluIpucu'))}</div>` : ''}
+    <ul class="flist${SE.mod === 'ekle' ? ' coklu' : ''}" id="flist"></ul>
+    <button class="btn ghost full" style="margin-top:12px" id="ozelEkle">${T('addCustom')}</button>
+    ${SE.mod === 'ekle' ? `<div class="acts alt-sabit" id="cokluBar" hidden><button class="btn ghost" id="cokluTemizle">${T('cokluTemizle')}</button><button class="btn green" id="cokluEkle"></button></div>` : ''}`;
   $('ara').addEventListener('input', e => { SE.q = e.target.value; listeCiz(); });
+  if ($('cokluBar')){
+    hizliTik($('cokluEkle'), cokluUygula);
+    $('cokluTemizle').onclick = () => { SE.coklu.clear(); listeCiz(); };
+  }
   $('ozelEkle').addEventListener('click', ozelYemekFormu);
   // Klavye açıkken sonuca/gruba dokununca arama kutusu odağı bırakmasın: liste kaymaz, ilk dokunuş tutar
-  $('sbody').onmousedown = e => { if (document.activeElement && document.activeElement.id === 'ara' && e.target.closest('.frow, .chip')) e.preventDefault(); };
+  $('sbody').onmousedown = e => { if (document.activeElement && document.activeElement.id === 'ara' && e.target.closest('.frow, .chip, .fcek, #cokluBar')) e.preventDefault(); };
   geriAyarla(null);
   kategoriCiz(); listeCiz();
 }
@@ -4710,9 +5061,16 @@ function listeCiz(){
     const alt = eski ? farkPilleri(eski, besin(f.id, esdegerMiktar(f.id))) : '';
     const n = (sayac[f.id] ? `<em>${T('times', {n: sayac[f.id].n})}</em>` : '') + (uygun(f) ? '' : `<em class="uyg">${T('uygunDegil')}</em>`);
     const ip = ipucu(f);
-    return `<li><button class="frow" data-fid="${f.id}"><b>${isaretle(f.ad, A)}${n}</b><small>100 ${T('g')}: ${f.k} ${T('kcal')} · ${T('aP')} ${sayi(f.p)} · ${T('aK')} ${sayi(f.c)} · ${T('aS')} ${sayi(f.s)} · ${T('aY')} ${sayi(f.y)}${ip ? ' · ' + esc(ip) : ''}</small>${alt}</button></li>`;
+    const kutu = SE.mod === 'ekle' ? `<label class="fcek"><input type="checkbox" data-coklu="${f.id}"${SE.coklu.has(f.id) ? ' checked' : ''} aria-label="${esc(T('cokluSec', {y: f.ad}))}"></label>` : '';
+    return `<li>${kutu}<button class="frow" data-fid="${f.id}"><b>${isaretle(f.ad, A)}${n}</b><small>100 ${T('g')}: ${f.k} ${T('kcal')} · ${T('aP')} ${sayi(f.p)} · ${T('aK')} ${sayi(f.c)} · ${T('aS')} ${sayi(f.s)} · ${T('aY')} ${sayi(f.y)}${ip ? ' · ' + esc(ip) : ''}</small>${alt}</button></li>`;
   }).join('') : `<li class="empty">${T('noResult')}</li>`;
-  $('flist').querySelectorAll('[data-fid]').forEach(b => b.onclick = () => { if ($('ara')) $('ara').blur(); SE.sec = b.dataset.fid; SE.g = esdegerMiktar(SE.sec); detayGorunumu(); });
+  $('flist').querySelectorAll('[data-fid]').forEach(b => b.onclick = () => { if ($('ara')) $('ara').blur(); SE.sec = b.dataset.fid; SE.g = SE.coklu.get(SE.sec) || (SE.mod === 'ekle' ? cokluMiktar(SE.sec) : esdegerMiktar(SE.sec)); detayGorunumu(); });
+  $('flist').querySelectorAll('[data-coklu]').forEach(c => c.onchange = () => {
+    const id = c.dataset.coklu;
+    if (c.checked) SE.coklu.set(id, cokluMiktar(id)); else SE.coklu.delete(id);
+    cokluCubuk();
+  });
+  cokluCubuk();
 }
 function kiyasKarti(eskiF, eskiM, yeniF, yeniM){
   const eski = besin(eskiF.id, eskiM), yeni = besin(yeniF.id, yeniM);
@@ -4734,8 +5092,10 @@ function kiyasKarti(eskiF, eskiM, yeniF, yeniM){
 }
 function detayGorunumu(){
   const f = yemek(SE.sec), adim = f.a ? 1 : 10;
+  const secimli = SE.mod === 'ekle' && [...SE.coklu.keys()].some(k => k !== SE.sec);   // başka işaretli yemek varsa
   const butonlar = {
-    ekle: `<button class="btn green" id="onay">${T('addToMeal')}</button>`,
+    ekle: secimli ? `<button class="btn ghost" id="secimeEkle">${T('cokluSecimeEkle')}</button><button class="btn green" id="onay">${T('cokluEkle', {n: new Set([...SE.coklu.keys(), SE.sec]).size})}</button>`
+      : `<button class="btn green" id="onay">${T('addToMeal')}</button>`,
     degis: `<button class="btn green" id="onay">${T('replaceWith')}</button>`,
     kiyas: `<button class="btn ghost" id="kapatBtn">${T('justCompare')}</button><button class="btn green" id="onay">${T('replaceWith')}</button>`
   }[SE.mod];
@@ -4749,8 +5109,8 @@ function detayGorunumu(){
     </div>
     <div class="hint" style="text-align:center" id="birimYazi"></div>
     <div id="karsi"></div>
-    <div class="acts">${butonlar}</div>
-    <button class="btn ghost full" style="margin-top:8px" id="geri">${T('backList')}</button>`;
+    <button class="btn ghost full" style="margin-top:12px" id="geri">${T('backList')}</button>
+    <div class="acts alt-sabit">${butonlar}</div>`;
   const yenile = () => {
     $('birimYazi').textContent = f.a ? `${birimAd(f)} (≈ ${yuv(gramOf(f, SE.g))} ${T('g')})` : T('gram');
     $('karsi').innerHTML = SE.mevcut
@@ -4765,13 +5125,18 @@ function detayGorunumu(){
   $('geri').onclick = listeGorunumu;
   geriAyarla(listeGorunumu);
   if ($('kapatBtn')) $('kapatBtn').onclick = kapat;
-  $('onay').onclick = () => {
+  if ($('secimeEkle')) $('secimeEkle').onclick = () => {
     if (!(SE.g > 0)){ toast(T('tZero')); return; }
+    SE.coklu.set(SE.sec, SE.g); listeGorunumu();
+  };
+  hizliTik($('onay'), () => {
+    if (!(SE.g > 0)){ toast(T('tZero')); return; }
+    if (secimli){ SE.coklu.set(SE.sec, SE.g); cokluUygula(); return; }
     kapat();
     if (!SE.sonra) capaEl = $('ogunler').querySelectorAll('.meal')[SE.oi] || null;   // eklenen öğün ekranda yerinde kalsın
     if (SE.sonra) SE.sonra(SE.sec, SE.g);
     else if (SE.mod === 'ekle') ogeEkle(SE.oi, SE.sec, SE.g); else ogeDegis(SE.oi, SE.ii, SE.sec, SE.g);
-  };
+  });
   yenile();
   $('sbody').scrollTop = 0;
 }
@@ -4862,10 +5227,6 @@ function ayarlarAc(dilAcik = false){
     <div class="grid3">${HEDEF_KEYS.filter(k => k !== 'su' && k !== 'bardak').map(alan).join('')}
       <label class="field"><span>${T('bardakSu')}</span><div class="ikili"><input autocomplete="off" id="p_bardak" type="text" inputmode="numeric" value="${P.bardak}" aria-label="${esc(T('tGlass'))}"><b>/</b><input autocomplete="off" id="p_su" type="text" inputmode="numeric" value="${P.su}" aria-label="${esc(T('tWater'))}"></div></label></div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
-    </div><div class="ayar-blok" data-ak="program"><div class="sec">${T('sProg')}</div>
-    ${D.program ? `<div class="acts" style="margin-top:0;margin-bottom:8px"><button class="btn ghost" id="progKaldirBtn">${T('progRemove')}</button></div>` : ''}
-    <div class="hint">${esc(T('impPasteHint'))}</div>
-    <div class="link-yapistir"><input class="search" id="linkYapistir" type="url" autocomplete="off" placeholder="https://…#p=…"><button class="btn" id="linkYukle">${T('impPasteBtn')}</button></div>
     ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `</div><div class="ayar-blok" data-ak="yukle"><div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
     </div><div class="ayar-blok" data-ak="tasi"><div class="sec">${T('tasiT')}</div>
     <div class="hint">${esc(T('tasiKisa'))}</div>
@@ -4887,14 +5248,12 @@ function ayarlarAc(dilAcik = false){
   $('sbody').querySelectorAll('[data-antgun]').forEach(b => b.onclick = () => antrenmanGunuDegis(+b.dataset.antgun));
   reglListesiBagla();
   saatFormuBagla();
-  if ($('progKaldirBtn')) $('progKaldirBtn').onclick = () => icinden(ayarlarAc, programKaldir);
   if ($('yukleBtn')) $('yukleBtn').onclick = () => icinden(ayarlarAc, yukleAc);
   $('logAc').onclick = () => icinden(ayarlarAc, loglarAc);
   $('yazAcBtn').onclick = () => icinden(ayarlarAc, yazAc);
   $('turAc').onclick = () => { kapat(); turBaslat(); };
   $('tasiAcBtn').onclick = () => icinden(ayarlarAc, tasiAc);
   $('dilAc').onclick = () => { const l = $('dilListe'); l.hidden = !l.hidden; $('dilAc').setAttribute('aria-expanded', !l.hidden); };
-  $('linkYukle').onclick = () => icinden(ayarlarAc, async () => { if (!(await programLinkiAc($('linkYapistir').value))) toast(T('impBad')); });
   $('olcuKaydet').onclick = () => {
     const oku = k => +String($('b_' + k).value).replace(/[,٫]/g, '.') || 0;
     const yeni = {yas: Math.round(oku('yas')), boy: Math.round(oku('boy')), kilo: Math.round(oku('kilo') * 2) / 2, hedefKilo: Math.round(oku('hedefKilo') * 2) / 2};
@@ -4971,8 +5330,14 @@ function indir(icerik, ad, tip){
   const a = document.createElement('a'); a.href = url; a.download = ad;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 3000);
-  toast(T('tDownloaded', {f: ad}));
+  // Telefon uygulamasında kabuk önce klasör seçtirir; "İndirildi" yalnız dosya kaydedilince (__lfOnDownload) yazılır.
+  if (!window.__LF_NATIVE) toast(T('tDownloaded', {f: ad}));
 }
+window.__lfOnDownload = r => {
+  if (!r) return;
+  if (r.ok && !r.shared) toast(T('tDownloaded', {f: r.name || ''}));
+  else if (!r.ok && !r.cancel) toast(T('tDownloadErr'));
+};
 
 // ---------- Onay penceresi (X, Esc ya da dışarı dokununca kapanır) ----------
 function onayAc(metin, evet, ek = ''){
@@ -5275,6 +5640,34 @@ function kocAlerjiListe(K){
   liste = [...liste.filter(a => sec.has(a.id)), ...liste.filter(a => !sec.has(a.id))];
   return liste.length ? liste.map(a => `<button class="al-chip${sec.has(a.id) ? ' on' : ''}" data-kkisit="a:${a.id}">${sec.has(a.id) ? '✓ ' : ''}${esc(a.ad)}</button>`).join('') : `<div class="hint">${T('noResult').split('.')[0]}.</div>`;
 }
+// Telefonda kaydırma çubuğu yalnız kaydırırken görünür → liste aşağı kaydığı anlaşılmıyordu (02.11).
+// Kendi çizdiğimiz ray her zaman görünür; içerik sığıyorsa gizlenir. Raya dokunup sürükleyerek de kaydırılır.
+function kaymaCubuguKur(kutu){
+  const ray = kutu && kutu.parentElement && kutu.parentElement.querySelector('.kayma-ray'), tut = ray && ray.firstElementChild;
+  if (!ray) return;
+  const guncelle = () => {
+    const sh = kutu.scrollHeight, ch = kutu.clientHeight;
+    ray.hidden = sh <= ch + 2;
+    if (ray.hidden) return;
+    const rh = ray.clientHeight, th = Math.max(28, Math.round(rh * ch / sh));
+    tut.style.height = th + 'px';
+    tut.style.transform = `translateY(${Math.round((rh - th) * kutu.scrollTop / (sh - ch))}px)`;
+  };
+  if (!kutu.dataset.kayma){
+    kutu.dataset.kayma = '1';
+    kutu.addEventListener('scroll', guncelle, {passive: true});
+    const d = kutu.closest('details'); if (d) d.addEventListener('toggle', guncelle);   // kapalı bölüm açılınca ölç
+    const sur = e => {
+      const r = ray.getBoundingClientRect(), y = (e.touches ? e.touches[0] : e).clientY;
+      kutu.scrollTop = Math.min(1, Math.max(0, (y - r.top) / r.height)) * (kutu.scrollHeight - kutu.clientHeight);
+    };
+    ray.addEventListener('touchstart', e => { sur(e); }, {passive: true});
+    ray.addEventListener('touchmove', e => { e.preventDefault(); sur(e); }, {passive: false});
+    ray.addEventListener('mousedown', e => { sur(e); const m = ev => sur(ev), u = () => { removeEventListener('mousemove', m); removeEventListener('mouseup', u); }; addEventListener('mousemove', m); addEventListener('mouseup', u); });
+  }
+  kutu.kaymaGuncelle = guncelle;
+  guncelle();
+}
 function kocDanisanHtml(K){
   const dn = K.dn, dolu = !!(dn.cins || dn.yas || dn.kilo || dn.alerjiler.length || dn.haric.length);
   const sayiAlan = (k, ad) => `<label class="field"><span>${ad}</span><input data-kdn="${k}" type="text" inputmode="decimal" autocomplete="off" value="${esc(dn[k] || '')}" placeholder="—"></label>`;
@@ -5288,7 +5681,7 @@ function kocDanisanHtml(K){
     <div class="chips koc-kisit">${[['m','🥩'],['c','🍗'],['f','🐟'],['e','🥚'],['d','🥛']].map(([x, ic]) => `<button class="chip${dn.haric.includes(x) ? ' on' : ''}" data-kkisit="h:${x}">${ic} ${esc(T('x_' + x))}</button>`).join('')}</div>
     <div class="field" style="margin-bottom:4px"><span>${T('kocAlerjiler')}</span></div>
     <input class="search koc-al-ara" data-kalara="1" value="${esc(K.alAra || '')}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
-    <div class="koc-al-sonuc">${kocAlerjiListe(K)}</div>
+    <div class="koc-al-kap"><div class="koc-al-sonuc">${kocAlerjiListe(K)}</div><div class="kayma-ray" aria-hidden="true"><i></i></div></div>
     <button class="btn full" data-khesapla="1">${T('kocHesapla')}</button><div class="hint" style="margin-top:6px">${esc(T('kocHesaplaHint'))}</div>
   </details>`;
 }
@@ -5396,6 +5789,7 @@ function kocToplamHtml(K, i){
 }
 function kocToplamCiz(){ const el = $('kocToplam'); if (el) el.innerHTML = kocToplamHtml(D.koc, D.koc.sec); }
 function kocCiz(){
+  const alEski = $('koc').querySelector('.koc-al-sonuc'), alSt = alEski ? alEski.scrollTop : 0;   // alerji listesi yerinde kalsın
   const K = D.koc, i = K.sec, ogunler = kocOgunler(K), n = kocGunSayisi(K), ay = kocAyMi(K), bugun = bugunK();
   const hedefAlan = (k, ad) => `<label class="field"><span>${ad}</span><input data-kt="${k}" type="text" inputmode="${k === 'su' ? 'decimal' : 'numeric'}" autocomplete="off" value="${esc(K.t[k] || '')}" placeholder="—"></label>`;
   const gunDolu = j => ogunler.some(id => (K.gun[j][id] || []).length);
@@ -5449,6 +5843,8 @@ function kocCiz(){
     <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kyazdir="1">${T(window.__LF_NATIVE ? 'kocPrintNative' : 'kocPrintWeb')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
     <div class="hint" style="text-align:center;margin-top:6px">${T('kocDraft')}</div>
   </div>`;
+  const alKutu = $('koc').querySelector('.koc-al-sonuc');
+  if (alKutu){ alKutu.scrollTop = alSt; kaymaCubuguKur(alKutu); }
   // Ay şeridinde seçili gün ortada görünsün (yalnız yatay kaydırma; sayfa yerinden oynamaz)
   const serit = $('koc').querySelector('.koc-ay'), akt = serit && serit.querySelector('.day.active');
   if (akt) serit.scrollLeft = akt.offsetLeft - serit.clientWidth / 2 + akt.offsetWidth / 2;
@@ -5460,6 +5856,11 @@ function kocYemekSec(id, ii){
     if (ii === undefined) liste.push({f, g}); else liste[ii] = {f, g};
     kocKaydet(); kocCiz();
     const celisme = kocKisitCelisme(f); if (celisme) toast(T('kocAlerjiUyari', {a: celisme}), 4500);
+  }, sonraCoklu: secilen => {
+    secilen.forEach(([f, g]) => liste.push({f, g}));
+    kocKaydet(); kocCiz();
+    const celisme = secilen.map(([f]) => kocKisitCelisme(f)).find(Boolean);
+    if (celisme) toast(T('kocAlerjiUyari', {a: celisme}), 4500); else toast(T('tCokluEklendi', {n: secilen.length}));
   }});
 }
 // Program hazırla onayı: Evet (yeşil) → işlem + kısa bildirim; Hayır → hiçbir şey yapılmaz
@@ -5523,7 +5924,7 @@ $('koc').addEventListener('input', e => {
   const t = e.target, K = D.koc; if (!K) return;
   if (t.dataset.kf){ K[t.dataset.kf] = t.value; kocKaydet(); return; }
   if (t.dataset.kt){ K.t[t.dataset.kt] = t.dataset.kt === 'su' ? t.value.replace(',', '.').replace(/[^\d.]/g, '') : t.value.replace(/[^\d]/g, ''); kocKaydet(); return; }
-  if (t.dataset.kalara){ K.alAra = t.value; const el = $('koc').querySelector('.koc-al-sonuc'); if (el) el.innerHTML = kocAlerjiListe(K); return; }
+  if (t.dataset.kalara){ K.alAra = t.value; const el = $('koc').querySelector('.koc-al-sonuc'); if (el){ el.innerHTML = kocAlerjiListe(K); el.scrollTop = 0; kaymaCubuguKur(el); } return; }
   if (t.dataset.kdn){ K.dn[t.dataset.kdn] = t.value.replace(',', '.').replace(/[^\d.]/g, ''); kocKaydet(); return; }
   if (t.dataset.knot){ K.not[K.sec][t.dataset.knot] = t.value; kocKaydet(); return; }
 });
@@ -6273,6 +6674,8 @@ function durtmeAni(t){
   }
   return t;
 }
+// "A ve B" / "A and B": dile uygun liste (Intl.ListFormat yoksa virgülle)
+const listeYaz = a => { try { return new Intl.ListFormat(LOC(), {type: 'conjunction'}).format(a); } catch (e) { return a.join(', '); } };
 function durtmeMetin(t){
   const z = new Date(t), k = tarihAnahtar(z), r = kayitOku(k), menu = menuOku(k), dk = z.getHours() * 60 + z.getMinutes();
   const kacan = menu.filter(o => dkOku(ogunSaati(k, o)) + 30 <= dk && !r.yendi[o.id]);
@@ -6281,7 +6684,7 @@ function durtmeMetin(t){
   const sec = (key, p) => { const l = T(key, p).split('|'); return l[tohum % l.length]; };
   let body;
   if (su === 0 && dk >= 11 * 60) body = sec('dSuYok');
-  else if (ara) body = sec('dAra', {ogun: ogunAd(ara), liste: ara.ogeler.slice(0, 2).map(it => yemek(it.f).ad).join(', ') || '—'});
+  else if (ara) body = sec('dAra', {ogun: ogunAd(ara), liste: listeYaz(ara.ogeler.slice(0, 2).map(it => yemek(it.f).ad)) || '—'});
   else if (ana) body = sec('dAna', {ogun: ogunAd(ana)});
   else if (su < h / 2 && dk >= 15 * 60) body = sec('dSuAz', {n: su, h});
   else body = sec('dGenel');
@@ -6965,7 +7368,7 @@ if (yerelKabuk()){
 }
 
 // ---------- Ayarlar sırası (kullanıcı 01.11): sık kullanılanlar üstte, gereksizler aşağıda; en altta hesap ve sıfırla ----------
-const AYAR_SIRA = ['ust', 'tur', 'reklam', 'program', 'tasi', 'yedek', 'olcu', 'saat', 'hedef', 'profil', 'regl', 'yukle', 'spor', 'antrenman', 'bildirim', 'yasal', 'sifirla'];
+const AYAR_SIRA = ['ust', 'tur', 'reklam', 'tasi', 'yedek', 'olcu', 'saat', 'hedef', 'profil', 'regl', 'yukle', 'spor', 'antrenman', 'bildirim', 'yasal', 'sifirla'];
 let rkGozlemci = null;
 function ayarSirala(){
   const sb = $('sbody'); if (!sb) return;
@@ -6973,14 +7376,18 @@ function ayarSirala(){
   for (const k of AYAR_SIRA){ const el = bul(k); if (el) sb.appendChild(el); }
   rkTitresimKur();
 }
-// Reklamlar kartı: ayarlar açılınca bir kez titrer; aşağı kaydırılıp yeniden göründüğünde ("Reklamları kaldır") tekrar titrer
+// Reklamlar kartı göründüğünde YALNIZ "Reklamları kaldır" düğmesi titrer (02.11: kartın tamamı değil); kart ekrandan çıkıp
+// yeniden görününce tekrar titrer. Düğme durum değişince yeniden çizildiği için her seferinde $('rkAlBtn') ile bulunur.
 function rkTitresimKur(){
   if (rkGozlemci){ rkGozlemci.disconnect(); rkGozlemci = null; }
   const el = $('reklamBolum'), sb = $('sbody');
   if (!el || !sb || reklamsizMi()) return;
   el.classList.add('rk-kutu');
-  const titret = () => { el.classList.remove('titre'); void el.offsetWidth; el.classList.add('titre'); };
-  el.addEventListener('animationend', () => el.classList.remove('titre'));
+  const titret = () => {
+    const b = $('rkAlBtn'); if (!b || b.disabled) return;
+    b.classList.remove('titre'); void b.offsetWidth; b.classList.add('titre');
+    b.addEventListener('animationend', () => b.classList.remove('titre'), {once: true});
+  };
   let ayrildi = true;   // ilk görünüşte titresin
   if (!('IntersectionObserver' in window)){ setTimeout(titret, 350); return; }
   rkGozlemci = new IntersectionObserver(girdiler => {

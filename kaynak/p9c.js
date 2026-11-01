@@ -247,7 +247,7 @@ if (yerelKabuk()){
 }
 
 // ---------- Ayarlar sırası (kullanıcı 01.11): sık kullanılanlar üstte, gereksizler aşağıda; en altta hesap ve sıfırla ----------
-const AYAR_SIRA = ['ust', 'tur', 'reklam', 'program', 'tasi', 'yedek', 'olcu', 'saat', 'hedef', 'profil', 'regl', 'yukle', 'spor', 'antrenman', 'bildirim', 'yasal', 'sifirla'];
+const AYAR_SIRA = ['ust', 'tur', 'reklam', 'tasi', 'yedek', 'olcu', 'saat', 'hedef', 'profil', 'regl', 'yukle', 'spor', 'antrenman', 'bildirim', 'yasal', 'sifirla'];
 let rkGozlemci = null;
 function ayarSirala(){
   const sb = $('sbody'); if (!sb) return;
@@ -255,14 +255,18 @@ function ayarSirala(){
   for (const k of AYAR_SIRA){ const el = bul(k); if (el) sb.appendChild(el); }
   rkTitresimKur();
 }
-// Reklamlar kartı: ayarlar açılınca bir kez titrer; aşağı kaydırılıp yeniden göründüğünde ("Reklamları kaldır") tekrar titrer
+// Reklamlar kartı göründüğünde YALNIZ "Reklamları kaldır" düğmesi titrer (02.11: kartın tamamı değil); kart ekrandan çıkıp
+// yeniden görününce tekrar titrer. Düğme durum değişince yeniden çizildiği için her seferinde $('rkAlBtn') ile bulunur.
 function rkTitresimKur(){
   if (rkGozlemci){ rkGozlemci.disconnect(); rkGozlemci = null; }
   const el = $('reklamBolum'), sb = $('sbody');
   if (!el || !sb || reklamsizMi()) return;
   el.classList.add('rk-kutu');
-  const titret = () => { el.classList.remove('titre'); void el.offsetWidth; el.classList.add('titre'); };
-  el.addEventListener('animationend', () => el.classList.remove('titre'));
+  const titret = () => {
+    const b = $('rkAlBtn'); if (!b || b.disabled) return;
+    b.classList.remove('titre'); void b.offsetWidth; b.classList.add('titre');
+    b.addEventListener('animationend', () => b.classList.remove('titre'), {once: true});
+  };
   let ayrildi = true;   // ilk görünüşte titresin
   if (!('IntersectionObserver' in window)){ setTimeout(titret, 350); return; }
   rkGozlemci = new IntersectionObserver(girdiler => {

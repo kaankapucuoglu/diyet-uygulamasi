@@ -219,6 +219,34 @@ function kocAlerjiListe(K){
   liste = [...liste.filter(a => sec.has(a.id)), ...liste.filter(a => !sec.has(a.id))];
   return liste.length ? liste.map(a => `<button class="al-chip${sec.has(a.id) ? ' on' : ''}" data-kkisit="a:${a.id}">${sec.has(a.id) ? '✓ ' : ''}${esc(a.ad)}</button>`).join('') : `<div class="hint">${T('noResult').split('.')[0]}.</div>`;
 }
+// Telefonda kaydırma çubuğu yalnız kaydırırken görünür → liste aşağı kaydığı anlaşılmıyordu (02.11).
+// Kendi çizdiğimiz ray her zaman görünür; içerik sığıyorsa gizlenir. Raya dokunup sürükleyerek de kaydırılır.
+function kaymaCubuguKur(kutu){
+  const ray = kutu && kutu.parentElement && kutu.parentElement.querySelector('.kayma-ray'), tut = ray && ray.firstElementChild;
+  if (!ray) return;
+  const guncelle = () => {
+    const sh = kutu.scrollHeight, ch = kutu.clientHeight;
+    ray.hidden = sh <= ch + 2;
+    if (ray.hidden) return;
+    const rh = ray.clientHeight, th = Math.max(28, Math.round(rh * ch / sh));
+    tut.style.height = th + 'px';
+    tut.style.transform = `translateY(${Math.round((rh - th) * kutu.scrollTop / (sh - ch))}px)`;
+  };
+  if (!kutu.dataset.kayma){
+    kutu.dataset.kayma = '1';
+    kutu.addEventListener('scroll', guncelle, {passive: true});
+    const d = kutu.closest('details'); if (d) d.addEventListener('toggle', guncelle);   // kapalı bölüm açılınca ölç
+    const sur = e => {
+      const r = ray.getBoundingClientRect(), y = (e.touches ? e.touches[0] : e).clientY;
+      kutu.scrollTop = Math.min(1, Math.max(0, (y - r.top) / r.height)) * (kutu.scrollHeight - kutu.clientHeight);
+    };
+    ray.addEventListener('touchstart', e => { sur(e); }, {passive: true});
+    ray.addEventListener('touchmove', e => { e.preventDefault(); sur(e); }, {passive: false});
+    ray.addEventListener('mousedown', e => { sur(e); const m = ev => sur(ev), u = () => { removeEventListener('mousemove', m); removeEventListener('mouseup', u); }; addEventListener('mousemove', m); addEventListener('mouseup', u); });
+  }
+  kutu.kaymaGuncelle = guncelle;
+  guncelle();
+}
 function kocDanisanHtml(K){
   const dn = K.dn, dolu = !!(dn.cins || dn.yas || dn.kilo || dn.alerjiler.length || dn.haric.length);
   const sayiAlan = (k, ad) => `<label class="field"><span>${ad}</span><input data-kdn="${k}" type="text" inputmode="decimal" autocomplete="off" value="${esc(dn[k] || '')}" placeholder="—"></label>`;
@@ -232,7 +260,7 @@ function kocDanisanHtml(K){
     <div class="chips koc-kisit">${[['m','🥩'],['c','🍗'],['f','🐟'],['e','🥚'],['d','🥛']].map(([x, ic]) => `<button class="chip${dn.haric.includes(x) ? ' on' : ''}" data-kkisit="h:${x}">${ic} ${esc(T('x_' + x))}</button>`).join('')}</div>
     <div class="field" style="margin-bottom:4px"><span>${T('kocAlerjiler')}</span></div>
     <input class="search koc-al-ara" data-kalara="1" value="${esc(K.alAra || '')}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
-    <div class="koc-al-sonuc">${kocAlerjiListe(K)}</div>
+    <div class="koc-al-kap"><div class="koc-al-sonuc">${kocAlerjiListe(K)}</div><div class="kayma-ray" aria-hidden="true"><i></i></div></div>
     <button class="btn full" data-khesapla="1">${T('kocHesapla')}</button><div class="hint" style="margin-top:6px">${esc(T('kocHesaplaHint'))}</div>
   </details>`;
 }
@@ -340,6 +368,7 @@ function kocToplamHtml(K, i){
 }
 function kocToplamCiz(){ const el = $('kocToplam'); if (el) el.innerHTML = kocToplamHtml(D.koc, D.koc.sec); }
 function kocCiz(){
+  const alEski = $('koc').querySelector('.koc-al-sonuc'), alSt = alEski ? alEski.scrollTop : 0;   // alerji listesi yerinde kalsın
   const K = D.koc, i = K.sec, ogunler = kocOgunler(K), n = kocGunSayisi(K), ay = kocAyMi(K), bugun = bugunK();
   const hedefAlan = (k, ad) => `<label class="field"><span>${ad}</span><input data-kt="${k}" type="text" inputmode="${k === 'su' ? 'decimal' : 'numeric'}" autocomplete="off" value="${esc(K.t[k] || '')}" placeholder="—"></label>`;
   const gunDolu = j => ogunler.some(id => (K.gun[j][id] || []).length);
@@ -393,6 +422,8 @@ function kocCiz(){
     <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kyazdir="1">${T(window.__LF_NATIVE ? 'kocPrintNative' : 'kocPrintWeb')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
     <div class="hint" style="text-align:center;margin-top:6px">${T('kocDraft')}</div>
   </div>`;
+  const alKutu = $('koc').querySelector('.koc-al-sonuc');
+  if (alKutu){ alKutu.scrollTop = alSt; kaymaCubuguKur(alKutu); }
   // Ay şeridinde seçili gün ortada görünsün (yalnız yatay kaydırma; sayfa yerinden oynamaz)
   const serit = $('koc').querySelector('.koc-ay'), akt = serit && serit.querySelector('.day.active');
   if (akt) serit.scrollLeft = akt.offsetLeft - serit.clientWidth / 2 + akt.offsetWidth / 2;
@@ -404,6 +435,11 @@ function kocYemekSec(id, ii){
     if (ii === undefined) liste.push({f, g}); else liste[ii] = {f, g};
     kocKaydet(); kocCiz();
     const celisme = kocKisitCelisme(f); if (celisme) toast(T('kocAlerjiUyari', {a: celisme}), 4500);
+  }, sonraCoklu: secilen => {
+    secilen.forEach(([f, g]) => liste.push({f, g}));
+    kocKaydet(); kocCiz();
+    const celisme = secilen.map(([f]) => kocKisitCelisme(f)).find(Boolean);
+    if (celisme) toast(T('kocAlerjiUyari', {a: celisme}), 4500); else toast(T('tCokluEklendi', {n: secilen.length}));
   }});
 }
 // Program hazırla onayı: Evet (yeşil) → işlem + kısa bildirim; Hayır → hiçbir şey yapılmaz
@@ -467,7 +503,7 @@ $('koc').addEventListener('input', e => {
   const t = e.target, K = D.koc; if (!K) return;
   if (t.dataset.kf){ K[t.dataset.kf] = t.value; kocKaydet(); return; }
   if (t.dataset.kt){ K.t[t.dataset.kt] = t.dataset.kt === 'su' ? t.value.replace(',', '.').replace(/[^\d.]/g, '') : t.value.replace(/[^\d]/g, ''); kocKaydet(); return; }
-  if (t.dataset.kalara){ K.alAra = t.value; const el = $('koc').querySelector('.koc-al-sonuc'); if (el) el.innerHTML = kocAlerjiListe(K); return; }
+  if (t.dataset.kalara){ K.alAra = t.value; const el = $('koc').querySelector('.koc-al-sonuc'); if (el){ el.innerHTML = kocAlerjiListe(K); el.scrollTop = 0; kaymaCubuguKur(el); } return; }
   if (t.dataset.kdn){ K.dn[t.dataset.kdn] = t.value.replace(',', '.').replace(/[^\d.]/g, ''); kocKaydet(); return; }
   if (t.dataset.knot){ K.not[K.sec][t.dataset.knot] = t.value; kocKaydet(); return; }
 });
@@ -1217,6 +1253,8 @@ function durtmeAni(t){
   }
   return t;
 }
+// "A ve B" / "A and B": dile uygun liste (Intl.ListFormat yoksa virgülle)
+const listeYaz = a => { try { return new Intl.ListFormat(LOC(), {type: 'conjunction'}).format(a); } catch (e) { return a.join(', '); } };
 function durtmeMetin(t){
   const z = new Date(t), k = tarihAnahtar(z), r = kayitOku(k), menu = menuOku(k), dk = z.getHours() * 60 + z.getMinutes();
   const kacan = menu.filter(o => dkOku(ogunSaati(k, o)) + 30 <= dk && !r.yendi[o.id]);
@@ -1225,7 +1263,7 @@ function durtmeMetin(t){
   const sec = (key, p) => { const l = T(key, p).split('|'); return l[tohum % l.length]; };
   let body;
   if (su === 0 && dk >= 11 * 60) body = sec('dSuYok');
-  else if (ara) body = sec('dAra', {ogun: ogunAd(ara), liste: ara.ogeler.slice(0, 2).map(it => yemek(it.f).ad).join(', ') || '—'});
+  else if (ara) body = sec('dAra', {ogun: ogunAd(ara), liste: listeYaz(ara.ogeler.slice(0, 2).map(it => yemek(it.f).ad)) || '—'});
   else if (ana) body = sec('dAna', {ogun: ogunAd(ana)});
   else if (su < h / 2 && dk >= 15 * 60) body = sec('dSuAz', {n: su, h});
   else body = sec('dGenel');
