@@ -343,7 +343,7 @@ async def main():
         # ---- 12 son ----
         async def a12():
             await kay(0, 0.3)
-            await alt(0, f'{APP} · diyet.maviplay.com · ücretsiz, reklamsız, hesap gerekmez')
+            await alt(0, f'{APP} · diyet.maviplay.com · ücretsiz, hesap gerekmez')
         await adim(12, a12)
 
         son = time.time()

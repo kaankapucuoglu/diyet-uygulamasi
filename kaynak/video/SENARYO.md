@@ -28,7 +28,7 @@ Ek tohum: bir önceki regl kaydı 26 gün önce başlamış, 5 gün sürmüş (b
 | 9 | Programı paylaş: bağlantı, WhatsApp ya da kullanıcı adıyla | Program hazırla → Paylaş sayfası: üç seçenek görünür | 6 |
 | 10 | Sıralama (isteğe bağlı): yalnız kullanıcı adı ve seri gün | Sıralama ekranı (`lbT`), “Sıralamaya katıl” | 4 |
 | 11 | Hamileyim: trimesteri seç, menü yeniden hazırlanır | `button.hamile-btn` → 2. trimester → Evet | 5 |
-| 12 | `diyet.maviplay.com · ücretsiz, reklamsız, hesap gerekmez` | Ana sayfa | 3 |
+| 12 | `diyet.maviplay.com · ücretsiz, hesap gerekmez` | Ana sayfa | 3 |
 
 Kısa sürüm gerekirse (≤40 sn): 0, 1–3, 5, 6, 8, 9, 12.
 

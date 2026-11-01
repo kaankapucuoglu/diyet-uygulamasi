@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "backgroundColor": "#f3f6fb",
     "primaryColor": "#22c55e",
-    "description": "Personal nutrition plan: meals, water, reminders and progress. Your data stays on your device.",
+    "description": "Personal nutrition and healthy-living plan: meals, water, reminders, period tracking and progress. Free with occasional ads; one-time Remove ads purchase.",
     "ios": {
       "bundleIdentifier": "com.maviplay.liferoutine",
       "buildNumber": "2",
