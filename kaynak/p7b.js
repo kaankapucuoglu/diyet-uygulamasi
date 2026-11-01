@@ -232,7 +232,7 @@ function kocCiz(){
       <div class="grid2"><label class="field"><span>${T('kocClient')}</span><input data-kf="a" autocomplete="off" maxlength="40" value="${esc(K.a)}"></label>
       <label class="field"><span>${T('kocAuthor')}</span><input data-kf="h" autocomplete="off" maxlength="60" placeholder="${esc(T('kocAuthorPh'))}" value="${esc(K.h)}"></label></div>
       <label class="field"><span>${T('kocNote')}</span><textarea data-kf="n" rows="2" maxlength="400" placeholder="${esc(T('kocNotePh'))}">${esc(K.n)}</textarea></label>
-      <div class="sec" style="margin-top:4px">${T('kocTargets')}</div>
+      <div class="sec koc-sec-row" style="margin-top:4px"><span>${T('kocTargets')}</span><button class="btn green koc-auto" data-kauto="1">${T('kocAuto')}</button></div>
       <div class="grid4">${hedefAlan('kcal', T('tKcal'))}${hedefAlan('protein', T('tProtein'))}${hedefAlan('karb', T('tCarb'))}${hedefAlan('yag', T('tFat'))}</div>
     </div>
     <div class="sec">${T('kocMeals')}</div>
@@ -248,7 +248,7 @@ function kocCiz(){
     <section class="meals">${ogunler.map(ogunKart).join('')}</section>
     <div class="card" style="margin-top:14px" id="kocToplam">${kocToplamHtml(K, i)}</div>
     <div id="kocLink"></div>
-    <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kauto="1">${T('kocAuto')}</button><button class="btn ghost" data-kyazdir="1">${T('kocPrint')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
+    <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kyazdir="1">${T('kocPrint')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
     <div class="hint" style="text-align:center;margin-top:6px">${T('kocDraft')}</div>
   </div>`;
   // Ay şeridinde seçili gün ortada görünsün (yalnız yatay kaydırma; sayfa yerinden oynamaz)
