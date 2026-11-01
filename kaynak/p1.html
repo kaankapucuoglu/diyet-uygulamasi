@@ -637,6 +637,25 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 @media (max-width:600px){ .macros{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 10px} .macro b{font-size:16px} .macro .hint{font-size:12px} .water-card{padding:12px 14px} .water-card h3{margin-bottom:4px} .water-head b{font-size:22px} .water-btns .btn{min-height:40px} }
 @media (max-width:600px){ .gunsatir .nav-btn{display:none} .gunsatir .days{gap:4px} .weeknav{gap:8px} .weeknav .hafta-ok{display:block;width:34px;height:30px;font-size:16px} .hafta-tag .uzun{display:none} .hafta-tag .kisa{display:inline} .stat-acts button{width:28px} .day{padding:7px 0 5px} .day b{font-size:13.5px;letter-spacing:-.01em} .water-btns .btn{font-size:13.5px;padding:5px 10px;white-space:normal} .water-btns{flex-wrap:wrap} .water-btns .btn.ghost{flex:1 1 110px} }
 @media (max-width:360px){ .days{gap:4px} .day{padding:7px 0 5px} .macros{gap:6px} .crow{font-size:13px} }
+
+/* Program hazırlama: dönem seçici (aktif hafta / aktif ay), ay günleri şeridi, araç çipleri, alt düğmeler, dönem penceresi */
+.koc-sec-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.seg{display:inline-flex;background:#eef2f8;border-radius:99px;padding:3px;gap:2px}
+.seg-btn{border:0;background:transparent;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;color:#40506a;text-transform:none;letter-spacing:0;white-space:nowrap;line-height:1.2}
+.seg-btn.on{background:var(--green);color:#fff}
+.koc-donem-hint{font-size:12.5px;color:var(--muted);margin:-2px 0 8px;line-height:1.4}
+.koc-days.koc-ay{display:flex;overflow-x:auto;gap:6px;padding:2px 2px 6px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.koc-ay .day{flex:0 0 50px;scroll-snap-align:center;padding:8px 2px 6px}
+.koc-ay .day b{font-size:15px}
+.koc-ay .day span{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.koc-gun-arac .chip{white-space:nowrap;font-size:12.5px;padding:6px 10px;line-height:1.2}
+.wnav.koc-nav .btn{line-height:1.15;text-align:center}
+.koc-donem .btn{min-height:60px;padding:8px 10px;line-height:1.2;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.koc-donem .btn small{display:block;font-weight:500;font-size:12px;opacity:.85;margin-top:2px;white-space:normal}
+@media (max-width:600px){
+  .wnav.koc-nav .btn{font-size:13.5px;padding:4px 6px}
+  .wnav.koc-nav .btn.ghost{flex:1 1 0;min-width:0}
+}
 </style>
 </head>
 <body>

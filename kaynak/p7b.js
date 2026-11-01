@@ -122,16 +122,67 @@ function kopyala(metin, mesaj, sure){
 const PAYLASIM_TABAN = 'https://diyet.maviplay.com/app/';
 const KOC_GUN = 7;
 function kocBos(){
-  return {a:'', h:'', n:'', t:{kcal:'', protein:'', karb:'', yag:''}, ara0:false, saat:{...VARSAYILAN_SAAT},
+  return {a:'', h:'', n:'', t:{kcal:'', protein:'', karb:'', yag:''}, ara0:false, saat:{...VARSAYILAN_SAAT}, mod:'hafta', ay:'',
     gun: Array.from({length: KOC_GUN}, () => ({})), not: Array.from({length: KOC_GUN}, () => ({})), sec:0};
 }
 const kocOgunler = K => ['kahvalti', ...(K.ara0 ? ['ara0'] : []), 'ogle', 'ara1', 'aksam', 'gece'];
+
+// ---------- Dönem: 'hafta' (Pzt..Paz; alıcıda aktif haftaya uygulanır) ya da 'ay' (aktif ayın tüm günleri, tarihli) ----------
+const ayAnahtar = k => k.slice(0, 7);                                                        // 'YYYY-MM'
+const ayGunSayisi = ay => { const [y, m] = ay.split('-').map(Number); return new Date(y, m, 0).getDate(); };
+const ayAdi = ay => tarihDen(ay + '-01').toLocaleDateString(LOC(), {month:'long', year:'numeric'});
+const kocAyMi = K => K.mod === 'ay' && /^\d{4}-\d\d$/.test(K.ay || '');
+const kocGunSayisi = K => kocAyMi(K) ? ayGunSayisi(K.ay) : KOC_GUN;
+const kocGunTarih = (K, j) => kocAyMi(K) ? gunEkle(K.ay + '-01', j) : '';
+const kocHaftaGunu = (K, j) => kocAyMi(K) ? haftaGunu(kocGunTarih(K, j)) : j;              // 0 Pzt … 6 Paz
+// Gün başlığı: hafta modunda gün adı; ay modunda "1" / "1 Kasım Pazartesi"
+const kocGunAd = (K, j, uzun) => kocAyMi(K)
+  ? (uzun ? tarihDen(kocGunTarih(K, j)).toLocaleDateString(LOC(), {day:'numeric', month:'long', weekday:'long'}) : String(j + 1))
+  : haftaGunAd(j, uzun);
+// Seçili günle aynı takvim haftasındaki gün sıraları (ay modunda aya kırpılır; hafta modunda 7 günün hepsi)
+function kocHaftaIdx(K, j){
+  const n = kocGunSayisi(K);
+  if (!kocAyMi(K)) return Array.from({length: n}, (_, x) => x);
+  const bas = j - kocHaftaGunu(K, j);
+  return Array.from({length: 7}, (_, x) => bas + x).filter(x => x >= 0 && x < n);
+}
+// Taslağı döneme göre düzene sok (eski sürümden gelen taslak, bozuk uzunluk)
+function kocDuzenle(K){
+  if (!kocAyMi(K)){ K.mod = 'hafta'; K.ay = ''; }
+  const n = kocGunSayisi(K);
+  for (const a of ['gun', 'not']){ if (!Array.isArray(K[a])) K[a] = []; while (K[a].length < n) K[a].push({}); K[a].length = n; }
+  K.sec = sinirla(+K.sec || 0, 0, n - 1);
+}
+// 7 günlük (hafta günü bazlı) kopya: ay modunda her hafta gününün aydaki ilk dolu örneği
+function kocHaftaya(K){
+  if (!kocAyMi(K)) return {gun: kopya(K.gun), not: kopya(K.not)};
+  const gun = Array.from({length: 7}, () => ({})), not = Array.from({length: 7}, () => ({})), n = kocGunSayisi(K);
+  for (let j = 0; j < n; j++){
+    const w = kocHaftaGunu(K, j);
+    if (!Object.keys(gun[w]).length && Object.keys(K.gun[j] || {}).length){ gun[w] = kopya(K.gun[j]); not[w] = kopya(K.not[j] || {}); }
+  }
+  return {gun, not};
+}
+// Dönem değiştir. hafta → ay: her takvim günü aynı hafta gününün menüsünü alır; ay → hafta: her hafta gününün aydaki ilk örneği
+function kocModAyarla(K, mod, ay){
+  const h = kocHaftaya(K), secW = kocHaftaGunu(K, K.sec), bugun = bugunK();
+  if (mod === 'ay'){
+    K.mod = 'ay'; K.ay = ay || ayAnahtar(bugun);
+    const n = ayGunSayisi(K.ay);
+    K.gun = Array.from({length: n}, (_, j) => kopya(h.gun[kocHaftaGunu(K, j)]));
+    K.not = Array.from({length: n}, (_, j) => kopya(h.not[kocHaftaGunu(K, j)]));
+    K.sec = ayAnahtar(bugun) === K.ay ? +bugun.slice(8) - 1 : 0;
+  } else {
+    K.mod = 'hafta'; K.ay = ''; K.gun = h.gun; K.not = h.not; K.sec = secW;
+  }
+}
 // Haftanın günleri (Pzt..Paz) seçili dilde
 const haftaGunAd = (i, uzun) => new Date(2024, 0, 1 + i, 12).toLocaleDateString(LOC(), {weekday: uzun ? 'long' : RTL() ? 'narrow' : 'short'}).replace('.', '');
 let kocKaydetZaman = null;
 function kocKaydet(){ clearTimeout(kocKaydetZaman); kocKaydetZaman = setTimeout(kaydet, 400); }
 function kocAc(){
   if (!D.koc) D.koc = kocBos();
+  kocDuzenle(D.koc);
   kapat();
   document.body.classList.add('wiz-acik');
   $('koc').hidden = false;
@@ -145,12 +196,19 @@ function kocKapat(){
   ciz();
 }
 function kocGunToplam(K, i){ return topla(kocOgunler(K).flatMap(id => K.gun[i][id] || [])); }
-function kocCiz(){
-  const K = D.koc, i = K.sec, ogunler = kocOgunler(K);
-  const hedefAlan = (k, ad) => `<label class="field"><span>${ad}</span><input data-kt="${k}" type="text" inputmode="numeric" autocomplete="off" value="${esc(K.t[k] || '')}" placeholder="—"></label>`;
-  const gunDolu = j => ogunler.some(id => (K.gun[j][id] || []).length);
+// Gün toplamı kartı (hedef alanı değişince yalnız bu kart yenilenir; tam çizim dokunulan düğmeyi yok edip tıklamayı yutardı)
+function kocToplamHtml(K, i){
   const t = kocGunToplam(K, i), hd = K.t;
   const tHucre = (ad, v, h, birim) => `<div class="${h && v > h * 1.05 ? 'asti' : ''}"><small>${ad}</small><b>${yuv(v)}</b> <span>${h ? '/ ' + h + ' ' : ''}${birim}</span></div>`;
+  return `<h3>${T('kocDayTotal')} · ${esc(kocGunAd(K, i, true))}</h3><div class="plan-grid">
+      ${tHucre(T('calories'), t.k, +hd.kcal, T('kcal'))}${tHucre(T('protein'), t.p, +hd.protein, T('g'))}${tHucre(T('carbS'), t.c, +hd.karb, T('g'))}${tHucre(T('fat'), t.y, +hd.yag, T('g'))}${tHucre(T('sugar'), t.s, 0, T('g'))}${tHucre(T('fiber'), t.l, 0, T('g'))}
+    </div>`;
+}
+function kocToplamCiz(){ const el = $('kocToplam'); if (el) el.innerHTML = kocToplamHtml(D.koc, D.koc.sec); }
+function kocCiz(){
+  const K = D.koc, i = K.sec, ogunler = kocOgunler(K), n = kocGunSayisi(K), ay = kocAyMi(K), bugun = bugunK();
+  const hedefAlan = (k, ad) => `<label class="field"><span>${ad}</span><input data-kt="${k}" type="text" inputmode="numeric" autocomplete="off" value="${esc(K.t[k] || '')}" placeholder="—"></label>`;
+  const gunDolu = j => ogunler.some(id => (K.gun[j][id] || []).length);
   const ogunKart = id => {
     const liste = K.gun[i][id] || [];
     const satirlar = liste.map((it, ii) => {
@@ -161,7 +219,7 @@ function kocCiz(){
     }).join('');
     const tt = topla(liste);
     return `<article class="card meal">
-      <div class="meal-head"><div class="meal-ico">${OGUN_IKON[id]}</div><div class="meal-title"><b>${T('m_' + id)}</b><span>${K.saat[id]} · ${yuv(tt.k)} ${T('kcal')} · ${T('aP')} ${yuv(tt.p)} ${T('g')}</span></div></div>
+      <div class="meal-head"><div class="meal-ico">${OGUN_IKON[id]}</div><div class="meal-title"><b>${T('m_' + id)}</b><span class="ogun-alt"><span data-ksaatgoster="${id}">${K.saat[id]}</span> · ${yuv(tt.k)} ${T('kcal')} · ${T('aP')} ${yuv(tt.p)} ${T('g')}</span></div></div>
       <ul class="items">${satirlar}</ul>
       <input class="koc-not" data-knot="${id}" type="text" autocomplete="off" maxlength="120" placeholder="${esc(T('kocMealNotePh'))}" value="${esc(K.not[i][id] || '')}">
       <button class="add-food" data-kekle="${id}">${T('kocAdd')}</button>
@@ -182,18 +240,20 @@ function kocCiz(){
       <div class="grid3">${ogunler.map(id => `<label class="field"><span>${OGUN_IKON[id]} ${T('m_' + id)}</span><input type="time" step="300" data-ksaat="${id}" value="${K.saat[id]}"></label>`).join('')}</div>
       <label class="koc-check"><input type="checkbox" data-kara0="1" ${K.ara0 ? 'checked' : ''}> ${T('kocAra0')}</label>
     </div>
-    <div class="sec">${T('kocDays')}</div>
-    <div class="days koc-days">${Array.from({length: KOC_GUN}, (_, j) => `<button class="day${j === i ? ' active' : ''}" data-kgun="${j}"><b>${haftaGunAd(j)}</b><i class="${gunDolu(j) ? 'on' : ''}"></i></button>`).join('')}</div>
-    <div class="koc-gun-arac">${i > 0 ? `<button class="chip" data-konceki="1">${T('kocCopyPrev')}</button>` : ''}<button class="chip" data-khepsi="1">${T('kocCopyAll')}</button><button class="chip" data-ktemizle="1">${T('kocClear')}</button></div>
-    <h3 class="koc-gun-bas">${haftaGunAd(i, true)}</h3>
+    <div class="sec koc-sec-row"><span>${T('kocDays')}</span><div class="seg" role="group"><button class="seg-btn${ay ? '' : ' on'}" data-kmod="hafta">${T('kocPeriodWeek')}</button><button class="seg-btn${ay ? ' on' : ''}" data-kmod="ay">${T('kocPeriodMonth')}</button></div></div>
+    <div class="koc-donem-hint">${esc(ay ? T('kocModMonthHint', {ay: ayAdi(K.ay), n}) : T('kocModWeekHint'))}</div>
+    <div class="days koc-days${ay ? ' koc-ay' : ''}">${Array.from({length: n}, (_, j) => `<button class="day${j === i ? ' active' : ''}${ay && kocGunTarih(K, j) === bugun ? ' today' : ''}" data-kgun="${j}"><b>${esc(kocGunAd(K, j))}</b>${ay ? `<span>${esc(gunKisa(kocGunTarih(K, j)))}</span>` : ''}<i class="${gunDolu(j) ? 'on' : ''}"></i></button>`).join('')}</div>
+    <div class="koc-gun-arac">${i > 0 ? `<button class="chip" data-konceki="1">${T('kocCopyPrev')}</button>` : ''}<button class="chip" data-khafta="1">${T('kocCopyWeek')}</button>${ay ? `<button class="chip" data-kay="1">${T('kocCopyMonth')}</button>` : ''}<button class="chip" data-ktemizle="1">${T('kocClear')}</button><button class="chip" data-khaftatemizle="1">${T('kocClearWeek')}</button>${ay ? `<button class="chip" data-kaytemizle="1">${T('kocClearMonth')}</button>` : ''}</div>
+    <h3 class="koc-gun-bas">${esc(kocGunAd(K, i, true))}</h3>
     <section class="meals">${ogunler.map(ogunKart).join('')}</section>
-    <div class="card" style="margin-top:14px"><h3>${T('kocDayTotal')} · ${haftaGunAd(i, true)}</h3><div class="plan-grid">
-      ${tHucre(T('calories'), t.k, +hd.kcal, T('kcal'))}${tHucre(T('protein'), t.p, +hd.protein, T('g'))}${tHucre(T('carbS'), t.c, +hd.karb, T('g'))}${tHucre(T('fat'), t.y, +hd.yag, T('g'))}${tHucre(T('sugar'), t.s, 0, T('g'))}${tHucre(T('fiber'), t.l, 0, T('g'))}
-    </div></div>
+    <div class="card" style="margin-top:14px" id="kocToplam">${kocToplamHtml(K, i)}</div>
     <div id="kocLink"></div>
-    <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kyazdir="1">${T('kocPrint')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
+    <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kauto="1">${T('kocAuto')}</button><button class="btn ghost" data-kyazdir="1">${T('kocPrint')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
     <div class="hint" style="text-align:center;margin-top:6px">${T('kocDraft')}</div>
   </div>`;
+  // Ay şeridinde seçili gün ortada görünsün (yalnız yatay kaydırma; sayfa yerinden oynamaz)
+  const serit = $('koc').querySelector('.koc-ay'), akt = serit && serit.querySelector('.day.active');
+  if (akt) serit.scrollLeft = akt.offsetLeft - serit.clientWidth / 2 + akt.offsetWidth / 2;
 }
 function kocYemekSec(id, ii){
   const K = D.koc, liste = K.gun[K.sec][id] || (K.gun[K.sec][id] = []);
@@ -218,7 +278,17 @@ $('koc').addEventListener('click', e => {
     it.g = Math.max(f.a ? 0.5 : 5, it.g + yon * adim); kocKaydet(); kocCiz(); return;
   }
   if (ds.konceki){ K.gun[K.sec] = kopya(K.gun[K.sec - 1]); K.not[K.sec] = kopya(K.not[K.sec - 1]); kocKaydet(); kocCiz(); toast('✓'); return; }
-  if (ds.khepsi){ for (let j = 0; j < KOC_GUN; j++) if (j !== K.sec){ K.gun[j] = kopya(gun); K.not[j] = kopya(K.not[K.sec]); } kocKaydet(); kocCiz(); toast('✓'); return; }
+  if (ds.kmod){
+    // Aynı dönem yeniden seçilirse işlem yok; ay modunda ay geçmişse "Aktif ay" yeni aya taşır
+    if (ds.kmod === 'ay' && kocAyMi(K) && K.ay === ayAnahtar(bugunK())) return;
+    if (ds.kmod === 'hafta' && !kocAyMi(K)) return;
+    kocModAyarla(K, ds.kmod); kocKaydet(); kocCiz(); return;
+  }
+  if (ds.khafta){ for (const j of kocHaftaIdx(K, K.sec)) if (j !== K.sec){ K.gun[j] = kopya(gun); K.not[j] = kopya(K.not[K.sec]); } kocKaydet(); kocCiz(); toast('✓'); return; }
+  if (ds.kay){ const n = kocGunSayisi(K); for (let j = 0; j < n; j++) if (j !== K.sec){ K.gun[j] = kopya(gun); K.not[j] = kopya(K.not[K.sec]); } kocKaydet(); kocCiz(); toast('✓'); return; }
+  if (ds.khaftatemizle){ onayAc(T('cKocClearWeek'), () => { for (const j of kocHaftaIdx(K, K.sec)){ K.gun[j] = {}; K.not[j] = {}; } kaydet(); kocCiz(); }); return; }
+  if (ds.kaytemizle){ onayAc(T('cKocClearMonth'), () => { const n = kocGunSayisi(K); for (let j = 0; j < n; j++){ K.gun[j] = {}; K.not[j] = {}; } kaydet(); kocCiz(); }); return; }
+  if (ds.kauto){ kocOtomatikSor(); return; }
   if (ds.ktemizle){ K.gun[K.sec] = {}; K.not[K.sec] = {}; kocKaydet(); kocCiz(); return; }
   if (ds.kyeni){ onayAc(T('cKocNew'), () => { D.koc = kocBos(); kaydet(); kocCiz(); }); return; }
   if (ds.kyazdir){ kocYazdir(); return; }
@@ -232,20 +302,75 @@ $('koc').addEventListener('input', e => {
 });
 $('koc').addEventListener('change', e => {
   const t = e.target, K = D.koc; if (!K) return;
-  if (t.dataset.ksaat && /^\d\d:\d\d$/.test(t.value)){ K.saat[t.dataset.ksaat] = t.value; kocKaydet(); kocCiz(); return; }
+  if (t.dataset.ksaat && /^\d\d:\d\d$/.test(t.value)){ K.saat[t.dataset.ksaat] = t.value; kocKaydet(); $('koc').querySelectorAll(`[data-ksaatgoster="${t.dataset.ksaat}"]`).forEach(el => el.textContent = t.value); return; }
   if (t.dataset.kara0){ K.ara0 = t.checked; kocKaydet(); kocCiz(); return; }
-  if (t.dataset.kt){ kocCiz(); return; }
+  if (t.dataset.kt){ kocToplamCiz(); return; }
   if (t.dataset.kgram){
     const [id, ii] = t.dataset.kgram.split(','), it = K.gun[K.sec][id][+ii];
     it.g = miktarOku(yemek(it.f), t.value) || it.g; kocKaydet(); kocCiz();
   }
 });
+// ---------- Otomatik oluştur: öğün saatleri + günlük hedeflerden öğün öğün program (onay → dönem seçimi) ----------
+function kocUyari(metin, sonra){
+  ac(T('kocAutoT'), `<p class="onay-metin">${esc(metin)}</p><div class="acts"><button class="btn green" id="kocUyariTamam">${T('tamam')}</button></div>`);
+  $('kocUyariTamam').onclick = () => { kapat(); if (sonra) sonra(); };
+}
+function kocOtomatikSor(){
+  const K = D.koc;
+  if (!(+K.t.kcal > 0)){
+    kocUyari(T('kocAutoNeed'), () => { const inp = $('koc').querySelector('[data-kt="kcal"]'); if (inp){ inp.scrollIntoView({block:'center'}); inp.focus(); } });
+    return;
+  }
+  const ids = kocOgunler(K), saatler = ids.map(id => K.saat[id]).join(', ');
+  ac(T('kocAutoT'), `<p class="onay-metin"><b>${esc(T('kocAutoQ'))}</b></p>
+    <div class="hint">${esc(T('kocAutoInfo', {k: K.t.kcal, m: ids.length, s: saatler}))}</div>
+    <div class="acts"><button class="btn ghost" id="kaHayir">${T('impNo')}</button><button class="btn green" id="kaEvet">${T('impYes')}</button></div>`);
+  $('kaHayir').onclick = kapat;
+  $('kaEvet').onclick = kocDonemSor;
+}
+// Hangi döneme yayılsın: solda Aktif ay (yeşil), sağda Aktif hafta
+function kocDonemSor(){
+  const bugun = bugunK(), ay = ayAnahtar(bugun), pzt = gunEkle(bugun, -haftaGunu(bugun)), paz = gunEkle(pzt, 6);
+  const kisa = k => tarihDen(k).toLocaleDateString(LOC(), {day:'numeric', month:'short'});
+  ac(T('kocAutoT'), `<p class="onay-metin"><b>${esc(T('kocPeriodQ'))}</b></p>
+    <div class="acts koc-donem"><button class="btn green" id="kdAy">${T('kocPeriodMonth')}<small>${esc(ayAdi(ay))} · ${ayGunSayisi(ay)} ${T('kocDaysUnit')}</small></button>
+    <button class="btn ghost" id="kdHafta">${T('kocPeriodWeek')}<small>${esc(kisa(pzt))} – ${esc(kisa(paz))}</small></button></div>`);
+  $('kdAy').onclick = () => { kapat(); kocOtomatikOlustur('ay'); };
+  $('kdHafta').onclick = () => { kapat(); kocOtomatikOlustur('hafta'); };
+}
+// Alıcının profili bilinmez: yalnız girilen hedefler ve öğün düzeni kullanılır (alerji/dışlama yok); menü 4 haftalık dönüşten takvim haftasına göre seçilir
+function kocOtomatikOlustur(mod){
+  const K = D.koc, bugun = bugunK();
+  kocModAyarla(K, mod, mod === 'ay' ? ayAnahtar(bugun) : '');
+  const kcal = +K.t.kcal;
+  const protein = +K.t.protein > 0 ? +K.t.protein : Math.round(kcal * 0.22 / 4);
+  const yag = +K.t.yag > 0 ? +K.t.yag : Math.round(kcal * 0.28 / 9);
+  const karb = +K.t.karb > 0 ? +K.t.karb : Math.max(50, Math.round((kcal - protein * 4 - yag * 9) / 4));
+  const p = {cins:'e', hamile:false, odaklar:[], haric:[], alerjiler:[], takviye:[], antrenmanGunleri:[], ara0:!!K.ara0,
+    kcal, protein, karb, yag, seker: Math.round(kcal * 0.13 / 4), lif: Math.round(kcal / 1000 * 14)};
+  const planlar = planOlustur(p), ids = kocOgunler(K), n = kocGunSayisi(K), hs = planlar.length;
+  const pzt = k => gunEkle(k, -haftaGunu(k));
+  const haftaSira = k => ((Math.round(tarihDen(pzt(k)) / 6048e5) % hs) + hs) % hs;
+  const buHafta = pzt(bugun);
+  for (let j = 0; j < n; j++){
+    const tarih = mod === 'ay' ? kocGunTarih(K, j) : gunEkle(buHafta, j);
+    const gun = planlar[haftaSira(tarih)][haftaGunu(tarih)];
+    K.gun[j] = Object.fromEntries(ids.map(id => { const o = gun.find(o => o.id === id); return [id, o ? kopya(o.ogeler) : []]; }));
+    K.not[j] = {};
+  }
+  if (!(+K.t.protein > 0)) K.t.protein = String(protein);
+  if (!(+K.t.yag > 0)) K.t.yag = String(yag);
+  if (!(+K.t.karb > 0)) K.t.karb = String(karb);
+  K.sec = mod === 'ay' ? sinirla(+bugun.slice(8) - 1, 0, n - 1) : haftaGunu(bugun);
+  kaydet(); kocCiz(); toast(T('kocAutoDone', {n}));
+  $('koc').scrollTop = 0;
+}
 // Programı link için sıkıştır: kısa alan adları, yalnız kullanılan özel yemekler
 function kocPaket(){
-  const K = D.koc, ids = kocOgunler(K);
-  const g = K.gun.map(gun => ids.map(id => (gun[id] || []).map(it => [it.f, it.g])));
+  const K = D.koc, ids = kocOgunler(K), n = kocGunSayisi(K);
+  const g = K.gun.slice(0, n).map(gun => ids.map(id => (gun[id] || []).map(it => [it.f, it.g])));
   if (!g.some(gun => gun.some(o => o.length))) return null;
-  const m = K.not.map(n => ids.map(id => (n[id] || '').trim()));
+  const m = K.not.slice(0, n).map(nt => ids.map(id => (nt[id] || '').trim()));
   const kullanilan = new Set(g.flat(2).map(x => x[0]));
   const y = (D.ozelYemek || []).filter(f => kullanilan.has(f.id)).map(f => ({id:f.id, ad:f.ad, k:f.k, p:f.p, c:f.c, y:f.y, s:f.s, l:f.l, a:f.a, b:f.b, d:f.d}));
   const t = {}; for (const k of ['kcal','protein','karb','yag']) if (+K.t[k] > 0) t[k] = +K.t[k];
@@ -253,6 +378,7 @@ function kocPaket(){
   if (m.some(gun => gun.some(Boolean))) P.m = m;
   if (y.length) P.y = y;
   if (Object.keys(t).length) P.t = t;
+  if (kocAyMi(K)){ P.d = 'ay'; P.ay = K.ay; }   // dönem: ay programı tarihli gider; hafta programında alan yok
   return P;
 }
 const b64url = bytes => { let s = ''; bytes.forEach(b => s += String.fromCharCode(b)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
@@ -356,12 +482,12 @@ function kocYazdir(){
   const P = kocPaket();
   if (!P){ toast(T('kocEmpty')); return; }
   const ids = P.o.map(o => o[0]);
-  const gunHtml = (gun, i) => `<section><h2>${esc(haftaGunAd(i, true))}</h2><table>${ids.map((id, oi) => gun[oi].length ? `<tr><th>${esc(P.o[oi][1])}<br>${esc(T('m_' + id))}</th><td>${gun[oi].map(([f, g]) => esc(yemek(f).ad) + ' — ' + esc(miktarYazi(yemek(f), g))).join('<br>')}${P.m && P.m[i][oi] ? `<br><i>${esc(P.m[i][oi])}</i>` : ''}</td><td class="k">${yuv(topla(gun[oi].map(([f, g]) => ({f, g}))).k)} kcal</td></tr>` : '').join('')}</table></section>`;
+  const gunHtml = (gun, i) => `<section><h2>${esc(kocGunAd(D.koc, i, true))}</h2><table>${ids.map((id, oi) => gun[oi].length ? `<tr><th>${esc(P.o[oi][1])}<br>${esc(T('m_' + id))}</th><td>${gun[oi].map(([f, g]) => esc(yemek(f).ad) + ' — ' + esc(miktarYazi(yemek(f), g))).join('<br>')}${P.m && P.m[i][oi] ? `<br><i>${esc(P.m[i][oi])}</i>` : ''}</td><td class="k">${yuv(topla(gun[oi].map(([f, g]) => ({f, g}))).k)} kcal</td></tr>` : '').join('')}</table></section>`;
   const html = `<!DOCTYPE html><html lang="${dil}" dir="${RTL() ? 'rtl' : 'ltr'}"><head><meta charset="utf-8"><title>${esc(T('app'))} · ${esc(P.a)}</title><style>
     body{font-family:system-ui,"Segoe UI",Roboto,sans-serif;color:#172338;margin:24px;font-size:13px}h1{font-size:20px;margin:0 0 4px}p{margin:2px 0;color:#40506a}
     section{break-inside:avoid;margin-top:14px}h2{font-size:15px;margin:0 0 6px;color:#16a36b}table{width:100%;border-collapse:collapse}th,td{border:1px solid #dfe5ee;padding:6px 8px;text-align:start;vertical-align:top}
     th{width:120px;background:#f5f8fc;font-weight:700}td.k{width:70px;text-align:end;white-space:nowrap;color:#718096}</style></head><body>
-    <h1>${esc(T('app'))}${P.a ? ' · ' + esc(T('kocFor', {a: P.a})) : ''}</h1>${P.h ? `<p>${esc(T('kocBy', {h: P.h}))}</p>` : ''}${P.n ? `<p>${esc(P.n)}</p>` : ''}
+    <h1>${esc(T('app'))}${P.a ? ' · ' + esc(T('kocFor', {a: P.a})) : ''}</h1>${P.h ? `<p>${esc(T('kocBy', {h: P.h}))}</p>` : ''}<p>${esc(P.d === 'ay' ? T('kocPeriodMonth') + ': ' + ayAdi(P.ay) : T('kocPeriodWeek'))}</p>${P.n ? `<p>${esc(P.n)}</p>` : ''}
     ${P.t ? `<p>${Object.entries(P.t).map(([k, v]) => T(HEDEF_ETIKET[k]) + ': ' + v).join(' · ')}</p>` : ''}
     ${P.g.map(gunHtml).join('')}<script>onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`;
   const w = window.open('', '_blank');
@@ -371,7 +497,7 @@ function kocYazdir(){
 // ---------- Program linkiyle gelen programı yükle ----------
 const BEKLEYEN = ANAHTAR + '_bekleyen_program';
 function programDogrula(P){
-  if (!P || P.v !== 1 || !Array.isArray(P.o) || !Array.isArray(P.g) || !P.o.length || P.g.length < 1 || P.g.length > 14) return null;
+  if (!P || P.v !== 1 || !Array.isArray(P.o) || !Array.isArray(P.g) || !P.o.length || P.g.length < 1 || P.g.length > 31) return null;
   const ozel = {};
   (Array.isArray(P.y) ? P.y : []).slice(0, 50).forEach(f => {
     if (!f || typeof f.id !== 'string') return;
@@ -386,19 +512,25 @@ function programDogrula(P){
   const m = Array.isArray(P.m) ? P.m.map(gun => o.map((_, oi) => String(((gun || [])[oi]) || '').slice(0, 120))) : null;
   const t = {};
   if (P.t) for (const k of ['kcal','protein','karb','yag']) if (+P.t[k] > 0) t[k] = sinirla(Math.round(+P.t[k]), 1, 10000);
-  return {a:String(P.a || '').slice(0, 40), h:String(P.h || '').slice(0, 60), n:String(P.n || '').slice(0, 400), l:DILLER.some(d => d.k === P.l) ? P.l : '', o, g, m, t, ozel:Object.values(ozel)};
+  const ay = P.d === 'ay' && /^\d{4}-(0[1-9]|1[0-2])$/.test(String(P.ay || '')) && P.g.length === ayGunSayisi(P.ay) ? P.ay : '';
+  return {a:String(P.a || '').slice(0, 40), h:String(P.h || '').slice(0, 60), n:String(P.n || '').slice(0, 400), l:DILLER.some(d => d.k === P.l) ? P.l : '', o, g, m, t, ozel:Object.values(ozel), d: ay ? 'ay' : 'hafta', ay};
 }
 function programUygula(P){
   if (!D.program) D.oncekiPlan = {planlar: kopya(D.planlar), planBaslangic: D.planBaslangic, miktar: kopya(D.miktar || {})};
-  // 7 güne tamamla (daha kısa programda günler sırayla tekrar eder)
-  const hafta = Array.from({length: 7}, (_, i) => {
-    const gi = i % P.g.length;
-    return P.o.map(([id, saat], oi) => ({id, ad: T('m_' + id), saat, ico: OGUN_IKON[id], ogeler: kopya(P.g[gi][oi]), ...(P.m && P.m[gi][oi] ? {not: P.m[gi][oi]} : {})}));
-  });
   const bugun = bugunK();
+  const gunYap = gi => P.o.map(([id, saat], oi) => ({id, ad: T('m_' + id), saat, ico: OGUN_IKON[id], ogeler: kopya(P.g[gi][oi]), ...(P.m && P.m[gi][oi] ? {not: P.m[gi][oi]} : {})}));
+  const n = P.g.length, mod = x => ((x % n) + n) % n;
   P.ozel.forEach(f => { if (!D.ozelYemek.some(y => y.id === f.id)) D.ozelYemek.push(f); });
-  D.planlar = [hafta];
-  D.planBaslangic = gunEkle(bugun, -haftaGunu(bugun));
+  if (P.d === 'ay'){
+    // Aylık: ayın 1'i = programın 1. günü; plan, ayın 1'ini içeren pazartesiden başlayan haftalar (ay bitince baştan döner)
+    const ay = programAyi(P), ilk = ay + '-01', ofs = haftaGunu(ilk), gunSay = ayGunSayisi(ay), haftaSay = Math.ceil((ofs + gunSay) / 7);
+    D.planlar = Array.from({length: haftaSay}, (_, w) => Array.from({length: 7}, (_, d) => gunYap(mod(w * 7 + d - ofs))));
+    D.planBaslangic = gunEkle(ilk, -ofs);
+  } else {
+    // Haftalık: aktif haftanın pazartesisinden (daha kısa programda günler sırayla tekrar eder)
+    D.planlar = [Array.from({length: 7}, (_, i) => gunYap(mod(i)))];
+    D.planBaslangic = gunEkle(bugun, -haftaGunu(bugun));
+  }
   D.miktar = {};
   menuleriTemizle(true);
   saatKaydet(bugun, Object.fromEntries(P.o));
@@ -406,7 +538,7 @@ function programUygula(P){
   if (P.t.protein) D.profil.protein = P.t.protein;
   if (P.t.karb) D.profil.karb = P.t.karb;
   if (P.t.yag) D.profil.yag = P.t.yag;
-  D.program = {a:P.a, h:P.h, n:P.n, t:Date.now()};
+  D.program = {a:P.a, h:P.h, n:P.n, t:Date.now(), d:P.d || 'hafta', ay:P.d === 'ay' ? programAyi(P) : ''};
   logEkle('diger', null, T('lImport', {h: P.h || T('progAnon'), a: P.a || '—'}));
   aktif = bugun; detayAcik = false;
   kaydet(); ciz(); toast(T('impDone'));
@@ -424,10 +556,14 @@ function programKaldir(){
   });
 }
 // Evet → yükle (kurulum bitmemişse önce profil, sonra otomatik); Hayır / kapat → yükleme
+// Ay programı geçmiş bir aya aitse alıcının içinde bulunduğu aya uygulanır (gün sırası aynı)
+const programAyi = P => { const buAy = ayAnahtar(bugunK()); return P.ay && P.ay >= buAy ? P.ay : buAy; };
 function programSor(P){
   const ogunSay = P.o.length, gunSay = P.g.length;
+  const donem = P.d === 'ay' ? T('impPerMonth', {ay: ayAdi(programAyi(P))}) : T('impPerWeek');
+  const soru = P.h ? T('impQ', {h: P.h, d: donem}) : T('impQAnon', {d: donem});
   const kim = [P.h ? T('kocBy', {h: P.h}) : '', P.a ? T('kocFor', {a: P.a}) : ''].filter(Boolean).join(' · ');
-  ac(T('confirmT'), `<p class="onay-metin"><b>${esc(T('impQ'))}</b></p>
+  ac(T('confirmT'), `<p class="onay-metin"><b>${esc(soru)}</b></p>
     ${kim ? `<div class="cur"><b>📋 ${esc(kim)}</b>${P.n ? `<br><small>${esc(P.n)}</small>` : ''}</div>` : ''}
     <div class="hint">${esc(T('impInfo', {d: gunSay, m: ogunSay}))}</div>
     ${D.ayar.kurulum ? '' : `<div class="wmsg info">${esc(T('impSetup'))}</div>`}
@@ -474,7 +610,7 @@ window.addEventListener('hashchange', adresProgramKontrol);
 function programBantCiz(){
   const P = D.program, el = $('programBant');
   if (!P){ el.innerHTML = ''; return; }
-  el.innerHTML = `<div class="prog-bant"><div><b>${esc(P.h ? T('progBanner', {h: P.h}) : '📋 ' + T('progAnon'))}</b>${P.a ? ` <span class="tag">${esc(T('kocFor', {a: P.a}))}</span>` : ''}${P.n ? `<p>${esc(P.n)}</p>` : ''}</div>
+  el.innerHTML = `<div class="prog-bant"><div><b>${esc(P.h ? T('progBanner', {h: P.h}) : '📋 ' + T('progAnon'))}</b>${P.a ? ` <span class="tag">${esc(T('kocFor', {a: P.a}))}</span>` : ''}${P.d === 'ay' && P.ay ? ` <span class="tag">${esc(ayAdi(P.ay))}</span>` : ''}${P.n ? `<p>${esc(P.n)}</p>` : ''}</div>
     <button class="btn ghost" data-progkaldir="1">${T('progRemove')}</button></div>`;
 }
 
