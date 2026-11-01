@@ -125,7 +125,7 @@ const KOC_GUN = 7;
 const kocDanisanBos = () => ({cins:'', yas:'', boy:'', kilo:'', hedefKilo:'', aktivite:2, hedef:'koru', alerjiler:[], haric:[]});
 // Sık kısıtlar: a = alerjen kimliği (yemek.al), h = içerik harfi (yemek.x: m kırmızı et, t tuzlu)
 const KOC_KISIT = [['a', 'sut'], ['a', 'yumurta'], ['a', 'gluten'], ['a', 'balik'], ['a', 'kabuklu'], ['a', 'yerfistigi'], ['a', 'kuruyemis'], ['a', 'soya'], ['a', 'susam'], ['h', 'm'], ['h', 't']];
-const kocKisitAd = (tur, id) => tur === 'h' ? T(id === 'm' ? 'kocKirmiziEtYok' : 'kocTuzKisit') : ((alerjen(id) || {}).ad || id);
+const kocKisitAd = (tur, id) => tur === 'h' ? T('x_' + id) : ((alerjen(id) || {}).ad || id);
 const tarihYaz = k => tarihDen(k).toLocaleDateString(LOC(), {day:'numeric', month:'long', year:'numeric'});
 function kocBos(){
   return {a:'', h:'', n:'', t:{kcal:'', protein:'', karb:'', yag:'', su:''}, il:'', kt:'', dn:kocDanisanBos(), ara0:false, saat:{...VARSAYILAN_SAAT}, mod:'hafta', ay:'',
@@ -164,6 +164,8 @@ function kocDuzenle(K){
   if (K.kt == null) K.kt = '';
   if (!K.dn) K.dn = kocDanisanBos();
   for (const a of ['alerjiler', 'haric']) if (!Array.isArray(K.dn[a])) K.dn[a] = [];
+  K.dn.haric = K.dn.haric.filter(x => ['m', 'c', 'f', 'e', 'd'].includes(x));   // sihirbazla aynı gruplar
+  if (!K.kapali) K.kapali = {};
 }
 // 7 günlük (hafta günü bazlı) kopya: ay modunda her hafta gününün aydaki ilk dolu örneği
 function kocHaftaya(K){
@@ -209,18 +211,28 @@ function kocKapat(){
 }
 function kocGunToplam(K, i){ return topla(kocOgunler(K).flatMap(id => K.gun[i][id] || [])); }
 // Gün toplamı kartı (hedef alanı değişince yalnız bu kart yenilenir; tam çizim dokunulan düğmeyi yok edip tıklamayı yutardı)
+// Alerjen listesi: kurulum sihirbazıyla aynı (ALERJENLER, aynı arama); seçilenler başta
+function kocAlerjiListe(K){
+  const q = (K.alAra || '').trim(), sec = new Set(K.dn.alerjiler);
+  let liste = ALERJENLER;
+  if (q){ const A = aramaHazirla(q); liste = ALERJENLER.filter(a => { const metin = `${a.ad} ${a.n.join(' ')} ${a.e}`; return A.alternatifler.some(k => k.every(r => r.test(metin))); }); }
+  liste = [...liste.filter(a => sec.has(a.id)), ...liste.filter(a => !sec.has(a.id))];
+  return liste.length ? liste.map(a => `<button class="al-chip${sec.has(a.id) ? ' on' : ''}" data-kkisit="a:${a.id}">${sec.has(a.id) ? '✓ ' : ''}${esc(a.ad)}</button>`).join('') : `<div class="hint">${T('noResult').split('.')[0]}.</div>`;
+}
 function kocDanisanHtml(K){
   const dn = K.dn, dolu = !!(dn.cins || dn.yas || dn.kilo || dn.alerjiler.length || dn.haric.length);
   const sayiAlan = (k, ad) => `<label class="field"><span>${ad}</span><input data-kdn="${k}" type="text" inputmode="decimal" autocomplete="off" value="${esc(dn[k] || '')}" placeholder="—"></label>`;
-  const kisit = KOC_KISIT.filter(([tur, id]) => tur === 'h' || alerjen(id)).map(([tur, id]) => `<button class="chip${(tur === 'a' ? dn.alerjiler : dn.haric).includes(id) ? ' on' : ''}" data-kkisit="${tur}:${id}">${esc(kocKisitAd(tur, id))}</button>`).join('');
   return `<details class="koc-danisan"${K.dnAcik || dolu ? ' open' : ''}><summary>${T('kocDanisan')}</summary>
     <div class="hint" style="margin:6px 0 8px">${esc(T('kocDanisanHint'))}</div>
     <div class="seg koc-cins" role="group">${['k', 'e'].map(c => `<button class="seg-btn${dn.cins === c ? ' on' : ''}" data-kcins="${c}">${T(c === 'k' ? 'female' : 'male')}</button>`).join('')}</div>
     <div class="grid4">${sayiAlan('yas', T('age'))}${sayiAlan('boy', T('height'))}${sayiAlan('kilo', T('weight'))}${sayiAlan('hedefKilo', T('targetW'))}</div>
     <div class="grid2"><label class="field"><span>${T('kocAkt')}</span><select data-kdnsec="aktivite">${[1, 2, 3, 4, 5].map(a => `<option value="${a}"${+dn.aktivite === a ? ' selected' : ''}>${T('a' + a)}</option>`).join('')}</select></label>
     <label class="field"><span>${T('goalLbl')}</span><select data-kdnsec="hedef">${['ver', 'koru', 'sekil', 'kas', 'al'].map(g => `<option value="${g}"${dn.hedef === g ? ' selected' : ''}>${T('g_' + g)}</option>`).join('')}</select></label></div>
-    <div class="field" style="margin-bottom:4px"><span>${T('kocAlerjiT')}</span></div>
-    <div class="chips koc-kisit">${kisit}</div>
+    <div class="field" style="margin-bottom:4px"><span>${T('kocYemedikleri')}</span></div>
+    <div class="chips koc-kisit">${[['m','🥩'],['c','🍗'],['f','🐟'],['e','🥚'],['d','🥛']].map(([x, ic]) => `<button class="chip${dn.haric.includes(x) ? ' on' : ''}" data-kkisit="h:${x}">${ic} ${esc(T('x_' + x))}</button>`).join('')}</div>
+    <div class="field" style="margin-bottom:4px"><span>${T('kocAlerjiler')}</span></div>
+    <input class="search koc-al-ara" data-kalara="1" value="${esc(K.alAra || '')}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+    <div class="koc-al-sonuc">${kocAlerjiListe(K)}</div>
     <button class="btn full" data-khesapla="1">${T('kocHesapla')}</button><div class="hint" style="margin-top:6px">${esc(T('kocHesaplaHint'))}</div>
   </details>`;
 }
@@ -240,6 +252,57 @@ function kocHedefHesapla(){
   const h = hedefHesapla(p);
   K.t = {...K.t, kcal: String(h.kcal), protein: String(h.protein), karb: String(h.karb), yag: String(h.yag), su: String(Math.round(h.su / 100) / 10)};
   kaydet(); kocCiz(); toast(T('kocHesaplandi'));
+}
+// ---------- Program hazırla: öğünleri gizle / göster (ana ekrandakiyle aynı davranış; kaydırma #koc içinde) ----------
+const kocKapali = (K, id) => (K.kapali || {})[id] != null ? !!K.kapali[id] : !!K.hepsiKapali;
+function kocTogCiz(hedef, acildi, degistir){
+  const kap = $('koc'), once = hedef(), y0 = once ? once.getBoundingClientRect().top : 0;
+  degistir(); kocKaydet(); kocCiz();
+  const el = hedef(); if (!el) return;
+  if (acildi) kap.scrollTo({top: el.getBoundingClientRect().top - kap.getBoundingClientRect().top + kap.scrollTop - 8, behavior: 'smooth'});
+  else kap.scrollTop += el.getBoundingClientRect().top - y0;
+}
+function kocTogla(id){
+  const K = D.koc, acilacak = kocKapali(K, id);
+  kocTogCiz(() => $('koc').querySelector(`[data-kogun="${CSS.escape(id)}"]`), acilacak, () => { K.kapali = {...(K.kapali || {}), [id]: !acilacak}; });
+}
+function kocHepsiniTogla(kapat){
+  const K = D.koc;
+  kocTogCiz(() => $('koc').querySelector('.koc-ogun-arac'), !kapat, () => { K.hepsiKapali = !!kapat; K.kapali = {}; });
+}
+// ---------- Program hazırla › Günler › 📅 takvim (ay ay; programlı günler yeşil noktalı, seçili gün yeşil daire) ----------
+let kocTakvimAy = '';
+function kocTakvimAc(ay){
+  const K = D.koc, bugun = bugunK(), ayMod = kocAyMi(K);
+  const pzt = gunEkle(bugun, -haftaGunu(bugun));
+  const seciliTarih = ayMod ? kocGunTarih(K, K.sec) : gunEkle(pzt, K.sec);
+  ay = ay || kocTakvimAy || ayAnahtar(seciliTarih); kocTakvimAy = ay;
+  const ilk = ay + '-01', n = ayGunSayisi(ay), bas = haftaGunu(ilk);
+  const dolu = j => Object.values(K.gun[j] || {}).some(l => (l || []).length);
+  const hucre = k => {   // takvim günü → program günü sırası (yoksa -1)
+    if (ayMod) return ayAnahtar(k) === K.ay ? +k.slice(8) - 1 : -1;
+    return haftaGunu(k);
+  };
+  let h = Array.from({length: bas}, () => '<span class="tk-gun bos"></span>').join('');
+  for (let d = 1; d <= n; d++){
+    const k = ay + '-' + String(d).padStart(2, '0'), j = hucre(k);
+    h += `<button class="tk-gun${k === seciliTarih ? ' secili' : ''}${k === bugun ? ' bugun' : ''}" data-tkgun="${j}" data-tktarih="${k}" ${j < 0 ? 'disabled' : ''}><b>${d}</b><i class="${j >= 0 && dolu(j) ? 'on' : ''}"></i></button>`;
+  }
+  const oncekiAy = ayAnahtar(gunEkle(ilk, -1)), sonrakiAy = ayAnahtar(gunEkle(ilk, n));
+  ac('📅 ' + T('kocTakvim'), `<div class="tk-ust"><button class="tk-ok" data-tkay="${oncekiAy}" aria-label="‹">‹</button><b>${esc(ayAdi(ay))}</b><button class="tk-ok" data-tkay="${sonrakiAy}" aria-label="›">›</button></div>
+    <div class="tk-grid" id="tkGrid">${[0, 1, 2, 3, 4, 5, 6].map(i => `<span class="tk-gun-ad">${esc(haftaGunAd(i))}</span>`).join('')}${h}</div>
+    <div class="hint tk-ipucu">${esc(T(ayMod ? 'kocTakvimAyIpucu' : 'kocTakvimHaftaIpucu', {ay: ayAdi(K.ay || ay)}))}</div>`);
+  const sb = $('sbody');
+  sb.querySelectorAll('[data-tkay]').forEach(b => b.onclick = () => kocTakvimAc(b.dataset.tkay));
+  sb.querySelectorAll('[data-tkgun]').forEach(b => b.onclick = () => {
+    const j = +b.dataset.tkgun; if (j < 0) return;
+    K.sec = j; kocTakvimAy = ''; kapat(); kocKaydet(); kocCiz();
+    const bas = $('koc').querySelector('.koc-gun-bas'); if (bas) bas.scrollIntoView({block: 'start', behavior: 'smooth'});
+  });
+  // sağa/sola kaydırarak ay değiştir
+  const g = $('tkGrid'); let x0 = null;
+  g.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive: true});
+  g.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 45) kocTakvimAc(dx < 0 ? sonrakiAy : oncekiAy); });
 }
 // ---------- Kayıtlı programlar (danışan başına; bu cihazda ve hesapla eşitlenen veride) ----------
 const KOC_ARSIV_EN_COK = 30;
@@ -289,15 +352,17 @@ function kocCiz(){
         <div class="item-acts"><button class="mini" data-kdegis="${id},${ii}" title="${esc(T('change'))}">${ikonlu('change')}</button><button class="mini del" data-ksil="${id},${ii}" title="${esc(T('remove'))}">${ikonlu('remove')}</button></div></div></li>`;
     }).join('');
     const tt = topla(liste);
-    return `<article class="card meal">
-      <div class="meal-head"><div class="meal-ico">${OGUN_IKON[id]}</div><div class="meal-title"><b>${T('m_' + id)}</b><span class="ogun-alt"><span data-ksaatgoster="${id}">${K.saat[id]}</span> · ${yuv(tt.k)} ${T('kcal')} · ${T('aP')} ${yuv(tt.p)} ${T('g')}</span></div></div>
+    const kapali = kocKapali(K, id);
+    return `<article class="card meal${kapali ? ' kapali' : ''}" data-kogun="${id}">
+      <div class="meal-head"><div class="meal-ico">${OGUN_IKON[id]}</div><div class="meal-title"><b>${T('m_' + id)}</b><span class="ogun-alt"><span data-ksaatgoster="${id}">${K.saat[id]}</span> · ${yuv(tt.k)} ${T('kcal')} · ${T('aP')} ${yuv(tt.p)} ${T('g')}</span></div>
+        <button class="tog-btn" data-ktog="${id}" aria-expanded="${!kapali}" title="${esc(T(kapali ? 'showMeal' : 'hideMeal'))}"><i>${kapali ? '▾' : '▴'}</i><span class="lbl">${T(kapali ? 'showMeal' : 'hideMeal')}</span></button></div>
       <ul class="items">${satirlar}</ul>
       <input class="koc-not" data-knot="${id}" type="text" autocomplete="off" maxlength="120" placeholder="${esc(T('kocMealNotePh'))}" value="${esc(K.not[i][id] || '')}">
       <button class="add-food" data-kekle="${id}">${T('kocAdd')}</button>
     </article>`;
   };
   $('koc').innerHTML = `<div class="wiz-in koc-in">
-    <div class="wiz-top"><div class="wiz-brand">🥗 ${T('app')}</div><button class="icon-btn" data-kkapat="1" aria-label="✕">✕</button></div>
+    <div class="wiz-top"><div class="wiz-brand koc-brand">🥗 ${T('app')} <span>${T('kocUstBaslik')}</span></div><button class="icon-btn" data-kkapat="1" aria-label="✕">✕</button></div>
     <h2>${T('kocTitle')}</h2><p class="wiz-sub">${esc(T('kocIntro'))}</p>
     <div class="koc-arsiv-satir"><button class="chip" data-karsiv="1">${T('kocArsivBtn', {n: (D.kocArsiv || []).length})}</button><button class="chip" data-kkaydet="1">${T('kocArsivKaydet')}</button></div>
     <div class="card">
@@ -316,15 +381,16 @@ function kocCiz(){
       <div class="grid3">${ogunler.map(id => `<label class="field"><span>${OGUN_IKON[id]} ${T('m_' + id)}</span><input type="time" step="300" data-ksaat="${id}" value="${K.saat[id]}"></label>`).join('')}</div>
       <label class="koc-check"><input type="checkbox" data-kara0="1" ${K.ara0 ? 'checked' : ''}> ${T('kocAra0')}</label>
     </div>
-    <div class="sec koc-sec-row"><span>${T('kocDays')}</span><div class="seg" role="group"><button class="seg-btn${ay ? '' : ' on'}" data-kmod="hafta">${T('kocPeriodWeek')}</button><button class="seg-btn${ay ? ' on' : ''}" data-kmod="ay">${T('kocPeriodMonth')}</button></div></div>
+    <div class="sec koc-sec-row"><span class="koc-gunler-bas">${T('kocDays')}<button class="koc-takvim-btn" data-ktakvim="1" aria-label="${esc(T('kocTakvim'))}" title="${esc(T('kocTakvim'))}">📅</button></span><div class="seg" role="group"><button class="seg-btn${ay ? '' : ' on'}" data-kmod="hafta">${T('kocPeriodWeek')}</button><button class="seg-btn${ay ? ' on' : ''}" data-kmod="ay">${T('kocPeriodMonth')}</button></div></div>
     <div class="koc-donem-hint">${esc(ay ? T('kocModMonthHint', {ay: ayAdi(K.ay), n}) : T('kocModWeekHint'))}</div>
     <div class="days koc-days${ay ? ' koc-ay' : ''}">${Array.from({length: n}, (_, j) => `<button class="day${j === i ? ' active' : ''}${ay && kocGunTarih(K, j) === bugun ? ' today' : ''}" data-kgun="${j}"><b>${esc(kocGunAd(K, j))}</b>${ay ? `<span>${esc(gunKisa(kocGunTarih(K, j)))}</span>` : ''}<i class="${gunDolu(j) ? 'on' : ''}"></i></button>`).join('')}</div>
     <div class="koc-gun-arac">${i > 0 ? `<button class="chip" data-konceki="1">${T('kocCopyPrev')}</button>` : ''}<button class="chip" data-khafta="1">${T('kocCopyWeek')}</button>${ay ? `<button class="chip" data-kay="1">${T('kocCopyMonth')}</button>` : ''}<button class="chip" data-ktemizle="1">${T('kocClear')}</button><button class="chip" data-khaftatemizle="1">${T('kocClearWeek')}</button>${ay ? `<button class="chip" data-kaytemizle="1">${T('kocClearMonth')}</button>` : ''}</div>
     <h3 class="koc-gun-bas">${esc(kocGunAd(K, i, true))}</h3>
+    <div class="koc-ogun-arac"><button class="btn ghost tog-all" data-ktogall="${ogunler.some(id => !kocKapali(K, id)) ? 1 : 0}">${T(ogunler.some(id => !kocKapali(K, id)) ? 'hideAll' : 'showAll')}</button></div>
     <section class="meals">${ogunler.map(ogunKart).join('')}</section>
     <div class="card" style="margin-top:14px" id="kocToplam">${kocToplamHtml(K, i)}</div>
     <div id="kocLink"></div>
-    <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kyazdir="1">${T('kocPrint')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
+    <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kyazdir="1">${T(window.__LF_NATIVE ? 'kocPrintNative' : 'kocPrintWeb')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
     <div class="hint" style="text-align:center;margin-top:6px">${T('kocDraft')}</div>
   </div>`;
   // Ay şeridinde seçili gün ortada görünsün (yalnız yatay kaydırma; sayfa yerinden oynamaz)
@@ -381,6 +447,9 @@ $('koc').addEventListener('click', e => {
   if (ds.kaytemizle){ kocOnay(T('cKocClearMonth'), temizle(tumAy()), T('kocCleared')); return; }
   if (ds.kauto){ kocOtomatikSor(); return; }
   if (ds.karsiv){ kocArsivAc(); return; }
+  if (ds.ktog){ kocTogla(ds.ktog); return; }
+  if (ds.ktogall){ kocHepsiniTogla(ds.ktogall === '1'); return; }
+  if (ds.ktakvim){ kocTakvimAc(); return; }
   if (ds.kkaydet){ kocArsivKaydet(); return; }
   if (ds.khesapla){ kocHedefHesapla(); return; }
   if (ds.kcins){ K.dn.cins = K.dn.cins === ds.kcins ? '' : ds.kcins; K.dnAcik = true; kocKaydet(); kocCiz(); return; }
@@ -398,6 +467,7 @@ $('koc').addEventListener('input', e => {
   const t = e.target, K = D.koc; if (!K) return;
   if (t.dataset.kf){ K[t.dataset.kf] = t.value; kocKaydet(); return; }
   if (t.dataset.kt){ K.t[t.dataset.kt] = t.dataset.kt === 'su' ? t.value.replace(',', '.').replace(/[^\d.]/g, '') : t.value.replace(/[^\d]/g, ''); kocKaydet(); return; }
+  if (t.dataset.kalara){ K.alAra = t.value; const el = $('koc').querySelector('.koc-al-sonuc'); if (el) el.innerHTML = kocAlerjiListe(K); return; }
   if (t.dataset.kdn){ K.dn[t.dataset.kdn] = t.value.replace(',', '.').replace(/[^\d.]/g, ''); kocKaydet(); return; }
   if (t.dataset.knot){ K.not[K.sec][t.dataset.knot] = t.value; kocKaydet(); return; }
 });
@@ -609,8 +679,11 @@ function kocYazdir(){
     <h1>${esc(T('app'))}${P.a ? ' · ' + esc(T('kocFor', {a: P.a})) : ''}</h1>${P.h ? `<p>${esc(T('kocBy', {h: P.h}))}</p>` : ''}${P.il ? `<p>${esc(T('kocIletisim', {i: P.il}))}</p>` : ''}${P.kt ? `<p>${esc(T('kocKontrol', {t: tarihYaz(P.kt)}))}</p>` : ''}${kocDanisanOzet()}<p>${esc(P.d === 'ay' ? T('kocPeriodMonth') + ': ' + ayAdi(P.ay) : T('kocPeriodWeek'))}</p>${P.n ? `<p>${esc(P.n)}</p>` : ''}
     ${P.t || P.su ? `<p>${Object.entries(P.t || {}).map(([k, v]) => T(HEDEF_ETIKET[k]) + ': ' + v).concat(P.su ? [T('kocSuL') + ': ' + sayi(P.su / 1000)] : []).join(' · ')}</p>` : ''}
     ${P.g.map(gunHtml).join('')}<script>onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`;
+  const dosya = `program_${(P.a || 'diyet').replace(/[^\wçğıöşüÇĞİÖŞÜ]+/g, '_')}.html`;
+  // Telefon uygulamasında yazdırma yok → HTML dosyası indirilir (açılınca kendiliğinden yazdırma penceresi açmaz)
+  if (window.__LF_NATIVE){ indir(html.replace('<script>onload=()=>setTimeout(()=>print(),300)<\/script>', ''), dosya, 'text/html'); return; }
   const w = window.open('', '_blank');
-  if (w){ w.document.write(html); w.document.close(); } else indir(html, `program_${(P.a || 'diyet').replace(/[^\wçğıöşüÇĞİÖŞÜ]+/g, '_')}.html`, 'text/html');
+  if (w){ w.document.write(html); w.document.close(); } else indir(html, dosya, 'text/html');
 }
 
 // ---------- Program linkiyle gelen programı yükle ----------

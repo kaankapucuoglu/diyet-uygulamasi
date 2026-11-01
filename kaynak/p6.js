@@ -151,9 +151,9 @@ function ciz(){
   const P = D.profil;
   document.title = T('app');
   $('ust').textContent = T('eyebrow');
-  $('baslik').textContent = selam();
+  selamCiz();
   $('lAyar').textContent = T('settings'); $('lUyari').textContent = T('warnBtn');
-  $('lKoc').textContent = T('kocBtn'); $('lSira').textContent = T('hsSira');
+  $('lKoc').textContent = T('kocBtn');
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
@@ -164,6 +164,20 @@ function ciz(){
   if (capa){ capaUygula(capa); requestAnimationFrame(() => capaUygula(capa)); }
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
+// Selam: virgüle kadar olan kısım ("Kaan Bey,") ve gerisi ("hoş geldiniz 😊") bölünmez; emoji metinden kopmaz.
+// Ad ≤ 8 harf: tek satır, sığmazsa yazı küçülür (en az 18 px). Ad > 8 harf: "hoş geldiniz 😊" alt satıra geçer.
+function selamCiz(){
+  const h = $('baslik'); if (!h) return;
+  const s = selam(), i = s.indexOf(','), ad = [...String(D.profil.ad || '').trim()];
+  h.innerHTML = i > 0 ? `<span class="sl1">${esc(s.slice(0, i + 1))}</span> <span class="sl2">${esc(s.slice(i + 1).trim())}</span>` : `<span class="sl2">${esc(s)}</span>`;
+  h.classList.toggle('uzun-ad', i > 0 && ad.length > 8);
+  h.style.fontSize = '';
+  if (ad.length <= 8){
+    let fs = parseFloat(getComputedStyle(h).fontSize), n = 0;
+    while (h.scrollHeight > fs * 1.5 && fs > 18 && n++ < 14){ fs -= 1; h.style.fontSize = fs + 'px'; }
+  }
+}
+window.addEventListener('resize', () => { if (D && D.ayar && D.ayar.kurulum) selamCiz(); });
 function ustHizala(){
   const satir = document.querySelector('.top-row'); if (!satir) return;
   satir.classList.remove('kirik');

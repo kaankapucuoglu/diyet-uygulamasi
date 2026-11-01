@@ -247,11 +247,11 @@ if (yerelKabuk()){
 }
 
 // ---------- Ayarlar sırası (kullanıcı 01.11): sık kullanılanlar üstte, gereksizler aşağıda; en altta hesap ve sıfırla ----------
-const AYAR_SIRA = ['ust', 'tur', 'reklam', 'program', 'tasi', 'yedek', 'olcu', 'saat', 'hedef', 'profil', 'regl', 'yukle', 'spor', 'antrenman', 'bildirim', 'hesap', 'sifirla'];
+const AYAR_SIRA = ['ust', 'tur', 'reklam', 'program', 'tasi', 'yedek', 'olcu', 'saat', 'hedef', 'profil', 'regl', 'yukle', 'spor', 'antrenman', 'bildirim', 'yasal', 'sifirla'];
 let rkGozlemci = null;
 function ayarSirala(){
   const sb = $('sbody'); if (!sb) return;
-  const bul = k => k === 'reklam' ? $('reklamBolum') : k === 'hesap' ? $('hesapBolum') : sb.querySelector(`:scope > .ayar-blok[data-ak="${k}"]`);
+  const bul = k => k === 'reklam' ? $('reklamBolum') : sb.querySelector(`:scope > .ayar-blok[data-ak="${k}"]`);
   for (const k of AYAR_SIRA){ const el = bul(k); if (el) sb.appendChild(el); }
   rkTitresimKur();
 }
@@ -277,3 +277,9 @@ function rkTitresimKur(){
   const ayarlarAcS0 = ayarlarAc;
   ayarlarAc = function(){ const r = ayarlarAcS0.apply(this, arguments); ayarSirala(); return r; };
 }
+
+// ---------- Sunucu kaldırıldı (01.11.2026): eski sürümden kalan hesap oturumu temizlenir; tüm veriler yalnız cihazda ----------
+try { localStorage.removeItem(ANAHTAR + '_hesap'); } catch(e){}
+// ---------- Yakınlaştırma kapalı (kullanıcı 01.11): iki parmakla büyütme engellenir (iOS gesture* + çoklu dokunma) ----------
+['gesturestart', 'gesturechange', 'gestureend'].forEach(ad => document.addEventListener(ad, e => e.preventDefault(), {passive: false}));
+document.addEventListener('touchmove', e => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, {passive: false});

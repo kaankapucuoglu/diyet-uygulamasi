@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#16a36b">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icons/diyet.svg">
@@ -693,6 +693,37 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 @keyframes rkTitre{0%,100%{transform:translateX(0) rotate(0)}12%{transform:translateX(-5px) rotate(-1deg)}25%{transform:translateX(5px) rotate(1deg)}38%{transform:translateX(-4px) rotate(-.6deg)}51%{transform:translateX(4px) rotate(.6deg)}64%{transform:translateX(-2px)}77%{transform:translateX(2px)}}
 #reklamBolum.titre{animation:rkTitre .75s ease-in-out}
 @media (prefers-reduced-motion:reduce){ @keyframes rkNabiz{0%,100%{box-shadow:0 0 0 0 rgba(22,163,107,0)}50%{box-shadow:0 0 0 6px rgba(22,163,107,.25)}} #reklamBolum.titre{animation:rkNabiz .9s ease-in-out} }
+
+/* Selam: "Ad Bey/Hanım," + "hoş geldiniz 😊" bölünmez parçalar; ad 8 harften uzunsa ikinci parça alt satıra */
+#baslik .sl1,#baslik .sl2{white-space:nowrap}
+#baslik.uzun-ad .sl2{display:block}
+/* Yakınlaştırma kapalı: çift dokunma yakınlaştırması yok (kaydırma serbest) */
+html,body{touch-action:manipulation}
+/* Ayarlar › Yasal bağlantılar */
+.hukuk-satir a{color:var(--blue);font-weight:600}
+/* Program hazırla: üst başlık, takvim düğmesi, öğün araç çubuğu, gizli öğün, alerji arama */
+.koc-brand span{font-weight:800;color:#40506a;margin-inline-start:2px}
+.koc-gunler-bas{display:inline-flex;align-items:center;gap:6px}
+.koc-takvim-btn{display:inline-grid;place-items:center;width:34px;height:30px;border-radius:9px;background:var(--blue-soft);font-size:16px;line-height:1;text-transform:none;letter-spacing:0}
+.koc-ogun-arac{display:flex;justify-content:flex-end;margin:0 0 8px}
+.meal.kapali .koc-not{display:none}
+.koc-al-ara{width:100%;margin:2px 0 8px}
+.koc-al-sonuc{max-height:220px;overflow:auto;display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 6px}
+/* Takvim penceresi */
+.tk-ust{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.tk-ust b{font-size:16px}
+.tk-ok{width:40px;height:36px;border-radius:10px;background:#f1f4f9;font-size:18px;font-weight:800}
+.tk-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center;touch-action:pan-y}
+.tk-gun-ad{font-size:11.5px;font-weight:700;color:var(--muted);padding:2px 0 4px}
+.tk-gun{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:46px;border-radius:12px;font-weight:700;font-size:14.5px;color:var(--text)}
+.tk-gun b{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;font-weight:700}
+.tk-gun i{width:6px;height:6px;border-radius:50%;background:transparent}
+.tk-gun i.on{background:var(--green)}
+.tk-gun.secili b{background:var(--green);color:#fff}
+.tk-gun.bugun:not(.secili) b{box-shadow:inset 0 0 0 2px var(--green);color:var(--green)}
+.tk-gun:disabled{opacity:.35}
+.tk-gun.bos{visibility:hidden}
+.tk-ipucu{margin-top:8px;font-size:12.5px}
 </style>
 </head>
 <body>
@@ -700,7 +731,7 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
   <header class="top">
     <div class="eyebrow"><span id="ust"></span></div>
     <div class="top-row">
-      <div class="selam-satir"><h1 id="baslik"></h1><button class="sira-btn" id="siraBtn" type="button">🏆 <span id="lSira"></span></button></div>
+      <div class="selam-satir"><h1 id="baslik"></h1></div>
       <div class="top-btns">
         <button class="tool-btn" id="uyariBtn"><span>⚠️</span><small id="lUyari"></small></button>
         <button class="tool-btn" id="kocBtn"><span>👩‍⚕️</span><small id="lKoc"></small></button>
@@ -901,9 +932,9 @@ const S = {
   sLang:["Dil","Language","Язык","Sprache","اللغة"],
   sBackup:["Yedek","Backup","Резервная копия","Sicherung","النسخ الاحتياطي"],
   backupTip:["Veriler bu cihazda otomatik saklanır. Dosyayı her seferinde aynı şekilde aç (Android: Chrome ile; iPhone: Dosyalar yerine Safari/Chrome ile). Telefon değiştireceksen ya da veri kaybolursa yedeği kullan.","Data is saved automatically on this device. Always open the file the same way (Android: with Chrome; iPhone: with Safari/Chrome, not the Files preview). Use a backup when changing phones or if data is lost.","Данные сохраняются на этом устройстве автоматически. Открывайте файл всегда одинаково (Android: в Chrome; iPhone: в Safari/Chrome, не в «Файлах»). При смене телефона или потере данных используйте копию.","Daten werden automatisch auf diesem Gerät gespeichert. Datei immer gleich öffnen (Android: mit Chrome; iPhone: mit Safari/Chrome, nicht in der Dateien-Vorschau). Bei Gerätewechsel oder Datenverlust die Sicherung nutzen.","تُحفظ البيانات تلقائياً على هذا الجهاز. افتح الملف دائماً بالطريقة نفسها (أندرويد: عبر Chrome؛ آيفون: عبر Safari/Chrome وليس معاينة الملفات). استخدم النسخة الاحتياطية عند تغيير الهاتف أو فقدان البيانات."],
-  dlBackup:["⬇ Yedeği indir","⬇ Download backup","⬇ Скачать копию","⬇ Sicherung herunterladen","⬇ تنزيل النسخة"],
-  ulBackup:["⬆ Yedeği yükle","⬆ Restore backup","⬆ Загрузить копию","⬆ Sicherung laden","⬆ استعادة النسخة"],
-  dlHtml:["📄 Verilerimle birlikte HTML indir","📄 Download HTML with my data","📄 Скачать HTML с моими данными","📄 HTML mit meinen Daten herunterladen","📄 تنزيل HTML مع بياناتي"],
+  dlBackup:["⬇ Yedeği indir (JSON)","⬇ Download backup (JSON)","⬇ Скачать копию (JSON)","⬇ Sicherung herunterladen (JSON)","⬇ تنزيل النسخة (JSON)"],
+  ulBackup:["⬆ Yedeği yükle (JSON)","⬆ Restore backup (JSON)","⬆ Загрузить копию (JSON)","⬆ Sicherung laden (JSON)","⬆ استعادة النسخة (JSON)"],
+  dlHtml:["📄 Verilerimle indir (HTML)","📄 Download with my data (HTML)","📄 Скачать с моими данными (HTML)","📄 Mit meinen Daten herunterladen (HTML)","📄 تنزيل مع بياناتي (HTML)"],
   htmlHint:["Bu dosya listeni içinde taşır; başka telefonda açınca her şey aynen gelir.","This file carries your list inside; open it on another phone and everything is there.","Файл содержит ваш список; на другом телефоне всё откроется как есть.","Diese Datei enthält deine Liste; auf einem anderen Handy ist alles wieder da.","يحمل هذا الملف قائمتك؛ افتحه على هاتف آخر وستجد كل شيء."],
   sReset:["Sıfırla","Reset","Сброс","Zurücksetzen","إعادة الضبط"],
   resetMenu:["Menüyü profilime göre yeniden oluştur","Rebuild menu from my profile","Пересоздать меню по профилю","Menü aus meinem Profil neu erstellen","أعد إنشاء القائمة حسب ملفي"],
@@ -1195,7 +1226,7 @@ Object.assign(S, {
   kocContactPh:["ör. 0532 000 00 00","e.g. +90 532 000 00 00","напр. +90 532 000 00 00","z. B. +90 532 000 00 00","مثلاً ‎+90 532 000 00 00"],
   kocNext:["Sonraki kontrol tarihi","Next check-up date","Дата следующего визита","Nächster Kontrolltermin","موعد المراجعة القادمة"],
   kocDanisan:["Hasta / danışan bilgileri (isteğe bağlı)","Patient / client details (optional)","Данные пациента / клиента (необязательно)","Angaben zum Patienten / Klienten (optional)","بيانات المريض / العميل (اختياري)"],
-  kocDanisanHint:["Bu bilgiler bağlantıya eklenmez; bu cihazda saklanır, hesabınız açıksa eşitleme için sunucumuza da yazılır. Hedef hesaplama, otomatik program ve alerji uyarısı için kullanılır. Girmeden önce kişinin açık rızasını alın.","These details are not added to the link; they are stored on this device and, if you are signed in, also synced to our server. They are used to calculate targets, auto-generate the plan and warn about allergies. Get the person’s explicit consent before entering them.","Эти данные не добавляются в ссылку; они хранятся на этом устройстве, а при входе в аккаунт также синхронизируются с нашим сервером. Они нужны для расчёта целей, автосоставления плана и предупреждений об аллергии. Перед вводом получите явное согласие человека.","Diese Angaben werden nicht in den Link übernommen; sie werden auf diesem Gerät gespeichert und bei Anmeldung auch mit unserem Server synchronisiert. Sie dienen zur Zielberechnung, automatischen Planerstellung und Allergiewarnung. Holen Sie vor der Eingabe die ausdrückliche Einwilligung der Person ein.","لا تُضاف هذه البيانات إلى الرابط؛ تُحفظ على هذا الجهاز، وإذا كنت مسجّل الدخول تُزامَن أيضاً مع خادمنا. تُستخدم لحساب الأهداف وإنشاء الخطة تلقائياً والتنبيه إلى الحساسية. احصل على موافقة الشخص الصريحة قبل إدخالها."],
+  kocDanisanHint:["Bu bilgiler yalnız bu cihazda kalır, bağlantıya eklenmez. Hedef hesaplama, otomatik program ve alerji uyarısı için kullanılır. Girmeden önce kişinin açık rızasını alın.","These details stay on this device only and are not added to the link. They are used to calculate targets, auto-generate the plan and warn about allergies. Get the person’s explicit consent before entering them.","Эти данные остаются только на этом устройстве и не добавляются в ссылку. Они нужны для расчёта целей, автосоставления плана и предупреждений об аллергии. Перед вводом получите явное согласие человека.","Diese Angaben bleiben nur auf diesem Gerät und werden nicht in den Link übernommen. Sie dienen zur Zielberechnung, automatischen Planerstellung und Allergiewarnung. Holen Sie vor der Eingabe die ausdrückliche Einwilligung der Person ein.","تبقى هذه البيانات على هذا الجهاز فقط ولا تُضاف إلى الرابط. تُستخدم لحساب الأهداف وإنشاء الخطة تلقائياً والتنبيه إلى الحساسية. احصل على موافقة الشخص الصريحة قبل إدخالها."],
   kocDanisanKisa:["Danışan","Client","Клиент","Klient","العميل"],
   kocYasN:["{n} yaş","{n} y","{n} лет","{n} J.","{n} سنة"],
   kocAkt:["Hareket düzeyi","Activity level","Уровень активности","Aktivitätsniveau","مستوى النشاط"],
@@ -1226,6 +1257,15 @@ Object.assign(S, {
   impSu:["Günlük su hedefi: {l} L.","Daily water target: {l} L.","Дневная норма воды: {l} л.","Tägliches Wasserziel: {l} L.","هدف الماء اليومي: {l} لتر."],
   impSorumluluk:["Program, hazırlayan kişinin sorumluluğundadır ve tıbbi tavsiye yerine geçmez. Hazırlayanın adını ve unvanını gönderen kişi yazar; uygulama bunları doğrulamaz. Sağlık durumunuzla ilgili kararlar için doktorunuza danışın.","The plan is the responsibility of the person who prepared it and is not medical advice. The preparer’s name and title are entered by the sender; the app does not verify them. Consult your doctor about decisions concerning your health.","За план отвечает его составитель; он не заменяет медицинскую консультацию. Имя и звание составителя указывает отправитель; приложение их не проверяет. Решения о здоровье принимайте с врачом.","Für den Plan ist die erstellende Person verantwortlich; er ersetzt keine ärztliche Beratung. Name und Titel trägt der Absender ein; die App prüft sie nicht. Sprechen Sie Gesundheitsentscheidungen mit Ihrem Arzt ab.","الخطة مسؤولية من أعدّها ولا تُعد نصيحة طبية. اسم المُعِدّ ولقبه يكتبهما المُرسِل ولا يتحقق التطبيق منهما. استشر طبيبك في القرارات المتعلقة بصحتك."],
   impAlerji:["⚠️ Bu programda profilinizdeki alerji veya kısıtlarla çelişen yemekler var: {a}. Yüklerseniz bu yemekleri değiştirmeyi unutmayın.","⚠️ This plan contains foods that conflict with the allergies or restrictions in your profile: {a}. If you load it, remember to swap these foods.","⚠️ В этом плане есть блюда, противоречащие аллергиям или ограничениям в вашем профиле: {a}. Если загрузите план, замените эти блюда.","⚠️ Dieser Plan enthält Speisen, die den Allergien oder Einschränkungen in Ihrem Profil widersprechen: {a}. Wenn Sie ihn laden, tauschen Sie diese Speisen aus.","⚠️ تحتوي هذه الخطة على أطعمة تتعارض مع الحساسية أو القيود في ملفك: {a}. إذا حمّلتها فلا تنسَ استبدال هذه الأطعمة."],
+  kocUstBaslik:["Program Hazırla","Create Plan","Составить план","Plan erstellen","إعداد خطة"],
+  kocPrintWeb:["🖨 Yazdır (HTML)","🖨 Print (HTML)","🖨 Печать (HTML)","🖨 Drucken (HTML)","🖨 طباعة (HTML)"],
+  kocPrintNative:["⬇ İndir (HTML)","⬇ Download (HTML)","⬇ Скачать (HTML)","⬇ Herunterladen (HTML)","⬇ تنزيل (HTML)"],
+  kocYemedikleri:["Yemedikleri","Does not eat","Не ест","Isst nicht","لا يأكل"],
+  kocAlerjiler:["Alerjiler","Allergies","Аллергии","Allergien","الحساسية"],
+  kocTakvim:["Takvim","Calendar","Календарь","Kalender","التقويم"],
+  kocTakvimAyIpucu:["{ay} programı: yeşil noktalı günlerde yemek var. Bir güne dokunarak o güne gidin.","{ay} plan: days with a green dot have foods. Tap a day to go to it.","План на {ay}: в днях с зелёной точкой есть блюда. Нажмите на день, чтобы перейти к нему.","Plan {ay}: Tage mit grünem Punkt enthalten Speisen. Tippen Sie auf einen Tag, um dorthin zu wechseln.","خطة {ay}: الأيام ذات النقطة الخضراء فيها أطعمة. المس يوماً للانتقال إليه."],
+  kocTakvimHaftaIpucu:["Haftalık program her hafta tekrarlanır: yeşil noktalı günlerde yemek var. Bir güne dokunarak o haftanın gününe gidin.","The weekly plan repeats every week: days with a green dot have foods. Tap a day to go to that weekday.","Недельный план повторяется каждую неделю: в днях с зелёной точкой есть блюда. Нажмите на день, чтобы перейти к этому дню недели.","Der Wochenplan wiederholt sich jede Woche: Tage mit grünem Punkt enthalten Speisen. Tippen Sie auf einen Tag, um zu diesem Wochentag zu wechseln.","تتكرر الخطة الأسبوعية كل أسبوع: الأيام ذات النقطة الخضراء فيها أطعمة. المس يوماً للانتقال إلى ذلك اليوم من الأسبوع."],
+  sYasal:["Yasal","Legal","Правовая информация","Rechtliches","معلومات قانونية"],
   kocCopied:["Kopyalandı ✓","Copied ✓","Скопировано ✓","Kopiert ✓","تم النسخ ✓"],
   kocCleared:["Temizlendi ✓","Cleared ✓","Очищено ✓","Geleert ✓","تم المسح ✓"],
   kocPeriodWeek:["Aktif hafta","Current week","Текущая неделя","Aktuelle Woche","الأسبوع الحالي"],
@@ -1235,7 +1275,7 @@ Object.assign(S, {
   kocDaysUnit:["gün","days","дн.","Tage","يوماً"],
   kocAuto:["✨ Otomatik oluştur","✨ Auto-generate","✨ Создать автоматически","✨ Automatisch erstellen","✨ إنشاء تلقائي"],
   kocAutoT:["Otomatik program","Automatic plan","Автоматический план","Automatischer Plan","خطة تلقائية"],
-  kocAutoQ:["Öğün saatlerine ve girdiğiniz günlük hedeflere göre öğün öğün otomatik beslenme programı oluşturulacak. Günlere yazdığınız yemekler değiştirilecek. Onaylıyor musunuz?","A meal-by-meal nutrition plan will be generated automatically from the meal times and the daily targets you entered. Foods already on the days will be replaced. Do you confirm?","По времени приёмов пищи и введённым дневным целям будет автоматически составлен план питания по каждому приёму. Уже внесённые блюда будут заменены. Подтверждаете?","Aus den Mahlzeitenzeiten und den eingegebenen Tageszielen wird automatisch ein Ernährungsplan Mahlzeit für Mahlzeit erstellt. Bereits eingetragene Speisen werden ersetzt. Bestätigen?","سيتم إنشاء خطة غذائية تلقائياً وجبةً بوجبة وفق مواعيد الوجبات والأهداف اليومية التي أدخلتها. ستُستبدل الأطعمة المدخلة في الأيام. هل توافق؟"],
+  kocAutoQ:["Günlük hedeflerinize ve öğün saatlerinize göre tüm öğünler otomatik doldurulacak; günlere eklediğiniz yemeklerin yerine yenileri gelecek. Onaylıyor musunuz?","All meals will be filled in automatically based on your daily targets and meal times; foods already added to the days will be replaced. Do you confirm?","Все приёмы пищи будут заполнены автоматически по вашим дневным целям и времени приёмов; уже добавленные блюда будут заменены. Подтверждаете?","Alle Mahlzeiten werden anhand Ihrer Tagesziele und Essenszeiten automatisch befüllt; bereits eingetragene Speisen werden ersetzt. Bestätigen?","ستُملأ كل الوجبات تلقائياً وفق أهدافك اليومية ومواعيد الوجبات، وستُستبدل الأطعمة المضافة إلى الأيام. هل توافق؟"],
   kocAutoInfo:["Hedef: {k} kcal · {m} öğün ({s})","Target: {k} kcal · {m} meals ({s})","Цель: {k} ккал · {m} приёмов ({s})","Ziel: {k} kcal · {m} Mahlzeiten ({s})","الهدف: {k} سعرة · {m} وجبات ({s})"],
   kocAutoNeed:["Lütfen önce günlük hedefleri doldurun; en az kalori hedefi gerekir.","Please fill in the daily targets first; at least the calorie target is required.","Сначала заполните дневные цели; нужна как минимум цель по калориям.","Bitte zuerst die Tagesziele ausfüllen; mindestens das Kalorienziel ist nötig.","يرجى إدخال الأهداف اليومية أولاً؛ هدف السعرات مطلوب على الأقل."],
   kocPeriodQ:["Program hangi döneme yayılsın?","Which period should the plan cover?","На какой период составить план?","Für welchen Zeitraum soll der Plan gelten?","ما الفترة التي تغطيها الخطة؟"],
@@ -1256,7 +1296,7 @@ Object.assign(S, {
   cKocNew:["Şu anki taslak silinip boş bir program açılacak. Emin misin?","The current draft will be cleared. Continue?","Текущий черновик будет очищен. Продолжить?","Der aktuelle Entwurf wird geleert. Fortfahren?","سيتم مسح المسودة الحالية. متابعة؟"],
   kocEmpty:["Önce en az bir öğüne yemek ekleyin.","Add food to at least one meal first.","Сначала добавьте блюдо хотя бы в один приём пищи.","Füge zuerst mindestens einer Mahlzeit etwas hinzu.","أضف طعاماً إلى وجبة واحدة على الأقل أولاً."],
   kocShareMsg:["{a} için hazırladığım beslenme programı: {u}","Meal plan I prepared for {a}: {u}","План питания для {a}: {u}","Ernährungsplan für {a}: {u}","خطة غذائية أعددتها لـ {a}: {u}"],
-  kocDraft:["Taslak bu cihazda otomatik kaydedilir; hesabınız açıksa eşitlenir.","The draft is saved automatically on this device and synced if you are signed in.","Черновик автоматически сохраняется на этом устройстве и синхронизируется при входе в аккаунт.","Der Entwurf wird automatisch auf diesem Gerät gespeichert und bei Anmeldung synchronisiert.","تُحفظ المسودة تلقائياً على هذا الجهاز وتُزامَن إذا كنت مسجّل الدخول."],
+  kocDraft:["Taslak bu cihazda otomatik kaydedilir.","The draft is saved automatically on this device.","Черновик автоматически сохраняется на этом устройстве.","Der Entwurf wird automatisch auf diesem Gerät gespeichert.","تُحفظ المسودة تلقائياً على هذا الجهاز."],
   kocLinkLen:["Link uzunluğu: {n} karakter","Link length: {n} characters","Длина ссылки: {n} символов","Linklänge: {n} Zeichen","طول الرابط: {n} حرف"],
   kocFor:["{a} için","for {a}","для {a}","für {a}","لـ {a}"],
   kocBy:["Hazırlayan: {h}","Prepared by: {h}","Составитель: {h}","Erstellt von: {h}","أعدّها: {h}"],
@@ -3635,7 +3675,6 @@ function kaydet(){
   depoCalisiyor = ok;
   kayitZamani = new Date();
   kayitDurumYaz();
-  if (window.Esitle) Esitle.kirli();   // hesap varsa 3 sn sonra sunucuya da yazılır (p9a.js)
 }
 function kayitDurumYaz(){
   const el = $('kayitDurum');
@@ -4183,9 +4222,9 @@ function ciz(){
   const P = D.profil;
   document.title = T('app');
   $('ust').textContent = T('eyebrow');
-  $('baslik').textContent = selam();
+  selamCiz();
   $('lAyar').textContent = T('settings'); $('lUyari').textContent = T('warnBtn');
-  $('lKoc').textContent = T('kocBtn'); $('lSira').textContent = T('hsSira');
+  $('lKoc').textContent = T('kocBtn');
   const odak = (P.odaklar || []).map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k));
   const anaHedef = hamileMi() ? T('gHamile', {t: P.trimester || 1}) : P.hedef ? T('g_' + P.hedef) : '';
   const hedef = anaHedef ? [anaHedef, ...odak].join(' + ') + ' · ' : '';
@@ -4196,6 +4235,20 @@ function ciz(){
   if (capa){ capaUygula(capa); requestAnimationFrame(() => capaUygula(capa)); }
 }
 // Başlık satırı sığmayıp kırılırsa düğmeleri de sola hizala (sağda boşluk kalmasın)
+// Selam: virgüle kadar olan kısım ("Kaan Bey,") ve gerisi ("hoş geldiniz 😊") bölünmez; emoji metinden kopmaz.
+// Ad ≤ 8 harf: tek satır, sığmazsa yazı küçülür (en az 18 px). Ad > 8 harf: "hoş geldiniz 😊" alt satıra geçer.
+function selamCiz(){
+  const h = $('baslik'); if (!h) return;
+  const s = selam(), i = s.indexOf(','), ad = [...String(D.profil.ad || '').trim()];
+  h.innerHTML = i > 0 ? `<span class="sl1">${esc(s.slice(0, i + 1))}</span> <span class="sl2">${esc(s.slice(i + 1).trim())}</span>` : `<span class="sl2">${esc(s)}</span>`;
+  h.classList.toggle('uzun-ad', i > 0 && ad.length > 8);
+  h.style.fontSize = '';
+  if (ad.length <= 8){
+    let fs = parseFloat(getComputedStyle(h).fontSize), n = 0;
+    while (h.scrollHeight > fs * 1.5 && fs > 18 && n++ < 14){ fs -= 1; h.style.fontSize = fs + 'px'; }
+  }
+}
+window.addEventListener('resize', () => { if (D && D.ayar && D.ayar.kurulum) selamCiz(); });
 function ustHizala(){
   const satir = document.querySelector('.top-row'); if (!satir) return;
   satir.classList.remove('kirik');
@@ -4513,7 +4566,6 @@ document.querySelector('.wrap').addEventListener('change', e => {
 $('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') kapat(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
 $('ayarBtn').addEventListener('click', () => ayarlarAc());
-$('siraBtn').addEventListener('click', () => siralamaAc());   // ana sayfa 🏆 Sıralama (ayarlardakiyle aynı ekran)
 $('uyariBtn').addEventListener('click', uyarilarAc);
 $('hamileBtn').addEventListener('click', hamileDegistir);
 $('kocBtn').addEventListener('click', kocAc);
@@ -4821,6 +4873,7 @@ function ayarlarAc(dilAcik = false){
     <button class="btn ghost full" style="margin-top:8px" id="htmlIndir">${T('dlHtml')}</button>
     <div class="hint" style="margin-top:6px">${T('htmlHint')}</div>
     <input type="file" id="dosyaSec" accept=".json,application/json" hidden>
+    </div><div class="ayar-blok" data-ak="yasal"><div class="sec">${T('sYasal')}</div><div class="hint hukuk-satir">${['gizlilik:cLinkPriv', 'aydinlatma:cLinkKvkk', 'kosullar:cLinkTerms'].map(x => { const [f, k] = x.split(':'); return `<a href="legal/${f}.html#${dil}" target="_blank" rel="noopener">${esc(T(k))}</a>`; }).join(' · ')}</div>
     </div><div class="ayar-blok" data-ak="sifirla"><div class="sec">${T('sReset')}</div>
     <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div></div>`);
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };
@@ -5115,7 +5168,7 @@ const KOC_GUN = 7;
 const kocDanisanBos = () => ({cins:'', yas:'', boy:'', kilo:'', hedefKilo:'', aktivite:2, hedef:'koru', alerjiler:[], haric:[]});
 // Sık kısıtlar: a = alerjen kimliği (yemek.al), h = içerik harfi (yemek.x: m kırmızı et, t tuzlu)
 const KOC_KISIT = [['a', 'sut'], ['a', 'yumurta'], ['a', 'gluten'], ['a', 'balik'], ['a', 'kabuklu'], ['a', 'yerfistigi'], ['a', 'kuruyemis'], ['a', 'soya'], ['a', 'susam'], ['h', 'm'], ['h', 't']];
-const kocKisitAd = (tur, id) => tur === 'h' ? T(id === 'm' ? 'kocKirmiziEtYok' : 'kocTuzKisit') : ((alerjen(id) || {}).ad || id);
+const kocKisitAd = (tur, id) => tur === 'h' ? T('x_' + id) : ((alerjen(id) || {}).ad || id);
 const tarihYaz = k => tarihDen(k).toLocaleDateString(LOC(), {day:'numeric', month:'long', year:'numeric'});
 function kocBos(){
   return {a:'', h:'', n:'', t:{kcal:'', protein:'', karb:'', yag:'', su:''}, il:'', kt:'', dn:kocDanisanBos(), ara0:false, saat:{...VARSAYILAN_SAAT}, mod:'hafta', ay:'',
@@ -5154,6 +5207,8 @@ function kocDuzenle(K){
   if (K.kt == null) K.kt = '';
   if (!K.dn) K.dn = kocDanisanBos();
   for (const a of ['alerjiler', 'haric']) if (!Array.isArray(K.dn[a])) K.dn[a] = [];
+  K.dn.haric = K.dn.haric.filter(x => ['m', 'c', 'f', 'e', 'd'].includes(x));   // sihirbazla aynı gruplar
+  if (!K.kapali) K.kapali = {};
 }
 // 7 günlük (hafta günü bazlı) kopya: ay modunda her hafta gününün aydaki ilk dolu örneği
 function kocHaftaya(K){
@@ -5199,18 +5254,28 @@ function kocKapat(){
 }
 function kocGunToplam(K, i){ return topla(kocOgunler(K).flatMap(id => K.gun[i][id] || [])); }
 // Gün toplamı kartı (hedef alanı değişince yalnız bu kart yenilenir; tam çizim dokunulan düğmeyi yok edip tıklamayı yutardı)
+// Alerjen listesi: kurulum sihirbazıyla aynı (ALERJENLER, aynı arama); seçilenler başta
+function kocAlerjiListe(K){
+  const q = (K.alAra || '').trim(), sec = new Set(K.dn.alerjiler);
+  let liste = ALERJENLER;
+  if (q){ const A = aramaHazirla(q); liste = ALERJENLER.filter(a => { const metin = `${a.ad} ${a.n.join(' ')} ${a.e}`; return A.alternatifler.some(k => k.every(r => r.test(metin))); }); }
+  liste = [...liste.filter(a => sec.has(a.id)), ...liste.filter(a => !sec.has(a.id))];
+  return liste.length ? liste.map(a => `<button class="al-chip${sec.has(a.id) ? ' on' : ''}" data-kkisit="a:${a.id}">${sec.has(a.id) ? '✓ ' : ''}${esc(a.ad)}</button>`).join('') : `<div class="hint">${T('noResult').split('.')[0]}.</div>`;
+}
 function kocDanisanHtml(K){
   const dn = K.dn, dolu = !!(dn.cins || dn.yas || dn.kilo || dn.alerjiler.length || dn.haric.length);
   const sayiAlan = (k, ad) => `<label class="field"><span>${ad}</span><input data-kdn="${k}" type="text" inputmode="decimal" autocomplete="off" value="${esc(dn[k] || '')}" placeholder="—"></label>`;
-  const kisit = KOC_KISIT.filter(([tur, id]) => tur === 'h' || alerjen(id)).map(([tur, id]) => `<button class="chip${(tur === 'a' ? dn.alerjiler : dn.haric).includes(id) ? ' on' : ''}" data-kkisit="${tur}:${id}">${esc(kocKisitAd(tur, id))}</button>`).join('');
   return `<details class="koc-danisan"${K.dnAcik || dolu ? ' open' : ''}><summary>${T('kocDanisan')}</summary>
     <div class="hint" style="margin:6px 0 8px">${esc(T('kocDanisanHint'))}</div>
     <div class="seg koc-cins" role="group">${['k', 'e'].map(c => `<button class="seg-btn${dn.cins === c ? ' on' : ''}" data-kcins="${c}">${T(c === 'k' ? 'female' : 'male')}</button>`).join('')}</div>
     <div class="grid4">${sayiAlan('yas', T('age'))}${sayiAlan('boy', T('height'))}${sayiAlan('kilo', T('weight'))}${sayiAlan('hedefKilo', T('targetW'))}</div>
     <div class="grid2"><label class="field"><span>${T('kocAkt')}</span><select data-kdnsec="aktivite">${[1, 2, 3, 4, 5].map(a => `<option value="${a}"${+dn.aktivite === a ? ' selected' : ''}>${T('a' + a)}</option>`).join('')}</select></label>
     <label class="field"><span>${T('goalLbl')}</span><select data-kdnsec="hedef">${['ver', 'koru', 'sekil', 'kas', 'al'].map(g => `<option value="${g}"${dn.hedef === g ? ' selected' : ''}>${T('g_' + g)}</option>`).join('')}</select></label></div>
-    <div class="field" style="margin-bottom:4px"><span>${T('kocAlerjiT')}</span></div>
-    <div class="chips koc-kisit">${kisit}</div>
+    <div class="field" style="margin-bottom:4px"><span>${T('kocYemedikleri')}</span></div>
+    <div class="chips koc-kisit">${[['m','🥩'],['c','🍗'],['f','🐟'],['e','🥚'],['d','🥛']].map(([x, ic]) => `<button class="chip${dn.haric.includes(x) ? ' on' : ''}" data-kkisit="h:${x}">${ic} ${esc(T('x_' + x))}</button>`).join('')}</div>
+    <div class="field" style="margin-bottom:4px"><span>${T('kocAlerjiler')}</span></div>
+    <input class="search koc-al-ara" data-kalara="1" value="${esc(K.alAra || '')}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+    <div class="koc-al-sonuc">${kocAlerjiListe(K)}</div>
     <button class="btn full" data-khesapla="1">${T('kocHesapla')}</button><div class="hint" style="margin-top:6px">${esc(T('kocHesaplaHint'))}</div>
   </details>`;
 }
@@ -5230,6 +5295,57 @@ function kocHedefHesapla(){
   const h = hedefHesapla(p);
   K.t = {...K.t, kcal: String(h.kcal), protein: String(h.protein), karb: String(h.karb), yag: String(h.yag), su: String(Math.round(h.su / 100) / 10)};
   kaydet(); kocCiz(); toast(T('kocHesaplandi'));
+}
+// ---------- Program hazırla: öğünleri gizle / göster (ana ekrandakiyle aynı davranış; kaydırma #koc içinde) ----------
+const kocKapali = (K, id) => (K.kapali || {})[id] != null ? !!K.kapali[id] : !!K.hepsiKapali;
+function kocTogCiz(hedef, acildi, degistir){
+  const kap = $('koc'), once = hedef(), y0 = once ? once.getBoundingClientRect().top : 0;
+  degistir(); kocKaydet(); kocCiz();
+  const el = hedef(); if (!el) return;
+  if (acildi) kap.scrollTo({top: el.getBoundingClientRect().top - kap.getBoundingClientRect().top + kap.scrollTop - 8, behavior: 'smooth'});
+  else kap.scrollTop += el.getBoundingClientRect().top - y0;
+}
+function kocTogla(id){
+  const K = D.koc, acilacak = kocKapali(K, id);
+  kocTogCiz(() => $('koc').querySelector(`[data-kogun="${CSS.escape(id)}"]`), acilacak, () => { K.kapali = {...(K.kapali || {}), [id]: !acilacak}; });
+}
+function kocHepsiniTogla(kapat){
+  const K = D.koc;
+  kocTogCiz(() => $('koc').querySelector('.koc-ogun-arac'), !kapat, () => { K.hepsiKapali = !!kapat; K.kapali = {}; });
+}
+// ---------- Program hazırla › Günler › 📅 takvim (ay ay; programlı günler yeşil noktalı, seçili gün yeşil daire) ----------
+let kocTakvimAy = '';
+function kocTakvimAc(ay){
+  const K = D.koc, bugun = bugunK(), ayMod = kocAyMi(K);
+  const pzt = gunEkle(bugun, -haftaGunu(bugun));
+  const seciliTarih = ayMod ? kocGunTarih(K, K.sec) : gunEkle(pzt, K.sec);
+  ay = ay || kocTakvimAy || ayAnahtar(seciliTarih); kocTakvimAy = ay;
+  const ilk = ay + '-01', n = ayGunSayisi(ay), bas = haftaGunu(ilk);
+  const dolu = j => Object.values(K.gun[j] || {}).some(l => (l || []).length);
+  const hucre = k => {   // takvim günü → program günü sırası (yoksa -1)
+    if (ayMod) return ayAnahtar(k) === K.ay ? +k.slice(8) - 1 : -1;
+    return haftaGunu(k);
+  };
+  let h = Array.from({length: bas}, () => '<span class="tk-gun bos"></span>').join('');
+  for (let d = 1; d <= n; d++){
+    const k = ay + '-' + String(d).padStart(2, '0'), j = hucre(k);
+    h += `<button class="tk-gun${k === seciliTarih ? ' secili' : ''}${k === bugun ? ' bugun' : ''}" data-tkgun="${j}" data-tktarih="${k}" ${j < 0 ? 'disabled' : ''}><b>${d}</b><i class="${j >= 0 && dolu(j) ? 'on' : ''}"></i></button>`;
+  }
+  const oncekiAy = ayAnahtar(gunEkle(ilk, -1)), sonrakiAy = ayAnahtar(gunEkle(ilk, n));
+  ac('📅 ' + T('kocTakvim'), `<div class="tk-ust"><button class="tk-ok" data-tkay="${oncekiAy}" aria-label="‹">‹</button><b>${esc(ayAdi(ay))}</b><button class="tk-ok" data-tkay="${sonrakiAy}" aria-label="›">›</button></div>
+    <div class="tk-grid" id="tkGrid">${[0, 1, 2, 3, 4, 5, 6].map(i => `<span class="tk-gun-ad">${esc(haftaGunAd(i))}</span>`).join('')}${h}</div>
+    <div class="hint tk-ipucu">${esc(T(ayMod ? 'kocTakvimAyIpucu' : 'kocTakvimHaftaIpucu', {ay: ayAdi(K.ay || ay)}))}</div>`);
+  const sb = $('sbody');
+  sb.querySelectorAll('[data-tkay]').forEach(b => b.onclick = () => kocTakvimAc(b.dataset.tkay));
+  sb.querySelectorAll('[data-tkgun]').forEach(b => b.onclick = () => {
+    const j = +b.dataset.tkgun; if (j < 0) return;
+    K.sec = j; kocTakvimAy = ''; kapat(); kocKaydet(); kocCiz();
+    const bas = $('koc').querySelector('.koc-gun-bas'); if (bas) bas.scrollIntoView({block: 'start', behavior: 'smooth'});
+  });
+  // sağa/sola kaydırarak ay değiştir
+  const g = $('tkGrid'); let x0 = null;
+  g.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive: true});
+  g.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 45) kocTakvimAc(dx < 0 ? sonrakiAy : oncekiAy); });
 }
 // ---------- Kayıtlı programlar (danışan başına; bu cihazda ve hesapla eşitlenen veride) ----------
 const KOC_ARSIV_EN_COK = 30;
@@ -5279,15 +5395,17 @@ function kocCiz(){
         <div class="item-acts"><button class="mini" data-kdegis="${id},${ii}" title="${esc(T('change'))}">${ikonlu('change')}</button><button class="mini del" data-ksil="${id},${ii}" title="${esc(T('remove'))}">${ikonlu('remove')}</button></div></div></li>`;
     }).join('');
     const tt = topla(liste);
-    return `<article class="card meal">
-      <div class="meal-head"><div class="meal-ico">${OGUN_IKON[id]}</div><div class="meal-title"><b>${T('m_' + id)}</b><span class="ogun-alt"><span data-ksaatgoster="${id}">${K.saat[id]}</span> · ${yuv(tt.k)} ${T('kcal')} · ${T('aP')} ${yuv(tt.p)} ${T('g')}</span></div></div>
+    const kapali = kocKapali(K, id);
+    return `<article class="card meal${kapali ? ' kapali' : ''}" data-kogun="${id}">
+      <div class="meal-head"><div class="meal-ico">${OGUN_IKON[id]}</div><div class="meal-title"><b>${T('m_' + id)}</b><span class="ogun-alt"><span data-ksaatgoster="${id}">${K.saat[id]}</span> · ${yuv(tt.k)} ${T('kcal')} · ${T('aP')} ${yuv(tt.p)} ${T('g')}</span></div>
+        <button class="tog-btn" data-ktog="${id}" aria-expanded="${!kapali}" title="${esc(T(kapali ? 'showMeal' : 'hideMeal'))}"><i>${kapali ? '▾' : '▴'}</i><span class="lbl">${T(kapali ? 'showMeal' : 'hideMeal')}</span></button></div>
       <ul class="items">${satirlar}</ul>
       <input class="koc-not" data-knot="${id}" type="text" autocomplete="off" maxlength="120" placeholder="${esc(T('kocMealNotePh'))}" value="${esc(K.not[i][id] || '')}">
       <button class="add-food" data-kekle="${id}">${T('kocAdd')}</button>
     </article>`;
   };
   $('koc').innerHTML = `<div class="wiz-in koc-in">
-    <div class="wiz-top"><div class="wiz-brand">🥗 ${T('app')}</div><button class="icon-btn" data-kkapat="1" aria-label="✕">✕</button></div>
+    <div class="wiz-top"><div class="wiz-brand koc-brand">🥗 ${T('app')} <span>${T('kocUstBaslik')}</span></div><button class="icon-btn" data-kkapat="1" aria-label="✕">✕</button></div>
     <h2>${T('kocTitle')}</h2><p class="wiz-sub">${esc(T('kocIntro'))}</p>
     <div class="koc-arsiv-satir"><button class="chip" data-karsiv="1">${T('kocArsivBtn', {n: (D.kocArsiv || []).length})}</button><button class="chip" data-kkaydet="1">${T('kocArsivKaydet')}</button></div>
     <div class="card">
@@ -5306,15 +5424,16 @@ function kocCiz(){
       <div class="grid3">${ogunler.map(id => `<label class="field"><span>${OGUN_IKON[id]} ${T('m_' + id)}</span><input type="time" step="300" data-ksaat="${id}" value="${K.saat[id]}"></label>`).join('')}</div>
       <label class="koc-check"><input type="checkbox" data-kara0="1" ${K.ara0 ? 'checked' : ''}> ${T('kocAra0')}</label>
     </div>
-    <div class="sec koc-sec-row"><span>${T('kocDays')}</span><div class="seg" role="group"><button class="seg-btn${ay ? '' : ' on'}" data-kmod="hafta">${T('kocPeriodWeek')}</button><button class="seg-btn${ay ? ' on' : ''}" data-kmod="ay">${T('kocPeriodMonth')}</button></div></div>
+    <div class="sec koc-sec-row"><span class="koc-gunler-bas">${T('kocDays')}<button class="koc-takvim-btn" data-ktakvim="1" aria-label="${esc(T('kocTakvim'))}" title="${esc(T('kocTakvim'))}">📅</button></span><div class="seg" role="group"><button class="seg-btn${ay ? '' : ' on'}" data-kmod="hafta">${T('kocPeriodWeek')}</button><button class="seg-btn${ay ? ' on' : ''}" data-kmod="ay">${T('kocPeriodMonth')}</button></div></div>
     <div class="koc-donem-hint">${esc(ay ? T('kocModMonthHint', {ay: ayAdi(K.ay), n}) : T('kocModWeekHint'))}</div>
     <div class="days koc-days${ay ? ' koc-ay' : ''}">${Array.from({length: n}, (_, j) => `<button class="day${j === i ? ' active' : ''}${ay && kocGunTarih(K, j) === bugun ? ' today' : ''}" data-kgun="${j}"><b>${esc(kocGunAd(K, j))}</b>${ay ? `<span>${esc(gunKisa(kocGunTarih(K, j)))}</span>` : ''}<i class="${gunDolu(j) ? 'on' : ''}"></i></button>`).join('')}</div>
     <div class="koc-gun-arac">${i > 0 ? `<button class="chip" data-konceki="1">${T('kocCopyPrev')}</button>` : ''}<button class="chip" data-khafta="1">${T('kocCopyWeek')}</button>${ay ? `<button class="chip" data-kay="1">${T('kocCopyMonth')}</button>` : ''}<button class="chip" data-ktemizle="1">${T('kocClear')}</button><button class="chip" data-khaftatemizle="1">${T('kocClearWeek')}</button>${ay ? `<button class="chip" data-kaytemizle="1">${T('kocClearMonth')}</button>` : ''}</div>
     <h3 class="koc-gun-bas">${esc(kocGunAd(K, i, true))}</h3>
+    <div class="koc-ogun-arac"><button class="btn ghost tog-all" data-ktogall="${ogunler.some(id => !kocKapali(K, id)) ? 1 : 0}">${T(ogunler.some(id => !kocKapali(K, id)) ? 'hideAll' : 'showAll')}</button></div>
     <section class="meals">${ogunler.map(ogunKart).join('')}</section>
     <div class="card" style="margin-top:14px" id="kocToplam">${kocToplamHtml(K, i)}</div>
     <div id="kocLink"></div>
-    <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kyazdir="1">${T('kocPrint')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
+    <div class="wnav koc-nav"><button class="btn ghost" data-kyeni="1">${T('kocNew')}</button><button class="btn ghost" data-kyazdir="1">${T(window.__LF_NATIVE ? 'kocPrintNative' : 'kocPrintWeb')}</button><button class="btn green" data-klink="1">${T('kocLink')}</button></div>
     <div class="hint" style="text-align:center;margin-top:6px">${T('kocDraft')}</div>
   </div>`;
   // Ay şeridinde seçili gün ortada görünsün (yalnız yatay kaydırma; sayfa yerinden oynamaz)
@@ -5371,6 +5490,9 @@ $('koc').addEventListener('click', e => {
   if (ds.kaytemizle){ kocOnay(T('cKocClearMonth'), temizle(tumAy()), T('kocCleared')); return; }
   if (ds.kauto){ kocOtomatikSor(); return; }
   if (ds.karsiv){ kocArsivAc(); return; }
+  if (ds.ktog){ kocTogla(ds.ktog); return; }
+  if (ds.ktogall){ kocHepsiniTogla(ds.ktogall === '1'); return; }
+  if (ds.ktakvim){ kocTakvimAc(); return; }
   if (ds.kkaydet){ kocArsivKaydet(); return; }
   if (ds.khesapla){ kocHedefHesapla(); return; }
   if (ds.kcins){ K.dn.cins = K.dn.cins === ds.kcins ? '' : ds.kcins; K.dnAcik = true; kocKaydet(); kocCiz(); return; }
@@ -5388,6 +5510,7 @@ $('koc').addEventListener('input', e => {
   const t = e.target, K = D.koc; if (!K) return;
   if (t.dataset.kf){ K[t.dataset.kf] = t.value; kocKaydet(); return; }
   if (t.dataset.kt){ K.t[t.dataset.kt] = t.dataset.kt === 'su' ? t.value.replace(',', '.').replace(/[^\d.]/g, '') : t.value.replace(/[^\d]/g, ''); kocKaydet(); return; }
+  if (t.dataset.kalara){ K.alAra = t.value; const el = $('koc').querySelector('.koc-al-sonuc'); if (el) el.innerHTML = kocAlerjiListe(K); return; }
   if (t.dataset.kdn){ K.dn[t.dataset.kdn] = t.value.replace(',', '.').replace(/[^\d.]/g, ''); kocKaydet(); return; }
   if (t.dataset.knot){ K.not[K.sec][t.dataset.knot] = t.value; kocKaydet(); return; }
 });
@@ -5599,8 +5722,11 @@ function kocYazdir(){
     <h1>${esc(T('app'))}${P.a ? ' · ' + esc(T('kocFor', {a: P.a})) : ''}</h1>${P.h ? `<p>${esc(T('kocBy', {h: P.h}))}</p>` : ''}${P.il ? `<p>${esc(T('kocIletisim', {i: P.il}))}</p>` : ''}${P.kt ? `<p>${esc(T('kocKontrol', {t: tarihYaz(P.kt)}))}</p>` : ''}${kocDanisanOzet()}<p>${esc(P.d === 'ay' ? T('kocPeriodMonth') + ': ' + ayAdi(P.ay) : T('kocPeriodWeek'))}</p>${P.n ? `<p>${esc(P.n)}</p>` : ''}
     ${P.t || P.su ? `<p>${Object.entries(P.t || {}).map(([k, v]) => T(HEDEF_ETIKET[k]) + ': ' + v).concat(P.su ? [T('kocSuL') + ': ' + sayi(P.su / 1000)] : []).join(' · ')}</p>` : ''}
     ${P.g.map(gunHtml).join('')}<script>onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`;
+  const dosya = `program_${(P.a || 'diyet').replace(/[^\wçğıöşüÇĞİÖŞÜ]+/g, '_')}.html`;
+  // Telefon uygulamasında yazdırma yok → HTML dosyası indirilir (açılınca kendiliğinden yazdırma penceresi açmaz)
+  if (window.__LF_NATIVE){ indir(html.replace('<script>onload=()=>setTimeout(()=>print(),300)<\/script>', ''), dosya, 'text/html'); return; }
   const w = window.open('', '_blank');
-  if (w){ w.document.write(html); w.document.close(); } else indir(html, `program_${(P.a || 'diyet').replace(/[^\wçğıöşüÇĞİÖŞÜ]+/g, '_')}.html`, 'text/html');
+  if (w){ w.document.write(html); w.document.close(); } else indir(html, dosya, 'text/html');
 }
 
 // ---------- Program linkiyle gelen programı yükle ----------
@@ -6577,629 +6703,6 @@ document.addEventListener('focusout', () => setTimeout(gorunenAlan, 100));
 (function dakika(){
   setTimeout(() => { if (D.ayar.kurulum) saatYaz(); if (!document.hidden && $('kurulum').hidden){ gunleriCiz(); gunKontrol(); } dakika(); }, 60000 - Date.now() % 60000 + 50);
 })();
-// ---------- Hesap (sunucu) ve çevrimdışı-önce eşitleme ----------
-// Sözleşme: docs/API.md. Veri her zaman önce cihazda (kaydet); hesap varsa 3 sn sonra sunucuya da yazılır (PUT /data, rev ile).
-// Sunucu daha yeniyse (409 / açılışta GET) mevcut verileriBirlestir ile birleştirilir, sonra yeniden gönderilir.
-// Hesapsızken hiçbir ağ isteği yapılmaz (sıralama görüntüleme hariç).
-const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'http://127.0.0.1:8097/api' : 'https://diyet.maviplay.com/api';
-const RIZA_SURUM = '2026-11-01-2';            // sunucu RIZA_SURUM ile aynı; rıza metni değişince ikisi birden artar
-const HESAP_ANAHTAR = ANAHTAR + '_hesap';   // localStorage: {token, kullanici, rev, son}
-const ISTEK_SURE = 10000;                   // her istek 10 sn
-// Ülke: tarayıcı dilinin bölgesi (tr-TR → TR); yoksa uygulama dilinden tahmin
-function ulke(){
-  try { const m = /[-_]([A-Za-z]{2})(\b|$)/.exec(navigator.language || ''); if (m) return m[1].toUpperCase(); } catch(e){}
-  return {tr:'TR', de:'DE', ru:'RU'}[dil] || '';
-}
-
-const Hesap = (() => {
-  let H = null;   // {token, kullanici, rev, son}; rev = yerel verinin eşit olduğu sunucu sürümü (-1: bilinmiyor → çek-birleştir)
-  const oku = () => { try { H = JSON.parse(localStorage.getItem(HESAP_ANAHTAR) || 'null'); } catch(e){ H = null; } if (!H || !H.token) H = null; return H; };
-  const yaz = () => { try { if (H) localStorage.setItem(HESAP_ANAHTAR, JSON.stringify(H)); else localStorage.removeItem(HESAP_ANAHTAR); } catch(e){} };
-  const duyur = () => document.dispatchEvent(new CustomEvent('esitle'));
-  oku();
-  // Belirteç geçersiz / hesap silinmiş: oturum düşer, yerel veri kalır
-  function dusur(){ H = null; yaz(); if (window.Esitle) Esitle.sifirla(); duyur(); }
-  // Tüm istekler: JSON gövde, 10 sn zaman aşımı. Hata → {status, error, ...} fırlatır (status 0: ağ yok / zaman aşımı)
-  async function istek(yontem, yol, govde, secenek = {}){
-    const ctl = new AbortController(), z = setTimeout(() => ctl.abort(), ISTEK_SURE);
-    const basliklar = {'Content-Type': 'application/json'};
-    const tok = secenek.token || (secenek.auth !== false && H ? H.token : '');
-    if (tok) basliklar.Authorization = 'Bearer ' + tok;
-    let r;
-    try { r = await fetch(API_BASE + yol, {method: yontem, headers: basliklar, body: govde === undefined ? undefined : JSON.stringify(govde), signal: ctl.signal, cache: 'no-store'}); }
-    catch(e){ clearTimeout(z); throw {status: 0, error: e && e.name === 'AbortError' ? 'timeout' : 'network'}; }
-    clearTimeout(z);
-    let j = null;
-    try { j = await r.json(); } catch(e){ j = null; }
-    if (!r.ok){
-      const hata = {status: r.status, ...(j && typeof j === 'object' ? j : {error: 'server'})};
-      if (r.status === 401 && hata.error === 'auth' && H && !secenek.token) dusur();
-      throw hata;
-    }
-    return j;
-  }
-  const oturumAc = (r, rev) => { H = {token: r.token, kullanici: r.user, rev, son: 0}; yaz(); duyur(); return r.user; };
-  return {
-    istek,
-    durum: () => ({giris: !!H, kullanici: H ? H.kullanici : null, token: H ? H.token : null}),
-    _oturum: () => H, _yaz: yaz,
-    kullaniciGuncelle(u){ if (H){ H.kullanici = u; yaz(); duyur(); } },
-    // Yeni hesap: sunucuda veri yok → yerel veri gönderilir (rev 0)
-    async kaydol(u, p, consent){ return oturumAc(await istek('POST', '/register', {username: u, password: p, lang: dil, country: ulke(), consent}, {auth: false}), 0); },
-    // Giriş: sunucudaki veri bilinmiyor → ilk çekimde birleştirilir
-    async gir(u, p){ return oturumAc(await istek('POST', '/login', {username: u, password: p}, {auth: false}), -1); },
-    async cik(){ try { if (H) await istek('POST', '/logout'); } catch(e){} dusur(); },
-    async sil(p){ await istek('DELETE', '/account', {password: p}); dusur(); },
-    async sifre(eski, yeni){ const r = await istek('POST', '/password', {old: eski, new: yeni}); if (H && r.token){ H.token = r.token; yaz(); } return r; },
-    async riza(c){ const r = await istek('POST', '/consent', c); if (H){ H.kullanici = {...H.kullanici, consent: r.consent, lb_optin: r.lb_optin}; yaz(); duyur(); } return r; },
-    async ben(){ const r = await istek('GET', '/me'); if (H){ H.kullanici = r.user; yaz(); } return r.user; },
-    kontrol: u => istek('GET', '/users/check?u=' + encodeURIComponent(u), undefined, {auth: false}),
-    disaAktar: () => istek('GET', '/export'),
-    paylas: (kind, to, payload, title) => istek('POST', '/share', {kind, to: to || null, payload, title: title || ''}),
-    gelenKutusu: () => istek('GET', '/inbox'),
-    paylasimAl: kod => istek('GET', '/share/' + encodeURIComponent(kod)),
-    goruldu: kod => istek('POST', '/share/' + encodeURIComponent(kod) + '/seen'),
-    siralama: (scope, country) => istek('GET', `/leaderboard?scope=${scope}&me=1${country ? '&country=' + encodeURIComponent(country) : ''}`),
-    istatistik: st => istek('PUT', '/stats', st)
-  };
-})();
-
-const Esitle = {durum: 'kapali', hata: '', gelen: 0, son: 0};
-(() => {
-  let kirliMi = false, seri = 0, zaman = null, ucusta = false, geri = null, hataSay = 0, sonGelen = 0, sonIstatistik = '';
-  const giris = () => Hesap.durum().giris;
-  function durumYaz(d, hata = ''){
-    if (Esitle.durum === d && Esitle.hata === hata) return;
-    Esitle.durum = d; Esitle.hata = hata;
-    document.dispatchEvent(new CustomEvent('esitle'));
-  }
-  // Nesne anahtar sırasından bağımsız karşılaştırma (guncel sayılmaz): birleşim sunucudakiyle aynıysa yeniden göndermek gereksiz
-  const kanonik = x => JSON.stringify(x, (k, v) => v && typeof v === 'object' && !Array.isArray(v) ? Object.keys(v).sort().reduce((o, a) => { if (v[a] !== undefined) o[a] = v[a]; return o; }, {}) : v);
-  function esitMi(gelen){ try { return kanonik({...D, guncel: 0}) === kanonik({...tamamla(kopya(gelen)), guncel: 0}); } catch(e){ return false; } }
-  // Sunucudan gelen veriyi yerelle birleştir (p7b verileriBirlestir): sessiz — bildirim, log satırı ve pencere kapatma yok, bakılan gün korunur
-  function birlestir(gelen){
-    if (!gelen || typeof gelen !== 'object' || gelen.v !== 2) return false;
-    const t0 = toast, l0 = logEkle, k0 = kapat, aktif0 = aktif, detay0 = detayAcik;
-    toast = () => {}; logEkle = () => {}; kapat = () => {};
-    try { verileriBirlestir(gelen); }
-    catch(e){ console.warn('eşitleme: birleştirme başarısız', e); return false; }
-    finally { toast = t0; logEkle = l0; kapat = k0; }
-    if (aktif !== aktif0 && $('kurulum').hidden){ aktif = aktif0; detayAcik = detay0; ciz(); }
-    return true;
-  }
-  function geriPlanla(){
-    clearTimeout(geri);
-    hataSay = Math.min(hataSay + 1, 6);
-    geri = setTimeout(() => { if (kirliMi) gonder(); else cek(); }, 15000 * Math.pow(2, hataSay - 1));   // 15 sn, 30 sn, 1 dk … 8 dk
-  }
-  function hataIsle(e){
-    if (!e || e.status === 0) { durumYaz(navigator.onLine ? 'hata' : 'cevrimdisi', 'network'); geriPlanla(); return; }
-    if (e.status === 401){ durumYaz('kapali'); return; }   // oturum düştü (Hesap.dusur)
-    if (e.status === 403 && e.error === 'consent'){ durumYaz('hata', 'consent'); return; }   // rıza verilince kirli() yeniden tetikler
-    durumYaz('hata', e.error || 'server'); geriPlanla();
-  }
-  // kaydet() sonrası: 3 sn bekle, art arda değişiklikleri tek istekte topla
-  function kirli(){
-    if (!giris()) return;
-    kirliMi = true; seri++;
-    if (!ucusta) durumYaz(navigator.onLine ? 'bekliyor' : 'cevrimdisi');
-    clearTimeout(zaman); zaman = setTimeout(gonder, 3000);
-  }
-  async function gonder(){
-    clearTimeout(zaman);
-    if (!giris() || !kirliMi) return;
-    if (!navigator.onLine){ durumYaz('cevrimdisi'); return; }   // online olayında devam
-    if (ucusta){ zaman = setTimeout(gonder, 1500); return; }
-    const H = Hesap._oturum(), s0 = seri;
-    ucusta = true; durumYaz('gonderiliyor');
-    try {
-      const r = await Hesap.istek('PUT', '/data', {base_rev: Math.max(0, H.rev), updated_at: D.guncel || 0, data: D});
-      H.rev = r.rev; H.son = Date.now(); Hesap._yaz(); hataSay = 0;
-      if (seri === s0) kirliMi = false;
-      Esitle.son = H.son;
-    } catch(e){
-      ucusta = false;
-      if (e && e.status === 409 && e.data !== undefined){
-        // sunucu daha yeni: birleştir, aynıysa bitti; farklıysa birleşimi gönder
-        birlestir(e.data); H.rev = e.rev; H.son = Date.now(); Hesap._yaz();
-        if (esitMi(e.data)){ kirliMi = false; durumYaz('esit'); }
-        else if (hataSay < 3){ hataSay++; return gonder(); }
-        else { hataSay = 0; durumYaz('hata', 'conflict'); }
-        return;
-      }
-      if (e && e.status === 409){ H.rev = e.rev; Hesap._yaz(); return gonder(); }   // sunucuda veri yok, rev kaymış
-      hataIsle(e); return;
-    }
-    ucusta = false;
-    if (kirliMi) return gonder();
-    durumYaz('esit'); istatistikGonder();
-  }
-  // Açılış, online ve öne gelişte: sunucudaki sürüm bilinenden farklıysa birleştir
-  async function cek(){
-    if (!giris() || !navigator.onLine || ucusta) return;
-    const H = Hesap._oturum();
-    ucusta = true;
-    try {
-      const r = await Hesap.istek('GET', '/data');
-      if (r.data == null){ H.rev = r.rev || 0; if (D.ayar.kurulum){ kirliMi = true; seri++; } }
-      else if (r.rev !== H.rev){
-        birlestir(r.data); H.rev = r.rev;   // birleştirme kaydet() → kirli() çağırır; sonuç sunucudakiyle aynıysa göndermeye gerek yok
-        kirliMi = !esitMi(r.data);
-        if (kirliMi) seri++;
-      }
-      H.son = Date.now(); Esitle.son = H.son; Hesap._yaz(); hataSay = 0;
-    } catch(e){ ucusta = false; hataIsle(e); return; }
-    ucusta = false;
-    if (kirliMi) await gonder(); else { durumYaz('esit'); istatistikGonder(); }
-    gelenKutusuSay();
-  }
-  // Sıralama için seri / gün / su ortalaması (yalnız katılım açıksa, değer değişince, en çok 10 dk'da bir)
-  function istatistikHesapla(){
-    const K = D.kayit || {}, gunler = Object.keys(K).filter(k => K[k] && Object.values(K[k].yendi || {}).some(Boolean)).sort(), kume = new Set(gunler);
-    let streak = 0, k = bugunK();
-    if (!kume.has(k)) k = gunEkle(k, -1);
-    while (kume.has(k)){ streak++; k = gunEkle(k, -1); }
-    const son = gunler.slice(-30), bardak = D.profil.bardak || 250;
-    const water_avg = son.length ? Math.round(son.reduce((t, g) => t + (K[g].su || 0) * bardak, 0) / son.length) : 0;
-    return {streak, days: gunler.length, water_avg, country: ulke()};
-  }
-  let istatistikZaman = 0;
-  async function istatistikGonder(zorla = false){
-    const u = Hesap.durum().kullanici;
-    if (!u || !u.lb_optin || !navigator.onLine) return null;
-    const st = istatistikHesapla(), imza = JSON.stringify(st);
-    if (!zorla && imza === sonIstatistik && Date.now() - istatistikZaman < 600000) return null;
-    try { const r = await Hesap.istatistik(st); sonIstatistik = imza; istatistikZaman = Date.now(); return r; } catch(e){ return null; }
-  }
-  // Gelen kutusu: okunmamış sayısı (en çok dakikada bir); artınca kısa bildirim
-  let gelenZaman = 0;
-  async function gelenKutusuSay(zorla = false){
-    if (!giris() || !navigator.onLine || (!zorla && Date.now() - gelenZaman < 60000)) return;
-    gelenZaman = Date.now();
-    try {
-      const l = await Hesap.gelenKutusu(), n = l.filter(x => !x.seen).length;
-      if (n > sonGelen && sonGelen >= 0 && Esitle.son) toast('📥 ' + T('ibT') + ': ' + n);
-      sonGelen = n;
-      if (Esitle.gelen !== n){ Esitle.gelen = n; document.dispatchEvent(new CustomEvent('esitle')); }
-    } catch(e){}
-  }
-  Object.assign(Esitle, {
-    kirli, gonder, cek, gelenKutusuSay, istatistikGonder, istatistikHesapla, esitMi,
-    kirliMi: () => kirliMi,
-    // Çıkış / hesap silme: kuyruk boşalır, rozet kapanır
-    sifirla(){ clearTimeout(zaman); clearTimeout(geri); kirliMi = false; ucusta = false; hataSay = 0; sonGelen = 0; Esitle.gelen = 0; Esitle.son = 0; durumYaz('kapali'); },
-    // Giriş sonrası: sunucudaki veriyi çek (yerel bilinmiyor sayılır), bekleyen varsa gönder
-    async ilkCek(){ const H = Hesap._oturum(); if (!H) return; if (H.rev < 0 || !Esitle.son) ucusta = false; await cek(); },
-    // Ayarlar › Şimdi eşitle
-    async simdi(){ hataSay = 0; clearTimeout(geri); if (!giris()){ durumYaz('kapali'); return; } await cek(); if (kirliMi) await gonder(); await gelenKutusuSay(true); }
-  });
-  window.addEventListener('online', () => { if (!giris()) return; durumYaz(kirliMi ? 'bekliyor' : 'esit'); hataSay = 0; cek(); });
-  window.addEventListener('offline', () => { if (giris()) durumYaz('cevrimdisi'); });
-  document.addEventListener('visibilitychange', () => {
-    if (!giris()) return;
-    if (document.visibilityState === 'visible') cek();
-    else if (kirliMi) gonder();   // arka plana atılırken bekletmeden gönder
-  });
-  if (giris()){ durumYaz(navigator.onLine ? 'bekliyor' : 'cevrimdisi'); setTimeout(cek, 1200); }
-})();
-// Üst düzey const bağları window'da görünmez: p5 kaydet() kancası (window.Esitle) ve test sayfaları için
-window.Hesap = Hesap; window.Esitle = Esitle; window.RIZA_SURUM = RIZA_SURUM;
-// ---------- Hesap arayüzü: Ayarlar › Hesap, giriş / kayıt, gelen kutusu, uygulama içinde gönder, sıralama, eşitleme rozeti ----------
-// HTML burada JS ile üretilir (p1.html'e dokunulmaz); mevcut sınıflar (.sheet .btn .chip .field .cur .acts) kullanılır.
-// Hukuk sayfaları uygulamayla birlikte paketlenir (legal/*.html, 5 dil, dil çapası #tr|en|ru|de|ar) → çevrimdışı da açılır
-const HUKUK = {kvkk: 'legal/aydinlatma.html', kosullar: 'legal/kosullar.html', gizlilik: 'legal/gizlilik.html', acikRiza: 'legal/acik-riza.html', hesapSil: 'legal/hesap-sil.html'};
-const KULLANICI_RE = /^[A-Za-z][A-Za-z0-9_.]{2,15}$/;
-document.head.insertAdjacentHTML('beforeend', `<style>
-.esit-rozet{cursor:pointer;white-space:nowrap}
-.esit-rozet[hidden]{display:none}
-.esit-rozet.bekliyor,.esit-rozet.gonderiliyor{color:var(--gold);background:var(--gold-soft)}
-.esit-rozet.cevrimdisi{color:#40506a;background:#f1f4f9}
-.esit-rozet.hata{color:var(--red);background:var(--red-soft)}
-.hesap-kart b{display:block;font-size:16px}
-.hs-durum{display:flex;flex-wrap:wrap;gap:2px 5px;margin-top:4px;font-size:12.5px;color:var(--muted)}
-.hs-durum b{display:inline;font-size:inherit}   /* kart başlığındaki blok <b> kuralı durum sözcüğünü alt satıra atmasın */
-.hs-acts{margin-top:8px}
-.hs-acts .btn{flex:1 1 130px}
-.sifre-kutu{display:flex;gap:6px;align-items:center}
-.sifre-kutu input{flex:1;min-width:0}
-.sifre-kutu .mini{height:40px;flex:none}
-.ad-durum{font-size:12.5px;min-height:16px;margin:-6px 0 8px;color:var(--muted)}
-.ad-durum.ok{color:var(--green);font-weight:600}
-.ad-durum.bad{color:var(--red);font-weight:600}
-.oneri-cipler{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-2px 0 10px}
-.oneri-cipler:empty{display:none}
-.riza{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #f0f3f8;font-size:13.5px;line-height:1.45;cursor:pointer;margin:0}
-.riza input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--blue)}
-.riza a{color:var(--blue);font-weight:600;white-space:nowrap}
-.lb-satir{display:grid;grid-template-columns:30px minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:8px 6px;border-bottom:1px solid #f0f3f8;font-size:14px}
-.lb-satir.bas{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding-top:2px}
-.lb-satir.bas b{color:var(--muted);font-size:11.5px}
-.lb-satir.ben{background:var(--blue-soft);border-radius:10px;border-bottom:0}
-.lb-satir b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lb-satir b small{color:var(--muted);font-weight:600}
-.lb-satir .n{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px;white-space:nowrap;text-align:end}
-.lb-satir .seri{font-weight:800;color:var(--green);white-space:nowrap;font-size:13.5px}
-.ib-satir{display:flex;gap:10px;align-items:center;width:100%;text-align:start;padding:10px 6px;border-bottom:1px solid #f0f3f8}
-.ib-satir:active{background:#f7f9fc}
-.ib-satir .ik{font-size:22px;flex:none}
-.ib-satir div{flex:1;min-width:0}
-.ib-satir b{display:block;font-size:15px;overflow-wrap:anywhere}
-.ib-satir small{color:var(--muted);font-size:12.5px}
-.ib-satir .tag{flex:none;background:var(--green-soft);color:var(--green)}
-#wzGiris{margin-top:8px}
-</style>`);
-
-// ---------- Yardımcılar ----------
-function hesapHata(e, varsayilan){
-  if (!e) return T('hsHata');
-  if (e.status === 0) return T(navigator.onLine ? 'hsHata' : 'hsCevrimdisi');
-  if (e.status === 423) return T('hsKilit', {t: e.until ? Math.max(1, Math.ceil((e.until * 1000 - Date.now()) / 60000)) : 15});
-  if (e.status === 429) return T('hsKilit', {t: 15});
-  if (e.error === 'wrong') return e.left != null ? T('hsYanlis', {n: e.left}) : T('hsSifreYanlis');
-  if (e.error === 'weak') return T('hsSifreKisa');
-  if (e.error === 'taken') return T('hsAdAlinmis');
-  if (e.error === 'rude') return T('hsAdKaba');
-  if (e.error === 'bad') return T('hsAdFormat');
-  if (e.error === 'consent') return T('hsRizaGerek');
-  if (e.error === 'no_user') return T('shAliciYok');
-  if (e.error === 'self') return T('shKendine');
-  if (e.error === 'auth') return T('hsGirisGerek');
-  return varsayilan || T('hsHata');
-}
-const hataYaz = (id, m) => { const el = $(id); if (!el) return; el.textContent = m || ''; el.hidden = !m; };
-// Şifre alanı "Göster / Gizle"
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-goster]'); if (!b) return;
-  const i = $(b.dataset.goster); if (!i) return;
-  i.type = i.type === 'password' ? 'text' : 'password';
-  b.textContent = T(i.type === 'password' ? 'hsGoster' : 'hsGizle');
-});
-// Enter ile gönder
-const enterIle = (inputId, btnId) => { const i = $(inputId); if (i) i.addEventListener('keydown', e => { if (e.key === 'Enter' && $(btnId)) $(btnId).click(); }); };
-// Kullanıcı adı canlı denetim: mod 'yeni' → uygun mu (+ öneri çipleri); mod 'var' → alıcı var mı
-function adKontrolBagla(inputId, durumId, oneriId, mod){
-  const inp = $(inputId), durum = $(durumId), oneri = oneriId ? $(oneriId) : null;
-  let z = null;
-  const yaz = (cls, metin) => { durum.className = 'ad-durum ' + cls; durum.textContent = metin; };
-  inp.addEventListener('input', () => {
-    const u = inp.value.trim(); clearTimeout(z); inp.dataset.ok = '';
-    if (oneri) oneri.innerHTML = '';
-    if (!u){ yaz('', ''); return; }
-    if (!KULLANICI_RE.test(u) || /\.\./.test(u) || /\.$/.test(u)){ yaz('bad', T('hsAdFormat')); return; }
-    yaz('', T('hsKontrol'));
-    z = setTimeout(async () => {
-      try {
-        const r = await Hesap.kontrol(u);
-        if (!inp.isConnected || inp.value.trim() !== u) return;
-        if (mod === 'var'){
-          const var_ = !r.free && r.reason === 'taken';
-          inp.dataset.ok = var_ ? '1' : '';
-          yaz(var_ ? 'ok' : 'bad', T(var_ ? 'shAliciVar' : r.reason === 'rude' || r.reason === 'bad' ? 'hsAdFormat' : 'shAliciYok'));
-          return;
-        }
-        if (r.free){ inp.dataset.ok = '1'; yaz('ok', T('hsAdUygun')); return; }
-        yaz('bad', T(r.reason === 'rude' ? 'hsAdKaba' : r.reason === 'bad' ? 'hsAdFormat' : 'hsAdAlinmis'));
-        if (oneri && r.suggestions && r.suggestions.length) oneri.innerHTML = `<span class="hint">${T('hsOneri')}</span>` + r.suggestions.map(s => `<button class="chip" type="button" data-oneri="${esc(s)}">${esc(s)}</button>`).join('');
-      } catch(e){ if (inp.isConnected) yaz('bad', hesapHata(e)); }
-    }, 400);
-  });
-  if (oneri) oneri.addEventListener('click', e => { const b = e.target.closest('[data-oneri]'); if (!b) return; inp.value = b.dataset.oneri; inp.dispatchEvent(new Event('input')); });
-}
-
-// ---------- Giriş ----------
-function girisAc(){
-  ac(T('hsGiris'), `<div class="hs-form">
-    <label class="field"><span>${T('hsKullanici')}</span><input id="gAd" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="16" enterkeyhint="next"></label>
-    <label class="field"><span>${T('hsSifreL')}</span><div class="sifre-kutu"><input id="gSifre" type="password" autocomplete="current-password" enterkeyhint="go"><button class="mini" type="button" data-goster="gSifre">${T('hsGoster')}</button></div></label>
-    <div class="wmsg err" id="gHata" hidden></div>
-    <div class="acts"><button class="btn solid" id="gGir">${T('hsGiris')}</button></div>
-    <button class="btn ghost full" style="margin-top:8px" id="gKaydol">${T('hsKaydol')}</button></div>`);
-  enterIle('gSifre', 'gGir');
-  $('gKaydol').onclick = () => icinden(girisAc, kaydolAc);
-  $('gGir').onclick = async () => {
-    const u = $('gAd').value.trim(), p = $('gSifre').value, b = $('gGir');
-    if (!KULLANICI_RE.test(u) || !p){ hataYaz('gHata', T('hsAdFormat')); return; }
-    b.disabled = true; hataYaz('gHata', '');
-    try { await Hesap.gir(u, p); }
-    catch(e){ b.disabled = false; hataYaz('gHata', hesapHata(e)); return; }
-    kapat(); toast(T('hsGirisOk', {u}), 3000);
-    await Esitle.ilkCek();   // sunucudaki veri yerelle birleşir (yeni cihazda kurulum da atlanır)
-  };
-  setTimeout(() => { if ($('gAd')) $('gAd').focus(); }, 250);
-}
-
-// ---------- Kayıt (rıza kutularıyla) ----------
-function rizaKutulari(saglikOnce = false){
-  const link = (k, u) => `<a href="${u}" target="_blank" rel="noopener">${T(k)}</a>`;
-  const saglik = `<label class="riza"><input type="checkbox" id="rSaglik"><span>${T('cRiza')} · ${link('cLinkConsent', HUKUK.acikRiza)}</span></label>`;
-  const temel = `<label class="riza"><input type="checkbox" id="rKvkk"><span>${T('cKvkk')} · ${link('cKvkkL', HUKUK.kvkk)}</span></label>
-    <label class="riza"><input type="checkbox" id="rKosul"><span>${T('cKosul')} · ${link('cKosulL', HUKUK.kosullar)} · ${link('cGizL', HUKUK.gizlilik)}</span></label>`;
-  return (saglikOnce ? saglik + temel : temel + saglik) + `<div class="hint" style="margin-top:8px">${esc(T('cRizaBilgi'))}</div>`;
-}
-function kaydolAc(){
-  ac(T('hsKaydol'), `<div class="hint" style="margin-bottom:10px">${esc(T('cIntro'))}</div><div class="hs-form">
-    <label class="field"><span>${T('hsKullanici')}</span><input id="kAd" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="16" enterkeyhint="next"></label>
-    <div class="ad-durum" id="kAdDurum">${T('hsAdFormat')}</div><div class="oneri-cipler" id="kOneri"></div>
-    <label class="field"><span>${T('hsSifreL')}</span><div class="sifre-kutu"><input id="kSifre" type="password" autocomplete="new-password" enterkeyhint="next"><button class="mini" type="button" data-goster="kSifre">${T('hsGoster')}</button></div></label>
-    <label class="field"><span>${T('hsSifre2')}</span><input id="kSifre2" type="password" autocomplete="new-password" enterkeyhint="done"></label>
-    ${rizaKutulari()}
-    <label class="riza"><input type="checkbox" id="rYas"><span>${T('cBoxAge')}</span></label>
-    <label class="riza"><input type="checkbox" id="rLb"><span>${T('hsLbOptin')}</span></label>
-    <div class="wmsg err" id="kHata" hidden></div>
-    <div class="acts"><button class="btn green" id="kGonder">${T('hsKaydol')}</button></div>
-    <button class="btn ghost full" style="margin-top:8px" id="kGiris">${T('hsGiris')}</button></div>`);
-  adKontrolBagla('kAd', 'kAdDurum', 'kOneri', 'yeni');
-  enterIle('kSifre2', 'kGonder');
-  $('kGiris').onclick = () => icinden(kaydolAc, girisAc);
-  $('kGonder').onclick = async () => {
-    const u = $('kAd').value.trim(), p = $('kSifre').value, p2 = $('kSifre2').value, b = $('kGonder');
-    if (!KULLANICI_RE.test(u) || /\.\./.test(u) || /\.$/.test(u)) return hataYaz('kHata', T('hsAdFormat'));
-    if (p.length < 8) return hataYaz('kHata', T('hsSifreKisa'));
-    if (p !== p2) return hataYaz('kHata', T('hsSifreUyusmaz'));
-    if (!$('rKvkk').checked || !$('rKosul').checked || !$('rYas').checked) return hataYaz('kHata', T('cNeedAll'));
-    const consent = {kvkk: true, terms: true, age16: true, health: $('rSaglik').checked, ver: RIZA_SURUM, lb_optin: $('rLb').checked};
-    b.disabled = true; hataYaz('kHata', '');
-    try { await Hesap.kaydol(u, p, consent); }
-    catch(e){
-      b.disabled = false; hataYaz('kHata', hesapHata(e));
-      if (e && e.suggestions && e.suggestions.length) $('kOneri').innerHTML = `<span class="hint">${T('hsOneri')}</span>` + e.suggestions.map(s => `<button class="chip" type="button" data-oneri="${esc(s)}">${esc(s)}</button>`).join('');
-      return;
-    }
-    kapat(); toast(T(consent.health ? 'hsKayitOk' : 'cRizaYok'), 3500);
-    await Esitle.ilkCek();   // sunucu boş → yerel veri gönderilir
-  };
-}
-// Hesap gerektiren işlem, giriş yok
-function girisGerekAc(){
-  ac(T('hsT'), `<p class="onay-metin">${esc(T('hsGirisGerek'))}</p><div class="hint">${esc(T('hsIntro'))}</div>
-    <div class="acts"><button class="btn solid" id="ggGiris">${T('hsGiris')}</button><button class="btn" id="ggKaydol">${T('hsKaydol')}</button></div>`);
-  $('ggGiris').onclick = () => icinden(girisGerekAc, girisAc);
-  $('ggKaydol').onclick = () => icinden(girisGerekAc, kaydolAc);
-}
-
-// ---------- Şifre değiştir / rıza / hesap sil ----------
-function sifreAc(){
-  ac(T('hsSifre'), `<div class="hs-form">
-    <label class="field"><span>${T('hsSifreEski')}</span><div class="sifre-kutu"><input id="sEski" type="password" autocomplete="current-password"><button class="mini" type="button" data-goster="sEski">${T('hsGoster')}</button></div></label>
-    <label class="field"><span>${T('hsSifreYeni')}</span><div class="sifre-kutu"><input id="sYeni" type="password" autocomplete="new-password"><button class="mini" type="button" data-goster="sYeni">${T('hsGoster')}</button></div></label>
-    <label class="field"><span>${T('hsSifre2')}</span><input id="sYeni2" type="password" autocomplete="new-password" enterkeyhint="done"></label>
-    <div class="wmsg err" id="sHata" hidden></div>
-    <div class="acts"><button class="btn solid" id="sKaydet">${T('save')}</button></div></div>`);
-  enterIle('sYeni2', 'sKaydet');
-  $('sKaydet').onclick = async () => {
-    const e0 = $('sEski').value, y = $('sYeni').value, y2 = $('sYeni2').value, b = $('sKaydet');
-    if (y.length < 8) return hataYaz('sHata', T('hsSifreKisa'));
-    if (y !== y2) return hataYaz('sHata', T('hsSifreUyusmaz'));
-    b.disabled = true; hataYaz('sHata', '');
-    try { await Hesap.sifre(e0, y); } catch(e){ b.disabled = false; hataYaz('sHata', e && e.error === 'wrong' ? T('hsSifreYanlis') : hesapHata(e)); return; }
-    kapat(); toast(T('hsSifreOk'));
-  };
-}
-// Sağlık verisi rızası sonradan verilir (eşitleme açılır)
-function rizaVerAc(){
-  ac(T('cRizaVer'), `${rizaKutulari(true)}<div class="wmsg err" id="rHata" hidden></div><div class="acts"><button class="btn green" id="rKaydet">${T('save')}</button></div>`);
-  const u = Hesap.durum().kullanici || {};
-  if (u.consent && u.consent.kvkk) $('rKvkk').checked = true;
-  if (u.consent && u.consent.terms) $('rKosul').checked = true;
-  $('rKaydet').onclick = async () => {
-    if (!$('rKvkk').checked || !$('rKosul').checked) return hataYaz('rHata', T('cGerek'));
-    if (!$('rSaglik').checked) return hataYaz('rHata', T('cRizaYok'));
-    try { await Hesap.riza({kvkk: true, terms: true, health: true, ver: RIZA_SURUM, lb_optin: !!u.lb_optin}); } catch(e){ hataYaz('rHata', hesapHata(e)); return; }
-    kapat(); toast(T('tSaved'));
-    Esitle.kirli(); Esitle.gonder();
-  };
-}
-async function rizaCek(){
-  const u = Hesap.durum().kullanici || {};
-  try { await Hesap.riza({kvkk: true, terms: true, health: false, ver: RIZA_SURUM, lb_optin: !!u.lb_optin}); }
-  catch(e){ toast(hesapHata(e)); return; }
-  Esitle.durum = 'hata'; Esitle.hata = 'consent'; document.dispatchEvent(new CustomEvent('esitle'));
-  toast(T('cRizaYok'), 3500);
-}
-function silSifreAc(){
-  ac(T('hsSil'), `<p class="onay-metin">${esc(T('hsSilSor2'))}</p>
-    <label class="field"><div class="sifre-kutu"><input id="dSifre" type="password" autocomplete="current-password" enterkeyhint="done"><button class="mini" type="button" data-goster="dSifre">${T('hsGoster')}</button></div></label>
-    <div class="wmsg err" id="dHata" hidden></div>
-    <div class="acts"><button class="btn ghost" id="dVazgec">${T('cancel2')}</button><button class="btn danger" id="dSil">${T('hsSilBtn')}</button></div>`);
-  $('dVazgec').onclick = () => { if (geriFn) geriFn(); else kapat(); };
-  $('dSil').onclick = async () => {
-    const p = $('dSifre').value, b = $('dSil'); if (!p) return;
-    b.disabled = true; hataYaz('dHata', '');
-    try { await Hesap.sil(p); } catch(e){ b.disabled = false; hataYaz('dHata', e && e.error === 'wrong' ? T('hsSifreYanlis') : hesapHata(e)); return; }
-    kapat(); toast(T('hsSilOk'), 3500);
-  };
-}
-
-// ---------- Ayarlar › Hesap bölümü (ayarlar penceresi açılınca eklenir) ----------
-const ayarlarAc0 = ayarlarAc;
-ayarlarAc = function(dilAcik){ ayarlarAc0(dilAcik); hesapBolumuEkle(); };
-function hesapBolumuEkle(){
-  const sb = $('sbody'); if (!sb || $('hesapBolum')) return;
-  const kutu = document.createElement('div'); kutu.id = 'hesapBolum';
-  sb.appendChild(kutu);   // yeri ayarSirala() belirler (sıfırla bölümünün üstü)
-  hesapBolumuCiz();
-}
-function esitDurumYazi(){
-  const ad = {kapali:'esKapali', bekliyor:'esBekliyor', gonderiliyor:'esGonder', esit:'esEsit', cevrimdisi:'esCevrimdisi', hata:'esHata'}[Esitle.durum] || 'esBekliyor';
-  const son = Esitle.son ? T('hsSon', {t: new Date(Esitle.son).toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})}) : T('hsHicEsit');
-  const h = Hesap._oturum();
-  return `<span>${T('hsDurum')}: <b>${T(ad)}</b></span><span>· ${esc(son)}</span>${h && h.rev > 0 ? `<span>· ${T('hsRev', {n: h.rev})}</span>` : ''}`;
-}
-// Hukuk bağlantıları (herkese, hesapsız da): gizlilik · aydınlatma · açık rıza · koşullar · hesap silme — yerel sayfalar, dil çapasıyla
-function hukukEkle(el){
-  const dil = (D && D.profil && D.profil.dil) || 'tr';
-  const a = (k, u) => `<a href="${u}#${dil}" target="_blank" rel="noopener">${esc(T(k))}</a>`;
-  el.insertAdjacentHTML('beforeend', `<div class="hint hukuk-satir">${a('cLinkPriv', HUKUK.gizlilik)} · ${a('cLinkKvkk', HUKUK.kvkk)} · ${a('cLinkConsent', HUKUK.acikRiza)} · ${a('cLinkTerms', HUKUK.kosullar)} · ${a('cLinkDelete', HUKUK.hesapSil)}</div>`);
-}
-function hesapBolumuCiz(){
-  const el = $('hesapBolum'); if (!el) return;
-  const h = Hesap.durum(), u = h.kullanici;
-  if (!h.giris){
-    el.innerHTML = `<div class="sec">☁️ ${T('hsT')}</div><div class="hint">${esc(T('hsIntro'))}</div>
-      <div class="acts hs-acts"><button class="btn solid" id="hsGirisBtn">${T('hsGiris')}</button><button class="btn" id="hsKaydolBtn">${T('hsKaydol')}</button><button class="btn ghost" id="hsSiraBtn">🏆 ${T('hsSira')}</button></div>`;
-    $('hsGirisBtn').onclick = () => icinden(ayarlarAc, girisAc);
-    $('hsKaydolBtn').onclick = () => icinden(ayarlarAc, kaydolAc);
-    $('hsSiraBtn').onclick = () => icinden(ayarlarAc, siralamaAc);
-    hukukEkle(el);
-    return;
-  }
-  const rizaVar = !!(u.consent && u.consent.health && u.consent.ver === RIZA_SURUM);
-  el.innerHTML = `<div class="sec">☁️ ${T('hsT')}</div>
-    <div class="cur hesap-kart"><b>👤 ${esc(u.username)}</b><div class="hs-durum">${esitDurumYazi()}</div>${rizaVar ? '' : `<div class="wmsg warn" style="margin-top:8px">${esc(T('cRizaYok'))}</div>`}</div>
-    <div class="acts hs-acts" style="margin-top:0"><button class="btn solid" id="hsEsitleBtn" ${rizaVar ? '' : 'disabled'}>${T('hsEsitle')}</button><button class="btn" id="hsGelenBtn">📥 ${T('hsGelen')}${Esitle.gelen ? ` <span class="tag">${Esitle.gelen}</span>` : ''}</button><button class="btn" id="hsSiraBtn">🏆 ${T('hsSira')}</button></div>
-    <label class="riza" style="margin-top:6px"><input type="checkbox" id="hsLb" ${u.lb_optin ? 'checked' : ''}><span>${T('hsLbOptin')}</span></label>
-    <div class="acts hs-acts"><button class="btn ghost" id="hsRizaBtn">${T(rizaVar ? 'cRizaCek' : 'cRizaVer')}</button><button class="btn ghost" id="hsSifreBtn">${T('hsSifre')}</button><button class="btn ghost" id="hsIndirBtn">${T('hsIndir')}</button></div>
-    <div class="acts hs-acts"><button class="btn ghost" id="hsCikisBtn">${T('hsCikis')}</button><button class="btn danger" id="hsSilBtn">${T('hsSil')}</button></div>`;
-  $('hsEsitleBtn').onclick = async () => { $('hsEsitleBtn').disabled = true; await Esitle.simdi(); if ($('hsEsitleBtn')) $('hsEsitleBtn').disabled = false; toast(Esitle.durum === 'esit' ? T('esEsit') : Esitle.hata === 'consent' ? T('hsRizaGerek') : T(Esitle.durum === 'cevrimdisi' ? 'hsCevrimdisi' : 'hsHata')); };
-  $('hsGelenBtn').onclick = () => icinden(ayarlarAc, gelenKutusuAc);
-  $('hsSiraBtn').onclick = () => icinden(ayarlarAc, siralamaAc);
-  $('hsLb').onchange = e => lbDegistir(e.target.checked).catch(() => { e.target.checked = !e.target.checked; });
-  $('hsRizaBtn').onclick = () => icinden(ayarlarAc, () => rizaVar ? onayAc(T('cRizaCekSor'), () => rizaCek().then(ayarlarAc)) : rizaVerAc());
-  $('hsSifreBtn').onclick = () => icinden(ayarlarAc, sifreAc);
-  $('hsIndirBtn').onclick = async () => {
-    try { const r = await Hesap.disaAktar(); indir(JSON.stringify(r, null, 1), `liferoutine_${u.username}_${bugunK()}.json`, 'application/json'); }
-    catch(e){ toast(hesapHata(e)); }
-  };
-  $('hsCikisBtn').onclick = () => icinden(ayarlarAc, () => onayAc(T('hsCikisSor'), async () => { await Hesap.cik(); toast(T('hsCikisOk'), 3500); ayarlarAc(); }));
-  $('hsSilBtn').onclick = () => icinden(ayarlarAc, () => onayAc(T('hsSilSor1'), () => icinden(ayarlarAc, silSifreAc)));
-  hukukEkle(el);
-}
-// Sıralama katılımı (yalnız kullanıcı adı + gün sayıları gönderilir)
-async function lbDegistir(acik){
-  const u = Hesap.durum().kullanici; if (!u) throw {status: 401, error: 'auth'};
-  try {
-    await Hesap.riza({kvkk: true, terms: true, health: !!(u.consent && u.consent.health), ver: (u.consent && u.consent.ver) || RIZA_SURUM, lb_optin: acik});
-    if (acik) await Esitle.istatistikGonder(true);
-    toast(T('tSaved'));
-  } catch(e){ toast(hesapHata(e)); throw e; }
-}
-
-// ---------- Gelen kutusu ----------
-async function gelenKutusuAc(){
-  if (!Hesap.durum().giris){ girisGerekAc(); return; }
-  ac('📥 ' + T('ibT'), `<div class="hint" id="ibListe">${T('hsKontrol')}</div>`);
-  let liste;
-  try { liste = await Hesap.gelenKutusu(); } catch(e){ if ($('ibListe')) $('ibListe').innerHTML = `<div class="wmsg err">${esc(hesapHata(e))}</div>`; return; }
-  const el = $('ibListe'); if (!el) return;   // pencere değişmiş
-  const n = liste.filter(x => !x.seen).length;
-  if (Esitle.gelen !== n){ Esitle.gelen = n; document.dispatchEvent(new CustomEvent('esitle')); }
-  const tarih = t => new Date(t * 1000).toLocaleDateString(LOC(), {day: 'numeric', month: 'short'});
-  el.className = '';
-  el.innerHTML = liste.length ? liste.map(x => `<button class="ib-satir" data-kod="${esc(x.code)}"><span class="ik">${x.kind === 'program' ? '📋' : '🍽️'}</span>
-      <div><b>${esc(x.title || T(x.kind === 'program' ? 'ibProgram' : 'ibYenen'))}</b><small>${esc(T('ibKimden', {u: x.from}))} · ${tarih(x.created)}</small></div>${x.seen ? '' : `<span class="tag">${T('ibYeni')}</span>`}</button>`).join('')
-    : `<div class="hint">${esc(T('ibBos'))}</div>`;
-  el.querySelectorAll('[data-kod]').forEach(b => b.onclick = () => gelenAc(b.dataset.kod));
-}
-// Gelen program → mevcut programSor (Evet → programUygula); yenen öğünler → belge görünümü
-async function gelenAc(kod){
-  let r;
-  try { r = await Hesap.paylasimAl(kod); } catch(e){ toast(e && e.status === 404 ? T('ibAcilmadi') : hesapHata(e)); return; }
-  Hesap.goruldu(kod).then(() => Esitle.gelenKutusuSay(true), () => {});
-  if (r.kind === 'program'){
-    const P = programDogrula(r.payload);
-    if (!P){ toast(T('impBad'), 4000); return; }
-    icinden(gelenKutusuAc, () => programSor(P));
-    return;
-  }
-  const Y = r.payload;
-  if (!Y || Y.v !== 1 || !Array.isArray(Y.o) || !/^\d{4}-\d\d-\d\d$/.test(String(Y.d))){ toast(T('rpBad'), 4000); return; }
-  yenenRaporAc(Y);
-}
-
-// ---------- Uygulama içinde gönder (program linki kartı + "Yediklerimi gönder" penceresi) ----------
-function appGonderAc(kind, payload, baslik){
-  if (!Hesap.durum().giris){ girisGerekAc(); return; }
-  ac(T('shAppT'), `<div class="hint">${esc(T('shAppInfo'))}</div>
-    <label class="field" style="margin-top:10px"><span>${T('shAlici')}</span><input id="pAlici" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="16" enterkeyhint="next"></label>
-    <div class="ad-durum" id="pAliciDurum"></div>
-    <label class="field"><span>${T('shBaslik')}</span><input id="pBaslik" maxlength="80" autocomplete="off" value="${esc(baslik || '')}" enterkeyhint="send"></label>
-    <div class="wmsg err" id="pHata" hidden></div>
-    <div class="acts"><button class="btn green" id="pGonder">${T('shGonderBtn')}</button></div>`);
-  adKontrolBagla('pAlici', 'pAliciDurum', null, 'var');
-  enterIle('pBaslik', 'pGonder');
-  $('pGonder').onclick = async () => {
-    const to = $('pAlici').value.trim(), b = $('pGonder');
-    if (!KULLANICI_RE.test(to)) return hataYaz('pHata', T('hsAdFormat'));
-    b.disabled = true; hataYaz('pHata', '');
-    try { await Hesap.paylas(kind, to, payload, $('pBaslik').value.trim()); }
-    catch(e){ b.disabled = false; hataYaz('pHata', e && e.status === 429 ? T('shLimit') : hesapHata(e)); return; }
-    kapat(); toast(T('shGonderildi', {u: to}), 3500);
-  };
-  setTimeout(() => { if ($('pAlici')) $('pAlici').focus(); }, 250);
-}
-const kocLinkOlustur0 = kocLinkOlustur;
-kocLinkOlustur = async function(){
-  await kocLinkOlustur0();
-  const acts = $('kocLink') && $('kocLink').querySelector('.acts');
-  if (!acts || $('kocAppGonder')) return;
-  acts.insertAdjacentHTML('beforeend', `<button class="btn" id="kocAppGonder">${T('shApp')}</button>`);
-  $('kocAppGonder').onclick = () => { const P = kocPaket(); if (P) appGonderAc('program', P, P.a ? T('kocFor', {a: P.a}) : T('ibProgram')); };
-};
-const yenenPaylasAc0 = yenenPaylasAc;
-yenenPaylasAc = async function(k){
-  await yenenPaylasAc0(k);
-  const acts = $('shKopya') && $('shKopya').closest('.acts');
-  if (!acts || $('shApp')) return;
-  acts.insertAdjacentHTML('beforeend', `<button class="btn" id="shApp">${T('shApp')}</button>`);
-  $('shApp').onclick = () => icinden(() => yenenPaylasAc(k), () => appGonderAc('yenen', yenenPaketi(k), T('shText', {d: etiket(k)})));
-};
-
-// ---------- Sıralama (dünya / ülkem; seri = üst üste öğün kaydı yapılan gün) ----------
-let lbKapsam = 'world';
-async function siralamaAc(){
-  const h = Hesap.durum(), u = h.kullanici;
-  ac('🏆 ' + T('lbT'), `<div class="chips" style="margin-top:0">${[['world', 'lbDunya'], ['country', 'lbUlke']].map(([k, a]) => `<button class="chip${lbKapsam === k ? ' on' : ''}" data-lbs="${k}">${T(a)}</button>`).join('')}</div>
-    <div class="hint">${esc(T('lbSeriInfo'))}</div><div id="lbListe" class="hint" style="margin-top:10px">${T('hsKontrol')}</div><div id="lbAlt"></div>`);
-  $('sbody').querySelectorAll('[data-lbs]').forEach(b => b.onclick = () => { lbKapsam = b.dataset.lbs; siralamaAc(); });
-  let r;
-  try { r = await Hesap.siralama(lbKapsam, (u && u.country) || ulke()); }
-  catch(e){ if ($('lbListe')) $('lbListe').innerHTML = `<div class="wmsg err">${esc(hesapHata(e))}</div>`; return; }
-  const el = $('lbListe'); if (!el) return;
-  const ben = u ? u.username.toLowerCase() : '';
-  el.className = '';
-  el.innerHTML = (lbKapsam === 'country' && !r.country ? `<div class="hint">${T('lbUlkeYok')}</div>` : '')
-    + (r.rows.length ? `<div class="lb-satir bas"><span>#</span><b>${T('hsKullanici')}</b><span class="n">${T('lbSeri')}</span><span class="n">${T('lbGun')}</span></div>`
-      + r.rows.map(x => `<div class="lb-satir${x.username.toLowerCase() === ben ? ' ben' : ''}"><span class="n">${x.rank}</span><b>${esc(x.username)}${x.username.toLowerCase() === ben ? ` <small>(${T('lbBen')})</small>` : ''}</b><span class="seri">🔥 ${T('lbGunN', {n: x.streak})}</span><span class="n">${T('lbGunN', {n: x.days})}</span></div>`).join('')
-      : `<div class="hint">${T('lbBos')}</div>`);
-  const alt = $('lbAlt');
-  if (r.me) alt.innerHTML = `<div class="cur" style="margin-top:12px"><b>${T('lbSira', {n: r.me.rank, t: r.me.total})}</b> · 🔥 ${T('lbGunN', {n: r.me.streak})} · ${T('lbGunN', {n: r.me.days})}</div><button class="btn ghost full" id="lbCik">${T('lbCik')}</button>`;
-  else alt.innerHTML = `<div class="hint" style="margin-top:12px">${esc(T('lbKatilInfo'))}</div><button class="btn solid full" style="margin-top:8px" id="lbKatil">${T('lbKatil')}</button>`;
-  if ($('lbKatil')) $('lbKatil').onclick = () => h.giris ? lbDegistir(true).then(siralamaAc, () => {}) : icinden(siralamaAc, girisAc);
-  if ($('lbCik')) $('lbCik').onclick = () => lbDegistir(false).then(siralamaAc, () => {});
-}
-
-// ---------- Ana ekran eşitleme rozeti (kayıt çipinin yanında; dokununca Ayarlar) ----------
-function rozetKur(){
-  if ($('esitRozet') || !$('kayitDurum')) return;
-  const el = document.createElement('button'); el.id = 'esitRozet'; el.className = 'save-chip esit-rozet'; el.hidden = true;
-  $('kayitDurum').insertAdjacentElement('afterend', el);
-  el.onclick = () => ayarlarAc();
-  rozetCiz();
-}
-function rozetCiz(){
-  const el = $('esitRozet'); if (!el) return;
-  const giris = Hesap.durum().giris;
-  el.hidden = !giris;
-  if (!giris) return;
-  const d = Esitle.durum, k = {esit:'rzEsit', bekliyor:'rzBekliyor', gonderiliyor:'rzGonder', cevrimdisi:'rzCevrimdisi', hata:'rzHata'}[d] || 'rzBekliyor';
-  el.className = 'save-chip esit-rozet ' + d;
-  el.textContent = T(k) + (Esitle.gelen ? ` · ✉ ${Esitle.gelen}` : '');
-  el.title = Esitle.hata === 'consent' ? T('hsRizaGerek') : '';
-}
-const kayitDurumYaz0 = kayitDurumYaz;
-kayitDurumYaz = function(){ kayitDurumYaz0(); rozetCiz(); };   // dil değişince rozet de yenilenir
-document.addEventListener('esitle', () => { rozetCiz(); hesapBolumuCiz(); });
-rozetKur();
-
-// ---------- Kurulum ekranı: hesabı olan kullanıcı ilk adımdan giriş yapar (sunucudaki veri gelir, kurulum atlanır) ----------
-function wzGirisEkle(){
-  const tasi = $('kurulum').querySelector('[data-wtasi]');
-  if (!tasi || $('wzGiris') || Hesap.durum().giris) return;
-  tasi.insertAdjacentHTML('afterend', `<button class="btn ghost full" id="wzGiris">${T('wzGiris')}</button>`);
-  $('wzGiris').onclick = girisAc;
-}
-new MutationObserver(wzGirisEkle).observe($('kurulum'), {childList: true, subtree: true});
-wzGirisEkle();   // sihirbaz bu parçadan önce çizilmiş olabilir (taze açılış) → bir kez hemen dene
 // ---------- Reklam ve "Reklamları kaldır" (tek seferlik satın alma) — YALNIZ yerel kabukta (window.__LF_NATIVE) ----------
 // Düz tarayıcıda (diyet.maviplay.com) reklam yok, satın alma bölümü çizilmez, hiçbir fonksiyon sarmalanmaz.
 // Köprü sözleşmesi (kabuk tarafı: ads.ts / iap.ts):
@@ -7449,11 +6952,11 @@ if (yerelKabuk()){
 }
 
 // ---------- Ayarlar sırası (kullanıcı 01.11): sık kullanılanlar üstte, gereksizler aşağıda; en altta hesap ve sıfırla ----------
-const AYAR_SIRA = ['ust', 'tur', 'reklam', 'program', 'tasi', 'yedek', 'olcu', 'saat', 'hedef', 'profil', 'regl', 'yukle', 'spor', 'antrenman', 'bildirim', 'hesap', 'sifirla'];
+const AYAR_SIRA = ['ust', 'tur', 'reklam', 'program', 'tasi', 'yedek', 'olcu', 'saat', 'hedef', 'profil', 'regl', 'yukle', 'spor', 'antrenman', 'bildirim', 'yasal', 'sifirla'];
 let rkGozlemci = null;
 function ayarSirala(){
   const sb = $('sbody'); if (!sb) return;
-  const bul = k => k === 'reklam' ? $('reklamBolum') : k === 'hesap' ? $('hesapBolum') : sb.querySelector(`:scope > .ayar-blok[data-ak="${k}"]`);
+  const bul = k => k === 'reklam' ? $('reklamBolum') : sb.querySelector(`:scope > .ayar-blok[data-ak="${k}"]`);
   for (const k of AYAR_SIRA){ const el = bul(k); if (el) sb.appendChild(el); }
   rkTitresimKur();
 }
@@ -7479,6 +6982,12 @@ function rkTitresimKur(){
   const ayarlarAcS0 = ayarlarAc;
   ayarlarAc = function(){ const r = ayarlarAcS0.apply(this, arguments); ayarSirala(); return r; };
 }
+
+// ---------- Sunucu kaldırıldı (01.11.2026): eski sürümden kalan hesap oturumu temizlenir; tüm veriler yalnız cihazda ----------
+try { localStorage.removeItem(ANAHTAR + '_hesap'); } catch(e){}
+// ---------- Yakınlaştırma kapalı (kullanıcı 01.11): iki parmakla büyütme engellenir (iOS gesture* + çoklu dokunma) ----------
+['gesturestart', 'gesturechange', 'gestureend'].forEach(ad => document.addEventListener(ad, e => e.preventDefault(), {passive: false}));
+document.addEventListener('touchmove', e => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, {passive: false});
 </script>
 </body>
 </html>

@@ -33,7 +33,6 @@ document.querySelector('.wrap').addEventListener('change', e => {
 $('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') kapat(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') kapat(); });
 $('ayarBtn').addEventListener('click', () => ayarlarAc());
-$('siraBtn').addEventListener('click', () => siralamaAc());   // ana sayfa 🏆 Sıralama (ayarlardakiyle aynı ekran)
 $('uyariBtn').addEventListener('click', uyarilarAc);
 $('hamileBtn').addEventListener('click', hamileDegistir);
 $('kocBtn').addEventListener('click', kocAc);
@@ -341,6 +340,7 @@ function ayarlarAc(dilAcik = false){
     <button class="btn ghost full" style="margin-top:8px" id="htmlIndir">${T('dlHtml')}</button>
     <div class="hint" style="margin-top:6px">${T('htmlHint')}</div>
     <input type="file" id="dosyaSec" accept=".json,application/json" hidden>
+    </div><div class="ayar-blok" data-ak="yasal"><div class="sec">${T('sYasal')}</div><div class="hint hukuk-satir">${['gizlilik:cLinkPriv', 'aydinlatma:cLinkKvkk', 'kosullar:cLinkTerms'].map(x => { const [f, k] = x.split(':'); return `<a href="legal/${f}.html#${dil}" target="_blank" rel="noopener">${esc(T(k))}</a>`; }).join(' · ')}</div>
     </div><div class="ayar-blok" data-ak="sifirla"><div class="sec">${T('sReset')}</div>
     <div class="acts"><button class="btn danger" id="planSifirla">${T('resetMenu')}</button><button class="btn danger" id="kayitSifirla">${T('resetRec')}</button></div></div>`);
   $('profilDuzenle').onclick = () => { kapat(); sihirbazAc(1); };

@@ -236,7 +236,6 @@ function kaydet(){
   depoCalisiyor = ok;
   kayitZamani = new Date();
   kayitDurumYaz();
-  if (window.Esitle) Esitle.kirli();   // hesap varsa 3 sn sonra sunucuya da yazılır (p9a.js)
 }
 function kayitDurumYaz(){
   const el = $('kayitDurum');
