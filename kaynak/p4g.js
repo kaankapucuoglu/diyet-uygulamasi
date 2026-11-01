@@ -110,7 +110,7 @@ YEMEK_EK.push(
   ['dalyan_kofte','anayemek',220,14,8,15,1.5,1,200,'','emy','','dalyan köfte fırın yumurtalı','Dalyan köfte','Dalyan meatloaf (stuffed)','Мясной рулет «Дальян»','Dalyan-Hackbraten','كفتة داليان'],
   ['hasanpasa_kofte','anayemek',190,11,12,11,2.5,1.2,250,'','mdy','','hasanpaşa köfte patates püreli','Hasanpaşa köfte','Hasanpaşa meatballs (with mash)','Кёфте «Хасан-паша»','Hasanpaşa-Frikadellen','كفتة حسن باشا'],
   ['testi_kebabi','anayemek',150,13,6,8.5,3,1.5,300,'','m','','testi kebabı','Testi kebabı','Testi kebab (clay-pot stew)','Кебаб в кувшине (тести)','Testi-Kebap (im Tontopf)','كباب الفخار'],
-  ['kagit_kebabi','anayemek',140,13,5,7.5,2.5,1.5,300,'','m','','kağıt kebabı','Kağıt kebabı','Paper-wrapped kebab','Кебаб в бумаге','Kebap im Papier','كباب الورق'],
+  ['kagit_kebabi','anayemek',140,13,5,7.5,2.5,1.5,300,'','m','','kağıt kebabı','Kâğıt kebabı','Paper-wrapped kebab','Кебаб в бумаге','Kebap im Papier','كباب الورق'],
   ['keskek','anayemek',150,9,17,5,0.5,3,250,'','m','','keşkek buğday etli','Keşkek','Keşkek (wheat & meat stew)','Кешкек (пшеница с мясом)','Keşkek (Weizen-Fleisch-Eintopf)','كشك (قمح باللحم)'],
   ['saksuka','anayemek',110,1.5,8,8,5,3,200,'','','','şakşuka patlıcan kızartma domates','Şakşuka','Şakşuka (fried veg in tomato)','Шакшука по-турецки','Şakşuka (Gemüse in Tomate)','شكشوكة تركية'],
   ['chili','anayemek',130,9,11,5.5,3,4,300,'','m','','chili con carne fasulyeli kıyma','Chili con carne','Chili con carne','Чили кон карне','Chili con Carne','تشيلي كون كارني'],
@@ -227,7 +227,7 @@ YEMEK_EK.push(
   ['kenevir','kuruyemis',560,32,8.7,49,1.5,4,10,'','','yk:10','kenevir tohumu kabuksuz','Kenevir tohumu (kabuksuz)','Hulled hemp seeds','Очищенные семена конопли','Hanfsamen (geschält)','بذور القنب المقشرة'],
   ['hindistan_rende','kuruyemis',660,6.9,24,64,7,16,10,'','y','yk:6','hindistan cevizi rendesi','Hindistan cevizi rendesi','Desiccated coconut','Кокосовая стружка','Kokosraspeln','جوز الهند المبشور'],
   ['hindistan_yagi','kuruyemis',890,0,0,99,0,0,5,'','y','tk:5','hindistan cevizi yağı','Hindistan cevizi yağı','Coconut oil','Кокосовое масло','Kokosöl','زيت جوز الهند'],
-  ['aycicek_yagi','kuruyemis',884,0,0,100,0,0,5,'','','tk:5','ayçiçek yağı sıvı yağ','Ayçiçek yağı','Sunflower oil','Подсолнечное масло','Sonnenblumenöl','زيت دوار الشمس'],
+  ['aycicek_yagi','kuruyemis',884,0,0,100,0,0,5,'','','tk:5','ayçiçek yağı sıvı yağ','Ayçiçeği yağı','Sunflower oil','Подсолнечное масло','Sonnenblumenöl','زيت دوار الشمس'],
   ['ghee','kuruyemis',900,0,0,100,0,0,5,'','dy','tk:5','sade yağ ghee','Sade yağ (ghee)','Ghee (clarified butter)','Топлёное масло (гхи)','Ghee (Butterschmalz)','سمن (غي)'],
   // Atıştırmalık
   ['kavrulmus_nohut','atistirmalik',370,20,55,6,3,15,30,'','','','kavrulmuş nohut çıtır fırın','Çıtır fırın nohut','Roasted chickpeas (crunchy)','Хрустящий жареный нут','Geröstete Kichererbsen','حمص محمص مقرمش'],
@@ -243,7 +243,7 @@ YEMEK_EK.push(
   // Tatlı
   ['cikolatali_puding','tatli',130,3,21,3.8,17,0.8,150,'','d','','puding çikolatalı','Çikolatalı puding','Chocolate pudding','Шоколадный пудинг','Schokoladenpudding','بودينغ الشوكولاتة'],
   ['supangle','tatli',160,4,24,5.5,18,1,150,'','d','','supangle','Supangle','Supangle (rich chocolate pudding)','Супангле (шоколадный пудинг)','Supangle (Schokopudding)','سوبانغلي'],
-  ['tavukgogsu_tatli','tatli',150,5,24,3.8,18,0.2,150,'','cd','','tavuk göğsü tatlısı','Tavuk göğsü (tatlı)','Tavuk göğsü (milk pudding)','Тавук гёксу (молочный пудинг)','Tavuk göğsü (Milchpudding)','حلوى طاووق كوكسو'],
+  ['tavukgogsu_tatli','tatli',150,5,24,3.8,18,0.2,150,'','cd','','tavuk göğsü tatlısı','Tavukgöğsü (tatlı)','Tavuk göğsü (milk pudding)','Тавук гёксу (молочный пудинг)','Tavuk göğsü (Milchpudding)','حلوى طاووق كوكسو'],
   ['gullac','tatli',150,4,26,3.5,20,0.5,150,'','d','','güllaç ramazan','Güllaç','Güllaç (milk pastry)','Гюллач','Güllaç','غولاش (حلوى رمضانية)'],
   ['trilece','tatli',230,5,32,9,26,0.2,150,'','dey','','trileçe karamelli','Trileçe','Trileçe (tres leches cake)','Трилече','Trileçe','تريليتشه'],
   ['magnolia','tatli',230,3.5,28,11.5,20,0.6,150,'','dy','','magnolia muzlu bisküvili','Magnolia (muzlu)','Magnolia pudding (banana)','Магнолия (банановый десерт)','Magnolia-Dessert (Banane)','ماغنوليا بالموز'],
