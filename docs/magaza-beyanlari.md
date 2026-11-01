@@ -1,4 +1,4 @@
-# LifeFit (com.maviplay.lifefit) — Mağaza beyanları ve uyum notları
+# LifeRoutine (com.maviplay.liferoutine) — Mağaza beyanları ve uyum notları
 
 Sürüm 2026-11-01 · Geliştirici: Maviplay / Kaan Kapucuoğlu · destek@maviplay.com
 Hukuk metinleri: `legal/gizlilik.html`, `legal/aydinlatma.html`, `legal/acik-riza.html`, `legal/kosullar.html`, `legal/hesap-sil.html` (5 dil, `#tr|en|ru|de|ar`). Uygulama içi onay ekranı: `kaynak/p3e.js`.
@@ -110,14 +110,14 @@ Genel sorular: Veri topluyor/paylaşıyor mu? **Evet, topluyor; paylaşmıyor.**
 - Medical Device Apps: **Hayır** (EU MDR kapsamı yok).
 - Health subjects research: **Hayır**.
 - **Health Connect**: kullanılmıyor → Health Connect izni/beyanı yok; manifest'te `android.permission.health.*` olmasın.
-- Mağaza açıklamasına zorunlu cümle (Health Content and Services politikası): *"LifeFit tıbbi cihaz değildir; herhangi bir hastalığı teşhis etmez, tedavi etmez, iyileştirmez veya önlemez. Tıbbi tavsiye, tanı veya tedavi için bir sağlık profesyoneline danışın."* (EN: "LifeFit is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Consult a healthcare professional for medical advice, diagnosis or treatment.")
+- Mağaza açıklamasına zorunlu cümle (Health Content and Services politikası): *"LifeRoutine tıbbi cihaz değildir; herhangi bir hastalığı teşhis etmez, tedavi etmez, iyileştirmez veya önlemez. Tıbbi tavsiye, tanı veya tedavi için bir sağlık profesyoneline danışın."* (EN: "LifeRoutine is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Consult a healthcare professional for medical advice, diagnosis or treatment.")
 - Yanıltıcı sağlık iddiası yok; "X kiloda garanti" gibi vaatler mağaza metninde **olmamalı**.
 
 ### 4.3 User Data politikası — "Belirgin açıklama ve rıza" (prominent disclosure)
 
 Sağlık verisi Google'da "kişisel ve hassas veri"dir. Onay ekranı (`p3e.js`) şartları karşılar:
 - Uygulama **içinde**, normal akışta (hesap açma adımında), yalnız gizlilik politikasında değil ✔
-- Hangi veri, ne için, nereye: `cIntro` ("…sağlık verisi… Almanya'daki sunucuya… eşitleme için") ✔ — Google'ın önerdiği kalıp: "*LifeFit, planını cihazların arasında eşitlemek için sağlık verilerini Almanya'daki sunucusuna aktarır.*"
+- Hangi veri, ne için, nereye: `cIntro` ("…sağlık verisi… Almanya'daki sunucuya… eşitleme için") ✔ — Google'ın önerdiği kalıp: "*LifeRoutine, planını cihazların arasında eşitlemek için sağlık verilerini Almanya'daki sunucusuna aktarır.*"
 - Onay: işaret kutuları + "Kabul et ve hesap aç" düğmesi = olumlu eylem; geri/kapatma rıza sayılmaz; otomatik kapanan mesaj yok ✔
 - Toplama **rızadan sonra** başlar (`POST /register` consent olmadan 400) ✔
 - İlgisiz açıklamalarla birleştirilmemiş (ayrı ekran) ✔

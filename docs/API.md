@@ -1,4 +1,4 @@
-# LifeFit (com.maviplay.lifefit) — sunucu / istemci sözleşmesi (01.11.2026)
+# LifeRoutine (com.maviplay.liferoutine) — sunucu / istemci sözleşmesi (01.11.2026)
 
 Uygulama **çevrimdışı önce** çalışır: tüm veri cihazda (`D` nesnesi, localStorage `diyet_uygulamasi_v1` + IndexedDB yedeği, bkz. kaynak/p5.js `kaydet()`/`depoYukle`). Hesap açılınca veri sunucuya da yazılır; bağlantı gelince eşitlenir. Hesapsız kullanım her zaman mümkündür (Apple 5.1.1 — giriş zorunlu değil).
 

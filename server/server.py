@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""LifeFit sunucusu — hesap (kullanıcı adı + şifre), çevrimdışı-önce veri eşitleme (rev / 409), paylaşım + gelen kutusu,
+"""LifeRoutine sunucusu — hesap (kullanıcı adı + şifre), çevrimdışı-önce veri eşitleme (rev / 409), paylaşım + gelen kutusu,
 isteğe bağlı sıralama (yalnız kullanıcı adı + seri). Yalnız Python standart kütüphanesi + SQLite.
 Üretim: maviplay (Almanya), systemd 'lifefit-api', Caddy diyet.maviplay.com /api/* → 127.0.0.1:8097.
 Sözleşme: docs/API.md
@@ -23,7 +23,7 @@ UNAME_RE = re.compile(r'^[A-Za-z][A-Za-z0-9_.]{2,15}$')
 KOD_ABC = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'   # paylaşım kodu: karışmayan 32 karakter, 8 hane
 ORIGINS = {'https://diyet.maviplay.com'}
 DEV_ORIGIN = re.compile(r'^https?://(localhost|127\.0\.0\.1)(:\d+)?$')   # geliştirme: başka porttan açılan test sayfası
-RESERVED = {'admin', 'administrator', 'root', 'system', 'support', 'destek', 'moderator', 'mod', 'lifefit', 'maviplay', 'diyet',
+RESERVED = {'admin', 'administrator', 'root', 'system', 'support', 'destek', 'moderator', 'mod', 'lifefit', 'liferoutine', 'maviplay', 'diyet',
             'apple', 'google', 'null', 'undefined', 'official', 'staff', 'sys'}
 # küfür/uygunsuz süzgeci: kısa olanlar yalnız tam parça (token) eşleşir, uzunlar alt dize + leet
 BAD_SHORT = {'am', 'got', 'sik', 'oc', 'mk', 'amk', 'aq', 'fuck', 'shit', 'cunt', 'dick', 'cock', 'puta', 'nazi', 'fag'}
@@ -139,7 +139,7 @@ def user_by_name(u):
 
 
 def suggest_free(u, n=4):
-    base = re.sub(r'[^A-Za-z0-9_.]', '', u or '')[:12] or 'lifefit'
+    base = re.sub(r'[^A-Za-z0-9_.]', '', u or '')[:12] or 'liferoutine'
     if not base[0].isalpha():
         base = 'u' + base
     out, seen = [], set()
@@ -599,7 +599,7 @@ def handle(method, path, q, body, headers, ip):
 
 
 class H(BaseHTTPRequestHandler):
-    server_version = 'LifeFit/1'
+    server_version = 'LifeRoutine/1'
     static = None
 
     def log_message(self, fmt, *a):
@@ -725,7 +725,7 @@ def main():
     threading.Thread(target=temizlik_dongusu, daemon=True).start()
     srv = ThreadingHTTPServer((os.environ.get('LF_HOST', '127.0.0.1'), port), H)
     srv.daemon_threads = True
-    print(f'LifeFit API :{port} db={DB_PATH} static={H.static}', flush=True)
+    print(f'LifeRoutine API :{port} db={DB_PATH} static={H.static}', flush=True)
     srv.serve_forever()
 
 

@@ -28,3 +28,4 @@ ci-creds/
 .dev/
 
 server/lf.sqlite*
+__pycache__/

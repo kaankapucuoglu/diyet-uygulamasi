@@ -1,6 +1,6 @@
 {
-  "name": "LifeFit",
-  "short_name": "LifeFit",
+  "name": "LifeRoutine",
+  "short_name": "LifeRoutine",
   "description": "Kişisel diyet planı: öğünler, su, kıyaslama ve geçmiş",
   "lang": "tr",
   "start_url": "./",

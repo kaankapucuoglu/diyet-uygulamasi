@@ -1,7 +1,7 @@
 {
   "id": "/app/",
-  "name": "LifeFit",
-  "short_name": "LifeFit",
+  "name": "LifeRoutine",
+  "short_name": "LifeRoutine",
   "description": "Kişisel beslenme planı: öğünler, su, regl ve antrenman takibi, hatırlatıcı, isteğe bağlı hesapla eşitleme",
   "lang": "tr",
   "start_url": "/app/",

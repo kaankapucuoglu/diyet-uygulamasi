@@ -271,7 +271,7 @@ function hesapBolumuCiz(){
   $('hsRizaBtn').onclick = () => icinden(ayarlarAc, () => rizaVar ? onayAc(T('cRizaCekSor'), () => rizaCek().then(ayarlarAc)) : rizaVerAc());
   $('hsSifreBtn').onclick = () => icinden(ayarlarAc, sifreAc);
   $('hsIndirBtn').onclick = async () => {
-    try { const r = await Hesap.disaAktar(); indir(JSON.stringify(r, null, 1), `lifefit_${u.username}_${bugunK()}.json`, 'application/json'); }
+    try { const r = await Hesap.disaAktar(); indir(JSON.stringify(r, null, 1), `liferoutine_${u.username}_${bugunK()}.json`, 'application/json'); }
     catch(e){ toast(hesapHata(e)); }
   };
   $('hsCikisBtn').onclick = () => icinden(ayarlarAc, () => onayAc(T('hsCikisSor'), async () => { await Hesap.cik(); toast(T('hsCikisOk'), 3500); ayarlarAc(); }));

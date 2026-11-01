@@ -13,7 +13,7 @@ const RTL = () => dil === 'ar';
 
 // Metinler: [tr, en, ru, de, ar]
 const S = {
-  app:["LifeFit","LifeFit","LifeFit","LifeFit","LifeFit"],   // görünen ad (sabah değişebilir; app.config.js APP_NAME ile aynı tut)
+  app:["LifeRoutine","LifeRoutine","LifeRoutine","LifeRoutine","LifeRoutine"],   // görünen ad (sabah değişebilir; app.config.js APP_NAME ile aynı tut)
   eyebrow:["Kişisel beslenme ve sağlık planı","Personal nutrition & health plan","Личный план питания и здоровья","Persönlicher Ernährungs- und Gesundheitsplan","خطة شخصية للتغذية والصحة"],
   saved:["✓ Kaydedildi {t}","✓ Saved {t}","✓ Сохранено {t}","✓ Gespeichert {t}","✓ تم الحفظ {t}"],
   autosave:["✓ Kayıt açık","✓ Saving on","✓ Сохранение вкл.","✓ Speichern an","✓ الحفظ مفعّل"],

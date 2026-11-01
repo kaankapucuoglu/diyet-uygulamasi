@@ -1,4 +1,4 @@
-# LifeFit yeni kullanim videosu (~57 sn, en fazla 60): SENARYO.md'deki 12 adim, ust bant aciklama + dokunus halkasi (uzun.py duzeni).
+# LifeRoutine yeni kullanim videosu (~57 sn, en fazla 60): SENARYO.md'deki 12 adim, ust bant aciklama + dokunus halkasi (uzun.py duzeni).
 # Kullanim:  python kaynak/video/yeni.py [BASE]
 #   BASE varsayilan http://127.0.0.1:8765/index.html (uygulama). Hesap adimi icin API: 127.0.0.1:8097 (python server/server.py 8097);
 #   sunucu yoksa kayit formu doldurulur ama gonderilmez, siralama adimi Ayarlar > Hesap tanitimina doner.

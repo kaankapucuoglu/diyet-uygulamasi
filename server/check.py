@@ -1,4 +1,4 @@
-"""LifeFit sunucu testi: geçici DB + boş port üzerinde gerçek HTTP. Kullanım: python server/check.py
+"""LifeRoutine sunucu testi: geçici DB + boş port üzerinde gerçek HTTP. Kullanım: python server/check.py
 Kapsam: kayıt / giriş / yanlış şifre kilidi / rıza zorunluluğu / veri PUT-GET-409 / paylaşım + gelen kutusu /
 sıralama opt-in / şifre değişince eski belirteç düşer / dışa aktarma / hesap silme / oran sınırları / CORS / gövde sınırı."""
 import json, os, socket, sys, tempfile, threading, time, urllib.request, urllib.error

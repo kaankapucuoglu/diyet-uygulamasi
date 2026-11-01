@@ -1,4 +1,4 @@
-# Yeni kullanım videosu — senaryo (LifeFit, 01.11.2026)
+# Yeni kullanım videosu — senaryo (LifeRoutine, 01.11.2026)
 
 Hedef dosya: `site/video/kullanim.mp4` + poster `site/video/kullanim.jpg` (tanıtım sayfası `/video/kullanim.mp4?v=3`; yeni kayıtta `?v=` artır).
 Kopya: `maviplay-site/diyet/kullanim.mp4|jpg` (ana sayfa Uygulamalar kartı; build.py MV ile sürümler).

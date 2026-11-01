@@ -1,4 +1,4 @@
-// LifeFit: depo kökündeki yayın dosyalarını (tek dosya index.html + sw.js + manifest + icons/ + legal/) uygulama içi pakete (web/) KOPYALAR.
+// LifeRoutine: depo kökündeki yayın dosyalarını (tek dosya index.html + sw.js + manifest + icons/ + legal/) uygulama içi pakete (web/) KOPYALAR.
 // Paketleme/derleme yok (uygulama tek dosya; index.html'i kaynak/derle.py üretir — önce onu çalıştırın).
 //  - index.html: <head> başına app-shim.js eklenir (köprü; WebView ayrıca enjekte eder, çift çalışma korumalı).
 //    Service worker kaydı yerel uygulamada çalışmamalı: kaynak zaten https kontrolü yapıyor; yapmıyorsa `if (!window.__LF_NATIVE && …)` ile sarmalanır.

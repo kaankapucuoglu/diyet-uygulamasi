@@ -1,16 +1,16 @@
 {
   "expo": {
     "slug": "lifefit",
-    "scheme": "lifefit",
+    "scheme": "liferoutine",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "backgroundColor": "#f3f6fb",
-    "primaryColor": "#16a36b",
+    "primaryColor": "#22c55e",
     "description": "Personal nutrition plan: meals, water, reminders and progress. Your data stays on your device.",
     "ios": {
-      "bundleIdentifier": "com.maviplay.lifefit",
+      "bundleIdentifier": "com.maviplay.liferoutine",
       "buildNumber": "1",
       "supportsTablet": true,
       "requireFullScreen": true,
@@ -49,10 +49,10 @@
       }
     },
     "android": {
-      "package": "com.maviplay.lifefit",
+      "package": "com.maviplay.liferoutine",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#0fa06c",
+        "backgroundColor": "#0F172A",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png"
       },
@@ -125,7 +125,7 @@
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#16a36b",
+          "color": "#22c55e",
           "defaultChannel": "ogun"
         }
       ],

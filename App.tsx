@@ -1,4 +1,4 @@
-// LifeFit — yerel kabuk: web uygulamasını (tek dosya index.html) tam ekran WebView içinde çalıştırır.
+// LifeRoutine — yerel kabuk: web uygulamasını (tek dosya index.html) tam ekran WebView içinde çalıştırır.
 //  • Yayın derlemesi: uygulama paketin içinde (çevrimdışı) — Android file:///android_asset/www, iOS <App>.app/www
 //    (plugins/withBundledWeb.js). web/ klasörünü scripts/sync-web.mjs üretir (yalnız kopya; paketleme yok).
 //  • Geliştirme (Expo Go): EXPO_PUBLIC_APP_URL (ör. http://192.168.1.102:8085/) bilgisayardaki sunucudan yükler.
@@ -30,7 +30,7 @@ Notifications.setNotificationHandler({
 });
 
 const BG = '#f3f6fb';                 // web uygulamasının --bg rengi (kaynak/p1.html): sistem çubuklarının arkası
-const APP_NAME = Constants.expoConfig?.name || 'LifeFit';   // görünen ad TEK YER: app.config.js APP_NAME
+const APP_NAME = Constants.expoConfig?.name || 'LifeRoutine';   // görünen ad TEK YER: app.config.js APP_NAME
 // ---- Uygulama adresi: TEK YER ----
 // Boş → uygulamaya gömülü web/. Dolu → o adresten yükle (Expo Go / geliştirme).
 const APP_URL = (process.env.EXPO_PUBLIC_APP_URL || '').trim();
@@ -49,7 +49,7 @@ type Source = { uri: string; readAccess?: string; bundled: boolean };
 function bundledSource(): Source | null {
   if (Platform.OS === 'android') return { uri: 'file:///android_asset/www/index.html', bundled: true };
   if (Platform.OS === 'ios') {
-    let base = Paths.bundle.uri;              // file:///…/LifeFit.app/
+    let base = Paths.bundle.uri;              // file:///…/LifeRoutine.app/
     if (!base.endsWith('/')) base += '/';
     return { uri: base + 'www/index.html', readAccess: base + 'www/', bundled: true };
   }
@@ -116,7 +116,7 @@ async function scheduleNotify(m: NotifyMsg): Promise<string> {
 type DownloadMsg = { name?: string; data?: string; b64?: string; mime?: string };
 
 async function saveAndShare(m: DownloadMsg): Promise<string> {
-  const name = String(m.name || 'lifefit.txt').replace(/[\\/:*?"<>|\u0000-\u001f]+/g, '_').slice(0, 120) || 'lifefit.txt';
+  const name = String(m.name || 'liferoutine.txt').replace(/[\\/:*?"<>|\u0000-\u001f]+/g, '_').slice(0, 120) || 'liferoutine.txt';
   const ext = (name.split('.').pop() || '').toLowerCase();
   const mime = String(m.mime || '').split(';')[0].trim()
     || ({ json: 'application/json', html: 'text/html', htm: 'text/html', txt: 'text/plain', csv: 'text/csv', pdf: 'application/pdf', png: 'image/png' } as Record<string, string>)[ext]

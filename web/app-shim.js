@@ -1,4 +1,4 @@
-/* LifeFit — mobil uygulama köprüsü (WebView içinde, uygulama kodundan ÖNCE çalışır).
+/* LifeRoutine — mobil uygulama köprüsü (WebView içinde, uygulama kodundan ÖNCE çalışır).
  * Yalnız yerel kabukta etkindir (window.ReactNativeWebView ya da window.__LF_NATIVE varsa); düz tarayıcıda hiçbir şey yapmaz.
  * - window.__LF_NATIVE = {platform:'android'|'ios', version, build, name}: kabuk sayfa yüklenmeden tanımlar (App.tsx NATIVE_CFG).
  *   Web tarafı yerel köprüyü şöyle kullanır: if (window.__LF_NATIVE && window.__lfNotify) __lfNotify({...})
@@ -88,7 +88,7 @@
 
   // ---- dosya indirme → yerel dosya + paylaş sayfası ----
   window.__lfDownload = function (name, content, mimeType) {
-    post({ t: 'download', name: String(name || 'lifefit.txt'), data: content == null ? '' : String(content), mime: mimeType || '' });
+    post({ t: 'download', name: String(name || 'liferoutine.txt'), data: content == null ? '' : String(content), mime: mimeType || '' });
   };
   function readUrlAsBase64(url, name) {
     var x = new XMLHttpRequest();
@@ -116,7 +116,7 @@
     var href = a.href || '';
     if (a.hasAttribute('download') || /^(blob|data):/i.test(href)) {
       e.preventDefault(); e.stopImmediatePropagation();
-      var name = a.getAttribute('download') || 'lifefit.txt';
+      var name = a.getAttribute('download') || 'liferoutine.txt';
       if (/^(blob|file):/i.test(href)) readUrlAsBase64(href, name);
       else if (/^data:/i.test(href)) {
         var m = /^data:([^;,]*)((?:;[^,]*)*),([\s\S]*)$/i.exec(href);
