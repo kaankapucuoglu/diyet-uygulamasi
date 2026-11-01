@@ -412,7 +412,7 @@ function ayarlarAc(dilAcik = false){
 }
 // Profilden haftalık şablonu yeniden üret; bugün ve sonrasının özel menülerini temizle (geçmiş korunur)
 function planYenile(){
-  D.planlar = planOlustur(D.profil);
+  D.planlar = planOlustur(D.profil); D.planSurum = PLAN_SURUM;
   D.planBaslangic = gunEkle(bugunK(), -haftaGunu(bugunK()));   // bu hafta = 1. hafta
   D.miktar = {};   // yeni planda eski miktar tercihleri geçersiz
   menuleriTemizle();

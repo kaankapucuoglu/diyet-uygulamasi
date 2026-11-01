@@ -358,8 +358,9 @@ function ciplerCiz(){
   $('cipler').innerHTML = h;
   $('cipSatir').hidden = !h && $('hamileBtn').hidden;
 }
-// Başlığın yanındaki tarih-saat (dakikada bir güncellenir)
+// Başlığın yanındaki tarih-saat kaldırıldı (01.11.2026); çağrılar zararsız kalsın diye öğe yoksa çıkar
 function saatYaz(){
+  if (!$('saat')) return;
   const z = new Date();
   $('saat').textContent = `${z.toLocaleDateString(LOC(), {day:'2-digit', month:'2-digit', year:'numeric'})} ${z.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})} ${z.toLocaleDateString(LOC(), {weekday:'long'})}`;
 }

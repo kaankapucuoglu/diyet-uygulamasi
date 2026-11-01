@@ -665,7 +665,7 @@ details.method ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="eyebrow"><span id="ust"></span><span class="saat" id="saat"></span></div>
+    <div class="eyebrow"><span id="ust"></span></div>
     <div class="top-row">
       <h1 id="baslik"></h1>
       <div class="top-btns">
@@ -1148,9 +1148,18 @@ Object.assign(S, {
   kocCopyWeek:["⧉ Bu günü tüm haftaya kopyala","⧉ Copy this day to the whole week","⧉ Скопировать день на всю неделю","⧉ Diesen Tag auf die ganze Woche kopieren","⧉ انسخ هذا اليوم لكل الأسبوع"],
   kocCopyMonth:["⧉ Bu günü tüm aya kopyala","⧉ Copy this day to the whole month","⧉ Скопировать день на весь месяц","⧉ Diesen Tag auf den ganzen Monat kopieren","⧉ انسخ هذا اليوم لكل الشهر"],
   kocClearWeek:["🗑 Bu haftayı temizle","🗑 Clear this week","🗑 Очистить неделю","🗑 Woche leeren","🗑 امسح هذا الأسبوع"],
-  kocClearMonth:["🗑 Bu ayı temizle","🗑 Clear this month","🗑 Очистить месяц","🗑 Monat leeren","🗑 امسح هذا الشهر"],
-  cKocClearWeek:["Bu haftadaki tüm günlerin yemekleri silinecek. Emin misin?","All foods on this week's days will be removed. Continue?","Блюда всех дней этой недели будут удалены. Продолжить?","Alle Speisen dieser Woche werden entfernt. Fortfahren?","ستُحذف أطعمة كل أيام هذا الأسبوع. متابعة؟"],
-  cKocClearMonth:["Bu aydaki tüm günlerin yemekleri silinecek. Emin misin?","All foods on this month's days will be removed. Continue?","Блюда всех дней этого месяца будут удалены. Продолжить?","Alle Speisen dieses Monats werden entfernt. Fortfahren?","ستُحذف أطعمة كل أيام هذا الشهر. متابعة؟"],
+  kocClearMonth:["🗑 Bu ayın tamamını temizle","🗑 Clear the whole month","🗑 Очистить весь месяц","🗑 Ganzen Monat leeren","🗑 امسح الشهر كله"],
+  cKocClearWeek:["Bu haftanın verileri temizlenecektir. Onaylıyor musunuz?","This week’s entries will be cleared. Do you confirm?","Данные этой недели будут удалены. Подтверждаете?","Die Einträge dieser Woche werden gelöscht. Bestätigen?","سيتم مسح بيانات هذا الأسبوع. هل توافق؟"],
+  cKocClearMonth:["Bu ayın verileri temizlenecektir. Onaylıyor musunuz?","This month’s entries will be cleared. Do you confirm?","Данные этого месяца будут удалены. Подтверждаете?","Die Einträge dieses Monats werden gelöscht. Bestätigen?","سيتم مسح بيانات هذا الشهر. هل توافق؟"],
+  cKocClearDay:["Bu günün verileri temizlenecektir. Onaylıyor musunuz?","This day’s entries will be cleared. Do you confirm?","Данные этого дня будут удалены. Подтверждаете?","Die Einträge dieses Tages werden gelöscht. Bestätigen?","سيتم مسح بيانات هذا اليوم. هل توافق؟"],
+  cKocCopyWeek:["Bu günün yemekleri haftanın diğer günlerine kopyalanacak; o günlerdeki mevcut veriler değişecektir. Onaylıyor musunuz?","This day’s foods will be copied to the other days of the week; their current entries will change. Do you confirm?","Блюда этого дня будут скопированы на другие дни недели; их текущие данные изменятся. Подтверждаете?","Die Speisen dieses Tages werden auf die anderen Wochentage kopiert; deren Einträge ändern sich. Bestätigen?","ستُنسخ أطعمة هذا اليوم إلى بقية أيام الأسبوع وستتغير بياناتها الحالية. هل توافق؟"],
+  cKocCopyWeekEmpty:["Bu gün boş olduğu için haftanın diğer günlerindeki veriler de temizlenecektir. Onaylıyor musunuz?","This day is empty, so the other days of the week will be cleared too. Do you confirm?","Этот день пуст, поэтому остальные дни недели тоже будут очищены. Подтверждаете?","Dieser Tag ist leer, daher werden auch die anderen Wochentage geleert. Bestätigen?","هذا اليوم فارغ، لذا ستُمسح بقية أيام الأسبوع أيضاً. هل توافق؟"],
+  cKocCopyMonth:["Bu günün yemekleri ayın diğer günlerine kopyalanacak; o günlerdeki mevcut veriler değişecektir. Onaylıyor musunuz?","This day’s foods will be copied to the other days of the month; their current entries will change. Do you confirm?","Блюда этого дня будут скопированы на другие дни месяца; их текущие данные изменятся. Подтверждаете?","Die Speisen dieses Tages werden auf die anderen Tage des Monats kopiert; deren Einträge ändern sich. Bestätigen?","ستُنسخ أطعمة هذا اليوم إلى بقية أيام الشهر وستتغير بياناتها الحالية. هل توافق؟"],
+  cKocCopyMonthEmpty:["Bu gün boş olduğu için ayın diğer günlerindeki veriler de temizlenecektir. Onaylıyor musunuz?","This day is empty, so the other days of the month will be cleared too. Do you confirm?","Этот день пуст, поэтому остальные дни месяца тоже будут очищены. Подтверждаете?","Dieser Tag ist leer, daher werden auch die anderen Tage des Monats geleert. Bestätigen?","هذا اليوم فارغ، لذا ستُمسح بقية أيام الشهر أيضاً. هل توافق؟"],
+  cKocCopyPrev:["Önceki günün yemekleri bu güne kopyalanacak; bu günün mevcut verileri değişecektir. Onaylıyor musunuz?","The previous day’s foods will be copied to this day; its current entries will change. Do you confirm?","Блюда предыдущего дня будут скопированы на этот день; его текущие данные изменятся. Подтверждаете?","Die Speisen des Vortags werden auf diesen Tag kopiert; seine Einträge ändern sich. Bestätigen?","ستُنسخ أطعمة اليوم السابق إلى هذا اليوم وستتغير بياناته الحالية. هل توافق؟"],
+  cKocToWeek:["Haftalık programa geçilecek; her hafta günü için ayın ilk örneği kalacak, diğer günlerdeki farklı yemekler kaldırılacaktır. Onaylıyor musunuz?","Switching to a weekly plan: for each weekday the month’s first entry is kept and different foods on other days are removed. Do you confirm?","Переход на недельный план: для каждого дня недели останется первый вариант месяца, остальные отличия будут удалены. Подтверждаете?","Wechsel zum Wochenplan: Für jeden Wochentag bleibt der erste Eintrag des Monats, abweichende Speisen anderer Tage werden entfernt. Bestätigen?","سيتم التحويل إلى خطة أسبوعية: يبقى أول إدخال في الشهر لكل يوم من أيام الأسبوع وتُحذف الأطعمة المختلفة في الأيام الأخرى. هل توافق؟"],
+  kocCopied:["Kopyalandı ✓","Copied ✓","Скопировано ✓","Kopiert ✓","تم النسخ ✓"],
+  kocCleared:["Temizlendi ✓","Cleared ✓","Очищено ✓","Geleert ✓","تم المسح ✓"],
   kocPeriodWeek:["Aktif hafta","Current week","Текущая неделя","Aktuelle Woche","الأسبوع الحالي"],
   kocPeriodMonth:["Aktif ay","Current month","Текущий месяц","Aktueller Monat","الشهر الحالي"],
   kocModWeekHint:["Pazartesi–Pazar; alıcıda aktif haftaya uygulanır.","Monday–Sunday; applied to the recipient's current week.","Понедельник–воскресенье; у получателя применяется к текущей неделе.","Montag–Sonntag; beim Empfänger auf die aktuelle Woche angewendet.","الاثنين–الأحد؛ تُطبّق على الأسبوع الحالي لدى المستلم."],
@@ -1416,8 +1425,13 @@ Object.assign(S, {
   // Öğün hatırlatıcı bildirimleri
   sBildirim:["Bildirimler","Notifications","Уведомления","Benachrichtigungen","الإشعارات"],
   notT:["Öğün hatırlatıcı","Meal reminders","Напоминания о еде","Essens-Erinnerungen","تذكير الوجبات"],
-  notHint:["Öğün saatinde bildirim gelir, ör. “{ornek}”. Web sürümünde yalnız uygulama açıkken çalışır; telefon uygulamasında her zaman.","You get a notification at meal time, e.g. “{ornek}”. On the web it works only while the app is open; always in the phone app.","Уведомление приходит в время приёма пищи, напр. «{ornek}». В веб-версии — только при открытом приложении; в мобильном — всегда.","Zur Essenszeit kommt eine Benachrichtigung, z. B. „{ornek}“. Im Web nur bei geöffneter App; in der Handy-App immer.","يصلك إشعار في وقت الوجبة، مثل «{ornek}». في نسخة الويب يعمل فقط أثناء فتح التطبيق؛ وفي تطبيق الهاتف دائماً."],
-  notBody:["{ogun} vakti 🍽 — planında: {liste}","{ogun} time 🍽 — on your plan: {liste}","Время: {ogun} 🍽 — в плане: {liste}","Zeit für {ogun} 🍽 – auf deinem Plan: {liste}","وقت {ogun} 🍽 — في خطتك: {liste}"],
+  notHint:["Öğün saatinde bildirim gelir, ör. “{ornek}”. 4–5 saat kayıt girmezsen su ve ara öğünler için tatlı bir hatırlatma da gelir. Web sürümünde yalnız uygulama açıkken çalışır; telefon uygulamasında her zaman.","You get a notification at meal time, e.g. “{ornek}”. If you log nothing for 4–5 hours, you also get a friendly nudge about water and snacks. On the web it works only while the app is open; always in the phone app.","Уведомление приходит во время приёма пищи, напр. «{ornek}». Если 4–5 часов ничего не отмечено, придёт дружеское напоминание о воде и перекусах. В веб-версии — только при открытом приложении; в мобильном — всегда.","Zur Essenszeit kommt eine Benachrichtigung, z. B. „{ornek}“. Wenn du 4–5 Stunden nichts einträgst, kommt außerdem eine freundliche Erinnerung an Wasser und Snacks. Im Web nur bei geöffneter App; in der Handy-App immer.","يصلك إشعار في وقت الوجبة، مثل «{ornek}». وإذا لم تسجّل شيئاً لمدة 4–5 ساعات يصلك تذكير لطيف بالماء والوجبات الخفيفة. في نسخة الويب يعمل فقط أثناء فتح التطبيق؛ وفي تطبيق الهاتف دائماً."],
+  dSuYok:["💧 Bugün henüz su içmedin gibi görünüyor. Bir bardak suyla başlayalım mı? 😊|🥤 Su molası zamanı! Vücudun sana teşekkür edecek 💙|💧 Bir bardak su, enerjin için harika bir başlangıç ✨","💧 Looks like you haven’t had any water yet today. Shall we start with a glass? 😊|🥤 Water break! Your body will thank you 💙|💧 A glass of water is a great boost for your energy ✨","💧 Похоже, сегодня ты ещё не пил(а) воду. Начнём со стакана? 😊|🥤 Время попить воды! Тело скажет спасибо 💙|💧 Стакан воды — отличный заряд энергии ✨","💧 Sieht aus, als hättest du heute noch nichts getrunken. Fangen wir mit einem Glas Wasser an? 😊|🥤 Zeit für eine Wasserpause! Dein Körper dankt es dir 💙|💧 Ein Glas Wasser ist ein toller Energieschub ✨","💧 يبدو أنك لم تشرب الماء اليوم بعد. هل نبدأ بكوب؟ 😊|🥤 حان وقت استراحة الماء! سيشكرك جسمك 💙|💧 كوب ماء بداية رائعة لطاقتك ✨"],
+  dSuAz:["💦 Bugün {n}/{h} bardak su içtin; birkaç yudum daha iyi gelir 😊|🥤 Su hedefinin yarısına gelmedin ({n}/{h}). Bir bardak daha? 💙","💦 You’ve had {n}/{h} glasses of water today; a few more sips will help 😊|🥤 You’re not halfway to your water goal yet ({n}/{h}). One more glass? 💙","💦 Сегодня выпито {n}/{h} стаканов воды; ещё пара глотков не помешает 😊|🥤 До половины нормы воды ещё далеко ({n}/{h}). Ещё стакан? 💙","💦 Heute {n}/{h} Gläser Wasser; ein paar Schlucke mehr tun gut 😊|🥤 Noch nicht die Hälfte deines Wasserziels ({n}/{h}). Noch ein Glas? 💙","💦 شربت اليوم {n}/{h} أكواب ماء؛ بضع رشفات أخرى ستفيدك 😊|🥤 لم تصل إلى نصف هدف الماء بعد ({n}/{h}). كوب آخر؟ 💙"],
+  dAra:["🍎 {ogun} vaktini aksatma! Planında: {liste} 😋|🥜 Ara öğünler kan şekerini dengede tutar; {ogun} için {liste} seni bekliyor 💪|🍏 Küçük bir mola: {ogun} vakti geçti, {liste} ile enerjini tazele ✨","🍎 Don’t skip your {ogun}! On your plan: {liste} 😋|🥜 Snacks keep your blood sugar steady; {liste} is waiting for your {ogun} 💪|🍏 Quick break: {ogun} time has passed, recharge with {liste} ✨","🍎 Не пропускай «{ogun}»! В плане: {liste} 😋|🥜 Перекусы держат сахар в норме; {liste} ждёт тебя («{ogun}») 💪|🍏 Небольшая пауза: время «{ogun}» прошло, подкрепись — {liste} ✨","🍎 Lass „{ogun}“ nicht ausfallen! Auf dem Plan: {liste} 😋|🥜 Snacks halten den Blutzucker stabil; {liste} wartet auf dich ({ogun}) 💪|🍏 Kleine Pause: {ogun} ist vorbei, tank auf mit {liste} ✨","🍎 لا تفوّت {ogun}! في خطتك: {liste} 😋|🥜 الوجبات الخفيفة تحافظ على توازن السكر؛ {liste} بانتظارك ({ogun}) 💪|🍏 استراحة قصيرة: فات وقت {ogun}، جدّد طاقتك مع {liste} ✨"],
+  dAna:["🍽 {ogun} henüz işaretlenmedi. Yedin mi? Kaydetmeyi unutma 😊|🥗 {ogun} nasıl geçti? İşaretlersen günün dengesini görürsün 💚","🍽 {ogun} isn’t ticked yet. Did you eat? Don’t forget to log it 😊|🥗 How was {ogun}? Tick it to see your day’s balance 💚","🍽 «{ogun}» ещё не отмечен. Ты поел(а)? Не забудь отметить 😊|🥗 Как прошёл «{ogun}»? Отметь, чтобы видеть баланс дня 💚","🍽 „{ogun}“ ist noch nicht abgehakt. Schon gegessen? Vergiss das Eintragen nicht 😊|🥗 Wie war „{ogun}“? Abhaken zeigt dir die Tagesbilanz 💚","🍽 لم تؤشّر على {ogun} بعد. هل أكلت؟ لا تنسَ التسجيل 😊|🥗 كيف كان {ogun}؟ سجّله لترى توازن يومك 💚"],
+  dGenel:["🌿 Bir süredir kayıt yok. Öğünlerini ve suyunu işaretlemeyi unutma 💚|✨ Hedefine bir adım daha! Bugünkü öğünlerini işaretlemeye ne dersin? 😊","🌿 Nothing logged for a while. Don’t forget your meals and water 💚|✨ One more step to your goal! How about ticking today’s meals? 😊","🌿 Давно нет записей. Не забудь отметить еду и воду 💚|✨ Ещё шаг к цели! Отметим сегодняшние приёмы пищи? 😊","🌿 Eine Weile nichts eingetragen. Denk an Mahlzeiten und Wasser 💚|✨ Ein Schritt näher am Ziel! Hakst du die heutigen Mahlzeiten ab? 😊","🌿 لا تسجيلات منذ فترة. لا تنسَ وجباتك والماء 💚|✨ خطوة أخرى نحو هدفك! ما رأيك بتسجيل وجبات اليوم؟ 😊"],
+  notBody:["{ik} {ogun} vakti! 😋 Planında: {liste}","{ik} Time for {ogun}! 😋 On your plan: {liste}","{ik} Время: {ogun}! 😋 В плане: {liste}","{ik} Zeit für {ogun}! 😋 Auf deinem Plan: {liste}","{ik} حان وقت {ogun}! 😋 في خطتك: {liste}"],
   notIzinYok:["Bildirim izni verilmedi; tarayıcı/telefon ayarlarından izin verip tekrar aç.","Notification permission denied; allow it in browser/phone settings and try again.","Разрешение на уведомления не дано; включите его в настройках и попробуйте снова.","Benachrichtigungen nicht erlaubt; in den Browser-/Handy-Einstellungen erlauben und erneut aktivieren.","لم يُمنح إذن الإشعارات؛ فعّله من إعدادات المتصفح/الهاتف وأعد المحاولة."],
   notYok:["Bu tarayıcı bildirimi desteklemiyor.","This browser doesn’t support notifications.","Этот браузер не поддерживает уведомления.","Dieser Browser unterstützt keine Benachrichtigungen.","هذا المتصفح لا يدعم الإشعارات."],
   notAcik:["Öğün hatırlatıcı açık","Meal reminders on","Напоминания включены","Essens-Erinnerungen an","تذكير الوجبات مفعّل"],
@@ -3424,6 +3438,7 @@ function haftaOlustur(p, temel){
   const plan = temel.map(gun => OGUN_TANIM.map((o, i) => ({...o, ogeler: birlestir(gun[i].map(([f, g]) => degistir({f, g})).filter(Boolean))})));
   const hamile = p.cins === 'k' && !!p.hamile;
   plan.forEach((gun, gi) => {
+    aksamIcecekEkle(gun, izinli);                                     // akşam yemeğine içecek (ayran / maden suyu / bitki çayı)
     takviyeKatmani(gun, p, gi);                                       // takviye katmanı: ölçekleme bu kalemlere dokunmaz, kaloriye dahildir
     if (hamile) oneriAgirlik(gun, HAMILE_ONERI, izinli, gi);           // hamilelik: folat/kalsiyum/demir kaynaklarına ağırlık
     gunuOlcekle(gun, p, izinli);
@@ -3457,12 +3472,87 @@ function oneriAgirlik(gun, liste, izinli, tohum = 0){
   }
   return gun;
 }
+// ---------- Diyetisyen porsiyonları ----------
+// Plan üretici sürümü: değişince kendi planı olan kullanıcıların şablonu yeniden üretilir (diyetisyen programına dokunulmaz)
+const PLAN_SURUM = 2;
+const ARA_IDLER = new Set(['ara0', 'ara1', 'gece']);
+// İçecekler 1 bardak / fincan sabit kalır (ölçeklenmez, ara öğün kalem sayısına girmez)
+const SABIT_ICECEK = ['ayran', 'maden_suyu', 'bitki_cayi', 'kahve', 'cay', 'yesilcay'];
+// Porsiyon aralığı [en az, en çok]: adet birimlide adet, diğerlerinde gram (ara öğünde et ve yumurta daha küçük).
+// s: kalori hedefi ölçeği (2200 kcal = 1, en çok 1,7): yüksek hedefte üst sınırlar ve ana öğün et/tahıl alt sınırı büyür
+function porsiyonAralik(f, ogunId, s = 1){
+  const ara = ARA_IDLER.has(ogunId), ust = (b, tavan) => Math.min(tavan || 1e9, Math.round(b * s)), alt = a => Math.round(a * (1 + (s - 1) * 0.8));
+  if (f.a){
+    if (f.kat === 'yumurta') return [ara || s < 1.3 ? 1 : 2, ara ? 2 : ust(3, 4)];
+    if (f.kat === 'tahil') return f.b === 'dilim' ? [1, ogunId === 'kahvalti' ? ust(3, 4) : ust(2, 3)] : f.id === 'lavas' ? [0.5, 1] : [1, ust(3, 4)];
+    if (f.kat === 'meyve') return f.a <= 20 ? [2, ust(5, 8)] : f.id === 'avokado' ? [0.5, 1] : f.a >= 100 ? [1, 1] : [1, 2];
+    if (f.id === 'zeytin') return [3, ust(8, 10)];
+    if (f.kat === 'sut') return [1, ust(3, 4)];
+    if (f.kat === 'anayemek') return [2, ust(6, 8)];
+    if (f.kat === 'atistirmalik') return [1, 3];
+    return [1, 3];
+  }
+  if (SIVI.has(f.id)) return [150, ust(300, 400)];
+  switch (f.kat){
+    case 'et': case 'balik': return ara ? [60, 120] : [alt(90), ust(220, 280)];
+    case 'bitkisel': return [80, ust(200, 260)];
+    case 'yumurta': return [100, ust(250, 300)];
+    case 'kuruyemis': return ['zeytinyagi', 'keten', 'chia'].includes(f.id) ? [5, ust(15, 25)] : f.id === 'fistikezme' ? [10, ust(20, 35)] : [10, ust(30, 50)];
+    case 'sut': return f.id === 'lor' ? [30, ust(100, 150)] : [100, ust(250, 300)];
+    case 'tahil': return f.id === 'yulaf' ? [30, ust(80, 100)] : [80, ust(200, 250)];
+    case 'pilav': return [alt(80), ust(200, 300)];
+    case 'baklagil': return [60, ust(150, 200)];
+    case 'meyve': return [100, 250];
+    case 'anayemek': case 'corba': return [150, ust(350, 400)];
+    case 'salata': case 'sebze': return [80, 300];
+    case 'atistirmalik': return f.id === 'leblebi' ? [20, ust(40, 50)] : [80, ust(200, 250)];
+    default: return [5, 400];
+  }
+}
+// Miktarı porsiyon aralığına oturt; adetler tam sayı ("3,5 zeytin", "yarım elma" olmaz; lavaş ve avokado yarım olabilir), gramlar 5/10'luk
+function porsiyon(f, ogunId, m, s = 1){
+  const [a, b] = porsiyonAralik(f, ogunId, s), x = sinirla(m, a, b);
+  if (!f.a) return yuvarla(f, x);
+  return ['lavas', 'avokado'].includes(f.id) ? sinirla(Math.round(x * 2) / 2, a, b) : sinirla(Math.round(x), Math.ceil(a), b);
+}
+// Eksik kalori: ara öğüne kalem eklenmez; öğle/akşama tam tahıllı garnitür, gerekirse kahvaltıya tek yoğun kalem
+const GARNITUR = ['bulgur', 'kinoa', 'tammakarna', 'patates_firin'];
+const ARA_TAMAMLAYICI = [['muz', 1], ['ceviz', 20], ['badem', 20], ['hurma', 3], ['elma', 1]];
+const KAHVALTI_EK = [['fistikezme', 20], ['ceviz', 20], ['avokado', 0.5], ['yulaf', 40], ['tamekmek', 1]];
+// Akşam yemeğine içecek: yoğurtlu yan yoksa ayran, varsa maden suyu; tuz kısıtında bitki çayı
+function aksamIcecekEkle(gun, izinli){
+  const o = gun.find(o => o.id === 'aksam');
+  if (!o || o.ogeler.some(it => SIVI.has(it.f) || yemek(it.f).kat === 'icecek')) return;
+  const yogurtlu = o.ogeler.some(it => ['cacik', 'yogurt', 'suzme', 'soya_yogurt', 'kefir', 'ayran'].includes(it.f));
+  const id = (yogurtlu ? ['maden_suyu', 'bitki_cayi'] : ['ayran', 'maden_suyu', 'bitki_cayi']).find(x => izinli(yemek(x)));
+  if (id) o.ogeler.push({f: id, g: id === 'ayran' ? 200 : 1});
+}
+// Ara öğün en çok 2 kalem (takviye ve içecek hariç): biri ana kalem, diğeri farklı rolden tamamlayıcı; atılan kalori kalanlara paylaşılır
+function araSadele(gun, sabit, por){
+  const kcal = it => besin(it.f, it.g).k;
+  const ana = it => { const f = yemek(it.f); return f.kat === 'sut' || rol(f) === 'P' || ['atistirmalik', 'tahil'].includes(f.kat); };
+  for (const o of gun){
+    if (!ARA_IDLER.has(o.id)) continue;
+    const sayilan = o.ogeler.filter(it => !sabit.has(it.f));
+    if (sayilan.length <= 2) continue;
+    const sirali = [...sayilan].sort((a, b) => (ana(b) - ana(a)) || (kcal(b) - kcal(a)));   // ana kalem (yoğurt, kefir, süzme, leblebi…) önce
+    const ilk = sirali[0], ikinci = sirali.slice(1).find(it => rol(yemek(it.f)) !== rol(yemek(ilk.f))) || sirali[1];
+    const atilan = sayilan.filter(it => it !== ilk && it !== ikinci), ek = atilan.reduce((s, it) => s + kcal(it), 0);
+    o.ogeler = o.ogeler.filter(it => !atilan.includes(it));
+    const tk = kcal(ilk) + kcal(ikinci);
+    if (tk > 0) for (const it of [ilk, ikinci]) it.g = por(yemek(it.f), o.id, it.g * (tk + ek) / tk);
+  }
+}
 function gunuOlcekle(gun, p, izinli){
-  const sabit = new Set(takviyeIdleri(p));   // takviye kalemleri ölçeklenmez (1 ölçek 1 ölçek kalır)
+  const sabit = new Set([...takviyeIdleri(p), ...SABIT_ICECEK]);   // takviye (1 ölçek) ve içecekler (1 bardak) ölçeklenmez
+  const s = sinirla((p.kcal || 2000) / 2200, 1, 1.7), por = (f, id, m) => porsiyon(f, id, m, s);
   const hepsi = () => gun.flatMap(o => o.ogeler);
   const top = r => topla(hepsi().filter(it => !r || rol(yemek(it.f)) === r));
-  const uygula = (r, k) => gun.forEach(o => o.ogeler.forEach(it => { const f = yemek(it.f); if (rol(f) === r && !sabit.has(it.f)) it.g = yuvarla(f, it.g * k); }));
+  const her = fn => gun.forEach(o => o.ogeler.forEach(it => { const f = yemek(it.f); if (!sabit.has(it.f)) fn(it, f, o.id); }));
+  const uygula = (r, k) => her((it, f, id) => { if (rol(f) === r) it.g = por(f, id, it.g * k); });
   const tumu = () => top().k;
+  // 0) Başlangıç miktarları porsiyon aralığına
+  her((it, f, id) => { it.g = por(f, id, it.g); });
   // 1) Protein hedefi
   const pP = top('P').p, pDiger = tumu() ? top().p - pP : 0;
   if (pP > 0) uygula('P', sinirla((p.protein - pDiger) / pP, 0.6, 2.5));
@@ -3470,29 +3560,60 @@ function gunuOlcekle(gun, p, izinli){
   const kAyarla = () => { const kK = top('K').k; if (kK > 0) uygula('K', sinirla((p.kcal - (tumu() - kK)) / kK, 0.35, 2.5)); };
   kAyarla();
   // 3) Yağ kaynaklarıyla ince ayar
-  const kY = top('Y').k;
-  if (kY > 0) uygula('Y', sinirla((kY + p.kcal - tumu()) / kY, 0.5, 1.6));
-  // 4) Hâlâ eksikse ara öğünlere sırayla besleyici ek (kas/kilo alma gibi yüksek kalorili hedefler)
-  const uygunEkler = EK_SECENEK.filter(s => s.every(([f]) => izinli(yemek(f))));
-  for (const [i, ogunId] of ['ara1','gece','kahvalti'].entries()){
-    if (tumu() >= p.kcal * 0.95 || !uygunEkler.length) break;
-    const ek = uygunEkler[i % uygunEkler.length], ogun = gun.find(o => o.id === ogunId) || gun[0];
-    ogun.ogeler = birlestir(ogun.ogeler.concat(ek.map(([f, g]) => ({f, g}))));
-    kAyarla();
+  const yAyarla = (alt, ust) => { const kY = top('Y').k; if (kY > 0) uygula('Y', sinirla((kY + p.kcal - tumu()) / kY, alt, ust)); };
+  yAyarla(0.5, 1.6);
+  // 4) Hâlâ eksikse (kas / kilo alma gibi yüksek hedefler): a) akşam ve öğleye tam tahıllı garnitür, b) salataya zeytinyağı ve yağ porsiyonları,
+  //    c) kahvaltıya tek yoğun kalem. Ara öğüne kalem eklenmez.
+  const eksik = () => tumu() < p.kcal * 0.95;
+  for (const id of ['aksam', 'ogle']){
+    if (!eksik()) break;
+    const o = gun.find(o => o.id === id);
+    if (!o || o.ogeler.some(it => ['pilav', 'baklagil'].includes(yemek(it.f).kat))) continue;
+    const g = GARNITUR.find(x => izinli(yemek(x)) && !DOKTOR_DISI.has(x));
+    if (g){ o.ogeler.push({f: g, g: 100}); kAyarla(); }
+  }
+  if (eksik()){
+    const o = gun.find(o => ['ogle', 'aksam'].includes(o.id) && o.ogeler.some(it => yemek(it.f).kat === 'salata') && !o.ogeler.some(it => it.f === 'zeytinyagi'));
+    if (o && izinli(yemek('zeytinyagi'))) o.ogeler.push({f: 'zeytinyagi', g: 10});
+    yAyarla(1, 2);
+  }
+  if (eksik()){
+    const o = gun.find(o => o.id === 'kahvalti') || gun[0];
+    const ek = KAHVALTI_EK.find(([f]) => izinli(yemek(f)) && !o.ogeler.some(it => it.f === f));
+    if (ek){ o.ogeler.push({f: ek[0], g: ek[1]}); kAyarla(); yAyarla(1, 2); }
+  }
+  // d) tek kalemli ara öğüne farklı rolden bir tamamlayıcı (ara öğün yine en çok 2 kalem)
+  for (const o of gun){
+    if (!eksik()) break;
+    if (!ARA_IDLER.has(o.id)) continue;
+    const say = o.ogeler.filter(it => !sabit.has(it.f));
+    if (say.length !== 1) continue;
+    const r0 = rol(yemek(say[0].f)), ek = ARA_TAMAMLAYICI.find(([f]) => izinli(yemek(f)) && rol(yemek(f)) !== r0 && !o.ogeler.some(it => it.f === f));
+    if (ek) o.ogeler.push({f: ek[0], g: ek[1]});
   }
   // 5) Şeker sınırı aşılıyorsa şekerli kalemleri (meyve, süt ürünü, tatlı) azalt, kaloriyi tahılla geri tamamla
-  const sekerli = f => !['sebze','salata','corba'].includes(f.kat) && !sabit.has(f.id) && f.k && f.s * 4 / f.k >= 0.2;
-  const sToplam = topla(hepsi().filter(it => sekerli(yemek(it.f)))).s;
+  const sekerli = f => !['sebze', 'salata', 'corba'].includes(f.kat) && f.k && f.s * 4 / f.k >= 0.2;
+  const sToplam = topla(hepsi().filter(it => !sabit.has(it.f) && sekerli(yemek(it.f)))).s;
   if (top().s > p.seker * 1.05 && sToplam > 0){
     const k = sinirla(1 - (top().s - p.seker) / sToplam, 0.5, 1);
-    gun.forEach(o => o.ogeler.forEach(it => { const f = yemek(it.f); if (sekerli(f)) it.g = yuvarla(f, it.g * k); }));
+    her((it, f, id) => { if (sekerli(f)) it.g = por(f, id, it.g * k); });
     kAyarla();
   }
   // 6) Hâlâ fazlaysa sebze dışındaki sabit kalemleri (karışık yemek, süt ürünü) biraz azalt
   if (tumu() > p.kcal * 1.07){
-    const azalt = f => rol(f) === 'S' && !['sebze','salata'].includes(f.kat) && !sabit.has(f.id);
-    const kS = topla(hepsi().filter(it => azalt(yemek(it.f)))).k;
-    if (kS > 0){ const k = sinirla((kS + p.kcal - tumu()) / kS, 0.7, 1); gun.forEach(o => o.ogeler.forEach(it => { const f = yemek(it.f); if (azalt(f)) it.g = yuvarla(f, it.g * k); })); }
+    const azalt = f => rol(f) === 'S' && !['sebze', 'salata'].includes(f.kat);
+    const kS = topla(hepsi().filter(it => !sabit.has(it.f) && azalt(yemek(it.f)))).k;
+    if (kS > 0){ const k = sinirla((kS + p.kcal - tumu()) / kS, 0.7, 1); her((it, f, id) => { if (azalt(f)) it.g = por(f, id, it.g * k); }); }
+  }
+  // 7) Ara öğün sade (en çok 2 kalem), ardından gün kalorisi tahılla yeniden
+  araSadele(gun, sabit, por);
+  kAyarla();
+  // 8) Son denge: hedeften %3'ten fazla saparsa sebze/salata dışındaki kalemler birlikte, porsiyon sınırları içinde ölçeklenir
+  for (let i = 0; i < 4; i++){
+    const r = p.kcal / (tumu() || 1);
+    if (Math.abs(1 - r) < 0.03) break;
+    // büyütürken protein kalemleri (et, balık, yumurta, süzme…) en çok %15 büyür: protein hedefin çok üstüne çıkmaz
+    her((it, f, id) => { if (!['sebze', 'salata'].includes(f.kat)) it.g = por(f, id, it.g * sinirla(r, 0.8, r > 1 && rol(f) === 'P' ? 1.15 : 1.35)); });
   }
 }
 
@@ -3881,8 +4002,9 @@ function ciplerCiz(){
   $('cipler').innerHTML = h;
   $('cipSatir').hidden = !h && $('hamileBtn').hidden;
 }
-// Başlığın yanındaki tarih-saat (dakikada bir güncellenir)
+// Başlığın yanındaki tarih-saat kaldırıldı (01.11.2026); çağrılar zararsız kalsın diye öğe yoksa çıkar
 function saatYaz(){
+  if (!$('saat')) return;
   const z = new Date();
   $('saat').textContent = `${z.toLocaleDateString(LOC(), {day:'2-digit', month:'2-digit', year:'numeric'})} ${z.toLocaleTimeString(LOC(), {hour:'2-digit', minute:'2-digit'})} ${z.toLocaleDateString(LOC(), {weekday:'long'})}`;
 }
@@ -4382,7 +4504,7 @@ function ayarlarAc(dilAcik = false){
 }
 // Profilden haftalık şablonu yeniden üret; bugün ve sonrasının özel menülerini temizle (geçmiş korunur)
 function planYenile(){
-  D.planlar = planOlustur(D.profil);
+  D.planlar = planOlustur(D.profil); D.planSurum = PLAN_SURUM;
   D.planBaslangic = gunEkle(bugunK(), -haftaGunu(bugunK()));   // bu hafta = 1. hafta
   D.miktar = {};   // yeni planda eski miktar tercihleri geçersiz
   menuleriTemizle();
@@ -4742,6 +4864,13 @@ function kocYemekSec(id, ii){
     kocKaydet(); kocCiz();
   }});
 }
+// Program hazırla onayı: Evet (yeşil) → işlem + kısa bildirim; Hayır → hiçbir şey yapılmaz
+function kocOnay(metin, evet, bildirim){
+  ac(T('confirmT'), `<p class="onay-metin">${esc(metin)}</p><div class="acts"><button class="btn ghost" id="onayHayir">${T('impNo')}</button><button class="btn green" id="onayEvet">${T('impYes')}</button></div>`);
+  $('onayHayir').onclick = kapat;
+  $('onayEvet').onclick = () => { kapat(); evet(); kaydet(); kocCiz(); if (bildirim) toast(bildirim); };
+}
+const kocGunBos = (K, j) => !Object.values(K.gun[j] || {}).some(l => (l || []).length);
 $('koc').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const K = D.koc, ds = b.dataset, gun = K.gun[K.sec];
@@ -4756,20 +4885,27 @@ $('koc').addEventListener('click', e => {
     const adim = f.a ? (it.g + yon < 1 || (yon > 0 && it.g < 1) ? 0.5 : 1) : (it.g + yon * 5 <= 30 ? 5 : 10);
     it.g = Math.max(f.a ? 0.5 : 5, it.g + yon * adim); kocKaydet(); kocCiz(); return;
   }
-  if (ds.konceki){ K.gun[K.sec] = kopya(K.gun[K.sec - 1]); K.not[K.sec] = kopya(K.not[K.sec - 1]); kocKaydet(); kocCiz(); toast('✓'); return; }
+  if (ds.konceki){ const yap = () => { K.gun[K.sec] = kopya(K.gun[K.sec - 1]); K.not[K.sec] = kopya(K.not[K.sec - 1]); };
+    if (kocGunBos(K, K.sec)){ yap(); kocKaydet(); kocCiz(); toast(T('kocCopied')); } else kocOnay(T('cKocCopyPrev'), yap, T('kocCopied')); return; }
   if (ds.kmod){
     // Aynı dönem yeniden seçilirse işlem yok; ay modunda ay geçmişse "Aktif ay" yeni aya taşır
     if (ds.kmod === 'ay' && kocAyMi(K) && K.ay === ayAnahtar(bugunK())) return;
     if (ds.kmod === 'hafta' && !kocAyMi(K)) return;
+    // aylıktan haftalığa geçiş ayın farklı günlerini teke indirir: veri varsa sor
+    if (ds.kmod === 'hafta' && K.gun.some((_, j) => !kocGunBos(K, j))){ kocOnay(T('cKocToWeek'), () => kocModAyarla(K, 'hafta')); return; }
     kocModAyarla(K, ds.kmod); kocKaydet(); kocCiz(); return;
   }
-  if (ds.khafta){ for (const j of kocHaftaIdx(K, K.sec)) if (j !== K.sec){ K.gun[j] = kopya(gun); K.not[j] = kopya(K.not[K.sec]); } kocKaydet(); kocCiz(); toast('✓'); return; }
-  if (ds.kay){ const n = kocGunSayisi(K); for (let j = 0; j < n; j++) if (j !== K.sec){ K.gun[j] = kopya(gun); K.not[j] = kopya(K.not[K.sec]); } kocKaydet(); kocCiz(); toast('✓'); return; }
-  if (ds.khaftatemizle){ onayAc(T('cKocClearWeek'), () => { for (const j of kocHaftaIdx(K, K.sec)){ K.gun[j] = {}; K.not[j] = {}; } kaydet(); kocCiz(); }); return; }
-  if (ds.kaytemizle){ onayAc(T('cKocClearMonth'), () => { const n = kocGunSayisi(K); for (let j = 0; j < n; j++){ K.gun[j] = {}; K.not[j] = {}; } kaydet(); kocCiz(); }); return; }
+  const bos = kocGunBos(K, K.sec), sec = K.sec;
+  const kopyala = idx => () => { for (const j of idx) if (j !== sec){ K.gun[j] = kopya(K.gun[sec]); K.not[j] = kopya(K.not[sec]); } };
+  const temizle = idx => () => { for (const j of idx){ K.gun[j] = {}; K.not[j] = {}; } };
+  const tumAy = () => Array.from({length: kocGunSayisi(K)}, (_, j) => j);
+  if (ds.khafta){ kocOnay(T(bos ? 'cKocCopyWeekEmpty' : 'cKocCopyWeek'), kopyala(kocHaftaIdx(K, sec)), T(bos ? 'kocCleared' : 'kocCopied')); return; }
+  if (ds.kay){ kocOnay(T(bos ? 'cKocCopyMonthEmpty' : 'cKocCopyMonth'), kopyala(tumAy()), T(bos ? 'kocCleared' : 'kocCopied')); return; }
+  if (ds.khaftatemizle){ kocOnay(T('cKocClearWeek'), temizle(kocHaftaIdx(K, sec)), T('kocCleared')); return; }
+  if (ds.kaytemizle){ kocOnay(T('cKocClearMonth'), temizle(tumAy()), T('kocCleared')); return; }
   if (ds.kauto){ kocOtomatikSor(); return; }
-  if (ds.ktemizle){ K.gun[K.sec] = {}; K.not[K.sec] = {}; kocKaydet(); kocCiz(); return; }
-  if (ds.kyeni){ onayAc(T('cKocNew'), () => { D.koc = kocBos(); kaydet(); kocCiz(); }); return; }
+  if (ds.ktemizle){ kocOnay(T('cKocClearDay'), () => { K.gun[K.sec] = {}; K.not[K.sec] = {}; }, T('kocCleared')); return; }
+  if (ds.kyeni){ kocOnay(T('cKocNew'), () => { D.koc = kocBos(); }); return; }
   if (ds.kyazdir){ kocYazdir(); return; }
   if (ds.klink){ kocLinkOlustur(); return; }
 });
@@ -5445,12 +5581,13 @@ function antrenmanGunuDegis(j){
 let notZamanlayici = [], notImza = null;
 function notMetin(o){
   const liste = o.ogeler.slice(0, 2).map(it => yemek(it.f).ad).join(', ');
-  return {title: T('app'), body: T('notBody', {ogun: ogunAd(o), liste: liste || '—'})};
+  return {title: T('app'), body: T('notBody', {ik: OGUN_IKON[o.id] || '🍽', ogun: ogunAd(o), liste: liste || '—'})};
 }
 // Bugünün öğün saatleri/ilk yemekleri değişmediyse hiçbir şey yapmaz (ciz() her çizimde çağırır)
 function hatirlaticiYenile(zorla){
   const acik = !!D.ayar.hatirlatici && !!D.ayar.kurulum, k = bugunK();
   const menu = acik ? menuOku(k) : [];
+  durtmeKur(acik);
   const imza = acik ? dil + '|' + menu.map(o => `${o.id}|${ogunSaati(k, o)}|${o.ogeler.slice(0, 2).map(it => it.f).join(',')}`).join(';') : '';
   if (!zorla && imza === notImza) return;
   notImza = imza;
@@ -5465,6 +5602,61 @@ function hatirlaticiYenile(zorla){
     const z = new Date(); z.setHours(h, m, 0, 0);
     const gecikme = z.getTime() - simdi;
     if (gecikme > 0 && gecikme < 864e5) notZamanlayici.push(setTimeout(() => { bildirimGoster(title, body, id); notImza = null; hatirlaticiYenile(); }, gecikme));
+  }
+}
+// ---------- Kayıtsızlık hatırlatıcısı: 4,5 saat veri girişi yoksa tatlı bir dürtme (su / ara öğün / öğün) ----------
+// Bildirim anına kadar yeni kayıt olursa yeniden kurulur; o yüzden içerik bugünkü kayıtlara göre önceden yazılabilir. En çok 2 bildirim sıraya alınır.
+const DURTME_SURE = 4.5 * 36e5, DURTME_TUR = new Set(['yedim', 'su', 'ekle', 'sil', 'gram', 'degis']);
+let durtmeZaman = [], durtmeImza = null;
+function sonGiris(){ for (let i = D.log.length - 1; i >= 0; i--) if (DURTME_TUR.has(D.log[i].tur)) return D.log[i].t; return 0; }
+const dkOku = s => { const [h, m] = String(s).split(':').map(Number); return h * 60 + (m || 0); };
+// Uyanık aralık: kahvaltıdan 1 saat sonra … akşam yemeği / gece ara öğünü (en geç 22:00); saatler tutarsızsa 10:00–21:00
+function uyanikAralik(k){
+  const m = {}; menuOku(k).forEach(o => { const d = dkOku(ogunSaati(k, o)); if (d >= 0) m[o.id] = d; });
+  const aksam = m.aksam != null ? m.aksam : 19 * 60 + 30, bas = (m.kahvalti != null ? m.kahvalti : 8 * 60 + 30) + 60;
+  const son = Math.min(Math.max(aksam, m.gece > aksam ? m.gece : 0), 22 * 60);
+  return son > bas + 120 ? [bas, son] : [10 * 60, 21 * 60];
+}
+// Zamanı uyanık saatlere oturt (gece → ertesi sabah)
+function durtmeAni(t){
+  for (let i = 0; i < 3; i++){
+    const z = new Date(t), [bas, son] = uyanikAralik(tarihAnahtar(z)), dk = z.getHours() * 60 + z.getMinutes();
+    if (dk < bas){ z.setHours(Math.floor(bas / 60), bas % 60, 0, 0); return z.getTime(); }
+    if (dk <= son) return t;
+    z.setDate(z.getDate() + 1); z.setHours(0, 0, 0, 0); t = z.getTime();
+  }
+  return t;
+}
+function durtmeMetin(t){
+  const z = new Date(t), k = tarihAnahtar(z), r = kayitOku(k), menu = menuOku(k), dk = z.getHours() * 60 + z.getMinutes();
+  const kacan = menu.filter(o => dkOku(ogunSaati(k, o)) + 30 <= dk && !r.yendi[o.id]);
+  const ara = kacan.filter(o => ARA_IDLER.has(o.id)).pop(), ana = kacan.filter(o => !ARA_IDLER.has(o.id)).pop();
+  const h = Math.ceil(suHedefi(k) / D.profil.bardak), su = r.su || 0, tohum = z.getDate() * 7 + z.getHours();
+  const sec = (key, p) => { const l = T(key, p).split('|'); return l[tohum % l.length]; };
+  let body;
+  if (su === 0 && dk >= 11 * 60) body = sec('dSuYok');
+  else if (ara) body = sec('dAra', {ogun: ogunAd(ara), liste: ara.ogeler.slice(0, 2).map(it => yemek(it.f).ad).join(', ') || '—'});
+  else if (ana) body = sec('dAna', {ogun: ogunAd(ana)});
+  else if (su < h / 2 && dk >= 15 * 60) body = sec('dSuAz', {n: su, h});
+  else body = sec('dGenel');
+  return {title: T('app'), body};
+}
+function durtmeKur(acik){
+  let plan = [];
+  if (acik){
+    const simdi = Date.now(), t1 = durtmeAni(Math.max(sonGiris() + DURTME_SURE, simdi + 36e5)), t2 = durtmeAni(t1 + DURTME_SURE);
+    plan = [t1, t2].map((at, i) => ({id: 'durtme' + (i + 1), at, ...durtmeMetin(at)}));
+  }
+  const imza = dil + JSON.stringify(plan.map(x => [x.id, Math.round(x.at / 6e4), x.body]));
+  if (imza === durtmeImza) return;
+  durtmeImza = imza;
+  durtmeZaman.forEach(clearTimeout); durtmeZaman = [];
+  const yerli = !!(window.__LF_NATIVE && window.__lfNotify);
+  if (yerli && window.__lfCancelNotify) ['durtme1', 'durtme2'].forEach(id => { try { window.__lfCancelNotify(id); } catch(e){} });
+  for (const x of plan){
+    if (yerli){ try { window.__lfNotify({id: x.id, title: x.title, body: x.body, at: x.at}); } catch(e){} continue; }
+    const g = x.at - Date.now();
+    if (g > 0 && g < 864e5) durtmeZaman.push(setTimeout(() => { bildirimGoster(x.title, x.body, x.id); durtmeImza = null; }, g));
   }
 }
 function bildirimGoster(title, body, tag){
@@ -5800,6 +5992,10 @@ function baslat2(){
     if (!D.planBaslangic) D.planBaslangic = gunEkle(bugunK(), -haftaGunu(bugunK()));
     kaydet();
   }
+  // Plan üretici güncellendi (porsiyonlar, ara öğün, akşam içeceği): kendi planı olanın şablonu yenilenir; diyetisyen programı ve elle düzenlenmiş günler korunur
+  if (!D.program && (D.planSurum || 0) < PLAN_SURUM){ D.planlar = planOlustur(D.profil); D.planSurum = PLAN_SURUM; kaydet(); }
+  // Telefon uygulamasında öğün/su hatırlatıcıları varsayılan açık (kullanıcı kapattıysa dokunulmaz)
+  if (window.__LF_NATIVE && D.ayar.hatirlatici === undefined){ D.ayar.hatirlatici = true; kaydet(); }
   ciz();
 }
 D = tamamla(enYeni(lsOku(), gomuluOku()) || varsayilanDurum());

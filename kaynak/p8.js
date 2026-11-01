@@ -311,6 +311,10 @@ function baslat2(){
     if (!D.planBaslangic) D.planBaslangic = gunEkle(bugunK(), -haftaGunu(bugunK()));
     kaydet();
   }
+  // Plan üretici güncellendi (porsiyonlar, ara öğün, akşam içeceği): kendi planı olanın şablonu yenilenir; diyetisyen programı ve elle düzenlenmiş günler korunur
+  if (!D.program && (D.planSurum || 0) < PLAN_SURUM){ D.planlar = planOlustur(D.profil); D.planSurum = PLAN_SURUM; kaydet(); }
+  // Telefon uygulamasında öğün/su hatırlatıcıları varsayılan açık (kullanıcı kapattıysa dokunulmaz)
+  if (window.__LF_NATIVE && D.ayar.hatirlatici === undefined){ D.ayar.hatirlatici = true; kaydet(); }
   ciz();
 }
 D = tamamla(enYeni(lsOku(), gomuluOku()) || varsayilanDurum());

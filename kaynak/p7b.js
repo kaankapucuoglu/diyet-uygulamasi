@@ -263,6 +263,13 @@ function kocYemekSec(id, ii){
     kocKaydet(); kocCiz();
   }});
 }
+// Program hazırla onayı: Evet (yeşil) → işlem + kısa bildirim; Hayır → hiçbir şey yapılmaz
+function kocOnay(metin, evet, bildirim){
+  ac(T('confirmT'), `<p class="onay-metin">${esc(metin)}</p><div class="acts"><button class="btn ghost" id="onayHayir">${T('impNo')}</button><button class="btn green" id="onayEvet">${T('impYes')}</button></div>`);
+  $('onayHayir').onclick = kapat;
+  $('onayEvet').onclick = () => { kapat(); evet(); kaydet(); kocCiz(); if (bildirim) toast(bildirim); };
+}
+const kocGunBos = (K, j) => !Object.values(K.gun[j] || {}).some(l => (l || []).length);
 $('koc').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const K = D.koc, ds = b.dataset, gun = K.gun[K.sec];
@@ -277,20 +284,27 @@ $('koc').addEventListener('click', e => {
     const adim = f.a ? (it.g + yon < 1 || (yon > 0 && it.g < 1) ? 0.5 : 1) : (it.g + yon * 5 <= 30 ? 5 : 10);
     it.g = Math.max(f.a ? 0.5 : 5, it.g + yon * adim); kocKaydet(); kocCiz(); return;
   }
-  if (ds.konceki){ K.gun[K.sec] = kopya(K.gun[K.sec - 1]); K.not[K.sec] = kopya(K.not[K.sec - 1]); kocKaydet(); kocCiz(); toast('✓'); return; }
+  if (ds.konceki){ const yap = () => { K.gun[K.sec] = kopya(K.gun[K.sec - 1]); K.not[K.sec] = kopya(K.not[K.sec - 1]); };
+    if (kocGunBos(K, K.sec)){ yap(); kocKaydet(); kocCiz(); toast(T('kocCopied')); } else kocOnay(T('cKocCopyPrev'), yap, T('kocCopied')); return; }
   if (ds.kmod){
     // Aynı dönem yeniden seçilirse işlem yok; ay modunda ay geçmişse "Aktif ay" yeni aya taşır
     if (ds.kmod === 'ay' && kocAyMi(K) && K.ay === ayAnahtar(bugunK())) return;
     if (ds.kmod === 'hafta' && !kocAyMi(K)) return;
+    // aylıktan haftalığa geçiş ayın farklı günlerini teke indirir: veri varsa sor
+    if (ds.kmod === 'hafta' && K.gun.some((_, j) => !kocGunBos(K, j))){ kocOnay(T('cKocToWeek'), () => kocModAyarla(K, 'hafta')); return; }
     kocModAyarla(K, ds.kmod); kocKaydet(); kocCiz(); return;
   }
-  if (ds.khafta){ for (const j of kocHaftaIdx(K, K.sec)) if (j !== K.sec){ K.gun[j] = kopya(gun); K.not[j] = kopya(K.not[K.sec]); } kocKaydet(); kocCiz(); toast('✓'); return; }
-  if (ds.kay){ const n = kocGunSayisi(K); for (let j = 0; j < n; j++) if (j !== K.sec){ K.gun[j] = kopya(gun); K.not[j] = kopya(K.not[K.sec]); } kocKaydet(); kocCiz(); toast('✓'); return; }
-  if (ds.khaftatemizle){ onayAc(T('cKocClearWeek'), () => { for (const j of kocHaftaIdx(K, K.sec)){ K.gun[j] = {}; K.not[j] = {}; } kaydet(); kocCiz(); }); return; }
-  if (ds.kaytemizle){ onayAc(T('cKocClearMonth'), () => { const n = kocGunSayisi(K); for (let j = 0; j < n; j++){ K.gun[j] = {}; K.not[j] = {}; } kaydet(); kocCiz(); }); return; }
+  const bos = kocGunBos(K, K.sec), sec = K.sec;
+  const kopyala = idx => () => { for (const j of idx) if (j !== sec){ K.gun[j] = kopya(K.gun[sec]); K.not[j] = kopya(K.not[sec]); } };
+  const temizle = idx => () => { for (const j of idx){ K.gun[j] = {}; K.not[j] = {}; } };
+  const tumAy = () => Array.from({length: kocGunSayisi(K)}, (_, j) => j);
+  if (ds.khafta){ kocOnay(T(bos ? 'cKocCopyWeekEmpty' : 'cKocCopyWeek'), kopyala(kocHaftaIdx(K, sec)), T(bos ? 'kocCleared' : 'kocCopied')); return; }
+  if (ds.kay){ kocOnay(T(bos ? 'cKocCopyMonthEmpty' : 'cKocCopyMonth'), kopyala(tumAy()), T(bos ? 'kocCleared' : 'kocCopied')); return; }
+  if (ds.khaftatemizle){ kocOnay(T('cKocClearWeek'), temizle(kocHaftaIdx(K, sec)), T('kocCleared')); return; }
+  if (ds.kaytemizle){ kocOnay(T('cKocClearMonth'), temizle(tumAy()), T('kocCleared')); return; }
   if (ds.kauto){ kocOtomatikSor(); return; }
-  if (ds.ktemizle){ K.gun[K.sec] = {}; K.not[K.sec] = {}; kocKaydet(); kocCiz(); return; }
-  if (ds.kyeni){ onayAc(T('cKocNew'), () => { D.koc = kocBos(); kaydet(); kocCiz(); }); return; }
+  if (ds.ktemizle){ kocOnay(T('cKocClearDay'), () => { K.gun[K.sec] = {}; K.not[K.sec] = {}; }, T('kocCleared')); return; }
+  if (ds.kyeni){ kocOnay(T('cKocNew'), () => { D.koc = kocBos(); }); return; }
   if (ds.kyazdir){ kocYazdir(); return; }
   if (ds.klink){ kocLinkOlustur(); return; }
 });
@@ -966,12 +980,13 @@ function antrenmanGunuDegis(j){
 let notZamanlayici = [], notImza = null;
 function notMetin(o){
   const liste = o.ogeler.slice(0, 2).map(it => yemek(it.f).ad).join(', ');
-  return {title: T('app'), body: T('notBody', {ogun: ogunAd(o), liste: liste || '—'})};
+  return {title: T('app'), body: T('notBody', {ik: OGUN_IKON[o.id] || '🍽', ogun: ogunAd(o), liste: liste || '—'})};
 }
 // Bugünün öğün saatleri/ilk yemekleri değişmediyse hiçbir şey yapmaz (ciz() her çizimde çağırır)
 function hatirlaticiYenile(zorla){
   const acik = !!D.ayar.hatirlatici && !!D.ayar.kurulum, k = bugunK();
   const menu = acik ? menuOku(k) : [];
+  durtmeKur(acik);
   const imza = acik ? dil + '|' + menu.map(o => `${o.id}|${ogunSaati(k, o)}|${o.ogeler.slice(0, 2).map(it => it.f).join(',')}`).join(';') : '';
   if (!zorla && imza === notImza) return;
   notImza = imza;
@@ -986,6 +1001,61 @@ function hatirlaticiYenile(zorla){
     const z = new Date(); z.setHours(h, m, 0, 0);
     const gecikme = z.getTime() - simdi;
     if (gecikme > 0 && gecikme < 864e5) notZamanlayici.push(setTimeout(() => { bildirimGoster(title, body, id); notImza = null; hatirlaticiYenile(); }, gecikme));
+  }
+}
+// ---------- Kayıtsızlık hatırlatıcısı: 4,5 saat veri girişi yoksa tatlı bir dürtme (su / ara öğün / öğün) ----------
+// Bildirim anına kadar yeni kayıt olursa yeniden kurulur; o yüzden içerik bugünkü kayıtlara göre önceden yazılabilir. En çok 2 bildirim sıraya alınır.
+const DURTME_SURE = 4.5 * 36e5, DURTME_TUR = new Set(['yedim', 'su', 'ekle', 'sil', 'gram', 'degis']);
+let durtmeZaman = [], durtmeImza = null;
+function sonGiris(){ for (let i = D.log.length - 1; i >= 0; i--) if (DURTME_TUR.has(D.log[i].tur)) return D.log[i].t; return 0; }
+const dkOku = s => { const [h, m] = String(s).split(':').map(Number); return h * 60 + (m || 0); };
+// Uyanık aralık: kahvaltıdan 1 saat sonra … akşam yemeği / gece ara öğünü (en geç 22:00); saatler tutarsızsa 10:00–21:00
+function uyanikAralik(k){
+  const m = {}; menuOku(k).forEach(o => { const d = dkOku(ogunSaati(k, o)); if (d >= 0) m[o.id] = d; });
+  const aksam = m.aksam != null ? m.aksam : 19 * 60 + 30, bas = (m.kahvalti != null ? m.kahvalti : 8 * 60 + 30) + 60;
+  const son = Math.min(Math.max(aksam, m.gece > aksam ? m.gece : 0), 22 * 60);
+  return son > bas + 120 ? [bas, son] : [10 * 60, 21 * 60];
+}
+// Zamanı uyanık saatlere oturt (gece → ertesi sabah)
+function durtmeAni(t){
+  for (let i = 0; i < 3; i++){
+    const z = new Date(t), [bas, son] = uyanikAralik(tarihAnahtar(z)), dk = z.getHours() * 60 + z.getMinutes();
+    if (dk < bas){ z.setHours(Math.floor(bas / 60), bas % 60, 0, 0); return z.getTime(); }
+    if (dk <= son) return t;
+    z.setDate(z.getDate() + 1); z.setHours(0, 0, 0, 0); t = z.getTime();
+  }
+  return t;
+}
+function durtmeMetin(t){
+  const z = new Date(t), k = tarihAnahtar(z), r = kayitOku(k), menu = menuOku(k), dk = z.getHours() * 60 + z.getMinutes();
+  const kacan = menu.filter(o => dkOku(ogunSaati(k, o)) + 30 <= dk && !r.yendi[o.id]);
+  const ara = kacan.filter(o => ARA_IDLER.has(o.id)).pop(), ana = kacan.filter(o => !ARA_IDLER.has(o.id)).pop();
+  const h = Math.ceil(suHedefi(k) / D.profil.bardak), su = r.su || 0, tohum = z.getDate() * 7 + z.getHours();
+  const sec = (key, p) => { const l = T(key, p).split('|'); return l[tohum % l.length]; };
+  let body;
+  if (su === 0 && dk >= 11 * 60) body = sec('dSuYok');
+  else if (ara) body = sec('dAra', {ogun: ogunAd(ara), liste: ara.ogeler.slice(0, 2).map(it => yemek(it.f).ad).join(', ') || '—'});
+  else if (ana) body = sec('dAna', {ogun: ogunAd(ana)});
+  else if (su < h / 2 && dk >= 15 * 60) body = sec('dSuAz', {n: su, h});
+  else body = sec('dGenel');
+  return {title: T('app'), body};
+}
+function durtmeKur(acik){
+  let plan = [];
+  if (acik){
+    const simdi = Date.now(), t1 = durtmeAni(Math.max(sonGiris() + DURTME_SURE, simdi + 36e5)), t2 = durtmeAni(t1 + DURTME_SURE);
+    plan = [t1, t2].map((at, i) => ({id: 'durtme' + (i + 1), at, ...durtmeMetin(at)}));
+  }
+  const imza = dil + JSON.stringify(plan.map(x => [x.id, Math.round(x.at / 6e4), x.body]));
+  if (imza === durtmeImza) return;
+  durtmeImza = imza;
+  durtmeZaman.forEach(clearTimeout); durtmeZaman = [];
+  const yerli = !!(window.__LF_NATIVE && window.__lfNotify);
+  if (yerli && window.__lfCancelNotify) ['durtme1', 'durtme2'].forEach(id => { try { window.__lfCancelNotify(id); } catch(e){} });
+  for (const x of plan){
+    if (yerli){ try { window.__lfNotify({id: x.id, title: x.title, body: x.body, at: x.at}); } catch(e){} continue; }
+    const g = x.at - Date.now();
+    if (g > 0 && g < 864e5) durtmeZaman.push(setTimeout(() => { bildirimGoster(x.title, x.body, x.id); durtmeImza = null; }, g));
   }
 }
 function bildirimGoster(title, body, tag){
