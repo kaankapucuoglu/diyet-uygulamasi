@@ -125,18 +125,19 @@ function girisAc(){
 // ---------- Kayıt (rıza kutularıyla) ----------
 function rizaKutulari(saglikOnce = false){
   const link = (k, u) => `<a href="${u}" target="_blank" rel="noopener">${T(k)}</a>`;
-  const saglik = `<label class="riza"><input type="checkbox" id="rSaglik"><span>${T('cRiza')}</span></label>`;
+  const saglik = `<label class="riza"><input type="checkbox" id="rSaglik"><span>${T('cRiza')} · ${link('cLinkConsent', HUKUK.acikRiza)}</span></label>`;
   const temel = `<label class="riza"><input type="checkbox" id="rKvkk"><span>${T('cKvkk')} · ${link('cKvkkL', HUKUK.kvkk)}</span></label>
     <label class="riza"><input type="checkbox" id="rKosul"><span>${T('cKosul')} · ${link('cKosulL', HUKUK.kosullar)} · ${link('cGizL', HUKUK.gizlilik)}</span></label>`;
   return (saglikOnce ? saglik + temel : temel + saglik) + `<div class="hint" style="margin-top:8px">${esc(T('cRizaBilgi'))}</div>`;
 }
 function kaydolAc(){
-  ac(T('hsKaydol'), `<div class="hs-form">
+  ac(T('hsKaydol'), `<div class="hint" style="margin-bottom:10px">${esc(T('cIntro'))}</div><div class="hs-form">
     <label class="field"><span>${T('hsKullanici')}</span><input id="kAd" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="16" enterkeyhint="next"></label>
     <div class="ad-durum" id="kAdDurum">${T('hsAdFormat')}</div><div class="oneri-cipler" id="kOneri"></div>
     <label class="field"><span>${T('hsSifreL')}</span><div class="sifre-kutu"><input id="kSifre" type="password" autocomplete="new-password" enterkeyhint="next"><button class="mini" type="button" data-goster="kSifre">${T('hsGoster')}</button></div></label>
     <label class="field"><span>${T('hsSifre2')}</span><input id="kSifre2" type="password" autocomplete="new-password" enterkeyhint="done"></label>
     ${rizaKutulari()}
+    <label class="riza"><input type="checkbox" id="rYas"><span>${T('cBoxAge')}</span></label>
     <label class="riza"><input type="checkbox" id="rLb"><span>${T('hsLbOptin')}</span></label>
     <div class="wmsg err" id="kHata" hidden></div>
     <div class="acts"><button class="btn green" id="kGonder">${T('hsKaydol')}</button></div>
@@ -149,8 +150,8 @@ function kaydolAc(){
     if (!KULLANICI_RE.test(u) || /\.\./.test(u) || /\.$/.test(u)) return hataYaz('kHata', T('hsAdFormat'));
     if (p.length < 8) return hataYaz('kHata', T('hsSifreKisa'));
     if (p !== p2) return hataYaz('kHata', T('hsSifreUyusmaz'));
-    if (!$('rKvkk').checked || !$('rKosul').checked) return hataYaz('kHata', T('cGerek'));
-    const consent = {kvkk: true, terms: true, health: $('rSaglik').checked, ver: RIZA_SURUM, lb_optin: $('rLb').checked};
+    if (!$('rKvkk').checked || !$('rKosul').checked || !$('rYas').checked) return hataYaz('kHata', T('cNeedAll'));
+    const consent = {kvkk: true, terms: true, age16: true, health: $('rSaglik').checked, ver: RIZA_SURUM, lb_optin: $('rLb').checked};
     b.disabled = true; hataYaz('kHata', '');
     try { await Hesap.kaydol(u, p, consent); }
     catch(e){

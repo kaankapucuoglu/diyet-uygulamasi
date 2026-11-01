@@ -3,7 +3,7 @@
 // Sunucu daha yeniyse (409 / açılışta GET) mevcut verileriBirlestir ile birleştirilir, sonra yeniden gönderilir.
 // Hesapsızken hiçbir ağ isteği yapılmaz (sıralama görüntüleme hariç).
 const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? 'http://127.0.0.1:8097/api' : 'https://diyet.maviplay.com/api';
-const RIZA_SURUM = '2026-11-01';            // sunucu RIZA_SURUM ile aynı; rıza metni değişince ikisi birden artar
+const RIZA_SURUM = '2026-11-01-2';            // sunucu RIZA_SURUM ile aynı; rıza metni değişince ikisi birden artar
 const HESAP_ANAHTAR = ANAHTAR + '_hesap';   // localStorage: {token, kullanici, rev, son}
 const ISTEK_SURE = 10000;                   // her istek 10 sn
 // Ülke: tarayıcı dilinin bölgesi (tr-TR → TR); yoksa uygulama dilinden tahmin

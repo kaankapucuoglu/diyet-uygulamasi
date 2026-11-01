@@ -684,7 +684,9 @@ function programSor(P){
   const donem = P.d === 'ay' ? T('impPerMonth', {ay: ayAdi(programAyi(P))}) : T('impPerWeek');
   const soru = P.h ? T('impQ', {h: P.h, d: donem}) : T('impQAnon', {d: donem});
   const kim = [P.h ? T('kocBy', {h: P.h}) : '', P.a ? T('kocFor', {a: P.a}) : ''].filter(Boolean).join(' · ');
-  ac(T('confirmT'), `<p class="onay-metin"><b>${esc(soru)}</b></p>
+  // Alıcının profilindeki alerji, yemediği besin ve hamilelik kısıtlarıyla çakışan yemekler (program süzülmez; yalnız uyarılır)
+  const izinli = profilUygun(D.profil), cak = [...new Set(P.g.flat(2).map(it => it.f))].map(yemek).filter(y => y && y.id && !izinli(y)).map(y => y.ad);
+  ac(T('confirmT'), `<p class="onay-metin"><b>${esc(soru)}</b></p>${cak.length && D.ayar.kurulum ? `<div class="wmsg warn">${esc(T('impAlerji', {a: cak.slice(0, 6).join(', ') + (cak.length > 6 ? '…' : '')}))}</div>` : ''}
     ${kim ? `<div class="cur"><b>📋 ${esc(kim)}</b>${P.n ? `<br><small>${esc(P.n)}</small>` : ''}</div>` : ''}
     <div class="hint">${esc(T('impInfo', {d: gunSay, m: ogunSay}))}${P.su ? ' ' + esc(T('impSu', {l: sayi(P.su / 1000)})) : ''}</div>
     <div class="hint">${esc(T('impSorumluluk'))}</div>

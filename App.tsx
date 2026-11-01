@@ -39,7 +39,7 @@ const APP_NAME = Constants.expoConfig?.name || 'LifeRoutine';   // görünen ad 
 const APP_URL = (process.env.EXPO_PUBLIC_APP_URL || '').trim();
 const IS_EXPO_GO = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 const BOOT_TIMEOUT_MS = 30000;
-const CHANNEL_ID = 'ogun';           // Android bildirim kanalı (öğün hatırlatmaları); app.json expo-notifications defaultChannel ile aynı
+const CHANNEL_ID = 'ogun2';          // 01.11: kilit ekranında içerik gizli (PRIVATE); Android var olan kanalı değiştirmediği için yeni kimlik           // Android bildirim kanalı (öğün hatırlatmaları); app.json expo-notifications defaultChannel ile aynı
 const EXTERNAL = /^(https?|mailto|tel|sms|whatsapp):/i;
 // Sayfaya yüklenmeden önce iletilen bilgi: web tarafı `window.__LF_NATIVE && window.__lfNotify` ile köprüyü kullanır.
 const NATIVE_CFG = 'window.__LF_NATIVE=' + JSON.stringify({
@@ -94,7 +94,7 @@ async function ensureChannel(name?: string) {
     sound: 'default',
     vibrationPattern: [0, 250, 250, 250],
     lightColor: '#16a36b',
-    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PRIVATE,
   });
 }
 async function scheduleNotify(m: NotifyMsg): Promise<string> {
@@ -173,7 +173,7 @@ function Shell() {
     (state) => js(`window.__lfApp&&window.__lfApp(${JSON.stringify(state)})`),
   ), [js]);
   useEffect(() => () => ads.dispose(), [ads]);
-  useEffect(() => { ads.prefetch(); }, [ads]);
+  // Reklam SDK'sı web 'ad:init' (reklamsız mı?) bildirince başlar; açılışta önceden yüklenmez (reklamsız kullanıcıda hiç başlamaz)
 
   // Bildirime dokunma → uygulama açılır (ek yönlendirme yok); web isterse window.__lfOnNotificationTap ile öğrenir
   useEffect(() => {

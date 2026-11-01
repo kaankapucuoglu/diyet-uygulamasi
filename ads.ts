@@ -52,6 +52,7 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
   let started: Promise<boolean> | null = null;
   let privacyForm = false; // AB: ayarlarda "Reklam gizlilik seçenekleri" gösterilmeli
   let noAds = false;
+  let npa = true;   // kişiselleştirilmemiş reklam: UMP onayı (OBTAINED) yoksa — KVKK/GDPR için güvenli varsayılan
   let showing: { id: string; kind: Kind; earned: boolean } | null = null;
   let disposed = false;
 
@@ -76,11 +77,11 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
   const load = (kind: Kind) => {
     const L = loadAds();
     const s = slot[kind];
-    if (!L || disposed || s.loaded || s.loading || (kind === 'inter' && noAds)) return;
+    if (!L || disposed || s.loaded || s.loading || noAds) return;   // reklamsız: hiçbir reklam yüklenmez
     if (s.timer) { clearTimeout(s.timer); s.timer = null; }
     s.off.forEach((f) => f());
     s.off = [];
-    const opts = {};
+    const opts = { requestNonPersonalizedAdsOnly: npa };
     const ad: Ad = kind === 'rewarded' ? L.RewardedAd.createForAdRequest(unitId(L, kind), opts) : L.InterstitialAd.createForAdRequest(unitId(L, kind), opts);
     s.ad = ad;
     s.loading = true;
@@ -149,8 +150,9 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
         // AB/İngiltere/ABD eyaletleri: Google UMP onay penceresi (gerekmiyorsa hiçbir şey göstermez)
         const info = await L.AdsConsent.gatherConsent();
         privacyForm = String(info?.privacyOptionsRequirementStatus || '') === 'REQUIRED';
+        npa = String(info?.status || '') !== 'OBTAINED';   // onay formu çıkmayan bölgelerde (Türkiye vb.) kişiselleştirme yok
         if (info && info.canRequestAds === false) return false;
-        // Kişiselleştirme kararını SDK onay kaydından (TCF) kendisi okur; AB dışında (Türkiye) kayıt yok → normal reklam.
+        // AB'de kişiselleştirme kararını SDK onay kaydından (TCF) okur; onay alınmayan yerde istek kişiselleştirilmemiş gider.
       } catch {
         /* onay sunucusuna ulaşılamadı: SDK yine başlatılır, Google bölgeye göre karar verir */
       }
@@ -177,6 +179,7 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
     },
     async init(m: { noAds?: unknown }) {
       noAds = !!m?.noAds;
+      if (noAds) { status(); return; }   // reklamları kaldırmış kullanıcı: reklam SDK'sı hiç başlatılmaz
       if (!loadAds()) {
         send({ t: 'ad:status', rewarded: false, inter: false, privacy: false, reason: 'unavailable' });
         return;

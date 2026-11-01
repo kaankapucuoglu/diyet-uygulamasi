@@ -15,7 +15,7 @@ DB_PATH = os.environ.get('LF_DB') or os.path.join(os.path.dirname(os.path.abspat
 PBKDF2_IT = 200_000
 TOKEN_SURE = 180 * 86400          # belirteç ömrü
 PAYLASIM_SURE = 30 * 86400        # paylaşım ömrü
-RIZA_SURUM = '2026-11-01'         # güncel rıza metni sürümü (istemci p9a.js RIZA_SURUM ile aynı)
+RIZA_SURUM = '2026-11-01-2'         # güncel rıza metni sürümü (istemci p9a.js RIZA_SURUM ile aynı)
 MAX_GOVDE = 2_000_000             # istek gövdesi (bayt)
 MAX_PAYLASIM = 300_000            # paylaşım yükü (bayt)
 KILIT_N, KILIT_SURE = 5, 900      # 5 yanlış şifre / 15 dk (kullanıcı adı + IP)
@@ -503,6 +503,8 @@ def handle(method, path, q, body, headers, ip):
 
     if p == '/share' and method == 'POST':
         need()
+        if not saglik_rizasi(me):
+            raise ApiError(403, 'consent', ver=RIZA_SURUM)
         if not rate('share', me['id'], 20, 3600):
             raise ApiError(429, 'rate')
         kind = body.get('kind')
@@ -589,7 +591,7 @@ def handle(method, path, q, body, headers, ip):
             rows = c.execute(f'SELECT u.username,u.country,s.streak,s.days FROM stats s JOIN users u ON u.id=s.user_id WHERE u.lb_optin=1 AND u.country=? ORDER BY {LB_ORDER} LIMIT ?', (cc, limit)).fetchall() if cc else []
         else:
             rows = c.execute(f'SELECT u.username,u.country,s.streak,s.days FROM stats s JOIN users u ON u.id=s.user_id WHERE u.lb_optin=1 ORDER BY {LB_ORDER} LIMIT ?', (limit,)).fetchall()
-        out = [{'rank': i + 1, 'username': r['username'], 'country': r['country'], 'streak': r['streak'], 'days': r['days']} for i, r in enumerate(rows)]
+        out = [{'rank': i + 1, 'username': r['username'], 'streak': r['streak'], 'days': r['days']} for i, r in enumerate(rows)]
         mine = None
         if me and me['lb_optin'] and (q.get('me') or [''])[0] == '1':
             mine = rank_of(me['id'], cc if scope == 'country' else None)
