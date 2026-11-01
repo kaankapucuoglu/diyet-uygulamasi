@@ -241,7 +241,7 @@ function detayGorunumu(){
 }
 function ozelYemekFormu(){
   const alan = (id, ad, ek = '') => `<label class="field"><span>${ad}</span><input autocomplete="off" autocorrect="off" spellcheck="false" id="${id}" type="text" inputmode="decimal" ${ek}></label>`;
-  $('sbody').innerHTML = `<div class="det-name">${T('cTitle')}</div>
+  $('sbody').innerHTML = `<div class="det-name">${T('ozelYemekT')}</div>
     <div class="hint" style="margin-bottom:12px">${T('cHint')}</div>
     <label class="field"><span>${T('cName')}</span><input autocomplete="off" autocorrect="off" spellcheck="false" id="oAd" placeholder="${esc(T('cNamePh'))}"></label>
     <div class="grid2">

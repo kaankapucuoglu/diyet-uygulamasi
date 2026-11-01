@@ -23,6 +23,9 @@
   if (!window.__LF_NATIVE) window.__LF_NATIVE = { platform: /android/i.test(navigator.userAgent) ? 'android' : 'ios', version: '', build: '', name: '', fallback: true };
   function post(o) { try { if (window.ReactNativeWebView) window.ReactNativeWebView.postMessage(JSON.stringify(o)); } catch (e) {} }
   window.__lfPost = post;
+  // ---- satın alma / reklam: kabuk → web mesajları, web (kaynak/p9c.js) tanımlayana dek kuyruklanır ----
+  if (!window.__lfIap) { window.__lfIapQ = []; window.__lfIap = function (m) { window.__lfIapQ.push(m); }; }
+  if (!window.__lfAd) { window.__lfAdQ = []; window.__lfAd = function (m) { window.__lfAdQ.push(m); }; }
 
   // ---- fetch() → XHR (yalnız file: adresleri için) ----
   var origFetch = window.fetch ? window.fetch.bind(window) : null;

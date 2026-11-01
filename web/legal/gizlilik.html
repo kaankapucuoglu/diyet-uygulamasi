@@ -62,7 +62,8 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <ul>
 <li><strong>Hesap açmazsanız</strong> tüm verileriniz yalnız cihazınızda kalır; sunucumuza hiçbir kişisel veri gönderilmez.</li>
 <li><strong>Hesap açarsanız</strong> (kullanıcı adı ve şifre) verileriniz, cihazlar arasında eşitleme ve yedekleme için Almanya'daki (AB içinde) sunucumuzda saklanır.</li>
-<li>Reklam yok, takip yok, analitik yok, üçüncü taraf yazılım bileşeni (SDK) yok, çerez yok.</li>
+<li><strong>Reklam:</strong> web sürümünde (diyet.maviplay.com) reklam yoktur. Android ve iOS uygulaması ücretsizdir ve ara sıra Google AdMob geçiş reklamı gösterir; reklamlar tek seferlik "Reklamları kaldır" satın alımıyla kapanır (bkz. 12. bölüm). Sağlık verileriniz reklam için hiçbir zaman kullanılmaz.</li>
+<li>Kendi takip veya analitik aracımız yok, çerez yok.</li>
 <li>Sağlık verileriniz yalnız <strong>açık rızanızla</strong> işlenir; rızanızı istediğiniz zaman geri alabilirsiniz.</li>
 </ul>
 </div>
@@ -108,7 +109,7 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 
 <h2>7. Nerede saklanır, kime aktarılır</h2>
 <p>Hesap verileri <strong>Almanya'da, AB içinde</strong> bulunan sunucumuzda saklanır. Barındırma sağlayıcısı Hetzner Online GmbH veri işleyen olarak yalnız altyapı hizmeti verir; verilerinize talimatımız dışında erişmez ve aramızda veri işleme sözleşmesi bulunur. Veri sorumlusu Türkiye'de bulunduğundan bu saklama KVKK md. 9 anlamında yurt dışına aktarımdır; bu nedenle hesap açarken açık rızanızı ayrıca alırız.</p>
-<p>Verilerinizi reklam ağı, analitik şirketi, veri aracısı veya başka bir üçüncü tarafa <strong>vermeyiz</strong>. Yalnız yasal bir zorunluluk (ör. mahkeme kararı) hâlinde yetkili makamlarla paylaşım söz konusu olabilir.</p>
+<p>Verilerinizi reklam ağı, analitik şirketi, veri aracısı veya başka bir üçüncü tarafa <strong>vermeyiz</strong>. Yalnız yasal bir zorunluluk (ör. mahkeme kararı) hâlinde yetkili makamlarla paylaşım söz konusu olabilir. Mobil uygulamada reklam sağlayıcısının (Google) cihazınızdan doğrudan topladığı veriler için 12. bölüme bakın.</p>
 <p><strong>Paylaşımlar:</strong> Bir programı kullanıcı adıyla paylaşırsanız alıcı başlığı, içeriği ve kullanıcı adınızı görür. Bağlantıyla paylaşırsanız bağlantıya sahip herkes içeriği açabilir; bağlantıyı dikkatli paylaşın. Sıralamaya katılırsanız kullanıcı adınız ve seri gün sayınız diğer kullanıcılara görünür; bunu Ayarlar'dan kapatabilirsiniz.</p>
 <p><strong>Gönüllü destek:</strong> Uygulamada gösterilen banka hesabına gönüllü bağış yaparsanız işlem bankanız üzerinden yapılır; bize yalnız bankanın ilettiği gönderen adı ve tutar ulaşır ve bu bilgi yalnız yasal kayıt amacıyla saklanır.</p>
 
@@ -124,15 +125,20 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <p>Uygulama <strong>16 yaşından küçükler için değildir</strong>. Hesap açarken 16 yaşından büyük olduğunuzu beyan etmeniz istenir. 16 yaşından küçük birinin hesap açtığını öğrenirsek hesabı ve verileri sileriz. Hesapsız kullanımda veri toplamadığımız için yaş doğrulaması yapmayız.</p>
 
 <h2>10. Güvenlik</h2>
-<p>Veriler aktarım sırasında TLS ile şifrelenir. Şifreler tuzlu PBKDF2-SHA256 karması olarak, oturum belirteçleri karma olarak saklanır; şifreniz hiçbir zaman okunabilir biçimde tutulmaz. Beş yanlış denemeden sonra giriş 15 dakika kilitlenir. Sunucuya ve yedeklere erişim kısıtlıdır; yalnız gerekli en az veri işlenir ve üçüncü taraf bileşen bulunmaz. Hiçbir sistem tam güvenli değildir; şifrenizi kimseyle paylaşmayın. Kişisel verilerinizi etkileyen bir veri ihlalinde yasal süreler içinde yetkili makamı ve sizi bilgilendiririz.</p>
+<p>Veriler aktarım sırasında TLS ile şifrelenir. Şifreler tuzlu PBKDF2-SHA256 karması olarak, oturum belirteçleri karma olarak saklanır; şifreniz hiçbir zaman okunabilir biçimde tutulmaz. Beş yanlış denemeden sonra giriş 15 dakika kilitlenir. Sunucuya ve yedeklere erişim kısıtlıdır; yalnız gerekli en az veri işlenir ve sunucuda üçüncü taraf bileşen bulunmaz; mobil uygulamada veri toplayan tek üçüncü taraf bileşen Google'ın reklam SDK'sıdır (bkz. 12. bölüm). Hiçbir sistem tam güvenli değildir; şifrenizi kimseyle paylaşmayın. Kişisel verilerinizi etkileyen bir veri ihlalinde yasal süreler içinde yetkili makamı ve sizi bilgilendiririz.</p>
 
 <h2>11. Çerezler, yerel depolama ve bildirimler</h2>
-<p>Çerez kullanmayız. Uygulama verileriniz cihazınızın yerel depolamasında (tarayıcı depolaması ve IndexedDB) tutulur. Öğün hatırlatıcıları cihazınızda yerel olarak oluşturulur, içerikleri sunucumuza gitmez; hatırlatıcıları istediğiniz zaman kapatabilirsiniz.</p>
+<p>Çerez kullanmayız (mobil uygulamada reklam SDK'sının kullandığı reklam kimliği için bkz. 12. bölüm). Uygulama verileriniz cihazınızın yerel depolamasında (tarayıcı depolaması ve IndexedDB) tutulur. Öğün hatırlatıcıları cihazınızda yerel olarak oluşturulur, içerikleri sunucumuza gitmez; hatırlatıcıları istediğiniz zaman kapatabilirsiniz.</p>
 
-<h2>12. Değişiklikler</h2>
+<h2>12. Reklamlar ve uygulama içi satın alma</h2>
+<p>Web sürümünde (diyet.maviplay.com) reklam ve satın alma yoktur. Android ve iOS uygulaması ücretsizdir ve <strong>Google AdMob</strong> (Google Ireland Ltd. / Google LLC) ile seyrek <strong>geçiş reklamı</strong> gösterir: yalnız doğal geçişlerde (ör. planınız yenilenince ya da bir paylaşım penceresi kapanınca); kurulum ve onay ekranlarında ve ilk açılıştan sonraki ilk dakikalarda reklam gösterilmez. Reklamları göstermek, ölçmek ve sahteciliği önlemek için Google cihazınızdan <strong>reklam kimliği</strong> (Android Reklam Kimliği; iOS'ta reklam kimliği yalnız izleme izni verirseniz kullanılabilir), cihaz ve uygulama bilgisi, IP adresinden türetilen <strong>yaklaşık konum</strong>, kilitlenme ve performans bilgisi ile reklam etkileşimlerini (gösterim, dokunma) toplayabilir. Bu veriler doğrudan Google'a gider, <strong>bize gelmez</strong>; Google bunları kendi <a href="https://policies.google.com/technologies/ads" rel="noopener">reklam politikasına</a> göre işler. Sağlık verileriniz, profiliniz ve yemek kayıtlarınız reklam isteğine <strong>hiçbir zaman eklenmez</strong>.</p>
+<p>Avrupa Ekonomik Alanı, Birleşik Krallık ve İsviçre'de kişiselleştirilmiş reklam yalnız Google'ın onay penceresinde vereceğiniz izinle (GDPR md. 6(1)(a)) gösterilir; seçiminizi istediğiniz zaman <strong>Ayarlar → Reklamlar → Reklam gizlilik seçenekleri</strong>'nden değiştirebilirsiniz. Diğer ülkelerde Google reklamları kendi politikasına ve cihazınızın reklam ayarlarına göre kişiselleştirir. Android'de reklam kimliğinizi cihaz ayarlarından (Google → Reklamlar) sıfırlayabilir veya silebilirsiniz.</p>
+<p><strong>Reklamları kaldır:</strong> Ayarlar → Reklamlar'daki tek seferlik satın alma (abonelik değildir) reklamları kalıcı olarak kapatır. Ödeme <strong>Google Play</strong> veya <strong>App Store</strong> tarafından işlenir; kart ve ödeme bilgileriniz bize gelmez. Satın almanın teslimi için uygulama ayarlarında yalnız "reklamsız" bilgisi ve mağazanın verdiği işlem numarası saklanır; hesap açtıysanız diğer verilerinizle birlikte eşitlenir. Satın alma iOS'ta "Satın alımları geri yükle" ile, Android'de aynı Google hesabıyla yeniden kurulumda geri gelir.</p>
+
+<h2>13. Değişiklikler</h2>
 <p>Bu politikayı güncelleyebiliriz. Önemli değişiklikleri uygulama içinde duyururuz; sağlık verilerinizin işlenmesini etkileyen değişikliklerde yeniden rızanızı isteriz. Güncel sürüm ve tarih sayfanın başındadır.</p>
 
-<h2>13. İletişim</h2>
+<h2>14. İletişim</h2>
 <p>Kaan Kapucuoğlu (Maviplay), Türkiye · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
 
 <div class="docs">İlgili belgeler: <a href="aydinlatma.html#tr">KVKK Aydınlatma Metni</a> · <a href="acik-riza.html#tr">Açık Rıza Metni</a> · <a href="kosullar.html#tr">Kullanım Koşulları</a> · <a href="hesap-sil.html#tr">Hesap silme</a></div>
@@ -151,7 +157,8 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <ul>
 <li><strong>Without an account</strong>, all your data stays on your device only; no personal data is sent to our server.</li>
 <li><strong>With an account</strong> (username and password), your data is stored on our server in Germany (within the EU) so it can be synced across your devices and backed up.</li>
-<li>No ads, no tracking, no analytics, no third-party software components (SDKs), no cookies.</li>
+<li><strong>Ads:</strong> the web version (diyet.maviplay.com) has no ads. The Android and iOS app is free and shows an occasional Google AdMob interstitial ad; a one-time "Remove ads" purchase turns them off (see section 12). Your health data is never used for advertising.</li>
+<li>No tracking or analytics tools of our own, no cookies.</li>
 <li>Your health data is processed only with your <strong>explicit consent</strong>, which you can withdraw at any time.</li>
 </ul>
 </div>
@@ -197,7 +204,7 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 
 <h2>7. Where data is stored and who receives it</h2>
 <p>Account data is stored on our server <strong>in Germany, within the EU</strong>. The hosting provider, Hetzner Online GmbH, acts as a data processor and provides infrastructure only; it does not access your data except on our instructions, and a data processing agreement is in place. Because the controller is located in Türkiye, this storage is a transfer abroad under KVKK Art. 9, which is why we ask for your separate explicit consent when you create an account.</p>
-<p>We <strong>do not</strong> give your data to ad networks, analytics companies, data brokers or any other third party. Disclosure to authorities may occur only where legally required (e.g. a court order).</p>
+<p>We <strong>do not</strong> give your data to ad networks, analytics companies, data brokers or any other third party. Disclosure to authorities may occur only where legally required (e.g. a court order). For data that the ad provider (Google) collects directly from your device in the mobile app, see section 12.</p>
 <p><strong>Sharing:</strong> If you share a program by username, the recipient sees its title, content and your username. If you share by link, anyone with the link can open it, so share links carefully. If you join the leaderboard, your username and streak are visible to other users; you can turn this off in Settings.</p>
 <p><strong>Voluntary support:</strong> If you make a voluntary donation to the bank account shown in the app, the transfer is handled by your bank; we receive only the sender name and amount shown by the bank, kept solely for statutory record-keeping.</p>
 
@@ -213,15 +220,20 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <p>The app is <strong>not intended for anyone under 16</strong>. When creating an account you must confirm that you are over 16. If we learn that a person under 16 has created an account, we delete the account and its data. In account-free use we collect no data and therefore do not verify age.</p>
 
 <h2>10. Security</h2>
-<p>Data is encrypted in transit with TLS. Passwords are stored as salted PBKDF2-SHA256 hashes and session tokens as hashes; your password is never stored in readable form. After five failed attempts, sign-in is locked for 15 minutes. Access to the server and backups is restricted; only the minimum necessary data is processed and no third-party components are used. No system is completely secure; do not share your password. In the event of a data breach affecting your personal data we will notify the competent authority and you within the statutory deadlines.</p>
+<p>Data is encrypted in transit with TLS. Passwords are stored as salted PBKDF2-SHA256 hashes and session tokens as hashes; your password is never stored in readable form. After five failed attempts, sign-in is locked for 15 minutes. Access to the server and backups is restricted; only the minimum necessary data is processed and no third-party components run on the server; in the mobile app the only third-party component that collects data is Google's advertising SDK (see section 12). No system is completely secure; do not share your password. In the event of a data breach affecting your personal data we will notify the competent authority and you within the statutory deadlines.</p>
 
 <h2>11. Cookies, local storage and notifications</h2>
-<p>We do not use cookies. App data is kept in your device's local storage (browser storage and IndexedDB). Meal reminders are generated locally on your device; their content never reaches our server, and you can turn them off at any time.</p>
+<p>We do not use cookies (for the advertising ID used by the ad SDK in the mobile app, see section 12). App data is kept in your device's local storage (browser storage and IndexedDB). Meal reminders are generated locally on your device; their content never reaches our server, and you can turn them off at any time.</p>
 
-<h2>12. Changes</h2>
+<h2>12. Advertising and in-app purchase</h2>
+<p>The web version (diyet.maviplay.com) has no ads and no purchases. The Android and iOS app is free and shows occasional <strong>interstitial ads</strong> served by <strong>Google AdMob</strong> (Google Ireland Ltd. / Google LLC), only at natural breaks (e.g. after your plan is refreshed or a share window is closed); no ads are shown during setup, on consent screens or in the first minutes after you first open the app. To show and measure ads and prevent fraud, Google may collect your device's <strong>advertising ID</strong> (Android Advertising ID; on iOS the advertising identifier is available only if you allow tracking), device and app information, <strong>approximate location</strong> derived from your IP address, crash and performance data and ad interactions (impressions, taps). This data goes directly to Google and <strong>is not passed to us</strong>; Google processes it under its own <a href="https://policies.google.com/technologies/ads" rel="noopener">advertising policy</a>. Your health data, profile and food logs are <strong>never</strong> added to ad requests.</p>
+<p>In the European Economic Area, the UK and Switzerland, personalised ads are shown only with the consent you give in Google's consent form (GDPR Art. 6(1)(a)); you can change your choice at any time in <strong>Settings → Ads → Ad privacy options</strong>. In other countries Google personalises ads according to its own policy and your device's ad settings. On Android you can reset or delete your advertising ID in the device settings (Google → Ads).</p>
+<p><strong>Remove ads:</strong> the one-time purchase in Settings → Ads (not a subscription) turns ads off permanently. Payment is processed by <strong>Google Play</strong> or the <strong>App Store</strong>; your card and payment details never reach us. To deliver the purchase, the app settings keep only an "ad-free" flag and the transaction number issued by the store; if you have an account, they sync with your other data. The purchase comes back with "Restore purchases" on iOS, or when you reinstall with the same Google account on Android.</p>
+
+<h2>13. Changes</h2>
 <p>We may update this policy. Significant changes are announced in the app; where a change affects the processing of your health data we ask for your consent again. The current version and date are shown at the top of this page.</p>
 
-<h2>13. Contact</h2>
+<h2>14. Contact</h2>
 <p>Kaan Kapucuoğlu (Maviplay), Türkiye · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
 
 <div class="docs">Related documents: <a href="aydinlatma.html#en">KVKK Privacy Notice</a> · <a href="acik-riza.html#en">Explicit Consent</a> · <a href="kosullar.html#en">Terms of Use</a> · <a href="hesap-sil.html#en">Account deletion</a></div>
@@ -240,7 +252,8 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <ul>
 <li><strong>Без аккаунта</strong> все ваши данные остаются только на вашем устройстве; на наш сервер персональные данные не передаются.</li>
 <li><strong>С аккаунтом</strong> (имя пользователя и пароль) ваши данные хранятся на нашем сервере в Германии (на территории ЕС) для синхронизации между устройствами и резервного копирования.</li>
-<li>Нет рекламы, слежки, аналитики, сторонних программных компонентов (SDK) и cookie.</li>
+<li><strong>Реклама:</strong> в веб-версии (diyet.maviplay.com) рекламы нет. Приложение для Android и iOS бесплатно и иногда показывает межстраничную рекламу Google AdMob; разовая покупка «Убрать рекламу» её отключает (см. раздел 12). Данные о здоровье никогда не используются для рекламы.</li>
+<li>Собственных инструментов слежки и аналитики нет, cookie нет.</li>
 <li>Данные о здоровье обрабатываются только с вашего <strong>явного согласия</strong>, которое можно отозвать в любой момент.</li>
 </ul>
 </div>
@@ -286,7 +299,7 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 
 <h2>7. Где хранятся данные и кому передаются</h2>
 <p>Данные аккаунта хранятся на нашем сервере <strong>в Германии, на территории ЕС</strong>. Хостинг-провайдер Hetzner Online GmbH выступает обработчиком данных и предоставляет только инфраструктуру; он не получает доступ к вашим данным иначе как по нашему указанию, с ним заключён договор об обработке данных. Поскольку оператор находится в Турции, такое хранение является передачей за рубеж по ст. 9 KVKK, поэтому при создании аккаунта мы отдельно запрашиваем ваше явное согласие.</p>
-<p>Мы <strong>не передаём</strong> ваши данные рекламным сетям, аналитическим компаниям, брокерам данных или иным третьим лицам. Раскрытие органам власти возможно только при наличии правового требования (например, судебного решения).</p>
+<p>Мы <strong>не передаём</strong> ваши данные рекламным сетям, аналитическим компаниям, брокерам данных или иным третьим лицам. Раскрытие органам власти возможно только при наличии правового требования (например, судебного решения). О данных, которые рекламный провайдер (Google) собирает напрямую с вашего устройства в мобильном приложении, см. раздел 12.</p>
 <p><strong>Обмен:</strong> если вы делитесь программой по имени пользователя, получатель видит её название, содержимое и ваше имя пользователя. Если вы делитесь ссылкой, открыть её может любой, у кого она есть, — делитесь ссылками осторожно. При участии в рейтинге ваше имя пользователя и серия дней видны другим пользователям; это можно отключить в настройках.</p>
 <p><strong>Добровольная поддержка:</strong> если вы делаете добровольный перевод на банковский счёт, указанный в приложении, операцию выполняет ваш банк; мы получаем только имя отправителя и сумму, которые показывает банк, и храним их исключительно для обязательного учёта.</p>
 
@@ -302,15 +315,20 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <p>Приложение <strong>не предназначено для лиц младше 16 лет</strong>. При создании аккаунта необходимо подтвердить, что вам больше 16 лет. Если мы узнаем, что аккаунт создал человек младше 16 лет, мы удалим аккаунт и данные. При использовании без аккаунта мы не собираем данные и поэтому не проверяем возраст.</p>
 
 <h2>10. Безопасность</h2>
-<p>Данные при передаче шифруются по TLS. Пароли хранятся в виде солёных хешей PBKDF2-SHA256, токены сессий — в виде хешей; пароль никогда не хранится в читаемом виде. После пяти неверных попыток вход блокируется на 15 минут. Доступ к серверу и резервным копиям ограничен; обрабатывается только необходимый минимум данных, сторонние компоненты не используются. Ни одна система не является абсолютно безопасной — не сообщайте никому свой пароль. При утечке данных, затрагивающей ваши персональные данные, мы уведомим компетентный орган и вас в установленные законом сроки.</p>
+<p>Данные при передаче шифруются по TLS. Пароли хранятся в виде солёных хешей PBKDF2-SHA256, токены сессий — в виде хешей; пароль никогда не хранится в читаемом виде. После пяти неверных попыток вход блокируется на 15 минут. Доступ к серверу и резервным копиям ограничен; обрабатывается только необходимый минимум данных, на сервере нет сторонних компонентов; в мобильном приложении единственный сторонний компонент, собирающий данные, — рекламный SDK Google (см. раздел 12). Ни одна система не является абсолютно безопасной — не сообщайте никому свой пароль. При утечке данных, затрагивающей ваши персональные данные, мы уведомим компетентный орган и вас в установленные законом сроки.</p>
 
 <h2>11. Cookie, локальное хранилище и уведомления</h2>
-<p>Мы не используем cookie. Данные приложения хранятся в локальном хранилище вашего устройства (хранилище браузера и IndexedDB). Напоминания о приёмах пищи создаются локально на устройстве; их содержимое не попадает на наш сервер, и их можно отключить в любой момент.</p>
+<p>Мы не используем cookie (о рекламном идентификаторе, который использует рекламный SDK в мобильном приложении, см. раздел 12). Данные приложения хранятся в локальном хранилище вашего устройства (хранилище браузера и IndexedDB). Напоминания о приёмах пищи создаются локально на устройстве; их содержимое не попадает на наш сервер, и их можно отключить в любой момент.</p>
 
-<h2>12. Изменения</h2>
+<h2>12. Реклама и встроенная покупка</h2>
+<p>В веб-версии (diyet.maviplay.com) нет рекламы и покупок. Приложение для Android и iOS бесплатно и иногда показывает <strong>межстраничную рекламу</strong> <strong>Google AdMob</strong> (Google Ireland Ltd. / Google LLC) — только в естественных паузах (например, после обновления плана или закрытия окна «Поделиться»); во время настройки, на экранах согласия и в первые минуты после первого запуска реклама не показывается. Чтобы показывать и измерять рекламу и предотвращать мошенничество, Google может собирать <strong>рекламный идентификатор</strong> устройства (рекламный идентификатор Android; на iOS он доступен, только если вы разрешите отслеживание), сведения об устройстве и приложении, <strong>примерное местоположение</strong>, определяемое по IP-адресу, данные о сбоях и производительности, а также взаимодействие с рекламой (показы, нажатия). Эти данные поступают напрямую в Google и <strong>не передаются нам</strong>; Google обрабатывает их по своей <a href="https://policies.google.com/technologies/ads" rel="noopener">рекламной политике</a>. Данные о здоровье, профиль и записи о еде <strong>никогда</strong> не добавляются в рекламные запросы.</p>
+<p>В Европейской экономической зоне, Великобритании и Швейцарии персонализированная реклама показывается только с согласия, которое вы даёте в форме Google (ст. 6(1)(a) GDPR); изменить выбор можно в любой момент: <strong>Настройки → Реклама → Настройки конфиденциальности рекламы</strong>. В других странах Google персонализирует рекламу по своей политике и рекламным настройкам устройства. На Android рекламный идентификатор можно сбросить или удалить в настройках устройства (Google → Реклама).</p>
+<p><strong>Убрать рекламу:</strong> разовая покупка в разделе Настройки → Реклама (не подписка) навсегда отключает рекламу. Оплату обрабатывает <strong>Google Play</strong> или <strong>App Store</strong>; данные карты и платежа к нам не поступают. Для выдачи покупки в настройках приложения хранятся только отметка «без рекламы» и номер транзакции, выданный магазином; если у вас есть аккаунт, они синхронизируются вместе с остальными данными. Покупка восстанавливается кнопкой «Восстановить покупки» на iOS или при переустановке с тем же аккаунтом Google на Android.</p>
+
+<h2>13. Изменения</h2>
 <p>Мы можем обновлять эту политику. О существенных изменениях сообщаем в приложении; если изменение затрагивает обработку данных о здоровье, мы запрашиваем ваше согласие повторно. Актуальная версия и дата указаны в начале страницы.</p>
 
-<h2>13. Контакты</h2>
+<h2>14. Контакты</h2>
 <p>Kaan Kapucuoğlu (Maviplay), Турция · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
 
 <div class="docs">Связанные документы: <a href="aydinlatma.html#ru">Уведомление KVKK</a> · <a href="acik-riza.html#ru">Явное согласие</a> · <a href="kosullar.html#ru">Условия использования</a> · <a href="hesap-sil.html#ru">Удаление аккаунта</a></div>
@@ -329,7 +347,8 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <ul>
 <li><strong>Ohne Konto</strong> bleiben alle Daten ausschließlich auf deinem Gerät; an unseren Server werden keine personenbezogenen Daten gesendet.</li>
 <li><strong>Mit Konto</strong> (Benutzername und Passwort) werden deine Daten auf unserem Server in Deutschland (innerhalb der EU) gespeichert, um sie zwischen deinen Geräten zu synchronisieren und zu sichern.</li>
-<li>Keine Werbung, kein Tracking, keine Analyse-Dienste, keine Software-Komponenten Dritter (SDKs), keine Cookies.</li>
+<li><strong>Werbung:</strong> Die Webversion (diyet.maviplay.com) ist werbefrei. Die Android- und iOS-App ist kostenlos und zeigt gelegentlich eine Interstitial-Anzeige von Google AdMob; der einmalige Kauf „Werbung entfernen“ schaltet sie ab (siehe Abschnitt 12). Deine Gesundheitsdaten werden nie für Werbung genutzt.</li>
+<li>Keine eigenen Tracking- oder Analysewerkzeuge, keine Cookies.</li>
 <li>Gesundheitsdaten werden nur mit deiner <strong>ausdrücklichen Einwilligung</strong> verarbeitet; du kannst sie jederzeit widerrufen.</li>
 </ul>
 </div>
@@ -375,7 +394,7 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 
 <h2>7. Speicherort und Empfänger</h2>
 <p>Kontodaten werden auf unserem Server <strong>in Deutschland, innerhalb der EU</strong>, gespeichert. Der Hosting-Anbieter Hetzner Online GmbH handelt als Auftragsverarbeiter und stellt ausschließlich Infrastruktur bereit; er greift nur auf unsere Weisung auf Daten zu, und es besteht ein Auftragsverarbeitungsvertrag. Da der Verantwortliche in der Türkei sitzt, ist diese Speicherung eine Übermittlung ins Ausland nach Art. 9 KVKK; deshalb holen wir bei der Kontoerstellung deine gesonderte ausdrückliche Einwilligung ein.</p>
-<p>Wir geben deine Daten <strong>nicht</strong> an Werbenetzwerke, Analyseunternehmen, Datenhändler oder sonstige Dritte weiter. Eine Offenlegung gegenüber Behörden erfolgt nur, wenn dies gesetzlich verpflichtend ist (z. B. gerichtliche Anordnung).</p>
+<p>Wir geben deine Daten <strong>nicht</strong> an Werbenetzwerke, Analyseunternehmen, Datenhändler oder sonstige Dritte weiter. Eine Offenlegung gegenüber Behörden erfolgt nur, wenn dies gesetzlich verpflichtend ist (z. B. gerichtliche Anordnung). Zu Daten, die der Werbeanbieter (Google) in der mobilen App direkt von deinem Gerät erhebt, siehe Abschnitt 12.</p>
 <p><strong>Teilen:</strong> Teilst du ein Programm per Benutzername, sieht der Empfänger Titel, Inhalt und deinen Benutzernamen. Teilst du per Link, kann jede Person mit dem Link den Inhalt öffnen – gib Links mit Bedacht weiter. Bei Teilnahme an der Rangliste sind dein Benutzername und deine Serie für andere sichtbar; das lässt sich in den Einstellungen abschalten.</p>
 <p><strong>Freiwillige Unterstützung:</strong> Überweist du freiwillig auf das in der App angezeigte Bankkonto, läuft der Vorgang über deine Bank; wir erhalten nur den von der Bank übermittelten Absendernamen und Betrag und bewahren diese ausschließlich für die gesetzliche Buchführung auf.</p>
 
@@ -391,15 +410,20 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <p>Die App ist <strong>nicht für Personen unter 16 Jahren</strong> bestimmt. Bei der Kontoerstellung musst du bestätigen, dass du über 16 bist. Erfahren wir, dass eine Person unter 16 ein Konto erstellt hat, löschen wir Konto und Daten. Ohne Konto erheben wir keine Daten und prüfen daher kein Alter.</p>
 
 <h2>10. Sicherheit</h2>
-<p>Daten werden bei der Übertragung per TLS verschlüsselt. Passwörter werden als gesalzene PBKDF2-SHA256-Hashes, Sitzungs-Token als Hashes gespeichert; dein Passwort liegt nie lesbar vor. Nach fünf Fehlversuchen wird die Anmeldung 15 Minuten gesperrt. Der Zugriff auf Server und Sicherungen ist beschränkt; es wird nur das notwendige Minimum an Daten verarbeitet, Komponenten Dritter gibt es nicht. Kein System ist vollkommen sicher – gib dein Passwort nicht weiter. Bei einer Datenpanne, die deine personenbezogenen Daten betrifft, informieren wir die zuständige Behörde und dich innerhalb der gesetzlichen Fristen.</p>
+<p>Daten werden bei der Übertragung per TLS verschlüsselt. Passwörter werden als gesalzene PBKDF2-SHA256-Hashes, Sitzungs-Token als Hashes gespeichert; dein Passwort liegt nie lesbar vor. Nach fünf Fehlversuchen wird die Anmeldung 15 Minuten gesperrt. Der Zugriff auf Server und Sicherungen ist beschränkt; es wird nur das notwendige Minimum an Daten verarbeitet, auf dem Server laufen keine Komponenten Dritter; in der mobilen App ist das Werbe-SDK von Google die einzige Drittkomponente, die Daten erhebt (siehe Abschnitt 12). Kein System ist vollkommen sicher – gib dein Passwort nicht weiter. Bei einer Datenpanne, die deine personenbezogenen Daten betrifft, informieren wir die zuständige Behörde und dich innerhalb der gesetzlichen Fristen.</p>
 
 <h2>11. Cookies, lokaler Speicher und Benachrichtigungen</h2>
-<p>Wir verwenden keine Cookies. App-Daten liegen im lokalen Speicher deines Geräts (Browser-Speicher und IndexedDB). Essens-Erinnerungen werden lokal auf dem Gerät erzeugt; ihr Inhalt gelangt nicht auf unseren Server, und du kannst sie jederzeit abschalten.</p>
+<p>Wir verwenden keine Cookies (zur Werbe-ID, die das Werbe-SDK in der mobilen App nutzt, siehe Abschnitt 12). App-Daten liegen im lokalen Speicher deines Geräts (Browser-Speicher und IndexedDB). Essens-Erinnerungen werden lokal auf dem Gerät erzeugt; ihr Inhalt gelangt nicht auf unseren Server, und du kannst sie jederzeit abschalten.</p>
 
-<h2>12. Änderungen</h2>
+<h2>12. Werbung und In-App-Kauf</h2>
+<p>Die Webversion (diyet.maviplay.com) enthält weder Werbung noch Käufe. Die Android- und iOS-App ist kostenlos und zeigt gelegentlich <strong>Interstitial-Anzeigen</strong> von <strong>Google AdMob</strong> (Google Ireland Ltd. / Google LLC) – nur an natürlichen Pausen (z. B. nachdem dein Plan erneuert oder ein Teilen-Fenster geschlossen wurde); während der Einrichtung, auf Einwilligungsbildschirmen und in den ersten Minuten nach dem ersten Start wird keine Werbung gezeigt. Um Anzeigen auszuliefern und zu messen und Betrug zu verhindern, kann Google die <strong>Werbe-ID</strong> deines Geräts (Android-Werbe-ID; unter iOS ist die Werbe-ID nur verfügbar, wenn du Tracking erlaubst), Geräte- und App-Informationen, einen aus der IP-Adresse abgeleiteten <strong>ungefähren Standort</strong>, Absturz- und Leistungsdaten sowie Interaktionen mit Anzeigen (Einblendungen, Tippen) erheben. Diese Daten gehen direkt an Google und <strong>nicht an uns</strong>; Google verarbeitet sie nach seinen eigenen <a href="https://policies.google.com/technologies/ads" rel="noopener">Werberichtlinien</a>. Deine Gesundheitsdaten, dein Profil und deine Mahlzeitenprotokolle werden Anzeigenanfragen <strong>nie</strong> beigefügt.</p>
+<p>Im Europäischen Wirtschaftsraum, im Vereinigten Königreich und in der Schweiz werden personalisierte Anzeigen nur mit der Einwilligung gezeigt, die du im Einwilligungsformular von Google gibst (Art. 6 Abs. 1 lit. a DSGVO); du kannst deine Wahl jederzeit unter <strong>Einstellungen → Werbung → Datenschutzoptionen für Werbung</strong> ändern. In anderen Ländern personalisiert Google Anzeigen nach seinen eigenen Richtlinien und den Werbeeinstellungen deines Geräts. Unter Android kannst du deine Werbe-ID in den Geräteeinstellungen (Google → Werbung) zurücksetzen oder löschen.</p>
+<p><strong>Werbung entfernen:</strong> Der einmalige Kauf unter Einstellungen → Werbung (kein Abo) schaltet die Werbung dauerhaft ab. Die Zahlung wickelt <strong>Google Play</strong> oder der <strong>App Store</strong> ab; Karten- und Zahlungsdaten erreichen uns nicht. Zur Bereitstellung des Kaufs speichern die App-Einstellungen nur einen „werbefrei“-Vermerk und die vom Store vergebene Transaktionsnummer; hast du ein Konto, werden sie mit deinen übrigen Daten synchronisiert. Unter iOS stellst du den Kauf mit „Käufe wiederherstellen“ wieder her, unter Android bei einer Neuinstallation mit demselben Google-Konto.</p>
+
+<h2>13. Änderungen</h2>
 <p>Wir können diese Erklärung aktualisieren. Wesentliche Änderungen kündigen wir in der App an; betrifft eine Änderung die Verarbeitung deiner Gesundheitsdaten, holen wir deine Einwilligung erneut ein. Version und Datum stehen oben auf dieser Seite.</p>
 
-<h2>13. Kontakt</h2>
+<h2>14. Kontakt</h2>
 <p>Kaan Kapucuoğlu (Maviplay), Türkei · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
 
 <div class="docs">Zugehörige Dokumente: <a href="aydinlatma.html#de">KVKK-Informationsschreiben</a> · <a href="acik-riza.html#de">Ausdrückliche Einwilligung</a> · <a href="kosullar.html#de">Nutzungsbedingungen</a> · <a href="hesap-sil.html#de">Konto löschen</a></div>
@@ -418,7 +442,8 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <ul>
 <li><strong>من دون حساب</strong>، تبقى جميع بياناتك على جهازك فقط؛ ولا تُرسَل أي بيانات شخصية إلى خادمنا.</li>
 <li><strong>مع حساب</strong> (اسم مستخدم وكلمة مرور)، تُحفَظ بياناتك على خادمنا في ألمانيا (داخل الاتحاد الأوروبي) لمزامنتها بين أجهزتك ونسخها احتياطياً.</li>
-<li>لا إعلانات، لا تتبُّع، لا تحليلات، لا مكوّنات برمجية من أطراف ثالثة (SDK)، لا ملفات تعريف ارتباط (كوكيز).</li>
+<li><strong>الإعلانات:</strong> لا إعلانات في نسخة الويب (diyet.maviplay.com). تطبيق Android وiOS مجاني ويعرض أحياناً إعلاناً بينياً من Google AdMob؛ ويوقفها شراء «إزالة الإعلانات» لمرة واحدة (انظر القسم 12). لا تُستخدَم بياناتك الصحية للإعلانات أبداً.</li>
+<li>لا أدوات تتبّع أو تحليلات خاصة بنا، ولا ملفات تعريف ارتباط (كوكيز).</li>
 <li>تُعالَج بياناتك الصحية فقط بـ<strong>موافقتك الصريحة</strong>، ويمكنك سحبها في أي وقت.</li>
 </ul>
 </div>
@@ -464,7 +489,7 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 
 <h2>7. مكان التخزين والجهات المتلقية</h2>
 <p>تُحفَظ بيانات الحساب على خادمنا <strong>في ألمانيا، داخل الاتحاد الأوروبي</strong>. ويعمل مزوّد الاستضافة Hetzner Online GmbH بوصفه معالجاً للبيانات ويقدّم البنية التحتية فقط؛ ولا يصل إلى بياناتك إلا بتعليماتنا، وبيننا اتفاقية معالجة بيانات. ولأن المسؤول عن البيانات مقيم في تركيا، يُعَدّ هذا التخزين نقلاً إلى خارج البلاد وفق المادة 9 من KVKK؛ ولذلك نطلب موافقتك الصريحة المنفصلة عند إنشاء الحساب.</p>
-<p>نحن <strong>لا نسلّم</strong> بياناتك إلى شبكات إعلانية أو شركات تحليلات أو وسطاء بيانات أو أي طرف ثالث آخر. ولا يُكشَف عنها للسلطات إلا عند وجود إلزام قانوني (مثل أمر قضائي).</p>
+<p>نحن <strong>لا نسلّم</strong> بياناتك إلى شبكات إعلانية أو شركات تحليلات أو وسطاء بيانات أو أي طرف ثالث آخر. ولا يُكشَف عنها للسلطات إلا عند وجود إلزام قانوني (مثل أمر قضائي). وللاطلاع على البيانات التي يجمعها مزوّد الإعلانات (Google) مباشرة من جهازك في تطبيق الهاتف، انظر القسم 12.</p>
 <p><strong>المشاركة:</strong> إذا شاركت برنامجاً باسم المستخدم يرى المستلم عنوانه ومحتواه واسم المستخدم الخاص بك. وإذا شاركته برابط فيمكن لأي شخص يملك الرابط فتحه؛ فشارك الروابط بحذر. وإذا انضممت إلى الترتيب يظهر اسم المستخدم وعدد أيام سلسلتك للمستخدمين الآخرين؛ ويمكنك إيقاف ذلك من الإعدادات.</p>
 <p><strong>الدعم الطوعي:</strong> إذا تبرّعت طوعاً إلى الحساب البنكي المعروض في التطبيق فإن العملية تجري عبر بنكك؛ ولا يصلنا إلا اسم المُرسِل والمبلغ كما يعرضهما البنك، ونحتفظ بهما لأغراض السجلات القانونية فقط.</p>
 
@@ -480,15 +505,20 @@ footer{margin-top:18px;color:var(--muted);font-size:13.5px;text-align:center}
 <p>التطبيق <strong>غير موجَّه لمن هم دون 16 عاماً</strong>. عند إنشاء حساب يُطلَب منك تأكيد أنك أكبر من 16 عاماً. وإذا علمنا أن شخصاً دون 16 عاماً أنشأ حساباً حذفنا الحساب وبياناته. وفي الاستخدام من دون حساب لا نجمع بيانات، ولذلك لا نتحقق من العمر.</p>
 
 <h2>10. الأمان</h2>
-<p>تُشفَّر البيانات أثناء النقل عبر TLS. تُحفَظ كلمات المرور كتجزئات PBKDF2-SHA256 مُملَّحة، ورموز الجلسات كتجزئات؛ ولا تُحفَظ كلمة مرورك قط بصيغة مقروءة. بعد خمس محاولات خاطئة يُقفَل الدخول 15 دقيقة. الوصول إلى الخادم والنسخ الاحتياطية مقيَّد؛ ويُعالَج الحد الأدنى الضروري من البيانات فقط، ولا توجد مكوّنات من أطراف ثالثة. لا يوجد نظام آمن تماماً؛ فلا تشارك كلمة مرورك مع أحد. وفي حال خرق بيانات يمسّ بياناتك الشخصية نُخطر السلطة المختصة ونُخطرك ضمن المهل القانونية.</p>
+<p>تُشفَّر البيانات أثناء النقل عبر TLS. تُحفَظ كلمات المرور كتجزئات PBKDF2-SHA256 مُملَّحة، ورموز الجلسات كتجزئات؛ ولا تُحفَظ كلمة مرورك قط بصيغة مقروءة. بعد خمس محاولات خاطئة يُقفَل الدخول 15 دقيقة. الوصول إلى الخادم والنسخ الاحتياطية مقيَّد؛ ويُعالَج الحد الأدنى الضروري من البيانات فقط، ولا توجد على الخادم مكوّنات من أطراف ثالثة؛ وفي تطبيق الهاتف تكون حزمة الإعلانات (SDK) من Google المكوّن الوحيد من طرف ثالث الذي يجمع بيانات (انظر القسم 12). لا يوجد نظام آمن تماماً؛ فلا تشارك كلمة مرورك مع أحد. وفي حال خرق بيانات يمسّ بياناتك الشخصية نُخطر السلطة المختصة ونُخطرك ضمن المهل القانونية.</p>
 
 <h2>11. الكوكيز والتخزين المحلي والإشعارات</h2>
-<p>لا نستخدم ملفات تعريف الارتباط. تُحفَظ بيانات التطبيق في التخزين المحلي لجهازك (تخزين المتصفح وIndexedDB). وتُنشأ تذكيرات الوجبات محلياً على جهازك ولا يصل محتواها إلى خادمنا، ويمكنك إيقافها في أي وقت.</p>
+<p>لا نستخدم ملفات تعريف الارتباط (وللمعرّف الإعلاني الذي تستخدمه حزمة الإعلانات في تطبيق الهاتف انظر القسم 12). تُحفَظ بيانات التطبيق في التخزين المحلي لجهازك (تخزين المتصفح وIndexedDB). وتُنشأ تذكيرات الوجبات محلياً على جهازك ولا يصل محتواها إلى خادمنا، ويمكنك إيقافها في أي وقت.</p>
 
-<h2>12. التغييرات</h2>
+<h2>12. الإعلانات والشراء داخل التطبيق</h2>
+<p>لا توجد إعلانات ولا مشتريات في نسخة الويب (diyet.maviplay.com). تطبيق Android وiOS مجاني ويعرض من حين لآخر <strong>إعلانات بينية</strong> من <strong>Google AdMob</strong> (Google Ireland Ltd. / Google LLC)، في الفواصل الطبيعية فقط (مثلاً بعد تحديث خطتك أو إغلاق نافذة المشاركة)؛ ولا تُعرَض إعلانات أثناء الإعداد ولا في شاشات الموافقة ولا في الدقائق الأولى بعد أول تشغيل. ولعرض الإعلانات وقياسها ومنع الاحتيال قد تجمع Google <strong>المعرّف الإعلاني</strong> لجهازك (معرّف إعلانات Android؛ وفي iOS لا يتوفر المعرّف الإعلاني إلا إذا سمحت بالتتبّع)، ومعلومات الجهاز والتطبيق، و<strong>الموقع التقريبي</strong> المستنتَج من عنوان IP، وبيانات الأعطال والأداء، والتفاعل مع الإعلانات (مرات الظهور والنقرات). تذهب هذه البيانات مباشرة إلى Google <strong>ولا تصل إلينا</strong>؛ وتعالجها Google وفق <a href="https://policies.google.com/technologies/ads" rel="noopener">سياستها الإعلانية</a>. ولا تُضاف بياناتك الصحية أو ملفك الشخصي أو سجلات طعامك إلى طلبات الإعلانات <strong>أبداً</strong>.</p>
+<p>في المنطقة الاقتصادية الأوروبية والمملكة المتحدة وسويسرا لا تُعرَض الإعلانات المخصّصة إلا بالموافقة التي تمنحها في نموذج الموافقة من Google (المادة 6(1)(a) من GDPR)؛ ويمكنك تغيير اختيارك في أي وقت من <strong>الإعدادات → الإعلانات → خيارات خصوصية الإعلانات</strong>. وفي البلدان الأخرى تخصّص Google الإعلانات وفق سياستها وإعدادات الإعلانات في جهازك. وفي Android يمكنك إعادة تعيين معرّفك الإعلاني أو حذفه من إعدادات الجهاز (Google → الإعلانات).</p>
+<p><strong>إزالة الإعلانات:</strong> الشراء لمرة واحدة من الإعدادات → الإعلانات (وليس اشتراكاً) يوقف الإعلانات نهائياً. تعالج <strong>Google Play</strong> أو <strong>App Store</strong> عملية الدفع؛ ولا تصل إلينا بيانات بطاقتك أو الدفع. ولتسليم الشراء تحفظ إعدادات التطبيق علامة «بلا إعلانات» ورقم المعاملة الصادر عن المتجر فقط؛ وإذا كان لديك حساب فتتم مزامنتهما مع بقية بياناتك. ويُستعاد الشراء بزر «استعادة المشتريات» في iOS، أو عند إعادة التثبيت بحساب Google نفسه في Android.</p>
+
+<h2>13. التغييرات</h2>
 <p>قد نُحدِّث هذه السياسة. نُعلن التغييرات المهمة داخل التطبيق؛ وإذا مسّ تغييرٌ معالجة بياناتك الصحية طلبنا موافقتك مجدداً. الإصدار الحالي وتاريخه مذكوران في أعلى الصفحة.</p>
 
-<h2>13. التواصل</h2>
+<h2>14. التواصل</h2>
 <p>Kaan Kapucuoğlu (Maviplay)، تركيا · <a href="mailto:destek@maviplay.com">destek@maviplay.com</a></p>
 
 <div class="docs">وثائق ذات صلة: <a href="aydinlatma.html#ar">إشعار KVKK</a> · <a href="acik-riza.html#ar">الموافقة الصريحة</a> · <a href="kosullar.html#ar">شروط الاستخدام</a> · <a href="hesap-sil.html#ar">حذف الحساب</a></div>

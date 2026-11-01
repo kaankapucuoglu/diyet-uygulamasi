@@ -10,9 +10,10 @@ Hukuk metinleri: `legal/gizlilik.html`, `legal/aydinlatma.html`, `legal/acik-riz
 | Hesapsız kullanım | Tüm veri cihazda (localStorage + IndexedDB). Sunucuya giden tek şey: paylaşım bağlantısı açma ve sıralama görüntüleme istekleri (IP geçici). |
 | Hesaplı kullanım | Kullanıcı adı + şifre; tüm `D` nesnesi (profil, öğün/su, tartı/ölçü, plan) Almanya'daki sunucuya (Hetzner) yazılır. |
 | Sağlık verisi | Yaş, cinsiyet, boy, kilo, hedef, aktivite, sağlık odakları (kan şekeri/tansiyon/kolesterol), alerjiler, hariç besinler, **hamilelik**, regl takibi, spor/takviye, öğün/su, tartı/ölçü, plan. |
-| Takip / reklam / analitik / 3. taraf SDK | Yok. HealthKit ve Health Connect **kullanılmıyor**. |
+| Reklam | **Var — yalnız Android/iOS kabuğunda** (web'de yok): Google AdMob geçiş reklamı, ödüllü yok. Sıklık kuralı `kaynak/p9c.js` (ilk 10 dk yok, ≥180 sn arayla, günde ≤8; kurulum/onay ekranında yok). AB/UK/CH'de UMP onay formu; Ayarlar → Reklamlar → Reklam gizlilik seçenekleri. Reklam isteğine sağlık verisi / anahtar kelime eklenmez. |
+| Takip / analitik / 3. taraf SDK | Kendi takip ve analitik aracımız yok. Veri toplayan tek 3. taraf SDK: Google Mobile Ads (AdMob + UMP). HealthKit ve Health Connect **kullanılmıyor**. |
 | Bildirimler | Öğün hatırlatıcıları yerel; push sunucusu yok. |
-| Ücret | Ücretsiz; IAP yok. Uygulama içinde **gönüllü IBAN bağış ekranı** var (`p7b.js destekAc`) — mağaza riski, bkz. §5. |
+| Ücret | Ücretsiz + tek IAP: `com.maviplay.liferoutine.noads` (tüketilmeyen, tek seferlik, 99,99 TL) → reklamları kapatır. Teslim: `D.ayar.reklamsiz` + `D.ayar.iapTx` (mağaza işlem no; hesaplıda eşitlenir), kayıttan sonra `iap:ack`. iOS'ta "Satın alımları geri yükle" düğmesi. Uygulama içinde **gönüllü IBAN bağış ekranı** var (`p7b.js destekAc`) — mağaza riski, bkz. §5. |
 | Yaş | 16+ (hesap açarken beyan). |
 | Kodda henüz olmayanlar | Hesap modülü (`p9a.js`), regl takibi, vücut ölçüleri, yerel bildirimler, spor/takviye profil alanı — docs/API.md'de planlı; hukuk metinleri bunları kapsıyor. Yayından önce özellik listesiyle metinleri eşleştir. |
 
@@ -31,13 +32,16 @@ Hukuk metinleri: `legal/gizlilik.html`, `legal/aydinlatma.html`, `legal/acik-riz
 | Identifiers → **User ID** | Evet | Evet | Hayır | App Functionality | Kullanıcı adı / hesap kimliği. |
 | User Content → **Other User Content** | Evet | Evet | Hayır | App Functionality | Paylaşılan program/liste ve başlıkları, gelen kutusu. |
 | Usage Data → **Other Usage Data** | Evet (yalnız sıralamaya katılanlar) | Evet | Hayır | App Functionality | Seri gün sayısı, gün sayısı, su ortalaması (`PUT /stats`). |
-| Location → Coarse Location | **Hayır olmalı** | – | – | – | `leaderboard` yanıtında `country` var. IP'den türetilip saklanırsa Coarse Location beyanı gerekir. Öneri: ülkeyi kullanıcıya seçtir veya dil ayarından al; IP coğrafi konumu **saklama**. |
+| Location → **Coarse Location** | Evet (AdMob SDK) | Hayır | Hayır* | Third-Party Advertising, Analytics | Google IP'den yaklaşık konum çıkarır; bize gelmez. Kendi sunucumuz: `leaderboard` yanıtındaki `country` IP'den türetilip **saklanmasın**. |
+| Identifiers → **Device ID** | Evet (AdMob SDK) | Hayır | Hayır* | Third-Party Advertising, Analytics | IDFV; IDFA yalnız ATT izni verilirse. |
+| Usage Data → **Product Interaction**, **Advertising Data** | Evet (AdMob SDK) | Hayır | Hayır* | Third-Party Advertising, Analytics | Reklam gösterimi / dokunma. |
+| Purchases → **Purchase History** | Evet (yalnız hesaplıda: işlem no eşitlenir) | Evet | Hayır | App Functionality | `D.ayar.iapTx`; ödeme bilgisi yok. |
 | Contact Info → Email | Hayır | – | – | – | Destek e-postası uygulama dışı (mailto). |
 | Financial Info | Hayır | – | – | – | Bağış banka üzerinden, uygulama dışı. |
-| Diagnostics / Crash | Hayır | – | – | – | Çökme raporlama SDK'sı yok. Eklenirse beyan güncellenir. |
-| Identifiers → Device ID, Advertising Data, Purchases, Browsing/Search History, Contacts, Photos, Audio | Hayır | – | – | – | |
+| Diagnostics → **Crash Data**, **Performance Data**, **Other Diagnostic Data** | Evet (AdMob SDK) | Hayır | Hayır | Third-Party Advertising, Analytics | Kendi çökme raporlama SDK'mız yok; AdMob SDK toplar. |
+| Browsing/Search History, Contacts, Photos, Audio | Hayır | – | – | – | |
 
-- **Tracking:** "No, we do not track" → ATT izni gerekmez.
+- **Tracking:** \*Kabuk ATT istemiyorsa (IDFA erişilmez) "No, we do not track" kalır → ATT izni gerekmez. ATT eklenirse Device ID + Advertising Data "Used to Track You" işaretlenir ve `NSUserTrackingUsageDescription` gerekir. Satırları Google'ın AdMob App Store veri beyanı rehberiyle karşılaştır.
 - **Privacy Policy URL:** `https://diyet.maviplay.com/legal/gizlilik.html` · **Privacy Choices URL:** `https://diyet.maviplay.com/hesap-sil`.
 - IP adresi (oran sınırı, günlük ≤14 gün): Apple'a göre isteği karşılamak için işlenip tutulmayan IP beyan gerektirmez; 14 günlük güvenlik günlüğü "App Functionality / güvenlik" kapsamında kabul edilir, ayrı tür yok.
 - Veri türleri "Linked to You"dur çünkü hesapla (kullanıcı adı) eşleşir; "Not Linked" seçeneği sağlık verisi için uygun değildir.
@@ -54,11 +58,12 @@ Hukuk metinleri: `legal/gizlilik.html`, `legal/aydinlatma.html`, `legal/acik-riz
 | **5.1.1 (iii) Data minimization** | Yalnız işlev için gerekli veri; 3. taraf erişimi yok. Öneri: `profil.ad` eşitlemeden çıkarılabilir. |
 | **5.1.1 (v) Account sign-in / deletion** | Hesapsız kullanım ✔. **Uygulama içi hesap silme** zorunlu → Ayarlar → Hesap → Hesabı sil (`DELETE /account`). |
 | **5.1.1 (ix) Highly regulated fields** | "Healthcare" alanındaki uygulamaların **tüzel kişi** tarafından gönderilmesi beklenir. Diyet/yaşam tarzı uygulaması sağlık hizmeti sunmuyor; ancak sağlık verisi tutuyor → bireysel geliştirici hesabı için **ret riski**. Avukat/strateji: Maviplay'i şirketleştirip Organization hesabıyla göndermek en güvenlisi. |
-| **5.1.2 (i) Data use and sharing** | 3. tarafla paylaşım yok; AI servisine aktarım yok. |
-| **5.1.3 Health (i)** | HealthKit/Clinical Records yok. Sağlık verisi reklam/pazarlama/veri madenciliği için kullanılmaz (politikada açık). Toplanan sağlık verisi türleri politikada tek tek sayılıyor. |
+| **5.1.2 (i) Data use and sharing** | Hesap/sağlık verisi 3. tarafla paylaşılmaz; AI servisine aktarım yok. AdMob SDK reklam için cihaz verisini doğrudan Google'a iletir (sağlık verisi değil). |
+| **5.1.3 Health (i)** | HealthKit/Clinical Records yok. Sağlık verisi reklam/pazarlama/veri madenciliği için kullanılmaz (politikada açık). Uygulamada reklam var ama hedeflemede sağlık verisi kullanılmaz; kabuk reklam isteğine anahtar kelime / içerik URL'si eklememeli. Toplanan sağlık verisi türleri politikada tek tek sayılıyor. |
 | **5.1.3 (ii)** | HealthKit'e yazma yok. "Kişisel sağlık bilgisi iCloud'da saklanmaz": CloudKit/iCloud KVS kullanılmıyor. Not: iOS cihaz yedeği WKWebView verisini iCloud'a yedekleyebilir; Apple'ın hedefi geliştiricinin iCloud'a yazmasıdır, cihaz yedeği değil — yine de review notunda "no iCloud/CloudKit usage" yaz. |
 | **5.1.4 Kids** | Çocuk kategorisi değil; 16+. Meta verilerde "çocuk/kids" ifadesi kullanma. |
 | **3.1.1 / 3.2.2 (iv) Ödeme ve bağış** | Uygulama içinde IBAN gösterip bağış istemek (geliştiriciye "kahve ısmarla") → Apple'da **ret riski** (IAP dışı ödeme çağrısı; bağış yalnız onaylı kâr amacı gütmeyenlere ve Apple Pay ile). **iOS derlemesinde `destekAc` ekranını ve hatırlatmasını (`destekHatirlat`) kapat.** |
+| **3.1.1 / 3.1.2 IAP** | "Reklamları kaldır" StoreKit tüketilmeyen ürün ✔ (abonelik değil); iOS'ta "Satın alımları geri yükle" düğmesi ✔ (Ayarlar → Reklamlar). |
 | **Export compliance** | Yalnız HTTPS → `ITSAppUsesNonExemptEncryption = NO`. |
 | **Kategori** | Birincil: Health & Fitness · İkincil: Food & Drink. |
 
@@ -72,7 +77,7 @@ Hukuk metinleri: `legal/gizlilik.html`, `legal/aydinlatma.html`, `legal/acik-riz
 | User-Generated Content | **Evet** (program/liste paylaşımı) | 4+ |
 | Messaging and Chat | Hayır (serbest metin sohbet yok; yalnız program iletimi) — gri alan, review'a açıkla | – |
 | Social Media | Hayır | – |
-| Advertising | Hayır | – |
+| Advertising | **Evet** (AdMob geçiş reklamı; ödüllü yok) | – |
 | Parental Controls / Age Assurance | Hayır (yalnız 16+ beyanı; doğrulama yok) | – |
 | Contests / Gambling / Loot box / Violence / Sexual / Profanity / Alcohol-tobacco-drugs | Hayır | – |
 
@@ -84,7 +89,7 @@ Sonuç: hesaplanan 13+. Politikamız 16+ olduğu için App Store Connect'te dere
 
 ### 4.1 Data safety formu (satır satır)
 
-Genel sorular: Veri topluyor/paylaşıyor mu? **Evet, topluyor; paylaşmıyor.** Tüm veri aktarımda şifreli mi? **Evet (TLS).** Kullanıcı silme talebinde bulunabilir mi? **Evet** (uygulama içi + web). Hesap oluşturma var mı? **Evet** → silme bağlantısı: `https://diyet.maviplay.com/hesap-sil`. Bağımsız güvenlik incelemesi: **Hayır.**
+Genel sorular: Veri topluyor/paylaşıyor mu? **Evet, topluyor; reklam SDK'sı (AdMob) nedeniyle bazı veriler Google ile paylaşılıyor** (aşağıda "Paylaşılıyor: Evet" satırları). Tüm veri aktarımda şifreli mi? **Evet (TLS).** Kullanıcı silme talebinde bulunabilir mi? **Evet** (uygulama içi + web). Hesap oluşturma var mı? **Evet** → silme bağlantısı: `https://diyet.maviplay.com/hesap-sil`. Bağımsız güvenlik incelemesi: **Hayır.**
 
 | Google veri türü | Toplanıyor | Paylaşılıyor | Zorunlu / İsteğe bağlı | Amaç | Not |
 |---|---|---|---|---|---|
@@ -95,8 +100,12 @@ Genel sorular: Veri topluyor/paylaşıyor mu? **Evet, topluyor; paylaşmıyor.**
 | App activity → **Other user-generated content** | Evet | Hayır | İsteğe bağlı | App functionality | Paylaşılan program/liste, başlık. |
 | App activity → **Other actions** | Evet (yalnız sıralama) | Hayır | İsteğe bağlı | App functionality | Seri/gün sayısı, su ortalaması. |
 | Messages → Other in-app messages | Hayır | – | – | – | Serbest metin mesajlaşma yok; gelen kutusu yalnız paylaşım nesnesi taşır. Mesaj alanı eklenirse **Evet**. |
-| Location → Approximate location | **Hayır olmalı** | – | – | – | IP'den ülke türetip saklama (bkz. §1 Coarse Location). |
-| Personal info → Email, Phone, Address; Financial info; Photos/Videos; Audio; Files; Calendar; Contacts; Device or other IDs; App info and performance (crash/diagnostics) | Hayır | – | – | – | Crash SDK eklenirse "App info and performance" güncellenir. |
+| Location → **Approximate location** | Evet (AdMob SDK, IP'den) | **Evet (Google)** | Zorunlu | Advertising or marketing, Analytics, Fraud prevention | Bize gelmez. Kendi sunucumuz IP'den ülke türetip **saklamasın** (bkz. §1). |
+| Device or other IDs | Evet (Reklam Kimliği, app set ID — AdMob) | **Evet (Google)** | Zorunlu | Advertising or marketing, Analytics, Fraud prevention | Android 13+: `com.google.android.gms.permission.AD_ID` → Play Console "Advertising ID" beyanı: Evet. |
+| App info and performance → **Crash logs**, **Diagnostics** | Evet (AdMob SDK) | **Evet (Google)** | Zorunlu | Analytics, Fraud prevention | Kendi çökme SDK'mız yok. |
+| App activity → **App interactions** | Evet (reklam gösterimi/dokunma — AdMob) | **Evet (Google)** | Zorunlu | Advertising or marketing, Analytics | |
+| Financial info → **Purchase history** | Evet (yalnız hesaplıda: işlem no eşitlenir) | Hayır | İsteğe bağlı | App functionality | `D.ayar.iapTx`; kart/ödeme bilgisi Google Play'de kalır. |
+| Personal info → Email, Phone, Address; Financial info (ödeme bilgisi); Photos/Videos; Audio; Files; Calendar; Contacts | Hayır | – | – | – | |
 
 - "İsteğe bağlı" seçimi doğru: her kullanıcı hesapsız kullanabilir (opt-in). Hesap açılınca sağlık verisi eşitleme işlevi için gerekir; yine de **kullanıcı tüm toplamadan vazgeçebildiği** için Google tanımına göre "optional" uygundur.
 - IP adresi: Data safety'de ayrı tür değil; oran sınırı için geçici (ephemeral) işlem ve ≤14 gün güvenlik günlüğü gizlilik politikasında açıklanıyor.
@@ -127,8 +136,8 @@ Gizlilik politikası gereksinimleri: Play Console'daki URL + uygulama içi bağl
 ### 4.4 Hedef kitle ve içerik / IARC
 
 - **Target audience:** 16–17 ve 18+ (çocuklara hitap: Hayır). 13 altı seçilmediği için Families politikası devreye girmez.
-- **IARC anketi:** Kategori "Utility, Productivity, Communication, or Other". Şiddet/cinsellik/küfür/uyuşturucu/kumar: Hayır. Kontrollü madde: Hayır (takviye listesi besin bilgisidir). Kullanıcı etkileşimi: **Evet** (program paylaşımı, kullanıcı adı sıralamada görünür) → "Users Interact" etiketi. Konum paylaşımı: Hayır. Dijital satın alma: Hayır. Beklenen: PEGI 3 / ESRB Everyone / USK 0 + "Users Interact".
-- Reklam içeriyor: Hayır. Haber uygulaması: Hayır. Devlet uygulaması: Hayır. Finansal özellik: Hayır.
+- **IARC anketi:** Kategori "Utility, Productivity, Communication, or Other". Şiddet/cinsellik/küfür/uyuşturucu/kumar: Hayır. Kontrollü madde: Hayır (takviye listesi besin bilgisidir). Kullanıcı etkileşimi: **Evet** (program paylaşımı, kullanıcı adı sıralamada görünür) → "Users Interact" etiketi. Konum paylaşımı: Hayır. Dijital satın alma: **Evet** ("Reklamları kaldır" IAP). Beklenen: PEGI 3 / ESRB Everyone / USK 0 + "Users Interact".
+- Reklam içeriyor: **Evet** (AdMob geçiş reklamı; Play Console → App content → Ads). Haber uygulaması: Hayır. Devlet uygulaması: Hayır. Finansal özellik: Hayır.
 - **Hesap silme web adresi:** `https://diyet.maviplay.com/hesap-sil` → Caddy: `handle /hesap-sil { rewrite * /legal/hesap-sil.html ; file_server }` (veya `site_paketle.py` ile `hesap-sil/index.html` kopyası). Sayfa dil seçicili, PDF değil, giriş gerektirmez ✔.
 
 ### 4.5 Google Play — ödeme/bağış notu
@@ -150,6 +159,8 @@ Play Ödemeler politikası: uygulama içi dijital içerik için Play faturaland�
 9. Uygulama içi bağlantılar: Ayarlar → Hesap → Belgeler (gizlilik, aydınlatma, açık rıza, koşullar, hesap silme) — Apple ve Google ikisi de uygulama içi gizlilik politikası bağlantısı ister.
 10. Mağaza metinlerine tıbbi cihaz değildir + sağlık profesyoneline danışın cümlesi (5 dilde).
 11. Hetzner ile AVV/DPA (GDPR md. 28) imzalı olsun; Hetzner veri merkezi bölgesi Almanya (FSN/NBG) olarak sabitlensin.
+12. AdMob: `app-ads.txt` (geliştirici web sitesi kökünde), UMP onay formu AB/UK/CH'de açılışta; "Reklam gizlilik seçenekleri" düğmesi `ad:status privacy:true` iken Ayarlar → Reklamlar'da. Çocuklara yönelik değil (`tagForChildDirectedTreatment`/`underAge` false); hassas reklam kategorileri (kumar, flört, alkol) AdMob panelinden engellensin.
+13. IAP ürünü `com.maviplay.liferoutine.noads` Play Console ve App Store Connect'te tüketilmeyen ürün, 99,99 TL. Android'de satın alma 3 gün içinde onaylanmazsa iade edilir → web `iap:ack`'i ancak teslim kaydedildikten sonra gönderir; ayarlar açılınca `iap:sweep` bekleyenleri yeniden ister.
 
 ---
 

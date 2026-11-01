@@ -5,9 +5,10 @@
 //  • Köprü (shim/app-shim.js ↔ onMessage): window.__LF_NATIVE bilgi nesnesi; __lfNotify / __lfCancelNotify / __lfCancelAll /
 //    __lfNotifyPermission (yerel bildirim, expo-notifications), __lfDownload + <a download> yakalama (dosya → paylaş sayfası,
 //    expo-file-system + expo-sharing), dış bağlantılar (https/mailto/tel/sms/whatsapp) tarayıcıda / ilgili uygulamada.
-//  • Reklam / satın alma YOK. Sistem çubukları görünür; güvenli alan (çentik, durum/gezinme çubuğu) payı yerel tarafta dolgu olarak
+//  • Reklam (AdMob geçiş reklamı, ads.ts) + "Reklamları kaldır" satın alması (expo-iap, iap.ts): web tarafı kaynak/p9c.js;
+//    kabuk → web mesajları window.__lfAd / window.__lfIap (shim kuyruklar). Sistem çubukları görünür; güvenli alan (çentik, durum/gezinme çubuğu) payı yerel tarafta dolgu olarak
 //    uygulanır → WebView çubukların altına girmez, sayfadaki env(safe-area-inset-*) 0 kalır (CSS yedek değerleri geçerli).
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, BackHandler, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,6 +21,8 @@ import * as Sharing from 'expo-sharing';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { Directory, File, Paths } from 'expo-file-system';
 import { SHIM_SOURCE } from './src/shimSource';
+import { createIapBridge } from './iap';
+import { createAdsBridge } from './ads';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 SplashScreen.setOptions({ fade: true, duration: 300 });
@@ -160,6 +163,18 @@ function Shell() {
   // Android bildirim kanalı açılışta hazır olsun (sistem ayarlarında görünür)
   useEffect(() => { ensureChannel().catch(() => {}); }, []);
 
+  // Satın alma (Reklamları kaldır): iap.ts → web window.__lfIap(msg); açılışta mağazaya ön bağlantı
+  const iap = useMemo(() => createIapBridge((msg) => js(`window.__lfIap&&window.__lfIap(${JSON.stringify(msg)})`)), [js]);
+  useEffect(() => () => iap.dispose(), [iap]);
+  useEffect(() => { iap.prefetch().catch(() => {}); }, [iap]);
+  // Reklamlar (AdMob geçiş reklamı): ads.ts → web window.__lfAd(msg); reklam açıkken sayfa arka plana alınır
+  const ads = useMemo(() => createAdsBridge(
+    (msg) => js(`window.__lfAd&&window.__lfAd(${JSON.stringify(msg)})`),
+    (state) => js(`window.__lfApp&&window.__lfApp(${JSON.stringify(state)})`),
+  ), [js]);
+  useEffect(() => () => ads.dispose(), [ads]);
+  useEffect(() => { ads.prefetch(); }, [ads]);
+
   // Bildirime dokunma → uygulama açılır (ek yönlendirme yok); web isterse window.__lfOnNotificationTap ile öğrenir
   useEffect(() => {
     const deliver = (r: Notifications.NotificationResponse | null) => {
@@ -176,10 +191,10 @@ function Shell() {
   useEffect(() => {
     const sub = AppState.addEventListener('change', (s) => {
       if (s === 'background' || s === 'inactive') js(`window.__lfApp&&window.__lfApp('background')`);
-      else if (s === 'active') js(`window.__lfApp&&window.__lfApp('active')`);
+      else if (s === 'active') { js(`window.__lfApp&&window.__lfApp('active')`); iap.sweepNow().catch(() => {}); }   // bekleyen ödeme bu arada tamamlanmış olabilir
     });
     return () => sub.remove();
-  }, [js]);
+  }, [js, iap]);
 
   // Android geri tuşu: web pencere/panel kapatırsa (window.__lfBack → true) biter; alt sayfada geri; ana ekranda uygulamadan çık
   useEffect(() => {
@@ -243,8 +258,19 @@ function Shell() {
       case 'notify:permission':
         ensurePermission(true).then((ok) => call('__lfOnPermission', ok), () => call('__lfOnPermission', false));
         break;
+      // satın alma (Reklamları kaldır)
+      case 'iap:init': iap.init(m.skus); break;
+      case 'iap:buy': iap.buy(m.productId); break;
+      case 'iap:ack': iap.ack(m.transactionId); break;
+      case 'iap:sweep': iap.sweepNow(); break;
+      case 'iap:restore': iap.restore(); break;
+      // reklamlar
+      case 'ad:init': ads.init(m); break;
+      case 'ad:noads': ads.setNoAds(m.on); break;
+      case 'ad:show': ads.show(m.kind, m.id); break;
+      case 'ad:privacy': ads.privacy(); break;
     }
-  }, [hideSplash, call]);
+  }, [hideSplash, call, iap, ads]);
 
   const gone = useRef(0);   // çizim süreci ölüm sayısı (onRenderProcessGone)
   const retry = useCallback(() => { setFailed(null); setAttempt((a) => a + 1); }, []);

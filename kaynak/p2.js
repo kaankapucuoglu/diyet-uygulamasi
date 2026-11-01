@@ -140,7 +140,7 @@ const S = {
   more:["daha çok {x}","more {x}","больше: {x}","mehr {x}","{x} أكثر"],
   less:["daha az {x}","less {x}","меньше: {x}","weniger {x}","{x} أقل"],
   same:["Besin değerleri neredeyse aynı.","Nutrition is almost the same.","Пищевая ценность почти одинакова.","Nährwerte fast gleich.","القيم الغذائية متقاربة جداً."],
-  cTitle:["Kendi yemeğini ekle","Add your own food","Свой продукт","Eigenes Lebensmittel","أضف طعامك"],
+  ozelYemekT:["Kendi yemeğini ekle","Add your own food","Свой продукт","Eigenes Lebensmittel","أضف طعامك"],
   cHint:["Paketin üzerindeki 100 g değerlerini yaz. Adetle yeniyorsa adet ağırlığını da yaz.","Enter the values per 100 g from the label. If eaten by the piece, also enter the piece weight.","Введите значения на 100 г с упаковки. Если едите поштучно — укажите вес штуки.","Werte pro 100 g vom Etikett eingeben. Bei Stückware auch das Stückgewicht.","أدخل القيم لكل 100 غ من الملصق. إذا كان يؤكل بالقطعة فأدخل وزن القطعة أيضاً."],
   cName:["Yemek adı (haşlama, ızgara, fırın, tava yazabilirsin)","Food name (you can add boiled, grilled, baked, fried)","Название (можно указать: отварной, гриль, запечённый)","Name (z. B. gekocht, gegrillt, Ofen, gebraten)","اسم الطعام (يمكنك كتابة مسلوق، مشوي، بالفرن، مقلي)"],
   cNamePh:["ör. Ev yapımı granola","e.g. Homemade granola","напр. Домашняя гранола","z. B. Selbstgemachtes Müsli","مثال: جرانولا منزلية"],
