@@ -351,7 +351,9 @@ function Shell() {
         bounces={false}
         // iOS yeni mimaride (Fabric) decelerationRate verilmezse yerel değişken 0 kalıyor → ana sayfa parmak kalkınca anında
         // duruyordu (atalet yok). "normal" = 0.998 (Safari ile aynı); iç kaydırma kutuları (Program hazırla) etkilenmiyordu.
-        decelerationRate="normal"
+        // 02.11: Android kodgen bu özelliği SAYI (Double) bekler; "normal" metni açılışta ClassCastException ile çöktürüyordu
+        // (Redmi 9C, vc9). Yalnız iOS'ta verilir (iOS sarmalayıcısı "normal"ı 0.998'e çevirir; Android sarmalayıcısı çevirmez).
+        decelerationRate={Platform.OS === 'ios' ? 'normal' : undefined}
         overScrollMode="never"
         showsHorizontalScrollIndicator={false}
         setBuiltInZoomControls={false}
