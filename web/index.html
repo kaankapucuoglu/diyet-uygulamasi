@@ -4588,7 +4588,8 @@ const tartimlar = () => Object.entries(D.tartim || {}).sort((a, b) => a[0] < b[0
 function oncekiTartim(k){ const t = tartimlar().filter(([g]) => g < k); return t.length ? t[t.length - 1][1] : null; }
 const farkKg = (a, b) => { const f = Math.round((a - b) * 10) / 10; return (f > 0 ? '+' : f < 0 ? '−' : '±') + sayi(Math.abs(f)); };
 function tartiKarti(){
-  if (haftaGunu(aktif) !== 0 || aktif > bugunK()) return '';
+  // 02.11 (kullanıcı): tartı girildiyse kart ekranda kalmaz; değer geçmiş gün özetinde (⚖️) ve kayıt geçmişinde görünür
+  if (haftaGunu(aktif) !== 0 || aktif > bugunK() || (D.tartim || {})[aktif] != null) return '';
   const P = D.profil, v = (D.tartim || {})[aktif], onc = oncekiTartim(aktif);
   const alt = v != null ? (onc != null ? T('tartiFark', {f: farkKg(v, onc)}) : T('tartiIlk')) + (P.hedefKilo ? ' · ' + hedefDurum(v) : '')
     : T('tartiHint') + (P.hedefKilo ? ' ' + T('tartiHedefK', {n: sayi(P.hedefKilo)}) : '');
