@@ -6,14 +6,14 @@ try{
   w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Ayşe',cins:'k',hamile:false,yas:32,boy:166,kilo:72,hedef:'ver',hedefKilo:64,hiz:0.5,aktivite:2,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'08:00',ogle:'12:30',aksam:'19:00'}};wBitir()`);
   const pzt=w.eval("gunEkle(bugunK(),-haftaGunu(bugunK()))");
   L('bugun kart: '+!!d.querySelector('.tarti-kart')+' (bugun pazartesi mi '+w.eval('haftaGunu(bugunK())===0')+')');
-  w.eval(`aktif='${pzt}';ciz()`);L('pazartesi kart: '+!!d.querySelector('.tarti-kart')+' · ipucu '+d.querySelector('.tarti-bas small').textContent);
+  w.eval(`aktif='${pzt}';ciz()`);L('pazartesi kart: '+!!d.querySelector('.tarti-kart')+' · ipucu '+(d.querySelector('.tarti-bas small')||{textContent:'(kart girilince kalkti)'}).textContent);
   d.getElementById('tartiIn').value='71,5';d.querySelector('[data-tarti]').click();
-  L('kayit: '+w.eval('JSON.stringify(D.tartim)')+' · profil kilo '+w.eval('D.profil.kilo')+' · kcal '+w.eval('D.profil.kcal')+' · alt '+d.querySelector('.tarti-bas small').textContent);
+  L('kayit: '+w.eval('JSON.stringify(D.tartim)')+' · profil kilo '+w.eval('D.profil.kilo')+' · kcal '+w.eval('D.profil.kcal')+' · alt '+(d.querySelector('.tarti-bas small')||{textContent:'(kart girilince kalkti)'}).textContent);
   L('log: '+w.eval('D.log[D.log.length-1].m'));
   L('gecmis stat: '+([...d.querySelectorAll('.past-card .stat')].map(s=>s.innerText.replace(/\s+/g,' ')).find(t=>/Kilo/.test(t))||'YOK'));
   w.eval(`aktif=gunEkle('${pzt}',-7);ciz()`);d.getElementById('tartiIn').value='72,3';d.querySelector('[data-tarti]').click();
   L('onceki hafta: profil kilo '+w.eval('D.profil.kilo')+' (71,5 kalmali)');
-  w.eval(`aktif='${pzt}';ciz()`);L('fark: '+d.querySelector('.tarti-bas small').textContent);
+  w.eval(`aktif='${pzt}';ciz()`);L('fark: '+(d.querySelector('.tarti-bas small')||{textContent:'(kart girilince kalkti)'}).textContent);
   w.eval(`aktif=gunEkle('${pzt}',7);ciz()`);L('gelecek pazartesi kart: '+!!d.querySelector('.tarti-kart'));
   w.eval(`aktif=bugunK();ciz()`);
   // Ayarlar: üst 3 düğme, dil değişince kaydırma korunur

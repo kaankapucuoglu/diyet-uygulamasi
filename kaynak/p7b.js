@@ -279,6 +279,7 @@ function kocHedefHesapla(){
   if (!p.cins || !(p.yas >= 14 && p.yas <= 100) || !(p.boy >= 120 && p.boy <= 230) || !(p.kilo >= 30 && p.kilo <= 300)){ kocUyari(T('kocHesaplaEksik')); return; }
   const h = hedefHesapla(p);
   K.t = {...K.t, kcal: String(h.kcal), protein: String(h.protein), karb: String(h.karb), yag: String(h.yag), su: String(Math.round(h.su / 100) / 10)};
+  K.tOto = {protein: 1, karb: 1, yag: 1}; K.tProtein0 = h.protein;
   kaydet(); kocCiz(); toast(T('kocHesaplandi'));
 }
 // ---------- Program hazırla: öğünleri gizle / göster (ana ekrandakiyle aynı davranış; kaydırma #koc içinde) ----------
@@ -502,7 +503,19 @@ $('koc').addEventListener('click', e => {
 $('koc').addEventListener('input', e => {
   const t = e.target, K = D.koc; if (!K) return;
   if (t.dataset.kf){ K[t.dataset.kf] = t.value; kocKaydet(); return; }
-  if (t.dataset.kt){ K.t[t.dataset.kt] = t.dataset.kt === 'su' ? t.value.replace(',', '.').replace(/[^\d.]/g, '') : t.value.replace(/[^\d]/g, ''); kocKaydet(); return; }
+  if (t.dataset.kt){
+    const k = t.dataset.kt;
+    K.t[k] = k === 'su' ? t.value.replace(',', '.').replace(/[^\d.]/g, '') : t.value.replace(/[^\d]/g, '');
+    if (K.tOto) delete K.tOto[k];
+    const oto = Object.keys(K.tOto || {}), kc = +K.t.kcal;
+    if (k !== 'su' && oto.length && kc >= 500 && kc <= 10000){
+      // Hesapla'nın protein ihtiyacı korunur (kalorinin en çok %35'i); elle yazılan makrolar aynen kalır
+      const sabit = {protein0: K.tProtein0, ...Object.fromEntries(['protein', 'yag', 'karb'].filter(x => !K.tOto[x] && +K.t[x]).map(x => [x, +K.t[x]]))};
+      const m = makroBol(kc, {odaklar: []}, sabit);
+      oto.forEach(x => { K.t[x] = String(m[x]); const inp = $('koc').querySelector(`[data-kt="${x}"]`); if (inp) inp.value = K.t[x]; });
+    }
+    kocKaydet(); return;
+  }
   if (t.dataset.kalara){ K.alAra = t.value; const el = $('koc').querySelector('.koc-al-sonuc'); if (el){ el.innerHTML = kocAlerjiListe(K); el.scrollTop = 0; kaymaCubuguKur(el); } return; }
   if (t.dataset.kdn){ K.dn[t.dataset.kdn] = t.value.replace(',', '.').replace(/[^\d.]/g, ''); kocKaydet(); return; }
   if (t.dataset.knot){ K.not[K.sec][t.dataset.knot] = t.value; kocKaydet(); return; }
@@ -763,10 +776,15 @@ function programUygula(P){
   D.miktar = {};
   menuleriTemizle(true);
   saatKaydet(bugun, Object.fromEntries(P.o));
-  if (P.t.kcal) D.profil.kcal = P.t.kcal;
-  if (P.t.protein) D.profil.protein = P.t.protein;
-  if (P.t.karb) D.profil.karb = P.t.karb;
-  if (P.t.yag) D.profil.yag = P.t.yag;
+  if (P.t.kcal){
+    // Programda yalnız kalori (veya bir kısmı) varsa eksik makrolar bu kaloriden bölünür; şeker ve lif de kaloriye uyar (eskiler kalıyordu)
+    const m = makroBol(P.t.kcal, D.profil, {protein0: D.profil.protein, ...Object.fromEntries(['protein', 'yag', 'karb'].filter(k => P.t[k]).map(k => [k, P.t[k]]))});
+    Object.assign(D.profil, {kcal: P.t.kcal, protein: m.protein, karb: m.karb, yag: m.yag, seker: m.seker, lif: m.lif});
+  } else {
+    if (P.t.protein) D.profil.protein = P.t.protein;
+    if (P.t.karb) D.profil.karb = P.t.karb;
+    if (P.t.yag) D.profil.yag = P.t.yag;
+  }
   if (P.su) D.profil.su = P.su;
   D.program = {a:P.a, h:P.h, n:P.n, t:Date.now(), d:P.d || 'hafta', ay:P.d === 'ay' ? programAyi(P) : '', kt:P.kt || '', il:P.il || ''};
   logEkle('diger', null, T('lImport', {h: P.h || T('progAnon'), a: P.a || '—'}));

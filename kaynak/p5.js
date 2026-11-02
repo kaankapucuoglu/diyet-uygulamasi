@@ -287,6 +287,19 @@ const PROTEIN_KG = {ver:1.8, sekil:2.0, koru:1.2, kas:1.8, al:1.6};
 const ODAKLAR = [['seker','🩺',''], ['tansiyon','❤️','t'], ['kolesterol','🫀','y']];
 function vki(p){ return p.kilo / Math.pow(p.boy / 100, 2); }
 function vkiSinif(b){ return b < 18.5 ? 'bmi1' : b < 25 ? 'bmi2' : b < 30 ? 'bmi3' : 'bmi4'; }
+// Günlük kaloriyi makrolara böler (hedefHesapla ve elle kalori değişimi aynı kuralları kullanır).
+// s.protein / s.yag / s.karb: kullanıcının elle verdiği değer (aynen kalır, karbonhidrat kalandan hesaplanır);
+// s.protein0: protein ihtiyacı (g), kalorinin en çok %35'i olacak şekilde kırpılır
+function makroBol(kcal, p, s = {}){
+  const od = new Set(p.odaklar || []), seker = od.has('seker');
+  const protein = s.protein != null ? Math.round(s.protein) : Math.round(Math.min(s.protein0 != null ? s.protein0 : kcal * 0.2 / 4, kcal * 0.35 / 4));
+  // Kan şekeri: yağ %30, karbonhidrat en çok %40, şeker %10 · Kolesterol: yağ %28'de kalır, doymuş yağlı kalemler menüden çıkar
+  const yag = s.yag != null ? Math.round(s.yag) : Math.round(kcal * (seker ? 0.30 : 0.28) / 9);
+  let karb = s.karb != null ? Math.round(s.karb) : Math.max(0, Math.round((kcal - protein * 4 - yag * 9) / 4));
+  if (seker && s.karb == null) karb = Math.min(karb, Math.round(kcal * 0.40 / 4));
+  // Lif: 14 g/1000 kcal; kolesterol ve kan şekerinde en az 30 g (çözünür lif LDL ve kan şekerini düşürür)
+  return {protein, karb, yag, seker: Math.round(kcal * (seker ? 0.10 : 0.13) / 4), lif: Math.max(Math.round(kcal / 1000 * 14), od.has('kolesterol') || seker ? 30 : 0)};
+}
 function hedefHesapla(p){
   const bmr = 10 * p.kilo + 6.25 * p.boy - 5 * p.yas + (p.cins === 'k' ? -161 : 5);
   // Düzenli spor: günlük hareket seçimine küçük ek katsayı (haftada 3–4 gün +0,05, 5+ gün +0,10); seçim bozulmaz, yalnız düzeltme
@@ -304,14 +317,8 @@ function hedefHesapla(p){
   kcal = Math.round(Math.max(kcal, Math.min(taban, tdee)) / 50) * 50;
   const refKilo = b > 25 ? 25 * Math.pow(p.boy / 100, 2) : p.kilo;
   const pKg = Math.max(PROTEIN_KG[p.hedef] || 1.2, seker ? 1.3 : 0);
-  const protein = Math.round(Math.min(hamile ? 1.1 * p.kilo + (tri >= 2 ? 25 : 0) : pKg * refKilo, kcal * 0.35 / 4));
-  // Kan şekeri: yağ %30, karbonhidrat en çok %40, şeker %10 · Kolesterol: yağ %28'de kalır, doymuş yağlı kalemler menüden çıkar
-  const yag = Math.round(kcal * (seker ? 0.30 : 0.28) / 9);
-  let karb = Math.round((kcal - protein * 4 - yag * 9) / 4);
-  if (seker) karb = Math.min(karb, Math.round(kcal * 0.40 / 4));
-  const sekerG = Math.round(kcal * (seker ? 0.10 : 0.13) / 4);
-  // Lif: 14 g/1000 kcal; kolesterol ve kan şekerinde en az 30 g (çözünür lif LDL ve kan şekerini düşürür)
-  const lif = Math.max(Math.round(kcal / 1000 * 14), od.has('kolesterol') || seker ? 30 : 0);
+  const m = makroBol(kcal, p, {protein0: hamile ? 1.1 * p.kilo + (tri >= 2 ? 25 : 0) : pKg * refKilo});
+  const {protein, karb, yag, lif} = m, sekerG = m.seker;
   const su = sinirla(Math.round((p.kilo * 35 + (p.aktivite >= 3 ? 500 : 0) + (hamile ? 300 : 0)) / 250) * 250, 1500, 4000);
   let hafta = 0;
   if (!hamile && p.hedef === 'ver' && p.hedefKilo < p.kilo) hafta = Math.ceil((p.kilo - p.hedefKilo) / p.hiz);

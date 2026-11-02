@@ -379,6 +379,7 @@ function ayarlarAc(dilAcik = false){
     </div><div class="ayar-blok" data-ak="hedef"><div class="sec">${T('sTargets')}</div>
     <div class="grid3">${HEDEF_KEYS.filter(k => k !== 'su' && k !== 'bardak').map(alan).join('')}
       <label class="field"><span>${T('bardakSu')}</span><div class="ikili"><input autocomplete="off" id="p_bardak" type="text" inputmode="numeric" value="${P.bardak}" aria-label="${esc(T('tGlass'))}"><b>/</b><input autocomplete="off" id="p_su" type="text" inputmode="numeric" value="${P.su}" aria-label="${esc(T('tWater'))}"></div></label></div>
+    <div class="hint" id="makroToplam" style="margin:-4px 0 8px"></div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
     ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `</div><div class="ayar-blok" data-ak="yukle"><div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
     </div><div class="ayar-blok" data-ak="tasi"><div class="sec">${T('tasiT')}</div>
@@ -427,10 +428,27 @@ function ayarlarAc(dilAcik = false){
     }));
   };
   $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { const y = $('sbody').scrollTop; D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(true); $('sbody').scrollTop = y; });
+  // Kalori değişince elle dokunulmamış makrolar aynı kurallarla yeniden bölünür (kullanıcı 02.11: kalori değişti, karb/yağ aynı kaldı)
+  const MAKRO = ['protein', 'karb', 'seker', 'yag'], elle = new Set(), hNum = k => Math.round(+$('p_' + k).value) || 0;
+  const makroOku = () => { const kc = hNum('kcal'); return kc >= 500 && kc <= 10000 ? makroBol(kc, P, {protein0: P.protein, ...Object.fromEntries(['protein', 'yag', 'karb'].filter(k => elle.has(k)).map(k => [k, hNum(k)]))}) : null; };
+  const makroToplamYaz = () => {
+    const kc = hNum('kcal'), top = hNum('protein') * 4 + hNum('karb') * 4 + hNum('yag') * 9, el = $('makroToplam');
+    el.textContent = kc ? T('makroToplam', {m: top, k: kc}) : '';
+    el.classList.toggle('uyari', !!kc && Math.abs(top - kc) > kc * 0.1);
+  };
+  const makroGuncelle = () => { const m = makroOku(); if (m) MAKRO.forEach(k => { if (!elle.has(k)) $('p_' + k).value = m[k]; }); makroToplamYaz(); };
+  $('p_kcal').addEventListener('input', makroGuncelle);
+  MAKRO.forEach(k => $('p_' + k).addEventListener('input', () => { elle.add(k); makroGuncelle(); }));
+  makroToplamYaz();
   $('hedefKaydet').onclick = () => {
-    const degisen = [];
+    const degisen = [], once = [P.kcal, P.protein, P.karb, P.yag].join(), eskiKcal = P.kcal;
     HEDEF_KEYS.forEach(k => { const v = Math.max(0, Math.round(+$('p_' + k).value)) || P[k]; if (v !== P[k]) degisen.push(`${T(HEDEF_ETIKET[k])}: ${P[k]} → ${v}`); P[k] = v; });
+    if (P.kcal !== eskiKcal){ const m = makroOku(); if (m && m.lif !== P.lif){ degisen.push(`${T('fiber')}: ${P.lif} → ${m.lif}`); P.lif = m.lif; } }
     if (degisen.length) logEkle('diger', null, T('lTargets', {l: degisen.join(', ')}));
+    // Elle verilen kalori haftalık tartıda ezilmesin (profil/ölçü değişince yeniden hesaplanır)
+    if (P.hedef && !D.program) P.elleKcal = P.kcal !== hedefHesapla(P).kcal;
+    // Kalori veya makro değiştiyse bugünden sonraki menüler yeni hedeflere göre hazırlanır (diyetisyen programındaki menüye dokunulmaz)
+    if (!D.program && [P.kcal, P.protein, P.karb, P.yag].join() !== once){ planYenile(); kaydet(); ciz(); kapat(); toast(T('tPlanYeni', {b: P.kcal}), 5200); return; }
     kaydet(); ciz(); kapat(); toast(T('tSaved'));
   };
   $('yedekIndir').onclick = () => indir(JSON.stringify(D, null, 1), `${dosyaAdi()}_yedek_${bugunK()}.json`, 'application/json');
@@ -528,6 +546,7 @@ function yazAc(){
 function hedefleriYenile(){
   const h = hedefHesapla(D.profil);
   Object.assign(D.profil, {kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su});
+  D.profil.elleKcal = false;
 }
 // Ölçü/hedef değişince: günlük hedefler yeniden hesaplanır; değiştiyse bugünden sonraki menüler yeni hedeflere göre hazırlanır
 // (bugün "yedim" denen öğünler ve geçmiş günler korunur). Diyetisyen programında hedefler ve menü programdan gelir, dokunulmaz.

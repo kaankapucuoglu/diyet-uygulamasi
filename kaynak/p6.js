@@ -236,9 +236,18 @@ function tartiKaydet(){
   if (!(kg >= 30 && kg <= 300)){ toast(T('errBody')); return; }
   const P = D.profil, onc = oncekiTartim(aktif);
   (D.tartim || (D.tartim = {}))[aktif] = kg;
-  if (tartimlar().pop()[0] === aktif && kg !== P.kilo){ P.kilo = kg; if (!D.program && P.hedef) hedefleriYenile(); }
+  let planDegisti = false;
+  if (tartimlar().pop()[0] === aktif && kg !== P.kilo){
+    P.kilo = kg;
+    if (!D.program && P.hedef && !P.elleKcal){
+      // Kilo değişince hedefler yeniden hesaplanır; kalori/makro değiştiyse menüler de yeni hedeflere göre hazırlanır (eskisi eski kaloride kalıyordu)
+      const once = [P.kcal, P.protein, P.karb, P.yag].join();
+      hedefleriYenile();
+      if ([P.kcal, P.protein, P.karb, P.yag].join() !== once){ planYenile(); planDegisti = true; }
+    }
+  }
   logEkle('diger', aktif, T('lTarti', {b: sayi(kg), f: onc != null ? farkKg(kg, onc) + ' kg' : T('tartiIlk')}));
-  kaydet(); ciz(); toast(T('tSaved'));
+  kaydet(); ciz(); toast(planDegisti ? T('tPlanYeni', {b: P.kcal}) : T('tSaved'), planDegisti ? 5200 : 2200);
 }
 function ozetCiz(){
   const P = D.profil, kay = kayitOku(aktif), menu = menuOku(aktif), yenen = yenenToplam(aktif), suH = suHedefi(aktif);

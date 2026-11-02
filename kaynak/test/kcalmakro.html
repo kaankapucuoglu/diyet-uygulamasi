@@ -1,0 +1,101 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0"><iframe id="f" src="../../index.html" style="width:390px;height:844px;border:0"></iframe><script>
+// Kalori hedefi değişince makrolar (protein/karb/yağ/şeker/lif) ve menüler de uyar (test kullanıcısı 02.11: "kalori değişince karb, yağ aynı kalıyor")
+localStorage.clear();
+const f=document.getElementById('f');const out=[];const L=x=>out.push(x);const bekle=ms=>new Promise(r=>setTimeout(r,ms));
+const ok=(ad,kosul,ek='')=>L((kosul?'OK   ':'HATA ')+ad+(ek!==''?' · '+ek:''));
+setTimeout(async()=>{const w=f.contentWindow,d=w.document;const $=id=>d.getElementById(id);
+try{
+  // 0) Eski formülle aynı sonuç (refaktör regresyonu)
+  const eski=p=>{const b=w.vki(p),od=new Set(p.odaklar||[]),seker=od.has('seker'),hamile=p.cins==='k'&&!!p.hamile,tri=p.trimester||1,h=w.hedefHesapla(p),kcal=h.kcal;
+    const refKilo=b>25?25*Math.pow(p.boy/100,2):p.kilo,pKg=Math.max(w.eval('PROTEIN_KG')[p.hedef]||1.2,seker?1.3:0);
+    const protein=Math.round(Math.min(hamile?1.1*p.kilo+(tri>=2?25:0):pKg*refKilo,kcal*0.35/4)),yag=Math.round(kcal*(seker?0.30:0.28)/9);
+    let karb=Math.round((kcal-protein*4-yag*9)/4);if(seker)karb=Math.min(karb,Math.round(kcal*0.40/4));
+    return [protein,karb,yag,Math.round(kcal*(seker?0.10:0.13)/4),Math.max(Math.round(kcal/1000*14),od.has('kolesterol')||seker?30:0)].join()===[h.protein,h.karb,h.yag,h.seker,h.lif].join();};
+  const prof=[{cins:'e',yas:30,boy:180,kilo:103,hedef:'kas',aktivite:4,odaklar:[]},{cins:'k',yas:28,boy:165,kilo:62,hedef:'ver',hiz:0.5,aktivite:2,odaklar:['seker']},
+    {cins:'k',yas:31,boy:160,kilo:70,hamile:true,trimester:3,hedef:'koru',aktivite:2,odaklar:['kolesterol']},{cins:'e',yas:60,boy:170,kilo:120,hedef:'ver',hiz:0.75,aktivite:1,odaklar:['tansiyon']}];
+  ok('hedefHesapla eski formülle aynı (4 profil)',prof.every(p=>eski({...w.eval('BOS_PROFIL'),...p})));
+
+  // Kurulum: ekran görüntüsündeki kullanıcı (kas kazanmak, 103 kg)
+  w.eval(`W={...kopya(D.profil),dil:'tr',ad:'Test',cins:'e',hamile:false,yas:30,boy:185,kilo:103,hedef:'kas',hedefKilo:106,hiz:0.5,aktivite:4,odaklar:[],haric:[],alerjiler:[],alerjiVar:'yok',alerjiAra:'',saatler:{kahvalti:'07:00',ogle:'12:30',aksam:'19:00'}};wBitir();D.ayar.destekVerdi=true;D.ayar.turGoruldu=true;if($('tur'))$('tur').remove();kapat()`);
+  const P=()=>w.eval('D.profil'),yarin=()=>w.eval("Math.round(topla(menuOku(gunEkle(bugunK(),1)).flatMap(o=>o.ogeler)).k)");
+  const toast=()=>$('toast').classList.contains('show')?$('toast').textContent:'(yok)';
+  const yaz=(id,v)=>{const i=$(id);i.value=String(v);i.dispatchEvent(new w.Event('input',{bubbles:true}));};
+  const top=p=>p.protein*4+p.karb*4+p.yag*9;
+  L('başlangıç: '+P().kcal+' kcal · P'+P().protein+' K'+P().karb+' Y'+P().yag+' Ş'+P().seker+' L'+P().lif+' · yarın menü '+yarin());
+
+  // 1) Ayarlar → Hedefler: kalori 2000 → makrolar canlı güncellenir, kaydedince menü 2000'e göre
+  w.ayarlarAc();await bekle(200);
+  yaz('p_kcal',2000);
+  const k1=+$('p_karb').value,y1=+$('p_yag').value,s1=+$('p_seker').value,p1=+$('p_protein').value;
+  ok('Kalori yazınca karb/yağ/şeker alanı değişti',k1!==P().karb&&y1!==P().yag&&s1!==P().seker,`P${p1} K${k1} Y${y1} Ş${s1}`);
+  ok('Alan toplamı ≈ 2000 kcal (±%3)',Math.abs(p1*4+k1*4+y1*9-2000)<=60,p1*4+k1*4+y1*9);
+  ok('Makro toplam satırı uyarısız',!$('makroToplam').classList.contains('uyari'),$('makroToplam').textContent);
+  $('hedefKaydet').click();await bekle(300);
+  ok('Kaydedildi: 2000 kcal, makrolar tutarlı',P().kcal===2000&&Math.abs(top(P())-2000)<=60,`P${P().protein} K${P().karb} Y${P().yag} Ş${P().seker} L${P().lif}`);
+  ok('Lif kaloriye uydu (28 g)',P().lif===28,P().lif);
+  ok('Yarının menüsü yeni kaloriye göre (±%10)',Math.abs(yarin()-2000)<=200,yarin());
+  ok('Bildirim: menüler yeniden hazırlandı',/2000 kcal/.test(toast()),toast());
+  ok('Log kaydı (hedefler + lif)',w.eval("D.log.some(l=>/Günlük hedefler güncellendi.*Karbonhidrat.*Lif/.test(l.m))"),w.eval("(D.log.find(l=>/Günlük hedefler/.test(l.m))||{}).m"));
+  await bekle(5500);
+
+  // 2) Elle protein yazılır, sonra kalori → protein aynen kalır, karb kalan kaloriden
+  w.ayarlarAc();await bekle(200);
+  yaz('p_protein',180);yaz('p_kcal',2600);
+  ok('Elle protein korundu',+$('p_protein').value===180,$('p_protein').value);
+  ok('Karb, elle protein + yağdan kalan',Math.abs(180*4+ +$('p_karb').value*4+ +$('p_yag').value*9-2600)<=10,`K${$('p_karb').value} Y${$('p_yag').value}`);
+  // 3) Elle tutarsız karb → uyarı satırı kırmızı
+  yaz('p_karb',900);
+  ok('Tutarsız makroda uyarı',$('makroToplam').classList.contains('uyari'),$('makroToplam').textContent);
+  ok('Elle karb, kalori değişince ezilmez',(yaz('p_kcal',2700),+$('p_karb').value===900));
+  w.kapat();await bekle(200);   // kaydetmeden kapat → değişmez
+  ok('Kaydetmeden kapatınca hedef değişmedi',P().kcal===2000,P().kcal);
+
+  // 4) Yalnız su değişince menü yeniden hazırlanmaz
+  w.ayarlarAc();await bekle(200);
+  const menu0=w.eval("JSON.stringify(menuOku(gunEkle(bugunK(),2)))");
+  yaz('p_su',3500);$('hedefKaydet').click();await bekle(300);
+  ok('Yalnız su: menü aynı, makrolar aynı',w.eval("JSON.stringify(menuOku(gunEkle(bugunK(),2)))")===menu0&&P().kcal===2000&&P().su===3500);
+  await bekle(2500);
+
+  // 5) Haftalık tartı: kilo değişince kalori ve menü birlikte
+  w.eval("aktif=bugunK();ciz()");await bekle(200);
+  if($('tartiIn')){
+    $('tartiIn').value='100';w.tartiKaydet();await bekle(300);
+    ok('Elle kalori (2000) tartıda korundu',P().kilo===100&&P().kcal===2000&&P().elleKcal===true,P().kcal);
+    await bekle(2500);
+    w.eval("hedefleriYenile();planYenile();delete D.tartim[aktif];kaydet();ciz()");await bekle(200);   // profil hesabına dön; kart girilince kalktığı için tartıyı sil
+    const once=P().kcal;$('tartiIn').value='90';w.tartiKaydet();await bekle(300);
+    ok('Tartı 90 kg: hedef yeniden hesaplandı',P().kilo===90&&P().kcal!==once,P().kcal);
+    ok('Tartı sonrası makrolar tutarlı',Math.abs(top(P())-P().kcal)<=P().kcal*0.03,top(P()));
+    ok('Tartı sonrası yarın menü yeni kaloriye göre (±%10)',Math.abs(yarin()-P().kcal)<=P().kcal*0.1,yarin()+' / '+P().kcal);
+    ok('Tartı bildirimi',/kcal/.test(toast()),toast());}
+  else L('ATLA tartı kartı bugün yok');
+  await bekle(5500);
+
+  // 6) Diyetisyen programı yalnız kalori veriyor → eksik makrolar ondan bölünür
+  w.eval("programUygula({a:'Dyt',h:'',n:'',o:[['kahvalti','08:00'],['ogle','12:30'],['aksam','19:00']],g:[[[{f:'yulaf',g:50}],[],[]]],m:null,t:{kcal:1600},ozel:[],d:'hafta',ay:'',su:0,kt:'',il:''})");
+  ok('Program 1600 kcal: makrolar tutarlı',P().kcal===1600&&Math.abs(top(P())-1600)<=50,`P${P().protein} K${P().karb} Y${P().yag}`);
+  ok('Program: şeker/lif kaloriye uydu',P().seker===52&&P().lif===22,`Ş${P().seker} L${P().lif}`);
+  w.eval("programUygula({a:'Dyt',h:'',n:'',o:[['kahvalti','08:00']],g:[[[{f:'yulaf',g:50}]]],m:null,t:{kcal:1800,protein:150},ozel:[],d:'hafta',ay:'',su:0,kt:'',il:''})");
+  ok('Program 1800 + protein 150: protein aynen, karb kalandan',P().protein===150&&Math.abs(top(P())-1800)<=10,`P${P().protein} K${P().karb} Y${P().yag}`);
+  // Programdayken Ayarlar'dan kalori: makrolar uyar, programın menüsüne dokunulmaz
+  const pm=w.eval("JSON.stringify(menuOku(gunEkle(bugunK(),1)))");
+  w.ayarlarAc();await bekle(200);yaz('p_kcal',2000);$('hedefKaydet').click();await bekle(300);
+  ok('Programda: hedef 2000, menü aynı',P().kcal===2000&&w.eval("JSON.stringify(menuOku(gunEkle(bugunK(),1)))")===pm);
+  w.eval("D.program=null;kaydet()");await bekle(2500);
+
+  // 7) Program hazırla: Hesapla sonrası kalori elle değişince makrolar uyar; elle yazılan makro korunur
+  w.kocAc();await bekle(400);
+  w.eval("D.koc.dn={...D.koc.dn,cins:'e',yas:'35',boy:'178',kilo:'85',hedefKilo:'80',hedef:'ver',aktivite:2};kocHedefHesapla()");await bekle(200);
+  const kq=k=>d.querySelector(`#koc [data-kt="${k}"]`);
+  const kp0=+kq('protein').value;
+  kq('kcal').value='1800';kq('kcal').dispatchEvent(new w.Event('input',{bubbles:true}));
+  ok('Koç: kalori 1800 → karb/yağ uyar',Math.abs(+kq('protein').value*4+ +kq('karb').value*4+ +kq('yag').value*9-1800)<=10,`P${kq('protein').value} K${kq('karb').value} Y${kq('yag').value}`);
+  ok('Koç: protein ihtiyacı korundu',+kq('protein').value===Math.round(Math.min(kp0,1800*0.35/4)),kq('protein').value+' / '+kp0);
+  kq('yag').value='50';kq('yag').dispatchEvent(new w.Event('input',{bubbles:true}));
+  kq('kcal').value='2000';kq('kcal').dispatchEvent(new w.Event('input',{bubbles:true}));
+  ok('Koç: elle yağ korundu, karb kalandan',+kq('yag').value===50&&Math.abs(+kq('protein').value*4+ +kq('karb').value*4+450-2000)<=10,`P${kq('protein').value} K${kq('karb').value}`);
+  ok('Koç: değerler kaydedildi',w.eval('D.koc.t.yag')==='50'&&w.eval('D.koc.t.kcal')==='2000');
+}catch(e){L('HATA '+e.stack)}
+fetch('/SONUC_kcalmakro',{method:'POST',body:out.join('\n')});},1500);
+</script></body></html>
