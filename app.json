@@ -11,7 +11,7 @@
     "description": "Personal nutrition and healthy-living plan: meals, water, reminders, period tracking and progress. Free with occasional ads; one-time Remove ads purchase.",
     "ios": {
       "bundleIdentifier": "com.maviplay.liferoutine",
-      "buildNumber": "9",
+      "buildNumber": "11",
       "supportsTablet": true,
       "requireFullScreen": true,
       "userInterfaceStyle": "light",
