@@ -481,6 +481,7 @@ body.klavye .sheet-head{padding-top:8px;padding-bottom:6px}
 .stepper button{width:46px;height:46px;border-radius:12px;background:var(--blue-soft);color:var(--blue);font-size:22px;font-weight:700;flex-shrink:0}
 .stepper input{flex:1;min-width:0;height:46px;border:1px solid var(--line);border-radius:12px;text-align:center;font-weight:700;font-size:18px;outline:none}
 .hint{font-size:12.5px;color:var(--muted)}
+.hint.uyari{color:var(--red)}
 .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .acts .btn{flex:1 1 140px}
 .field{display:block;margin-bottom:10px}
@@ -1459,6 +1460,7 @@ Object.assign(S, {
   tasiDosyaAl:["📂 Dosyadan al", "📂 Load from file", "📂 Загрузить из файла", "📂 Aus Datei laden", "📂 تحميل من ملف"],
   cHedefYukari:["Hedef kilon ({h} kg) şu anki kilondan ({k} kg) fazla ama hedefin “{g}”. Hedefini “{y}” yapayım mı? Günlük kalori ve menüler buna göre güncellenir.", "Your target weight ({h} kg) is above your current weight ({k} kg), but your goal is “{g}”. Change your goal to “{y}”? Daily calories and menus will update.", "Ваш целевой вес ({h} кг) больше текущего ({k} кг), но цель — «{g}». Сменить цель на «{y}»? Калории и меню обновятся.", "Dein Zielgewicht ({h} kg) liegt über deinem aktuellen Gewicht ({k} kg), aber dein Ziel ist „{g}“. Ziel auf „{y}“ ändern? Kalorien und Menüs werden angepasst.", "وزنك المستهدف ({h} كغ) أعلى من وزنك الحالي ({k} كغ) لكن هدفك «{g}». هل أغيّر هدفك إلى «{y}»؟ ستُحدَّث السعرات والقوائم."],
   cHedefAsagi:["Hedef kilon ({h} kg) şu anki kilondan ({k} kg) az ama hedefin “{g}”. Hedefini “{y}” yapayım mı? Günlük kalori ve menüler buna göre güncellenir.", "Your target weight ({h} kg) is below your current weight ({k} kg), but your goal is “{g}”. Change your goal to “{y}”? Daily calories and menus will update.", "Ваш целевой вес ({h} кг) меньше текущего ({k} кг), но цель — «{g}». Сменить цель на «{y}»? Калории и меню обновятся.", "Dein Zielgewicht ({h} kg) liegt unter deinem aktuellen Gewicht ({k} kg), aber dein Ziel ist „{g}“. Ziel auf „{y}“ ändern? Kalorien und Menüs werden angepasst.", "وزنك المستهدف ({h} كغ) أقل من وزنك الحالي ({k} كغ) لكن هدفك «{g}». هل أغيّر هدفك إلى «{y}»؟ ستُحدَّث السعرات والقوائم."],
+  makroToplam:["Protein, karbonhidrat ve yağ toplamı ≈ {m} kcal (günlük hedef {k} kcal). Kaloriyi değiştirince dokunmadığın değerler kendiliğinden güncellenir.","Protein, carbs and fat add up to ≈ {m} kcal (daily target {k} kcal). When you change calories, values you haven’t touched update automatically.","Белки, углеводы и жиры ≈ {m} ккал (цель {k} ккал). При изменении калорий нетронутые значения обновятся сами.","Eiweiß, Kohlenhydrate und Fett ≈ {m} kcal (Tagesziel {k} kcal). Änderst du die Kalorien, passen sich unberührte Werte automatisch an.","البروتين والكربوهيدرات والدهون ≈ {m} سعرة (الهدف اليومي {k} سعرة). عند تغيير السعرات تتحدّث القيم التي لم تغيّرها تلقائيًا."],
   tPlanYeni:["✅ Günlük hedefin {b} kcal; bugünden sonraki menüler yeni hedeflere göre yeniden hazırlandı (bugün yediklerin korundu).", "✅ Your daily target is {b} kcal; menus from today on were rebuilt for the new targets (what you ate today is kept).", "✅ Ваша дневная цель — {b} ккал; меню с сегодняшнего дня пересобраны под новые цели (съеденное сегодня сохранено).", "✅ Dein Tagesziel ist {b} kcal; die Menüs ab heute wurden für die neuen Ziele neu erstellt (heute Gegessenes bleibt).", "✅ هدفك اليومي {b} سعرة؛ أُعيد إعداد القوائم من اليوم وفق الأهداف الجديدة (ما أكلته اليوم محفوظ)."],
   tKcalAyni:["Kaydedildi. Günlük hedefin aynı kaldı ({k} kcal). “{g}” hedefinde kalori, hedef kiloya göre değil, hedefin türüne göre hesaplanır; hedef kilo yalnız süreyi etkiler.", "Saved. Your daily target is unchanged ({k} kcal): for “{g}”, calories depend on the goal type, not the target weight; the target weight only affects the timeline.", "Сохранено. Дневная цель не изменилась ({k} ккал): для цели «{g}» калории зависят от типа цели, а не от целевого веса; целевой вес влияет только на срок.", "Gespeichert. Dein Tagesziel bleibt gleich ({k} kcal): Bei „{g}“ hängen die Kalorien vom Zieltyp ab, nicht vom Zielgewicht; das Zielgewicht beeinflusst nur die Dauer.", "تم الحفظ. هدفك اليومي لم يتغير ({k} سعرة): في هدف «{g}» تعتمد السعرات على نوع الهدف لا على الوزن المستهدف؛ الوزن المستهدف يؤثر على المدة فقط."],
   tProgHedef:["Kaydedildi. Diyetisyen programını kullandığın için kalori hedefin ve menülerin değişmedi.", "Saved. Because you follow a dietitian’s program, your calorie target and menus stay the same.", "Сохранено. Так как вы следуете программе диетолога, цель по калориям и меню не изменились.", "Gespeichert. Da du einem Programm deiner Ernährungsberatung folgst, bleiben Kalorienziel und Menüs gleich.", "تم الحفظ. لأنك تتبع برنامج أخصائي التغذية، لم يتغير هدف السعرات والقوائم."],
@@ -4027,6 +4029,19 @@ const PROTEIN_KG = {ver:1.8, sekil:2.0, koru:1.2, kas:1.8, al:1.6};
 const ODAKLAR = [['seker','🩺',''], ['tansiyon','❤️','t'], ['kolesterol','🫀','y']];
 function vki(p){ return p.kilo / Math.pow(p.boy / 100, 2); }
 function vkiSinif(b){ return b < 18.5 ? 'bmi1' : b < 25 ? 'bmi2' : b < 30 ? 'bmi3' : 'bmi4'; }
+// Günlük kaloriyi makrolara böler (hedefHesapla ve elle kalori değişimi aynı kuralları kullanır).
+// s.protein / s.yag / s.karb: kullanıcının elle verdiği değer (aynen kalır, karbonhidrat kalandan hesaplanır);
+// s.protein0: protein ihtiyacı (g), kalorinin en çok %35'i olacak şekilde kırpılır
+function makroBol(kcal, p, s = {}){
+  const od = new Set(p.odaklar || []), seker = od.has('seker');
+  const protein = s.protein != null ? Math.round(s.protein) : Math.round(Math.min(s.protein0 != null ? s.protein0 : kcal * 0.2 / 4, kcal * 0.35 / 4));
+  // Kan şekeri: yağ %30, karbonhidrat en çok %40, şeker %10 · Kolesterol: yağ %28'de kalır, doymuş yağlı kalemler menüden çıkar
+  const yag = s.yag != null ? Math.round(s.yag) : Math.round(kcal * (seker ? 0.30 : 0.28) / 9);
+  let karb = s.karb != null ? Math.round(s.karb) : Math.max(0, Math.round((kcal - protein * 4 - yag * 9) / 4));
+  if (seker && s.karb == null) karb = Math.min(karb, Math.round(kcal * 0.40 / 4));
+  // Lif: 14 g/1000 kcal; kolesterol ve kan şekerinde en az 30 g (çözünür lif LDL ve kan şekerini düşürür)
+  return {protein, karb, yag, seker: Math.round(kcal * (seker ? 0.10 : 0.13) / 4), lif: Math.max(Math.round(kcal / 1000 * 14), od.has('kolesterol') || seker ? 30 : 0)};
+}
 function hedefHesapla(p){
   const bmr = 10 * p.kilo + 6.25 * p.boy - 5 * p.yas + (p.cins === 'k' ? -161 : 5);
   // Düzenli spor: günlük hareket seçimine küçük ek katsayı (haftada 3–4 gün +0,05, 5+ gün +0,10); seçim bozulmaz, yalnız düzeltme
@@ -4044,14 +4059,8 @@ function hedefHesapla(p){
   kcal = Math.round(Math.max(kcal, Math.min(taban, tdee)) / 50) * 50;
   const refKilo = b > 25 ? 25 * Math.pow(p.boy / 100, 2) : p.kilo;
   const pKg = Math.max(PROTEIN_KG[p.hedef] || 1.2, seker ? 1.3 : 0);
-  const protein = Math.round(Math.min(hamile ? 1.1 * p.kilo + (tri >= 2 ? 25 : 0) : pKg * refKilo, kcal * 0.35 / 4));
-  // Kan şekeri: yağ %30, karbonhidrat en çok %40, şeker %10 · Kolesterol: yağ %28'de kalır, doymuş yağlı kalemler menüden çıkar
-  const yag = Math.round(kcal * (seker ? 0.30 : 0.28) / 9);
-  let karb = Math.round((kcal - protein * 4 - yag * 9) / 4);
-  if (seker) karb = Math.min(karb, Math.round(kcal * 0.40 / 4));
-  const sekerG = Math.round(kcal * (seker ? 0.10 : 0.13) / 4);
-  // Lif: 14 g/1000 kcal; kolesterol ve kan şekerinde en az 30 g (çözünür lif LDL ve kan şekerini düşürür)
-  const lif = Math.max(Math.round(kcal / 1000 * 14), od.has('kolesterol') || seker ? 30 : 0);
+  const m = makroBol(kcal, p, {protein0: hamile ? 1.1 * p.kilo + (tri >= 2 ? 25 : 0) : pKg * refKilo});
+  const {protein, karb, yag, lif} = m, sekerG = m.seker;
   const su = sinirla(Math.round((p.kilo * 35 + (p.aktivite >= 3 ? 500 : 0) + (hamile ? 300 : 0)) / 250) * 250, 1500, 4000);
   let hafta = 0;
   if (!hamile && p.hedef === 'ver' && p.hedefKilo < p.kilo) hafta = Math.ceil((p.kilo - p.hedefKilo) / p.hiz);
@@ -4609,9 +4618,18 @@ function tartiKaydet(){
   if (!(kg >= 30 && kg <= 300)){ toast(T('errBody')); return; }
   const P = D.profil, onc = oncekiTartim(aktif);
   (D.tartim || (D.tartim = {}))[aktif] = kg;
-  if (tartimlar().pop()[0] === aktif && kg !== P.kilo){ P.kilo = kg; if (!D.program && P.hedef) hedefleriYenile(); }
+  let planDegisti = false;
+  if (tartimlar().pop()[0] === aktif && kg !== P.kilo){
+    P.kilo = kg;
+    if (!D.program && P.hedef && !P.elleKcal){
+      // Kilo değişince hedefler yeniden hesaplanır; kalori/makro değiştiyse menüler de yeni hedeflere göre hazırlanır (eskisi eski kaloride kalıyordu)
+      const once = [P.kcal, P.protein, P.karb, P.yag].join();
+      hedefleriYenile();
+      if ([P.kcal, P.protein, P.karb, P.yag].join() !== once){ planYenile(); planDegisti = true; }
+    }
+  }
   logEkle('diger', aktif, T('lTarti', {b: sayi(kg), f: onc != null ? farkKg(kg, onc) + ' kg' : T('tartiIlk')}));
-  kaydet(); ciz(); toast(T('tSaved'));
+  kaydet(); ciz(); toast(planDegisti ? T('tPlanYeni', {b: P.kcal}) : T('tSaved'), planDegisti ? 5200 : 2200);
 }
 function ozetCiz(){
   const P = D.profil, kay = kayitOku(aktif), menu = menuOku(aktif), yenen = yenenToplam(aktif), suH = suHedefi(aktif);
@@ -5228,6 +5246,7 @@ function ayarlarAc(dilAcik = false){
     </div><div class="ayar-blok" data-ak="hedef"><div class="sec">${T('sTargets')}</div>
     <div class="grid3">${HEDEF_KEYS.filter(k => k !== 'su' && k !== 'bardak').map(alan).join('')}
       <label class="field"><span>${T('bardakSu')}</span><div class="ikili"><input autocomplete="off" id="p_bardak" type="text" inputmode="numeric" value="${P.bardak}" aria-label="${esc(T('tGlass'))}"><b>/</b><input autocomplete="off" id="p_su" type="text" inputmode="numeric" value="${P.su}" aria-label="${esc(T('tWater'))}"></div></label></div>
+    <div class="hint" id="makroToplam" style="margin:-4px 0 8px"></div>
     <button class="btn full" id="hedefKaydet">${T('save')}</button>
     ${/^https?:$/.test(location.protocol) && !bagimsiz() ? `</div><div class="ayar-blok" data-ak="yukle"><div class="sec">${T('instTitle')}</div><button class="btn solid full" id="yukleBtn">${T('instBtn')}</button>` : ''}
     </div><div class="ayar-blok" data-ak="tasi"><div class="sec">${T('tasiT')}</div>
@@ -5276,10 +5295,27 @@ function ayarlarAc(dilAcik = false){
     }));
   };
   $('sbody').querySelectorAll('[data-dil]').forEach(b => b.onclick = () => { const y = $('sbody').scrollTop; D.ayar.dil = b.dataset.dil; kaydet(); ciz(); ayarlarAc(true); $('sbody').scrollTop = y; });
+  // Kalori değişince elle dokunulmamış makrolar aynı kurallarla yeniden bölünür (kullanıcı 02.11: kalori değişti, karb/yağ aynı kaldı)
+  const MAKRO = ['protein', 'karb', 'seker', 'yag'], elle = new Set(), hNum = k => Math.round(+$('p_' + k).value) || 0;
+  const makroOku = () => { const kc = hNum('kcal'); return kc >= 500 && kc <= 10000 ? makroBol(kc, P, {protein0: P.protein, ...Object.fromEntries(['protein', 'yag', 'karb'].filter(k => elle.has(k)).map(k => [k, hNum(k)]))}) : null; };
+  const makroToplamYaz = () => {
+    const kc = hNum('kcal'), top = hNum('protein') * 4 + hNum('karb') * 4 + hNum('yag') * 9, el = $('makroToplam');
+    el.textContent = kc ? T('makroToplam', {m: top, k: kc}) : '';
+    el.classList.toggle('uyari', !!kc && Math.abs(top - kc) > kc * 0.1);
+  };
+  const makroGuncelle = () => { const m = makroOku(); if (m) MAKRO.forEach(k => { if (!elle.has(k)) $('p_' + k).value = m[k]; }); makroToplamYaz(); };
+  $('p_kcal').addEventListener('input', makroGuncelle);
+  MAKRO.forEach(k => $('p_' + k).addEventListener('input', () => { elle.add(k); makroGuncelle(); }));
+  makroToplamYaz();
   $('hedefKaydet').onclick = () => {
-    const degisen = [];
+    const degisen = [], once = [P.kcal, P.protein, P.karb, P.yag].join(), eskiKcal = P.kcal;
     HEDEF_KEYS.forEach(k => { const v = Math.max(0, Math.round(+$('p_' + k).value)) || P[k]; if (v !== P[k]) degisen.push(`${T(HEDEF_ETIKET[k])}: ${P[k]} → ${v}`); P[k] = v; });
+    if (P.kcal !== eskiKcal){ const m = makroOku(); if (m && m.lif !== P.lif){ degisen.push(`${T('fiber')}: ${P.lif} → ${m.lif}`); P.lif = m.lif; } }
     if (degisen.length) logEkle('diger', null, T('lTargets', {l: degisen.join(', ')}));
+    // Elle verilen kalori haftalık tartıda ezilmesin (profil/ölçü değişince yeniden hesaplanır)
+    if (P.hedef && !D.program) P.elleKcal = P.kcal !== hedefHesapla(P).kcal;
+    // Kalori veya makro değiştiyse bugünden sonraki menüler yeni hedeflere göre hazırlanır (diyetisyen programındaki menüye dokunulmaz)
+    if (!D.program && [P.kcal, P.protein, P.karb, P.yag].join() !== once){ planYenile(); kaydet(); ciz(); kapat(); toast(T('tPlanYeni', {b: P.kcal}), 5200); return; }
     kaydet(); ciz(); kapat(); toast(T('tSaved'));
   };
   $('yedekIndir').onclick = () => indir(JSON.stringify(D, null, 1), `${dosyaAdi()}_yedek_${bugunK()}.json`, 'application/json');
@@ -5377,6 +5413,7 @@ function yazAc(){
 function hedefleriYenile(){
   const h = hedefHesapla(D.profil);
   Object.assign(D.profil, {kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su});
+  D.profil.elleKcal = false;
 }
 // Ölçü/hedef değişince: günlük hedefler yeniden hesaplanır; değiştiyse bugünden sonraki menüler yeni hedeflere göre hazırlanır
 // (bugün "yedim" denen öğünler ve geçmiş günler korunur). Diyetisyen programında hedefler ve menü programdan gelir, dokunulmaz.
@@ -5702,6 +5739,7 @@ function kocHedefHesapla(){
   if (!p.cins || !(p.yas >= 14 && p.yas <= 100) || !(p.boy >= 120 && p.boy <= 230) || !(p.kilo >= 30 && p.kilo <= 300)){ kocUyari(T('kocHesaplaEksik')); return; }
   const h = hedefHesapla(p);
   K.t = {...K.t, kcal: String(h.kcal), protein: String(h.protein), karb: String(h.karb), yag: String(h.yag), su: String(Math.round(h.su / 100) / 10)};
+  K.tOto = {protein: 1, karb: 1, yag: 1}; K.tProtein0 = h.protein;
   kaydet(); kocCiz(); toast(T('kocHesaplandi'));
 }
 // ---------- Program hazırla: öğünleri gizle / göster (ana ekrandakiyle aynı davranış; kaydırma #koc içinde) ----------
@@ -5925,7 +5963,19 @@ $('koc').addEventListener('click', e => {
 $('koc').addEventListener('input', e => {
   const t = e.target, K = D.koc; if (!K) return;
   if (t.dataset.kf){ K[t.dataset.kf] = t.value; kocKaydet(); return; }
-  if (t.dataset.kt){ K.t[t.dataset.kt] = t.dataset.kt === 'su' ? t.value.replace(',', '.').replace(/[^\d.]/g, '') : t.value.replace(/[^\d]/g, ''); kocKaydet(); return; }
+  if (t.dataset.kt){
+    const k = t.dataset.kt;
+    K.t[k] = k === 'su' ? t.value.replace(',', '.').replace(/[^\d.]/g, '') : t.value.replace(/[^\d]/g, '');
+    if (K.tOto) delete K.tOto[k];
+    const oto = Object.keys(K.tOto || {}), kc = +K.t.kcal;
+    if (k !== 'su' && oto.length && kc >= 500 && kc <= 10000){
+      // Hesapla'nın protein ihtiyacı korunur (kalorinin en çok %35'i); elle yazılan makrolar aynen kalır
+      const sabit = {protein0: K.tProtein0, ...Object.fromEntries(['protein', 'yag', 'karb'].filter(x => !K.tOto[x] && +K.t[x]).map(x => [x, +K.t[x]]))};
+      const m = makroBol(kc, {odaklar: []}, sabit);
+      oto.forEach(x => { K.t[x] = String(m[x]); const inp = $('koc').querySelector(`[data-kt="${x}"]`); if (inp) inp.value = K.t[x]; });
+    }
+    kocKaydet(); return;
+  }
   if (t.dataset.kalara){ K.alAra = t.value; const el = $('koc').querySelector('.koc-al-sonuc'); if (el){ el.innerHTML = kocAlerjiListe(K); el.scrollTop = 0; kaymaCubuguKur(el); } return; }
   if (t.dataset.kdn){ K.dn[t.dataset.kdn] = t.value.replace(',', '.').replace(/[^\d.]/g, ''); kocKaydet(); return; }
   if (t.dataset.knot){ K.not[K.sec][t.dataset.knot] = t.value; kocKaydet(); return; }
@@ -6186,10 +6236,15 @@ function programUygula(P){
   D.miktar = {};
   menuleriTemizle(true);
   saatKaydet(bugun, Object.fromEntries(P.o));
-  if (P.t.kcal) D.profil.kcal = P.t.kcal;
-  if (P.t.protein) D.profil.protein = P.t.protein;
-  if (P.t.karb) D.profil.karb = P.t.karb;
-  if (P.t.yag) D.profil.yag = P.t.yag;
+  if (P.t.kcal){
+    // Programda yalnız kalori (veya bir kısmı) varsa eksik makrolar bu kaloriden bölünür; şeker ve lif de kaloriye uyar (eskiler kalıyordu)
+    const m = makroBol(P.t.kcal, D.profil, {protein0: D.profil.protein, ...Object.fromEntries(['protein', 'yag', 'karb'].filter(k => P.t[k]).map(k => [k, P.t[k]]))});
+    Object.assign(D.profil, {kcal: P.t.kcal, protein: m.protein, karb: m.karb, yag: m.yag, seker: m.seker, lif: m.lif});
+  } else {
+    if (P.t.protein) D.profil.protein = P.t.protein;
+    if (P.t.karb) D.profil.karb = P.t.karb;
+    if (P.t.yag) D.profil.yag = P.t.yag;
+  }
   if (P.su) D.profil.su = P.su;
   D.program = {a:P.a, h:P.h, n:P.n, t:Date.now(), d:P.d || 'hafta', ay:P.d === 'ay' ? programAyi(P) : '', kt:P.kt || '', il:P.il || ''};
   logEkle('diger', null, T('lImport', {h: P.h || T('progAnon'), a: P.a || '—'}));
