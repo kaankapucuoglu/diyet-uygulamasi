@@ -26,6 +26,13 @@ const IZIN = {
     de: 'LifeRoutine liest deine täglichen Schritte, deinen Schlaf und dein Gewicht aus Health, um sie in der Übersicht anzuzeigen. Diese Daten verlassen dein Gerät nicht und werden nicht für Werbung genutzt.',
     ar: 'يقرأ LifeRoutine خطواتك اليومية ونومك ووزنك من تطبيق صحتي لعرضها في شاشة المتابعة. لا تغادر هذه البيانات جهازك ولا تُستخدم للإعلانات.',
   },
+  NSHealthUpdateUsageDescription: {
+    tr: 'LifeRoutine Sağlık uygulamasına veri yazmaz; adım, uyku ve kilo bilgilerinizi yalnız okur. Bu veriler cihazınızdan çıkmaz.',
+    en: 'LifeRoutine does not write any data to Health; it only reads your steps, sleep and weight. This data never leaves your device.',
+    ru: 'LifeRoutine не записывает данные в «Здоровье», а только считывает шаги, сон и вес. Эти данные не покидают устройство.',
+    de: 'LifeRoutine schreibt keine Daten in Health, sondern liest nur Schritte, Schlaf und Gewicht. Diese Daten verlassen dein Gerät nicht.',
+    ar: 'لا يكتب LifeRoutine أي بيانات في تطبيق الصحة؛ بل يقرأ خطواتك ونومك ووزنك فقط. لا تغادر هذه البيانات جهازك.',
+  },
 };
 const izinMetni = (d) => Object.fromEntries(Object.entries(IZIN).map(([k, v]) => [k, v[d]]));
 
