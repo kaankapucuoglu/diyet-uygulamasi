@@ -14,6 +14,9 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.arti){ const [oi, ii] = cift(ds.arti); miktarAdim(oi, ii, +ds.yon); return; }
   if (ds.sil){ const [oi, ii] = cift(ds.sil); ogeSil(oi, ii); return; }
   if (ds.ekle !== undefined){ secimAc({mod:'ekle', oi:+ds.ekle}); return; }
+  if (ds.ftekle !== undefined){ fotoIleEkle(+ds.ftekle); return; }
+  if (ds.bkekle !== undefined){ barkodIleEkle(+ds.bkekle); return; }
+  if (ds.ofotoac){ ogunFotoGoster(ds.ofotoac); return; }
   if (ds.degis){ const [oi, ii] = cift(ds.degis); secimAc({mod:'degis', oi, ii}); return; }
   if (ds.kiyas){ const [oi, ii] = cift(ds.kiyas); secimAc({mod:'kiyas', oi, ii}); return; }
   if (ds.tumlog){ loglarAc(); return; }
@@ -70,7 +73,7 @@ function kilidiAc(){
 
 // ---------- Yemek seç / değiştir / kıyasla ----------
 let SE = null;
-const SON = '__son', TUMU = '__tumu', BENZER = '__benzer';
+const SON = '__son', TUMU = '__tumu', BENZER = '__benzer', FOTO = '__foto';   // FOTO: öğün fotoğrafındaki adaylar (p9e.js)
 // Değiştir/Kıyasla için benzer yemekler: aynı tür (ad/etiket ortak kelime, ör. "ekmek") önce, sonra aynı gruptaki besin değeri en yakınlar
 // Türü değil niteliği/pişirmeyi anlatan kelimeler benzerlikte sayılmaz (ör. "tam buğday" ekmekle makarnayı eşleştirmesin)
 const NITELIK = new Set(['tam','bugday','kepekli','haslama','haslanmis','izgara','firin','tava','yarim','yagli','sekersiz','tuzsuz','sade','light','kahvalti','yemek','yemegi','zeytinyagli','yogurtlu','kimyonlu','sumakli','derisiz','suzulmus','bugulama']);
@@ -99,7 +102,7 @@ function secimAc(opts){
   SE.son = sonSecilenler(ogun.id).filter(f => SE.uygun(yemek(f)));
   SE.mevcut = SE.ii !== undefined ? {...ogun.ogeler[SE.ii]} : null;
   SE.benzer = SE.mevcut ? benzerler(SE.mevcut.f, SE.uygun) : [];
-  SE.kat = SE.benzer.length ? BENZER : SE.son.length ? SON : TUMU;   // değiştir/kıyasla: benzerleri; ekle: son seçilenler
+  SE.kat = SE.foto ? FOTO : SE.benzer.length ? BENZER : SE.son.length ? SON : TUMU;   // fotoğraf: adaylar; değiştir/kıyasla: benzerleri; ekle: son seçilenler
   const baslik = T({ekle:'pAdd', degis:'pChange', kiyas:'pCompare'}[SE.mod], {o: ogunAd(ogun)});
   ac(esc(baslik) + (!opts.koc && gecmisMi(aktif) ? ` <span class="tag">${etiket(aktif)}</span>` : ''));
   listeGorunumu();
@@ -155,7 +158,7 @@ function cokluUygula(){
 function listeGorunumu(){
   const lejant = `<div class="legend"><span><i style="background:var(--green)"></i>${T('good')}</span><span><i style="background:var(--red)"></i>${T('bad')}</span><span>${T('legendRule')}</span></div>`;
   const ipu = SE.mevcut ? `<div class="hint" style="margin-top:6px">${T('diffsFor', {g: yuv(gramOf(yemek(SE.mevcut.f), SE.mevcut.g))})}</div>${lejant}` : '';
-  $('sbody').innerHTML = `${mevcutKart()}
+  $('sbody').innerHTML = `${SE.foto ? fotoUstHtml() : ''}${mevcutKart()}
     <input class="search" id="ara" type="text" inputmode="search" enterkeyhint="search" name="yemek-ara" role="searchbox" aria-autocomplete="list" placeholder="${esc(T('searchPh'))}" value="${esc(SE.q)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" data-lpignore="true">
     <div class="chips" id="kategoriler"></div>${ipu}
     <div class="found" id="bulunan"></div>
@@ -176,12 +179,12 @@ function listeGorunumu(){
 }
 function kategoriCiz(){
   const uygun = SE.uygun;
-  const katlar = (SE.benzer.length ? [BENZER] : []).concat(SE.son.length ? [SON] : []).concat([TUMU, ...[...new Set(tumYemekler().filter(uygun).map(f => f.kat))].sort((a, b) => KAT_SIRA.indexOf(a) - KAT_SIRA.indexOf(b))]);
-  const ad = k => k === BENZER ? T('similar') : k === SON ? T('recent') : k === TUMU ? T('all') : katAd(k);
+  const katlar = (SE.foto ? [FOTO] : []).concat(SE.benzer.length ? [BENZER] : []).concat(SE.son.length ? [SON] : []).concat([TUMU, ...[...new Set(tumYemekler().filter(uygun).map(f => f.kat))].sort((a, b) => KAT_SIRA.indexOf(a) - KAT_SIRA.indexOf(b))]);
+  const ad = k => k === FOTO ? '📷 ' + T('ftAdaylar') : k === BENZER ? T('similar') : k === SON ? T('recent') : k === TUMU ? T('all') : katAd(k);
   // Gruplar başta kapalı: değiştir/kıyasla'da Benzerleri, ekle'de Önerilenler + "Diğer grupları göster"
-  const ana = SE.benzer.length ? BENZER : SE.son.length ? SON : null, daralt = !!ana;
+  const ana = SE.foto ? FOTO : SE.benzer.length ? BENZER : SE.son.length ? SON : null, daralt = !!ana;
   const gorunen = daralt && !SE.tumGruplar ? [ana] : katlar;
-  $('kategoriler').innerHTML = gorunen.map(k => `<button class="chip${k === SON || k === BENZER ? ' recent' : ''}${k === SE.kat ? ' on' : ''}" data-kat="${esc(k)}">${esc(ad(k))}</button>`).join('')
+  $('kategoriler').innerHTML = gorunen.map(k => `<button class="chip${k === SON || k === BENZER || k === FOTO ? ' recent' : ''}${k === SE.kat ? ' on' : ''}" data-kat="${esc(k)}">${esc(ad(k))}</button>`).join('')
     + (daralt ? `<button class="chip more" data-grup="1">${T(SE.tumGruplar ? 'lessGroups' : 'moreGroups')}</button>` : '');
   // Gruba dokununca arama temizlenir (yoksa liste arama sonucunda kalıyordu)
   $('kategoriler').querySelectorAll('[data-kat]').forEach(b => b.onclick = () => { SE.kat = b.dataset.kat; if (SE.q){ SE.q = ''; $('ara').value = ''; } kategoriCiz(); listeCiz(); });
@@ -204,7 +207,7 @@ function listeCiz(){
   } else {
     // Öneri listelerinde profile uymayanlar (yemedikleri, sağlık odağına aykırı) gösterilmez
     // Kategoride: en çok seçtiklerin ve en sık yenenler başta
-    liste = (SE.kat === BENZER ? SE.benzer.map(yemek) : SE.kat === SON ? SE.son.map(yemek)
+    liste = SE.kat === FOTO ? SE.foto.ids.map(yemek) : (SE.kat === BENZER ? SE.benzer.map(yemek) : SE.kat === SON ? SE.son.map(yemek)
       : tumYemekler().filter(f => SE.kat === TUMU || f.kat === SE.kat).map(f => [f, populerPuan(f)]).sort((a, b) => b[1] - a[1] || a[0].ad.localeCompare(b[0].ad, LOC())).map(([f]) => f)).filter(uygun);
     $('bulunan').textContent = '';
   }

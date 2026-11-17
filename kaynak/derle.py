@@ -9,7 +9,9 @@ import os, re, sys
 
 KAYNAK = os.path.dirname(os.path.abspath(__file__))
 KOK = os.path.dirname(KAYNAK)
-PARCALAR = ['p1.html', 'p2.js', 'p3.js', 'p3b.js', 'p3c.js', 'p3d.js', 'p3e.js', 'p4c.js', 'p4d.js', 'p4e.js', 'p4f.js', 'p4g.js', 'p4h.js', 'p4i.js', 'p4j.js', 'p4.js', 'p4b.js', 'p5.js', 'p6.js', 'p7.js', 'p7b.js', 'p8.js', 'p9c.js']
+PARCALAR = ['p1.html', 'p2.js', 'p3.js', 'p3b.js', 'p3c.js', 'p3d.js', 'p3e.js', 'p3f.js', 'p4c.js', 'p4d.js', 'p4e.js', 'p4f.js', 'p4g.js', 'p4h.js', 'p4i.js', 'p4j.js', 'p4k.js', 'p4l.js', 'p4m.js', 'p4.js', 'p4b.js', 'p5.js', 'p6.js', 'p7.js', 'p7b.js', 'p8.js', 'p9c.js', 'p9d.js', 'p9r.js', 'p9e.js', 'p9f.js']
+# Sürüm 13: p3f ilk çizim metinleri · p4k ek yemekler · p4l egzersiz kütüphanesi · p4m besin öğeleri (USDA) · p9d takip · p9r rapor · p9e foto/barkod · p9f profesyonel mod
+PARCALAR = [p for p in PARCALAR if p != 'p4k.js' or os.path.exists(os.path.join(KAYNAK, p))]
 KAPANIS = '</script>\n</body>\n</html>\n'   # p8.js belgeyi kapatır; sonrasındaki parçalar (p9a, p9b: hesap/eşitleme; p9c: reklam/satın alma) kapanışın önüne alınır
 
 html = ''.join(open(os.path.join(KAYNAK, p), encoding='utf-8').read() for p in PARCALAR)

@@ -23,6 +23,7 @@ import { Directory, File, Paths } from 'expo-file-system';
 import { SHIM_SOURCE } from './src/shimSource';
 import { createIapBridge } from './iap';
 import { createAdsBridge } from './ads';
+import { BarkodEkrani, createExtraBridge, type BarkodEtiket } from './extra';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 SplashScreen.setOptions({ fade: true, duration: 300 });
@@ -207,6 +208,9 @@ function Shell() {
     (state) => js(`window.__lfApp&&window.__lfApp(${JSON.stringify(state)})`),
   ), [js]);
   useEffect(() => () => ads.dispose(), [ads]);
+  // Sürüm 13: öğün fotoğrafı, barkod, sağlık verisi (yalnız okuma), paylaş — extra.tsx
+  const [barkod, setBarkod] = useState<BarkodEtiket | null>(null);
+  const extra = useMemo(() => createExtraBridge(call, (l) => setBarkod(l)), [call]);
   // Reklam SDK'sı web 'ad:init' (reklamsız mı?) bildirince başlar; açılışta önceden yüklenmez (reklamsız kullanıcıda hiç başlamaz)
 
   // Bildirime dokunma → uygulama açılır (ek yönlendirme yok); web isterse window.__lfOnNotificationTap ile öğrenir
@@ -234,11 +238,16 @@ function Shell() {
   useEffect(() => {
     if (Platform.OS !== 'android') return;
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (barkodAcik.current) { barkodKapat.current(); return true; }
       js(`var h=window.__lfBack?window.__lfBack():false;window.__lfPost&&window.__lfPost({t:'back',handled:!!h});`);
       return true;
     });
     return () => sub.remove();
   }, [js]);
+
+  const barkodAcik = useRef(false);
+  const barkodKapat = useRef<() => void>(() => {});
+  useEffect(() => { barkodAcik.current = !!barkod; barkodKapat.current = () => { setBarkod(null); call('__lfOnBarkod', { ok: false, iptal: true }); }; }, [barkod, call]);
 
   // açılış zaman aşımı → yedek ekran
   useEffect(() => {
@@ -303,8 +312,9 @@ function Shell() {
       case 'ad:noads': ads.setNoAds(m.on); break;
       case 'ad:show': ads.show(m.kind, m.id); break;
       case 'ad:privacy': ads.privacy(); break;
+      default: extra.handle(m);
     }
-  }, [hideSplash, call, iap, ads]);
+  }, [hideSplash, call, iap, ads, extra]);
 
   const gone = useRef(0);   // çizim süreci ölüm sayısı (onRenderProcessGone)
   const retry = useCallback(() => { setFailed(null); setAttempt((a) => a + 1); }, []);
@@ -345,7 +355,7 @@ function Shell() {
         allowFileAccessFromFileURLs
         allowUniversalAccessFromFileURLs
         allowingReadAccessToURL={source.readAccess}
-        // kamera / mikrofon yok
+        // WebView'e kamera / mikrofon verilmez (fotoğraf ve barkod yerel ekranla alınır: extra.tsx)
         mediaCapturePermissionGrantType="deny"
         // kaydırma var (uzun sayfa); esneme / yakınlaştırma yok
         bounces={false}
@@ -395,6 +405,9 @@ function Shell() {
           setAttempt((a) => a + 1);
         }}
       />
+      {barkod && (
+        <BarkodEkrani etiket={barkod} onSonuc={(r) => { setBarkod(null); call('__lfOnBarkod', r); }} />
+      )}
       {failed && (
         <View style={[styles.overlay, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 }]}>
           <Text style={styles.title}>Uygulama açılamadı</Text>

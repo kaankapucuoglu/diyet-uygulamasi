@@ -258,6 +258,9 @@ function kocDanisanHtml(K){
     <label class="field"><span>${T('goalLbl')}</span><select data-kdnsec="hedef">${['ver', 'koru', 'sekil', 'kas', 'al'].map(g => `<option value="${g}"${dn.hedef === g ? ' selected' : ''}>${T('g_' + g)}</option>`).join('')}</select></label></div>
     <div class="field" style="margin-bottom:4px"><span>${T('kocYemedikleri')}</span></div>
     <div class="chips koc-kisit">${[['m','🥩'],['c','🍗'],['f','🐟'],['e','🥚'],['d','🥛']].map(([x, ic]) => `<button class="chip${dn.haric.includes(x) ? ' on' : ''}" data-kkisit="h:${x}">${ic} ${esc(T('x_' + x))}</button>`).join('')}</div>
+    <div class="field" style="margin-bottom:4px"><span>${T('kocKlinik')}</span></div>
+    <div class="chips koc-odak">${[...ODAKLAR.map(([k, ic]) => [k, ic]), ['emzirme', '🤱']].map(([k, ic]) => `<button class="chip${(dn.odak || []).includes(k) ? ' on' : ''}" data-kodak="${k}">${ic} ${esc(T(k === 'seker' ? 'g_seker' : k === 'emzirme' ? 'kocEmzirme' : 'o_' + k))}</button>`).join('')}</div>
+    <div class="hint" style="margin:-2px 0 8px">${esc(T('kocKlinikNot'))}</div>
     <div class="field" style="margin-bottom:4px"><span>${T('kocAlerjiler')}</span></div>
     <input class="search koc-al-ara" data-kalara="1" value="${esc(K.alAra || '')}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
     <div class="koc-al-kap"><div class="koc-al-sonuc">${kocAlerjiListe(K)}</div><div class="kayma-ray" aria-hidden="true"><i></i></div></div>
@@ -269,15 +272,17 @@ function kocKisitCelisme(fid){
   const y = yemek(fid), dn = D.koc && D.koc.dn; if (!y || !dn) return '';
   const al = (y.al || []).filter(a => dn.alerjiler.includes(a)).map(a => kocKisitAd('a', a));
   const hx = (y.x || '').split('').filter(c => dn.haric.includes(c)).map(c => kocKisitAd('h', c));
-  return [...new Set([...al, ...hx])].join(', ');
+  const ox = ODAKLAR.filter(([k, , x]) => x && (dn.odak || []).includes(k) && (y.x || '').includes(x)).map(([k]) => T(k === 'seker' ? 'g_seker' : 'o_' + k));
+  return [...new Set([...al, ...hx, ...ox])].join(', ');
 }
 // Mifflin-St Jeor (hedefHesapla): danışanın cinsiyet, yaş, boy, kilo, hareket ve hedefinden günlük hedefler + su
 function kocHedefHesapla(){
   const K = D.koc, dn = K.dn, n = k => +String(dn[k] || '').replace(',', '.') || 0;
   const p = {cins: dn.cins, yas: n('yas'), boy: n('boy'), kilo: n('kilo'), hedefKilo: n('hedefKilo') || n('kilo'), hedef: dn.hedef || 'koru', hiz: 0.5,
-    aktivite: +dn.aktivite || 2, odaklar: [], spor: {gun: 0}, hamile: false};
+    aktivite: +dn.aktivite || 2, odaklar: (dn.odak || []).filter(o => o !== 'emzirme'), spor: {gun: 0}, hamile: false};
   if (!p.cins || !(p.yas >= 14 && p.yas <= 100) || !(p.boy >= 120 && p.boy <= 230) || !(p.kilo >= 30 && p.kilo <= 300)){ kocUyari(T('kocHesaplaEksik')); return; }
-  const h = hedefHesapla(p);
+  let h = hedefHesapla(p);
+  if ((dn.odak || []).includes('emzirme') && p.cins === 'k') h = {...h, ...makroBol(h.kcal + 500, p), kcal: h.kcal + 500, su: h.su + 700};
   K.t = {...K.t, kcal: String(h.kcal), protein: String(h.protein), karb: String(h.karb), yag: String(h.yag), su: String(Math.round(h.su / 100) / 10)};
   K.tOto = {protein: 1, karb: 1, yag: 1}; K.tProtein0 = h.protein;
   kaydet(); kocCiz(); toast(T('kocHesaplandi'));
@@ -495,6 +500,11 @@ $('koc').addEventListener('click', e => {
     if (k >= 0) l.splice(k, 1); else l.push(id);
     K.dnAcik = true; kocKaydet(); kocCiz(); return;
   }
+  if (ds.kodak){
+    const l = K.dn.odak || (K.dn.odak = []), k = l.indexOf(ds.kodak);
+    if (k >= 0) l.splice(k, 1); else l.push(ds.kodak);
+    K.dnAcik = true; kocKaydet(); kocCiz(); return;
+  }
   if (ds.ktemizle){ kocOnay(T('cKocClearDay'), () => { K.gun[K.sec] = {}; K.not[K.sec] = {}; }, T('kocCleared')); return; }
   if (ds.kyeni){ kocOnay(T('cKocNew'), () => { D.koc = kocBos(); }); return; }
   if (ds.kyazdir){ kocYazdir(); return; }
@@ -567,7 +577,7 @@ function kocOtomatikOlustur(mod){
   const protein = +K.t.protein > 0 ? +K.t.protein : Math.round(kcal * 0.22 / 4);
   const yag = +K.t.yag > 0 ? +K.t.yag : Math.round(kcal * 0.28 / 9);
   const karb = +K.t.karb > 0 ? +K.t.karb : Math.max(50, Math.round((kcal - protein * 4 - yag * 9) / 4));
-  const p = {cins: K.dn.cins || 'e', hamile:false, odaklar:[], haric:[...K.dn.haric], alerjiler:[...K.dn.alerjiler], takviye:[], antrenmanGunleri:[], ara0:!!K.ara0,
+  const p = {cins: K.dn.cins || 'e', hamile:false, odaklar:(K.dn.odak || []).filter(o => o !== 'emzirme'), haric:[...K.dn.haric], alerjiler:[...K.dn.alerjiler], takviye:[], antrenmanGunleri:[], ara0:!!K.ara0,
     kcal, protein, karb, yag, seker: Math.round(kcal * 0.13 / 4), lif: Math.round(kcal / 1000 * 14)};
   const planlar = planOlustur(p), ids = kocOgunler(K), n = kocGunSayisi(K), hs = planlar.length;
   const pzt = k => gunEkle(k, -haftaGunu(k));
@@ -720,12 +730,12 @@ function kocYazdir(){
   const P = kocPaket();
   if (!P){ toast(T('kocEmpty')); return; }
   const ids = P.o.map(o => o[0]);
-  const gunHtml = (gun, i) => `<section><h2>${esc(kocGunAd(D.koc, i, true))}</h2><table>${ids.map((id, oi) => gun[oi].length ? `<tr><th>${esc(P.o[oi][1])}<br>${esc(T('m_' + id))}</th><td>${gun[oi].map(([f, g]) => esc(yemek(f).ad) + ' — ' + esc(miktarYazi(yemek(f), g))).join('<br>')}${P.m && P.m[i][oi] ? `<br><i>${esc(P.m[i][oi])}</i>` : ''}</td><td class="k">${yuv(topla(gun[oi].map(([f, g]) => ({f, g}))).k)} kcal</td></tr>` : '').join('')}</table></section>`;
+  const gunHtml = (gun, i) => `<section><h2>${esc(kocGunAd(D.koc, i, true))}</h2><table>${ids.map((id, oi) => gun[oi].length ? `<tr><th>${esc(P.o[oi][1])}<br>${esc(T('m_' + id))}</th><td>${gun[oi].map(([f, g]) => esc(yemek(f).ad) + ' — ' + esc(miktarYazi(yemek(f), g))).join('<br>')}${P.m && P.m[i][oi] ? `<br><i>${esc(P.m[i][oi])}</i>` : ''}</td><td class="k">${yuv(topla(gun[oi].map(([f, g]) => ({f, g}))).k)} kcal</td></tr>` : '').join('')}</table>${degisimSatirHtml(gun)}</section>`;
   const html = `<!DOCTYPE html><html lang="${dil}" dir="${RTL() ? 'rtl' : 'ltr'}"><head><meta charset="utf-8"><title>${esc(T('app'))} · ${esc(P.a)}</title><style>
     body{font-family:system-ui,"Segoe UI",Roboto,sans-serif;color:#172338;margin:24px;font-size:13px}h1{font-size:20px;margin:0 0 4px}p{margin:2px 0;color:#40506a}
     section{break-inside:avoid;margin-top:14px}h2{font-size:15px;margin:0 0 6px;color:#16a36b}table{width:100%;border-collapse:collapse}th,td{border:1px solid #dfe5ee;padding:6px 8px;text-align:start;vertical-align:top}
     th{width:120px;background:#f5f8fc;font-weight:700}td.k{width:70px;text-align:end;white-space:nowrap;color:#718096}</style></head><body>
-    <h1>${esc(T('app'))}${P.a ? ' · ' + esc(T('kocFor', {a: P.a})) : ''}</h1>${P.h ? `<p>${esc(T('kocBy', {h: P.h}))}</p>` : ''}${P.il ? `<p>${esc(T('kocIletisim', {i: P.il}))}</p>` : ''}${P.kt ? `<p>${esc(T('kocKontrol', {t: tarihYaz(P.kt)}))}</p>` : ''}${kocDanisanOzet()}<p>${esc(P.d === 'ay' ? T('kocPeriodMonth') + ': ' + ayAdi(P.ay) : T('kocPeriodWeek'))}</p>${P.n ? `<p>${esc(P.n)}</p>` : ''}
+    ${proBaslikHtml()}<h1>${esc(T('app'))}${P.a ? ' · ' + esc(T('kocFor', {a: P.a})) : ''}</h1>${P.h ? `<p>${esc(T('kocBy', {h: P.h}))}</p>` : ''}${P.il ? `<p>${esc(T('kocIletisim', {i: P.il}))}</p>` : ''}${P.kt ? `<p>${esc(T('kocKontrol', {t: tarihYaz(P.kt)}))}</p>` : ''}${kocDanisanOzet()}<p>${esc(P.d === 'ay' ? T('kocPeriodMonth') + ': ' + ayAdi(P.ay) : T('kocPeriodWeek'))}</p>${P.n ? `<p>${esc(P.n)}</p>` : ''}
     ${P.t || P.su ? `<p>${Object.entries(P.t || {}).map(([k, v]) => T(HEDEF_ETIKET[k]) + ': ' + v).concat(P.su ? [T('kocSuL') + ': ' + sayi(P.su / 1000)] : []).join(' · ')}</p>` : ''}
     ${P.g.map(gunHtml).join('')}<script>onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`;
   const dosya = `program_${(P.a || 'diyet').replace(/[^\wçğıöşüÇĞİÖŞÜ]+/g, '_')}.html`;
@@ -994,7 +1004,7 @@ function verileriBirlestir(gelen){
     for (const l of B.log.concat(A.log)) log.set(l.t + '|' + l.m, l);
     for (const f of B.ozelYemek.concat(A.ozelYemek)) oy.set(f.id, f);
     D = {...A, kayit, tartim: {...(B.tartim || {}), ...(A.tartim || {})}, log: [...log.values()].sort((x, y) => x.t - y.t).slice(-2000), ozelYemek: [...oy.values()],
-      ayar: {...B.ayar, ...A.ayar, kurulum: true, turGoruldu: !!(A.ayar.turGoruldu || B.ayar.turGoruldu)}};
+      ayar: {...B.ayar, ...A.ayar, kurulum: true, turGoruldu: !!(A.ayar.turGoruldu || B.ayar.turGoruldu)}, ...ekAlanBirlestir(A, B)};
   }
   logEkle('diger', null, T('lTasi', {g: sayi0}));
   kaydet(); kapat();
@@ -1018,7 +1028,7 @@ function gunBirlestir(ust, alt){
 // iPhone ana ekran uygulaması: kayıtların tarayıcıdan ayrı olduğunu bir kez anlat (tur bittikten sonra)
 function ayriDepoKontrol(){
   if (!iosMu() || !bagimsiz() || D.ayar.ayriDepo || !D.ayar.kurulum || !D.ayar.turGoruldu) return;
-  if ($('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[pyt]=/.test(location.hash)) return;
+  if ($('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[pytra]=/.test(location.hash)) return;
   ayriDepoAc();
 }
 function ayriDepoAc(){
@@ -1116,7 +1126,7 @@ const turHedef = i => TUR[i][0] ? [...document.querySelectorAll(TUR[i][0])].find
 function turKontrol(){
   if (D.ayar.turGoruldu || !D.ayar.kurulum) return;
   setTimeout(() => {
-    if (D.ayar.turGoruldu || $('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[pyt]=/.test(location.hash)) return;
+    if (D.ayar.turGoruldu || $('tur') || $('rapor') || !$('kurulum').hidden || !$('koc').hidden || $('overlay').classList.contains('open') || /^#[pytra]=/.test(location.hash)) return;
     turBaslat();
   }, 900);
 }

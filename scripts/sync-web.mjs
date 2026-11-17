@@ -70,6 +70,17 @@ if (fs.existsSync(legalDir)) {
   }
 }
 
+// ---- ai/: cihaz içi yemek tanıma (sürüm 13) — tani.js, tfjs, model ağırlıkları (food.bin), etiketler, eşleme ----
+const aiDir = path.join(ROOT, 'ai');
+let aiCount = 0;
+if (fs.existsSync(aiDir)) {
+  for (const f of fs.readdirSync(aiDir)) {
+    if (/^_/.test(f)) continue;   // test dosyaları
+    if (/\.(js|json|bin)$/i.test(f)) { cp(path.join(aiDir, f), path.join(OUT, 'ai', f)); aiCount++; }
+  }
+}
+if (aiCount < 6) throw new Error('[sync-web] ai/ eksik (' + aiCount + ' dosya)');
+
 // ---- köprü betiği ----
 const shim = fs.readFileSync(must(path.join(ROOT, 'shim', 'app-shim.js')), 'utf8');
 fs.writeFileSync(path.join(OUT, 'app-shim.js'), shim);
@@ -79,4 +90,4 @@ if (!process.env.SYNC_OUT) {
     '// OTOMATİK ÜRETİLİR (scripts/sync-web.mjs) — düzenlemeyin, shim/app-shim.js dosyasını düzenleyin.\n' +
     'export const SHIM_SOURCE: string = ' + JSON.stringify(shim) + ';\n');
 }
-console.log(`web/ hazır → ${OUT}\n  index.html ${kb(path.join(OUT, 'index.html'))} · app-shim.js ${kb(path.join(OUT, 'app-shim.js'))} · simge ${iconCount} · legal ${legalCount} · service worker: ${swNote}`);
+console.log(`web/ hazır → ${OUT}\n  index.html ${kb(path.join(OUT, 'index.html'))} · app-shim.js ${kb(path.join(OUT, 'app-shim.js'))} · simge ${iconCount} · legal ${legalCount} · ai ${aiCount} · service worker: ${swNote}`);

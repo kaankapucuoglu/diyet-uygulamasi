@@ -11,7 +11,7 @@
     "description": "Personal nutrition and healthy-living plan: meals, water, reminders, period tracking and progress. Free with occasional ads; one-time Remove ads purchase.",
     "ios": {
       "bundleIdentifier": "com.maviplay.liferoutine",
-      "buildNumber": "12",
+      "buildNumber": "13",
       "supportsTablet": true,
       "requireFullScreen": true,
       "userInterfaceStyle": "light",
@@ -50,7 +50,7 @@
     },
     "android": {
       "package": "com.maviplay.liferoutine",
-      "versionCode": 12,
+      "versionCode": 13,
       "adaptiveIcon": {
         "backgroundColor": "#0F172A",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -63,11 +63,14 @@
       "permissions": [
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.INTERNET",
-        "android.permission.VIBRATE"
+        "android.permission.VIBRATE",
+        "android.permission.CAMERA",
+        "android.permission.health.READ_STEPS",
+        "android.permission.health.READ_SLEEP",
+        "android.permission.health.READ_WEIGHT"
       ],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
-        "android.permission.CAMERA",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.READ_EXTERNAL_STORAGE",
@@ -178,7 +181,8 @@
             "usesCleartextTraffic": false,
             "enableProguardInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": false,
-            "enableMinifyInReleaseBuilds": true
+            "enableMinifyInReleaseBuilds": true,
+            "minSdkVersion": 26
           }
         }
       ],
@@ -190,6 +194,33 @@
           "defaultChannel": "ogun2"
         }
       ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "LifeRoutine, besin paketlerinin barkodunu okumak ve öğün fotoğrafı çekmek için kamerayı kullanır. Görüntüler cihazınızdan çıkmaz.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "LifeRoutine, seçtiğiniz öğün fotoğrafını cihazınızda tanımak için kullanır. Fotoğraf cihazınızdan çıkmaz.",
+          "cameraPermission": "LifeRoutine, öğün fotoğrafı çekmek için kamerayı kullanır. Fotoğraf cihazınızdan çıkmaz.",
+          "microphonePermission": false
+        }
+      ],
+      [
+        "@kingstinct/react-native-healthkit",
+        {
+          "NSHealthShareUsageDescription": "LifeRoutine, günlük adım, uyku ve kilo bilgilerinizi takip ekranında göstermek için Sağlık uygulamasından okur. Bu veriler cihazınızdan çıkmaz ve reklamda kullanılmaz.",
+          "NSHealthUpdateUsageDescription": false,
+          "background": false
+        }
+      ],
+      "expo-health-connect",
+      "./plugins/withHealthConnectDelegate.js",
       "./plugins/withBundledWeb.js",
       "./plugins/withLocalReleaseSigning.js",
       "./plugins/withCutout.js"

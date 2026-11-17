@@ -89,6 +89,19 @@
   window.__lfCancelAll = function () { post({ t: 'notify:cancelAll' }); };
   window.__lfNotifyPermission = function () { post({ t: 'notify:permission' }); };
 
+  // ---- paylaş: navigator.share → yerel paylaş sayfası (Android WebView'de Web Share API yok; iOS'ta da tek yol) ----
+  var paylasBekleyen = null;
+  window.__lfOnPaylas = function (r) { var f = paylasBekleyen; paylasBekleyen = null; if (f) f(r || {}); };
+  try {
+    Object.defineProperty(navigator, 'share', { configurable: true, writable: true, value: function (d) {
+      d = d || {};
+      return new Promise(function (ok) {
+        paylasBekleyen = function () { ok(); };
+        post({ t: 'paylas', title: d.title || '', text: d.text || '', url: d.url || '' });
+      });
+    } });
+  } catch (e) {}
+
   // ---- dosya indirme → yerel dosya + paylaş sayfası ----
   window.__lfDownload = function (name, content, mimeType) {
     post({ t: 'download', name: String(name || 'liferoutine.txt'), data: content == null ? '' : String(content), mime: mimeType || '' });

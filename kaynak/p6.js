@@ -353,8 +353,9 @@ function ogunleriCiz(){
         <button class="tog-btn" data-tog="${esc(o.id)}" aria-expanded="${!kapali}" title="${esc(T(kapali ? 'showMeal' : 'hideMeal'))}"><i>${kapali ? '▾' : '▴'}</i><span class="lbl">${T(kapali ? 'showMeal' : 'hideMeal')}</span></button>
       </div>
       ${o.not ? `<div class="ogun-not">📝 ${esc(o.not)}</div>` : ''}
+      <div class="ogun-fotolar" data-ofoto="${esc(o.id)}" hidden></div>
       <ul class="items">${ogeler}</ul>
-      <button class="add-food" data-ekle="${oi}">${T('addFood')}</button>
+      <div class="add-row"><button class="add-food" data-ekle="${oi}">${T('addFood')}</button><button class="add-ikon" data-ftekle="${oi}" title="${esc(T('ftEkle'))}" aria-label="${esc(T('ftEkle'))}">${IKON_KAMERA}</button><button class="add-ikon" data-bkekle="${oi}" title="${esc(T('bkEkle'))}" aria-label="${esc(T('bkEkle'))}">${IKON_BARKOD}</button></div>
     </article>`;
   }).join('');
 }

@@ -150,6 +150,7 @@ const ALERJEN_EK2 = {
 const LAKTOZ_DUSUK = new Set(['kasar','kasar_light','cheddar','parmesan','tulum','orgu_peyniri','dil_peyniri','keci_peyniri','hellim','cerkez_peyniri','ezine','beyazp','beyazp_tam','mozzarella','tereyagi','ghee','whey_izolat','laktozsuz_sut','kazein']);
 LAKTOZ_DUSUK_EK.forEach(id => LAKTOZ_DUSUK.add(id));   // p4i.js olgun peynirler
 LAKTOZ_DUSUK_EK2.forEach(id => LAKTOZ_DUSUK.add(id));  // p4j.js laktozsuz yoğurt, olgun peynirler
+LAKTOZ_DUSUK_EK3.forEach(id => LAKTOZ_DUSUK.add(id));  // p4k.js olgun/küflü peynirler (sürüm 13)
 const HISTAMIN_KAYNAK = ['domates','ispanak','patlican','avokado','cilek','kakao'], FODMAP_KAYNAK = ['sogan','sarimsak','bugday','nohut','mercimek','fasulye','bezelye','elma','armut','bal','karnabahar','mantar','kayisi','incir'];
 const NIKEL_KAYNAK = ['kakao','kuruyemis','soya','yulaf','nohut','mercimek','fasulye','ispanak'];
 YEMEKLER.forEach(f => {
