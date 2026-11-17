@@ -219,8 +219,7 @@
           "background": false
         }
       ],
-      "expo-health-connect",
-      "./plugins/withHealthConnectDelegate.js",
+      "react-native-health-connect",
       "./plugins/withBundledWeb.js",
       "./plugins/withLocalReleaseSigning.js",
       "./plugins/withCutout.js"

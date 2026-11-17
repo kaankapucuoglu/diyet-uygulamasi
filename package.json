@@ -11,7 +11,6 @@
     "expo-dev-client": "~57.0.19",
     "expo-file-system": "~57.0.7",
     "expo-haptics": "~57.0.3",
-    "expo-health-connect": "^0.1.1",
     "expo-iap": "5.8.2",
     "expo-image-manipulator": "~57.0.22",
     "expo-image-picker": "~57.0.21",
