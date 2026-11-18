@@ -79,6 +79,8 @@ Object.assign(S, {
   gl2:["Yüksek","High","Высокое","Hoch","مرتفع"],
   glDusuk:["Düşük","Low","Низкое","Niedrig","منخفض"],
   glDusukNot:["Düşük değer: belirtin (titreme, terleme, baş dönmesi) varsa hekiminin önerdiği şekilde hızlı şeker al ve 15 dk sonra yeniden ölç.","Low reading: if you have symptoms (shaking, sweating, dizziness), take fast sugar as your doctor advised and re-check after 15 min.","Низкое значение: при симптомах (дрожь, пот, головокружение) прими быстрые углеводы, как советовал врач, и перепроверь через 15 мин.","Niedriger Wert: Bei Beschwerden (Zittern, Schwitzen, Schwindel) wie ärztlich empfohlen schnellen Zucker nehmen und nach 15 Min. erneut messen.","قراءة منخفضة: إذا ظهرت أعراض (رجفة، تعرّق، دوخة) فتناول سكرًا سريعًا كما نصحك طبيبك وأعد القياس بعد 15 دقيقة."],
+  glAcil:["Çok yüksek şeker: yeniden ölç. Bulantı, kusma, aşırı susama, nefeste meyve kokusu ya da bilinç bulanıklığı varsa hemen acile başvur.","Very high glucose: measure again. If you have nausea, vomiting, extreme thirst, fruity breath or confusion, seek emergency care now.","Очень высокий сахар: измерь снова. При тошноте, рвоте, сильной жажде, фруктовом запахе изо рта или спутанности сознания срочно обратись за неотложной помощью.","Sehr hoher Zucker: erneut messen. Bei Übelkeit, Erbrechen, starkem Durst, fruchtigem Atem oder Verwirrtheit sofort den Notdienst aufsuchen.","سكر مرتفع جدًا: أعد القياس. إن وُجد غثيان أو قيء أو عطش شديد أو رائحة فاكهة في النفس أو تشوش، توجّه إلى الطوارئ فورًا."],
+  glHekim:["Bu değer yüksek. Tek ölçüm tanı koydurmaz; tekrarlıyorsa hekiminle görüş.","This value is high. One reading isn't a diagnosis; if it repeats, talk to your doctor.","Значение высокое. Одно измерение — не диагноз; если повторяется, обратись к врачу.","Dieser Wert ist hoch. Eine Messung ist keine Diagnose; wiederholt er sich, sprich mit deinem Arzt.","هذه القيمة مرتفعة. قياس واحد لا يعني تشخيصًا؛ إن تكرّر فاستشر طبيبك."],
   tkBirim:["Birim","Unit","Единицы","Einheit","الوحدة"],
   tkIlac:["İlaç ve takviyeler","Medicines & supplements","Лекарства и добавки","Medikamente & Ergänzungen","الأدوية والمكملات"],
   tkIlacAd:["Ad","Name","Название","Name","الاسم"],
@@ -319,11 +321,12 @@ function navyYag(){
 // ================= Sağlık değerleri =================
 // Tansiyon sınıfı: ESC/ESH 2023 muayenehane değerleri (yetişkin). Sınıf, iki değerden yüksek olanına göre belirlenir.
 function tansiyonSinif(s, d){
-  if (s < 90 || d < 60) return {k: 'bpDusuk', c: 'mavi'};
   const sn = s >= 180 ? 5 : s >= 160 ? 4 : s >= 140 ? 3 : s >= 130 ? 2 : s >= 120 ? 1 : 0;
   const dn = d >= 110 ? 5 : d >= 100 ? 4 : d >= 90 ? 3 : d >= 85 ? 2 : d >= 80 ? 1 : 0;
   const n = Math.max(sn, dn);
-  return {k: 'bp' + n, c: n <= 1 ? 'yesil' : n === 2 ? 'sari' : 'kirmizi', acil: n === 5};
+  if (n >= 2) return {k: 'bp' + n, c: n === 2 ? 'sari' : 'kirmizi', acil: n === 5};   // yüksek sınıf önce (izole sistolik HT düşük görünmesin)
+  if (s < 90 || d < 60) return {k: 'bpDusuk', c: 'mavi'};
+  return {k: 'bp' + n, c: 'yesil', acil: false};
 }
 // Kan şekeri (mg/dL): ADA 2024 tanı eşikleri (açlık 100/126, tokluk 2. saat 140/200; <70 düşük). Rastgele ölçümde ≥200 yüksek.
 function sekerSinif(v, z){
@@ -462,7 +465,8 @@ function tkOzet(){
   const son7 = Array.from({length: 7}, (_, i) => gunEkle(bugunK(), i - 6)), u7 = son7.map(k => [k, uyumGun(k)]);
   const u7v = u7.filter(x => x[1] != null), ort = u7v.length ? Math.round(u7v.reduce((t, x) => t + x[1], 0) / u7v.length) : null;
   const t = tartimlar(), sonT = t.length ? t[t.length - 1] : null;
-  const once = t.filter(([g]) => g <= gunEkle(bugunK(), -30)), t30 = sonT && once.length ? farkKg(sonT[1], once[once.length - 1][1]) : null;
+  const once = t.filter(([g]) => g <= gunEkle(bugunK(), -30)), ref = once.length ? once[once.length - 1] : null;
+  const t30 = sonT && ref && ref[0] >= gunEkle(bugunK(), -45) ? farkKg(sonT[1], ref[1]) + ' kg' : null;   // 45 günden eski tartı "30 günde" sayılmaz
   const ak = (D.aktivite || {})[bugunK()] || {};
   const ilacBugun = (D.ilac || []).filter(i => i.aktif !== false);
   const el = tkIc(`<div class="tk-kartlar">
@@ -530,7 +534,8 @@ function tkOlcu(){
     if (!data) return;
     const k = 'ilerleme|' + Date.now(), kucuk = await gorselKucult(data, 360, 0.8);
     await fotoYaz(k, {b: data, k: kucuk});
-    (D.ilerleme || (D.ilerleme = [])).push({a: k, d: bugunK()}); kaydet(); takipAc('olcu');
+    (D.ilerleme || (D.ilerleme = [])).push({a: k, d: bugunK()}); kaydet();
+    if ($('takip') && !$('takip').hidden && !$('overlay').classList.contains('open')) takipAc('olcu');
   }, T('tkFotoT'));
   ilerlemeFotolariCiz();
 }
@@ -564,20 +569,20 @@ function tkSaglik(){
       <div id="bpUyari"></div>
       ${bp.length > 1 ? cizgiGrafik([{n: bp.map(x => [x.t, x.s])}, {n: bp.map(x => [x.t, x.d])}], {enAz: 20, xYaz: x => kisaTarih(tarihAnahtar(new Date(x)))}) + `<div class="g-lejant"><span class="g0">● ${T('tkBuyuk')}</span><span class="g1">● ${T('tkKucuk')}</span></div>` : ''}
       <div class="sec" style="margin-top:10px">${T('tkGecmis')}</div>
-      ${bp.length ? `<ul class="tk-liste">${bp.slice(-8).reverse().map(x => { const c = tansiyonSinif(x.s, x.d); return `<li><span class="tk-zaman">${esc(saatYazisi(x.t))}</span><b>${x.s}/${x.d}</b>${x.n ? `<span class="hint">♥ ${x.n}</span>` : ''}<span class="tk-etiket ${c.c}">${T(c.k)}</span><button class="mini del" data-bpsil="${x.t}" aria-label="${esc(T('tkSil'))}">✕</button></li>`; }).join('')}</ul>` : `<p class="hint">${T('tkBos')}</p>`}
+      ${bp.length ? `<ul class="tk-liste">${bp.slice(-8).reverse().map(x => { const c = tansiyonSinif(x.s, x.d); return `<li><span class="tk-zaman">${esc(saatYazisi(x.t))}</span><b>${esc(String(x.s))}/${esc(String(x.d))}</b>${x.n ? `<span class="hint">♥ ${esc(String(x.n))}</span>` : ''}<span class="tk-etiket ${c.c}">${T(c.k)}</span><button class="mini del" data-bpsil="${x.t}" aria-label="${esc(T('tkSil'))}">✕</button></li>`; }).join('')}</ul>` : `<p class="hint">${T('tkBos')}</p>`}
     </div>
     <div class="card">
       <div class="kart-bas"><h3>🩸 ${T('tkSeker')}</h3><div class="seg" role="group" aria-label="${esc(T('tkBirim'))}"><button class="${birim === 'mg' ? 'on' : ''}" data-birim="mg">mg/dL</button><button class="${birim === 'mmol' ? 'on' : ''}" data-birim="mmol">mmol/L</button></div></div>
       <div class="tk-satir"><label class="field"><span>${T('tkSeker')} (${birim === 'mg' ? 'mg/dL' : 'mmol/L'})</span><input autocomplete="off" type="text" inputmode="decimal" id="glV"></label>
-        <label class="field"><span>${T('tkSaat')}</span><select id="glZ">${['ac', 'tok', 'rast'].map(z => `<option value="${z}">${T('tkSekerZ_' + z)}</option>`).join('')}</select></label>
+        <label class="field"><span>${T('tkSaat')}</span><select id="glZ">${['rast', 'ac', 'tok'].map(z => `<option value="${z}">${T('tkSekerZ_' + z)}</option>`).join('')}</select></label>
         <button class="btn solid" id="glKaydet">${T('tkKaydet')}</button></div>
       <div id="glUyari"></div>
       <div class="sec" style="margin-top:10px">${T('tkGecmis')}</div>
-      ${gl.length ? `<ul class="tk-liste">${gl.slice(-8).reverse().map(x => { const c = sekerSinif(x.v, x.z); return `<li><span class="tk-zaman">${esc(saatYazisi(x.t))}</span><b>${sekerGoster(x.v)}</b><span class="hint">${T('tkSekerZ_' + x.z)}</span><span class="tk-etiket ${c.c}">${T(c.k)}</span><button class="mini del" data-glsil="${x.t}" aria-label="${esc(T('tkSil'))}">✕</button></li>`; }).join('')}</ul>` : `<p class="hint">${T('tkBos')}</p>`}
+      ${gl.length ? `<ul class="tk-liste">${gl.slice(-8).reverse().map(x => { const c = sekerSinif(x.v, x.z); return `<li><span class="tk-zaman">${esc(saatYazisi(x.t))}</span><b>${esc(sekerGoster(x.v))}</b><span class="hint">${esc(T('tkSekerZ_' + (['ac', 'tok', 'rast'].includes(x.z) ? x.z : 'rast')))}</span><span class="tk-etiket ${c.c}">${T(c.k)}</span><button class="mini del" data-glsil="${x.t}" aria-label="${esc(T('tkSil'))}">✕</button></li>`; }).join('')}</ul>` : `<p class="hint">${T('tkBos')}</p>`}
     </div>
     <div class="card">
       <div class="kart-bas"><h3>💊 ${T('tkIlac')}</h3></div>
-      ${ilac.length ? `<ul class="tk-liste tk-ilac">${ilac.map(i => `<li><label class="tk-onay"><input type="checkbox" data-ilacal="${i.id}"${bugunAl[i.id] ? ' checked' : ''}><span>${T('tkIlacAlindi')}</span></label><b>${esc(i.ad)}</b><span class="hint">${esc(i.saat)}${i.doz ? ' · ' + esc(i.doz) : ''}${i.hat ? ' · 🔔' : ''}</span><button class="mini del" data-ilacsil="${i.id}" aria-label="${esc(T('tkSil'))}">✕</button></li>`).join('')}</ul>` : `<p class="hint">${esc(T('tkIlacYok'))}</p>`}
+      ${ilac.length ? `<ul class="tk-liste tk-ilac">${ilac.map(i => `<li><label class="tk-onay"><input type="checkbox" data-ilacal="${esc(String(i.id))}"${bugunAl[i.id] ? ' checked' : ''}><span>${T('tkIlacAlindi')}</span></label><b>${esc(i.ad)}</b><span class="hint">${esc(i.saat)}${i.doz ? ' · ' + esc(i.doz) : ''}${i.hat ? ' · 🔔' : ''}</span><button class="mini del" data-ilacsil="${i.id}" aria-label="${esc(T('tkSil'))}">✕</button></li>`).join('')}</ul>` : `<p class="hint">${esc(T('tkIlacYok'))}</p>`}
       <div class="tk-ilac-form">
         <label class="field"><span>${T('tkIlacAd')}</span><input autocomplete="off" type="text" id="ilAd" maxlength="40"></label>
         <label class="field"><span>${T('tkIlacDoz')}</span><input autocomplete="off" type="text" id="ilDoz" maxlength="40"></label>
@@ -603,6 +608,8 @@ function tkSaglik(){
     const z = $('glZ').value; (D.seker || (D.seker = [])).push({t: Date.now(), v: Math.round(v), z}); D.seker = D.seker.slice(-400);
     kaydet(); const c = sekerSinif(v, z); tkSaglik();
     if (c.dusuk) uyar('glUyari', `<div class="tk-uyari mavi">ⓘ ${esc(T('glDusukNot'))}</div>`);
+    else if (v >= 300) uyar('glUyari', `<div class="tk-uyari kirmizi">⚠️ ${esc(T('glAcil'))}</div>`);
+    else if (c.k === 'gl2') uyar('glUyari', `<div class="tk-uyari sari">ⓘ ${esc(T('glHekim'))}</div>`);
   };
   el.querySelectorAll('[data-bpsil]').forEach(b => b.onclick = () => onayAc(T('tkSilOnay'), () => { D.tansiyon = D.tansiyon.filter(x => String(x.t) !== b.dataset.bpsil); kaydet(); kapat(); takipAc('saglik'); }));
   el.querySelectorAll('[data-glsil]').forEach(b => b.onclick = () => onayAc(T('tkSilOnay'), () => { D.seker = D.seker.filter(x => String(x.t) !== b.dataset.glsil); kaydet(); kapat(); takipAc('saglik'); }));
@@ -644,6 +651,7 @@ function tkAktivite(){
   $('tkAktKaydet').onclick = () => {
     const a = sayiOku($('tkAdimV').value), u = sayiOku($('tkUykuV').value);
     const o = {...(A[bugunK()] || {})};
+    if (!(a != null && a >= 0 && a <= 100000) && !(u != null && u >= 0 && u <= 20)){ toast(T('tkGecersiz')); return; }
     if (a != null && a >= 0 && a <= 100000) o.adim = Math.round(a); if (u != null && u >= 0 && u <= 20) o.uyku = Math.round(u * 10) / 10;
     (D.aktivite || (D.aktivite = {}))[bugunK()] = o; kaydet(); rozetKontrol(); tkAktivite(); toast('✓');
   };
@@ -658,7 +666,7 @@ function saglikAl(gun){
     if (!r.ok){ toast(T(r.yok ? 'tkSaglikYok' : 'tkSaglikIzin'), 3500); return; }
     const A = D.aktivite || (D.aktivite = {});
     (r.adim || []).forEach(([k, v]) => { A[k] = {...(A[k] || {}), adim: v, kaynak: r.kaynak}; });
-    (r.uyku || []).forEach(([k, v]) => { if (v > 0) A[k] = {...(A[k] || {}), uyku: v, kaynak: r.kaynak}; });
+    (r.uyku || []).forEach(([k, v]) => { if (v > 0 && v <= 20) A[k] = {...(A[k] || {}), uyku: v, kaynak: r.kaynak}; });
     let kn = 0; (r.kilo || []).forEach(([k, v]) => { const T0 = D.tartim || (D.tartim = {}); if (T0[k] == null && v >= 25 && v <= 350){ T0[k] = v; kn++; } });
     kaydet(); rozetKontrol(); toast(T('tkSaglikTamam', {a: (r.adim || []).length, u: (r.uyku || []).length, k: kn}), 3500);
     if ($('takip') && !$('takip').hidden && TK.sekme === 'aktivite') tkAktivite();

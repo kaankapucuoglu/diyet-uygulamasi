@@ -110,6 +110,52 @@
     return idx.slice(0, n || 10).map(function (i) { return { i: i, ad: M.etiket[i], p: v[i] }; });
   }
 
+  // Çoklu kırpma (18.11): tek orta kare, tabak kenarda/uzakta kalınca yemeği kaçırıyordu (tabakta tavuklu pilav → "pho/mantı").
+  // Tam kare + %75 + %55 yakın kırpma + tüm kare (sıkıştırılmış) çalıştırılır; puan = 0,5·ortalama + 0,5·en yüksek
+  // (yemeği yalnız yakın kırpmada gören tahmin de öne çıkar). Ayrıca ışık (ortalama parlaklık) ve netlik (Laplace varyansı) ölçülür.
+  function kirp(kaynak, oran, tum) {
+    var g = M.giris, w = kaynak.naturalWidth || kaynak.videoWidth || kaynak.width, h = kaynak.naturalHeight || kaynak.videoHeight || kaynak.height;
+    var c = document.createElement('canvas'); c.width = c.height = g;
+    var x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+    if (tum) x.drawImage(kaynak, 0, 0, w, h, 0, 0, g, g);
+    else { var s = Math.min(w, h) * oran; x.drawImage(kaynak, (w - s) / 2, (h - s) / 2, s, s, 0, 0, g, g); }
+    return c;
+  }
+  function kalite(kaynak) {
+    var n = 128, c = document.createElement('canvas'); c.width = c.height = n;
+    var x = c.getContext('2d'), w = kaynak.naturalWidth || kaynak.width, h = kaynak.naturalHeight || kaynak.height, s = Math.min(w, h);
+    x.drawImage(kaynak, (w - s) / 2, (h - s) / 2, s, s, 0, 0, n, n);
+    var d = x.getImageData(0, 0, n, n).data, gri = new Float32Array(n * n), top = 0;
+    for (var i = 0; i < n * n; i++) { gri[i] = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2]; top += gri[i]; }
+    var ort = top / (n * n), lt = 0, lk = 0, say = 0;
+    for (var yy = 1; yy < n - 1; yy++) for (var xx = 1; xx < n - 1; xx++) {
+      var k = yy * n + xx, L = 4 * gri[k] - gri[k - 1] - gri[k + 1] - gri[k - n] - gri[k + n];
+      lt += L; lk += L * L; say++;
+    }
+    var m = lt / say;
+    return { isik: Math.round(ort), net: Math.round(lk / say - m * m) };
+  }
+  async function taniCoklu(kaynak, n) {
+    await hazirla();
+    var tf = window.tf, kirpimlar = [kirp(kaynak, 1), kirp(kaynak, 0.75), kirp(kaynak, 0.55), kirp(kaynak, 1, true)];
+    var ort = null, enb = null;
+    for (var j = 0; j < kirpimlar.length; j++) {
+      var c = kirpimlar[j];
+      var p = tf.tidy(function () { return ileri(tf.expandDims(tf.div(tf.sub(tf.cast(tf.browser.fromPixels(c), 'float32'), M.olcek[0]), M.olcek[1]), 0)); });
+      var v = await p.data(); p.dispose();
+      if (!ort) { ort = new Float32Array(v.length); enb = new Float32Array(v.length); }
+      for (var i = 0; i < v.length; i++) { ort[i] += v[i] / kirpimlar.length; if (v[i] > enb[i]) enb[i] = v[i]; }
+    }
+    var puan = new Float32Array(ort.length);
+    for (var i2 = 0; i2 < ort.length; i2++) puan[i2] = 0.5 * ort[i2] + 0.5 * enb[i2];
+    var idx = [];
+    for (var i3 = 1; i3 < puan.length; i3++) idx.push(i3);
+    idx.sort(function (a, b) { return puan[b] - puan[a]; });
+    var q = { isik: 128, net: 999 };
+    try { q = kalite(kaynak); } catch (e) {}
+    return { liste: idx.slice(0, n || 20).map(function (i) { return { i: i, ad: M.etiket[i], p: puan[i] }; }), arkaPlan: puan[0], isik: q.isik, net: q.net };
+  }
+
   // test: hazır piksellerle (Uint8 RGB, giriş×giriş×3) çalıştır
   async function ham(px) {
     await hazirla();
@@ -118,5 +164,5 @@
     var v = await p.data(); p.dispose(); return Array.from(v);
   }
 
-  window.YemekTani = { hazirla: hazirla, tani: tani, _ham: ham, arka: function () { return window.tf && window.tf.getBackend(); } };
+  window.YemekTani = { hazirla: hazirla, tani: tani, taniCoklu: taniCoklu, _ham: ham, arka: function () { return window.tf && window.tf.getBackend(); } };
 })();

@@ -34,10 +34,10 @@ Object.assign(S, {
 });
 
 const RP = {donem: 'hafta'};
-const rpGunleri = donem => donem === 'gun' ? [aktif] : Array.from({length: donem === 'ay' ? 30 : 7}, (_, i) => gunEkle(bugunK(), i - (donem === 'ay' ? 29 : 6)));
+const rpGunleri = donem => donem === 'gun' ? [bugunK()] : Array.from({length: donem === 'ay' ? 30 : 7}, (_, i) => gunEkle(bugunK(), i - (donem === 'ay' ? 29 : 6)));
 function raporPaketi(donem){
   const gunler = rpGunleri(donem), d0 = gunler[0], d1 = gunler[gunler.length - 1], icinde = k => k >= d0 && k <= d1, P = D.profil, v = Math.round;
-  const ts0 = tarihDen(d0).getTime(), ts1 = tarihDen(d1).getTime() + 864e5;
+  const gy = k => { const t = tarihDen(k); t.setHours(0, 0, 0, 0); return t.getTime(); }, ts0 = gy(d0), ts1 = gy(gunEkle(d1, 1));
   const g = gunler.filter(kayitVar).map(k => {
     const r = kayitOku(k), y = yenenToplam(k), menu = menuOku(k).filter(o => !ogunKapali(o.id));
     return [k, v(y.k), v(y.p), v(y.c), v(y.s), v(y.y), v(y.l), v(r.su * P.bardak), menu.filter(o => r.yendi[o.id]).length, menu.length, uyumGun(k)];
@@ -54,7 +54,7 @@ function raporPaketi(donem){
   const ilac = (D.ilac || []).filter(i => i.aktif !== false);
   if (ilac.length){ let al = 0; gunler.forEach(k => { const L = (D.ilacLog || {})[k] || {}; ilac.forEach(i => { if (L[i.id]) al++; }); }); R.il = [al, ilac.length * gunler.length]; }
   const M = mikroTopla(gunler); if (M.gunSay) R.mk = MIKRO_ALAN.map(a => Math.round(M.top[a] * 10) / 10);
-  if (donem === 'gun') R.y = yenenPaketi(aktif).o;
+  if (donem === 'gun') R.y = yenenPaketi(bugunK()).o;
   return R;
 }
 function raporOzetMetni(R){
@@ -148,6 +148,27 @@ function raporGoster(R, gelen){
   if ($('rpDanisan')) $('rpDanisan').onclick = () => danisanaKaydetSor(R);
   $('rpKapat').onclick = () => { $('rapor').remove(); document.body.classList.remove('rapor-acik'); document.title = baslik0; if (/^#r=/.test(location.hash)) raporLinkTemizle(); };
 }
+// Gelen paket güvenilmez: her alan sayıya/tarihe/izinli değere zorlanır (XSS ve NaN önlemi)
+function raporNormal(R){
+  const num = v => { const n = +v; return isFinite(n) ? n : 0; }, numN = v => v == null ? null : num(v);
+  const tarih = v => /^\d{4}-\d\d-\d\d$/.test(String(v)) ? String(v) : null;
+  const dizi = v => Array.isArray(v) ? v.filter(Array.isArray) : [];
+  const str = (v, n) => String(v == null ? '' : v).slice(0, n);
+  const o = {v: 1, a: str(R.a, 60), l: DILLER.some(d => d.k === R.l) ? R.l : 'tr', d0: R.d0, d1: tarih(R.d1) || R.d0,
+    h: (Array.isArray(R.h) ? R.h : []).slice(0, 7).map(num),
+    g: dizi(R.g).filter(x => tarih(x[0])).map(x => [x[0], ...x.slice(1, 10).map(num), numN(x[10])]),
+    t: dizi(R.t).filter(x => tarih(x[0])).map(x => [x[0], num(x[1])]),
+    o: dizi(R.o).filter(x => tarih(x[0])).map(x => [x[0], num(x[1]), num(x[2]), num(x[3]), num(x[4])]),
+    bp: dizi(R.bp).map(x => [num(x[0]), num(x[1]), num(x[2]), num(x[3])]),
+    sk: dizi(R.sk).map(x => [num(x[0]), num(x[1]), ['ac', 'tok', 'rast'].includes(x[2]) ? x[2] : 'rast']),
+    ak: dizi(R.ak).filter(x => tarih(x[0])).map(x => [x[0], num(x[1]), num(x[2])]),
+    an: dizi(R.an).filter(x => tarih(x[0])).map(x => [x[0], num(x[1])])};
+  if (Array.isArray(R.t0) && tarih(R.t0[0])) o.t0 = [R.t0[0], num(R.t0[1])];
+  if (Array.isArray(R.il)) o.il = [num(R.il[0]), num(R.il[1])];
+  if (Array.isArray(R.mk)) o.mk = R.mk.map(num);
+  if (Array.isArray(R.y)) o.y = dizi(R.y).map(m => [str(m[0], 60), str(m[1], 10), m[2] ? 1 : 0, dizi(m[3]).map(it => [str(it[0], 80), str(it[1], 40), ...it.slice(2, 8).map(num)])]);
+  return o;
+}
 // Gelen #r= bağlantısı (adres çubuğunda ya da yapıştırılan metinde)
 async function raporLinkiAc(metin){
   const m = String(metin || '').match(/#r=([A-Za-z0-9_-]+)(?:&n=(\d+))?/);
@@ -155,6 +176,7 @@ async function raporLinkiAc(metin){
   let R = null;
   if (!m[2] || +m[2] === m[1].length){ try { R = await paketCoz(m[1]); } catch(e){} }
   if (!R || R.v !== 1 || !Array.isArray(R.g) || !/^\d{4}-\d\d-\d\d$/.test(R.d0 || '')) R = null;
+  if (R) R = raporNormal(R);
   if (!R){ if (/^#r=/.test(location.hash)) raporLinkTemizle(); toast(T('rpBozuk')); return true; }
   raporGoster(R, true);
   return true;

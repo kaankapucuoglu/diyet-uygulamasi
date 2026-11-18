@@ -23,7 +23,7 @@ import { Directory, File, Paths } from 'expo-file-system';
 import { SHIM_SOURCE } from './src/shimSource';
 import { createIapBridge } from './iap';
 import { createAdsBridge } from './ads';
-import { BarkodEkrani, createExtraBridge, type BarkodEtiket } from './extra';
+import { BarkodEkrani, bekleyenFoto, createExtraBridge, type BarkodEtiket } from './extra';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 SplashScreen.setOptions({ fade: true, duration: 300 });
@@ -209,8 +209,13 @@ function Shell() {
   ), [js]);
   useEffect(() => () => ads.dispose(), [ads]);
   // Sürüm 13: öğün fotoğrafı, barkod, sağlık verisi (yalnız okuma), paylaş — extra.tsx
+  // Sonuç teslimi: sayfa o an yükleniyorsa (iOS arka planda/kamera açıkken web sürecini bellek için öldürüp yeniden yükler) sonuç
+  // kaybolmasın → 'ready' gelince sırayla verilir. Web tarafı bekleyen isteği yoksa kayıtlı tarama bağlamıyla devam eder (p9e.js).
+  const kuyruk = useRef<[string, unknown][]>([]);
+  const teslim = useCallback((fn: string, arg: unknown) => { if (ready.current) call(fn, arg); else kuyruk.current.push([fn, arg]); }, [call]);
   const [barkod, setBarkod] = useState<BarkodEtiket | null>(null);
-  const extra = useMemo(() => createExtraBridge(call, (l) => setBarkod(l)), [call]);
+  const extra = useMemo(() => createExtraBridge(teslim, (l) => setBarkod(l)), [teslim]);
+  const bekleyenBakildi = useRef(false);
   // Reklam SDK'sı web 'ad:init' (reklamsız mı?) bildirince başlar; açılışta önceden yüklenmez (reklamsız kullanıcıda hiç başlamaz)
 
   // Bildirime dokunma → uygulama açılır (ek yönlendirme yok); web isterse window.__lfOnNotificationTap ile öğrenir
@@ -247,7 +252,7 @@ function Shell() {
 
   const barkodAcik = useRef(false);
   const barkodKapat = useRef<() => void>(() => {});
-  useEffect(() => { barkodAcik.current = !!barkod; barkodKapat.current = () => { setBarkod(null); call('__lfOnBarkod', { ok: false, iptal: true }); }; }, [barkod, call]);
+  useEffect(() => { barkodAcik.current = !!barkod; barkodKapat.current = () => { setBarkod(null); teslim('__lfOnBarkod', { ok: false, iptal: true }); }; }, [barkod, teslim]);
 
   // açılış zaman aşımı → yedek ekran
   useEffect(() => {
@@ -261,9 +266,14 @@ function Shell() {
     let m: any;
     try { m = JSON.parse(e.nativeEvent.data); } catch { return; }
     switch (m && m.t) {
-      case 'boot': break;
+      case 'boot': ready.current = false; break;
       case 'ready':
         ready.current = true; setFailed(null); hideSplash();
+        if (kuyruk.current.length) { const q = kuyruk.current.splice(0); setTimeout(() => q.forEach(([fn, a]) => call(fn, a)), 400); }
+        if (!bekleyenBakildi.current) {
+          bekleyenBakildi.current = true;
+          bekleyenFoto().then((r) => { if (r) setTimeout(() => call('__lfOnFoto', r), 600); }).catch(() => {});
+        }
         if (pendingTap.current) { call('__lfOnNotificationTap', pendingTap.current); pendingTap.current = null; }
         break;
       case 'err':
@@ -314,7 +324,7 @@ function Shell() {
       case 'ad:privacy': ads.privacy(); break;
       default: extra.handle(m);
     }
-  }, [hideSplash, call, iap, ads, extra]);
+  }, [hideSplash, call, iap, ads, extra]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const gone = useRef(0);   // çizim süreci ölüm sayısı (onRenderProcessGone)
   const retry = useCallback(() => { setFailed(null); setAttempt((a) => a + 1); }, []);
@@ -406,7 +416,7 @@ function Shell() {
         }}
       />
       {barkod && (
-        <BarkodEkrani etiket={barkod} onSonuc={(r) => { setBarkod(null); call('__lfOnBarkod', r); }} />
+        <BarkodEkrani etiket={barkod} onSonuc={(r) => { setBarkod(null); teslim('__lfOnBarkod', r); }} />
       )}
       {failed && (
         <View style={[styles.overlay, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 }]}>

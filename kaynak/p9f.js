@@ -134,7 +134,9 @@ function proBolumuEkle(){
     D.pro = o; kaydet(); toast(T('prKaydedildi'));
   };
   if ($('prLogoSec')) $('prLogoSec').onclick = () => fotoSec('galeri').then(async d => {
-    if (!d) return; D.pro = {...(D.pro || {}), logo: await gorselKucult(d, 240, 0.85)}; kaydet(); const y = sb.scrollTop; ayarlarAc(); $('sbody').scrollTop = y;
+    if (!d) return; const n0 = acSayac; D.pro = {...(D.pro || {}), logo: await gorselKucult(d, 240, 0.85)}; kaydet();
+    if (acSayac !== n0 || !$('overlay').classList.contains('open')) return;   // kullanıcı Ayarlar'ı kapattıysa yeniden açma
+    const y = sb.scrollTop; ayarlarAc(); $('sbody').scrollTop = y;
   });
   if ($('prLogoKaldir')) $('prLogoKaldir').onclick = () => { if (D.pro) delete D.pro.logo; kaydet(); const y = sb.scrollTop; ayarlarAc(); $('sbody').scrollTop = y; };
 }
@@ -234,7 +236,7 @@ function danisanlarCiz(){
       const R = d.raporlar[d.raporlar.length - 1], kilo = danisanKilo(d), son = kilo[kilo.length - 1], ilk = kilo[0];
       const uy = R ? (R.g || []).filter(x => x[10] != null) : [], u = uy.length ? Math.round(uy.reduce((t, x) => t + x[10], 0) / uy.length) : null;
       const kt = d.kt && d.kt < bugun;
-      return `<button class="card pr-kart" data-dsec="${d.id}"><b>${esc(d.ad)}</b>
+      return `<button class="card pr-kart" data-dsec="${esc(String(d.id))}"><b>${esc(d.ad)}</b>
         <small>${R ? esc(T('prSonRapor', {d: rpDonemYaz(R)})) : T('prRaporYok')}</small>
         <span class="pr-etiketler">${u != null ? `<span class="tk-etiket ${u >= 80 ? 'yesil' : u >= 50 ? 'sari' : 'kirmizi'}">🎯 ${u}%</span>` : ''}${son ? `<span class="tk-etiket">⚖️ ${sayi(son[1])} kg${ilk && ilk !== son ? ' (' + farkKg(son[1], ilk[1]) + ')' : ''}</span>` : ''}${d.kt ? `<span class="tk-etiket ${kt ? 'kirmizi' : ''}">📅 ${esc(kisaTarih(d.kt))}</span>` : ''}</span></button>`;
     }).join('')}</div>` : `<p class="hint pr-bos">${esc(T('prDanisanYok'))}</p>`}
