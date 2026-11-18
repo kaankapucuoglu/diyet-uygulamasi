@@ -50,7 +50,7 @@
     },
     "android": {
       "package": "com.maviplay.liferoutine",
-      "versionCode": 14,
+      "versionCode": 15,
       "adaptiveIcon": {
         "backgroundColor": "#0F172A",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -223,7 +223,8 @@
       "react-native-health-connect",
       "./plugins/withBundledWeb.js",
       "./plugins/withLocalReleaseSigning.js",
-      "./plugins/withCutout.js"
+      "./plugins/withCutout.js",
+      "./plugins/withOptionalFeatures.js"
     ],
     "extra": {
       "eas": {
