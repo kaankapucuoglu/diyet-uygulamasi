@@ -15,6 +15,7 @@ Object.assign(S, {
   rpOnizle:["Önizle / PDF","Preview / PDF","Просмотр / PDF","Vorschau / PDF","معاينة / PDF"],
   rpGizlilik:["Rapor yalnız gönderdiğin kişiyle paylaşılır: veriler bağlantının içindedir, sunucumuza gelmez. Göndermeden önce önizleyebilirsin.","The report is shared only with the person you send it to: the data is inside the link and never reaches our server. You can preview it first.","Отчёт видит только тот, кому ты его отправишь: данные внутри ссылки и не попадают на наш сервер. Можно сначала посмотреть.","Der Bericht wird nur mit der Person geteilt, der du ihn schickst: Die Daten stecken im Link und erreichen unseren Server nie. Du kannst ihn vorher ansehen.","لا يُشارك التقرير إلا مع من ترسله إليه: البيانات داخل الرابط ولا تصل إلى خادمنا. يمكنك معاينته أولًا."],
   rpIcerik:["Raporda: kalori ve makrolar, su, plana uyum, kilo ve ölçüler, tansiyon ve kan şekeri, adım-uyku, antrenman, ilaç uyumu ve besin öğeleri (girdiklerin).","Includes: calories and macros, water, adherence, weight and measurements, blood pressure and glucose, steps and sleep, workouts, medicine adherence and nutrients (what you logged).","В отчёте: калории и БЖУ, вода, соблюдение плана, вес и замеры, давление и сахар, шаги и сон, тренировки, приём лекарств и нутриенты (что ты вносил).","Enthalten: Kalorien und Makros, Wasser, Planeinhaltung, Gewicht und Maße, Blutdruck und Blutzucker, Schritte und Schlaf, Training, Medikamenteneinnahme und Nährstoffe (was du eingetragen hast).","يشمل: السعرات والمغذيات الكبرى، الماء، الالتزام بالخطة، الوزن والقياسات، ضغط الدم والسكر، الخطوات والنوم، التمارين، الالتزام بالأدوية والعناصر الغذائية (ما أدخلته)."],
+  rpIcerikA:["Raporda: kalori ve makrolar, su, plana uyum, kilo ve ölçüler, adım-uyku, antrenman ve besin öğeleri (girdiklerin).","Includes: calories and macros, water, adherence, weight and measurements, steps and sleep, workouts and nutrients (what you logged).","В отчёте: калории и БЖУ, вода, соблюдение плана, вес и замеры, шаги и сон, тренировки и нутриенты (что ты вносил).","Enthalten: Kalorien und Makros, Wasser, Planeinhaltung, Gewicht und Maße, Schritte und Schlaf, Training und Nährstoffe (was du eingetragen hast).","يتضمن: السعرات والمغذيات الكبرى، الماء، الالتزام بالخطة، الوزن والقياسات، الخطوات والنوم، التمارين والعناصر الغذائية (ما سجّلته)."],
   rpHatirlat:["Her pazar 20:00'de rapor göndermeyi hatırlat","Remind me every Sunday at 20:00 to send the report","Напоминать каждое воскресенье в 20:00","Jeden Sonntag um 20:00 an den Bericht erinnern","ذكّرني كل أحد الساعة 20:00 بإرسال التقرير"],
   rpHatirlatBas:["📤 Haftalık raporun hazır","📤 Your weekly report is ready","📤 Недельный отчёт готов","📤 Dein Wochenbericht ist fertig","📤 تقريرك الأسبوعي جاهز"],
   rpHatirlatGovde:["Diyetisyenine veya antrenörüne göndermek için dokun.","Tap to send it to your dietitian or coach.","Нажми, чтобы отправить диетологу или тренеру.","Tippe, um ihn an Ernährungsberatung oder Coach zu senden.","اضغط لإرساله إلى أخصائي التغذية أو المدرب."],
@@ -45,13 +46,13 @@ function raporPaketi(donem){
   const R = {v: 1, a: P.ad || '', l: dil, d0, d1, h: [P.kcal, P.protein, P.karb, P.seker, P.yag, P.lif, v(suHedefi(d1))], g,
     t: tartimlar().filter(([k]) => icinde(k)),
     o: olcumler().filter(([k]) => icinde(k)).map(([k, o]) => [k, o.bel || 0, o.kalca || 0, o.boyun || 0, o.yag || 0]),
-    bp: (D.tansiyon || []).filter(x => x.t >= ts0 && x.t < ts1).map(x => [x.t, x.s, x.d, x.n || 0]),
-    sk: (D.seker || []).filter(x => x.t >= ts0 && x.t < ts1).map(x => [x.t, x.v, x.z]),
+    bp: (LF_TIBBI ? D.tansiyon || [] : []).filter(x => x.t >= ts0 && x.t < ts1).map(x => [x.t, x.s, x.d, x.n || 0]),
+    sk: (LF_TIBBI ? D.seker || [] : []).filter(x => x.t >= ts0 && x.t < ts1).map(x => [x.t, x.v, x.z]),
     ak: gunler.filter(k => (D.aktivite || {})[k]).map(k => [k, (D.aktivite[k].adim) || 0, (D.aktivite[k].uyku) || 0]),
     an: gunler.filter(k => (D.antLog || {})[k]).map(k => [k, Object.keys(D.antLog[k]).length])};
   // tartı dönem öncesi son değer: değişimi göstermek için başlangıç noktası
   const once = tartimlar().filter(([k]) => k < d0); if (once.length && R.t.length) R.t0 = once[once.length - 1];
-  const ilac = (D.ilac || []).filter(i => i.aktif !== false);
+  const ilac = LF_TIBBI ? (D.ilac || []).filter(i => i.aktif !== false) : [];
   if (ilac.length){ let al = 0; gunler.forEach(k => { const L = (D.ilacLog || {})[k] || {}; ilac.forEach(i => { if (L[i.id]) al++; }); }); R.il = [al, ilac.length * gunler.length]; }
   const M = mikroTopla(gunler); if (M.gunSay) R.mk = MIKRO_ALAN.map(a => Math.round(M.top[a] * 10) / 10);
   if (donem === 'gun') R.y = yenenPaketi(bugunK()).o;
@@ -74,7 +75,7 @@ function tkRapor(){
     <div class="sec">${T('rpDonem')}</div>
     <div class="seg seg-genis">${['gun', 'hafta', 'ay'].map(d => `<button class="${RP.donem === d ? 'on' : ''}" data-rpd="${d}">${T({gun: 'rpGun', hafta: 'rpHafta', ay: 'rpAy'}[d])}</button>`).join('')}</div>
     <div class="cur" style="margin-top:10px"><b>${esc(rpDonemYaz(R))}</b> · ${T('rpKayitGun')}: ${n}<br><small>${esc(raporOzetMetni(R)).replace(/\n/g, '<br>')}</small></div>
-    <p class="hint" style="margin:8px 0">${esc(T('rpIcerik'))}</p>
+    <p class="hint" style="margin:8px 0">${esc(T(LF_TIBBI ? 'rpIcerik' : 'rpIcerikA'))}</p>
     <div class="rp-dugmeler"><button class="btn green" id="rpWa">💬 ${T('rpWhatsapp')}</button><button class="btn solid" id="rpPay">${T('rpPaylas')}</button><button class="btn" id="rpKop">🔗 ${T('rpKopyala')}</button><button class="btn ghost" id="rpOn">📄 ${T('rpOnizle')}</button></div>
     <p class="tk-not">🔒 ${esc(T('rpGizlilik'))}</p>
     ${window.__LF_NATIVE ? `<div class="saat-liste" style="margin-top:10px"><button class="saat-ek${D.ayar.raporHat ? ' on' : ''}" id="rpHat" aria-pressed="${!!D.ayar.raporHat}"><span class="kutu">${D.ayar.raporHat ? '✓' : ''}</span>${T('rpHatirlat')}</button></div>` : ''}
@@ -117,7 +118,7 @@ function raporGoster(R, gelen){
   const bolum = (bas, ic) => ic ? `<section class="rp-bolum"><h2>${bas}</h2>${ic}</section>` : '';
   const ref = mikroReferans();
   const html = `<div class="rapor" id="rapor" translate="no" dir="${RTL() ? 'rtl' : 'ltr'}">
-    <div class="rapor-arac">${gelen && typeof proAcik === 'function' && proAcik() ? `<button class="btn green" id="rpDanisan">👥 ${T('prKaydet')}</button>` : ''}<button class="btn solid" id="rpPdf">${T('rpPdf')}</button><button class="btn ghost" id="rpKapat">✕ ${T('rpClose')}</button></div>
+    <div class="rapor-arac">${gelen && LF_TIBBI && typeof proAcik === 'function' && proAcik() ? `<button class="btn green" id="rpDanisan">👥 ${T('prKaydet')}</button>` : ''}<button class="btn solid" id="rpPdf">${T('rpPdf')}</button><button class="btn ghost" id="rpKapat">✕ ${T('rpClose')}</button></div>
     <article class="rapor-sayfa">
       <header class="rp-bas"><div><small>📊 ${T('rpBaslik')}</small><h1>${esc(String(R.a || '').slice(0, 40)) || '—'}</h1><p>${esc(rpDonemYaz(R))} · ${T('rpKayitGun')}: ${g.length}</p></div></header>
       ${g.length ? `<section class="rp-ozet">

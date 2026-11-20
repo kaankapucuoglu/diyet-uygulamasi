@@ -258,9 +258,9 @@ function kocDanisanHtml(K){
     <label class="field"><span>${T('goalLbl')}</span><select data-kdnsec="hedef">${['ver', 'koru', 'sekil', 'kas', 'al'].map(g => `<option value="${g}"${dn.hedef === g ? ' selected' : ''}>${T('g_' + g)}</option>`).join('')}</select></label></div>
     <div class="field" style="margin-bottom:4px"><span>${T('kocYemedikleri')}</span></div>
     <div class="chips koc-kisit">${[['m','🥩'],['c','🍗'],['f','🐟'],['e','🥚'],['d','🥛']].map(([x, ic]) => `<button class="chip${dn.haric.includes(x) ? ' on' : ''}" data-kkisit="h:${x}">${ic} ${esc(T('x_' + x))}</button>`).join('')}</div>
-    <div class="field" style="margin-bottom:4px"><span>${T('kocKlinik')}</span></div>
+    <div class="field" style="margin-bottom:4px"><span>${T(LF_TIBBI ? 'kocKlinik' : 'kocOdakA')}</span></div>
     <div class="chips koc-odak">${[...ODAKLAR.map(([k, ic]) => [k, ic]), ['emzirme', '🤱']].map(([k, ic]) => `<button class="chip${(dn.odak || []).includes(k) ? ' on' : ''}" data-kodak="${k}">${ic} ${esc(T(k === 'seker' ? 'g_seker' : k === 'emzirme' ? 'kocEmzirme' : 'o_' + k))}</button>`).join('')}</div>
-    <div class="hint" style="margin:-2px 0 8px">${esc(T('kocKlinikNot'))}</div>
+    <div class="hint" style="margin:-2px 0 8px">${esc(T(LF_TIBBI ? 'kocKlinikNot' : 'kocOdakNotA'))}</div>
     <div class="field" style="margin-bottom:4px"><span>${T('kocAlerjiler')}</span></div>
     <input class="search koc-al-ara" data-kalara="1" value="${esc(K.alAra || '')}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
     <div class="koc-al-kap"><div class="koc-al-sonuc">${kocAlerjiListe(K)}</div><div class="kayma-ray" aria-hidden="true"><i></i></div></div>

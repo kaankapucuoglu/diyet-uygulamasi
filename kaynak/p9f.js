@@ -27,6 +27,8 @@ Object.assign(S, {
   // Danışanlar
   prDIntro:["Danışanlarının gönderdiği durum raporlarını, anamnezi, kan tahlillerini ve görüşme notlarını tek yerde tut.","Keep your clients' status reports, history, blood tests and session notes in one place.","Храни отчёты клиентов, анамнез, анализы и заметки о встречах в одном месте.","Behalte Statusberichte, Anamnese, Laborwerte und Sitzungsnotizen deiner Klient:innen an einem Ort.","احتفظ بتقارير عملائك وتاريخهم الطبي وتحاليلهم وملاحظات الجلسات في مكان واحد."],
   kocKlinik:["Klinik durum (isteğe bağlı)","Clinical condition (optional)","Клиническое состояние (необязательно)","Klinischer Zustand (optional)","الحالة السريرية (اختياري)"],
+  kocOdakA:["Beslenme odağı (isteğe bağlı)","Nutrition focus (optional)","Фокус питания (необязательно)","Ernährungsschwerpunkt (optional)","تركيز التغذية (اختياري)"],
+  kocOdakNotA:["Hedef hesabına ve otomatik menüye yansır (ör. karbonhidrat %40'a kadar, tuzlu ya da doymuş yağlı yiyecekler çıkar; emzirme: +500 kcal, +0,7 L su — EFSA). Genel beslenme önerisidir, tıbbi tavsiye değildir.","Applied to targets and the auto-menu (e.g. carbs up to 40%, salty or saturated-fat foods out; breastfeeding: +500 kcal, +0.7 L water — EFSA). General nutrition guidance, not medical advice.","Учитывается в целях и автоменю (напр. углеводы до 40%, без солёного или жирного; кормление: +500 ккал, +0,7 л воды — EFSA). Общие советы по питанию, не медицинская рекомендация.","Fließt in Ziele und Auto-Menü ein (z. B. Kohlenhydrate bis 40 %, ohne Salziges oder gesättigte Fette; Stillzeit: +500 kcal, +0,7 L Wasser – EFSA). Allgemeine Ernährungshinweise, keine medizinische Beratung.","تنعكس على الأهداف والقائمة التلقائية (مثل كربوهيدرات حتى 40%، بدون الأطعمة المالحة أو الدهون المشبعة؛ الرضاعة: +500 سعرة و0.7 لتر ماء — EFSA). إرشادات تغذية عامة وليست نصيحة طبية."],
   kocEmzirme:["Emzirme","Breastfeeding","Грудное вскармливание","Stillzeit","الرضاعة"],
   kocKlinikNot:["Hedef hesabına ve otomatik programa yansır (kan şekeri: karbonhidrat %40'a kadar; tansiyon: tuzlu yiyecekler çıkar; kolesterol: doymuş yağlılar çıkar; emzirme: +500 kcal, +0,7 L su — EFSA). Klinik kararı sen verirsin.","Applied to targets and auto-plan (glucose: carbs up to 40%; blood pressure: salty foods out; cholesterol: saturated-fat foods out; breastfeeding: +500 kcal, +0.7 L water — EFSA). The clinical decision is yours.","Учитывается в целях и автопрограмме (сахар: углеводы до 40%; давление: без солёного; холестерин: без насыщенных жиров; кормление: +500 ккал, +0,7 л воды — EFSA). Клиническое решение за тобой.","Fließt in Ziele und Auto-Plan ein (Blutzucker: Kohlenhydrate bis 40 %; Blutdruck: ohne Salziges; Cholesterin: ohne gesättigte Fette; Stillzeit: +500 kcal, +0,7 L Wasser – EFSA). Die klinische Entscheidung triffst du.","تنعكس على الأهداف والبرنامج التلقائي (السكر: كربوهيدرات حتى 40%؛ الضغط: بدون الأطعمة المالحة؛ الكوليسترول: بدون الدهون المشبعة؛ الرضاعة: +500 سعرة و0.7 لتر ماء — EFSA). القرار السريري لك."],
   prDanisanYok:["Henüz danışan yok. Danışanın Takip → Rapor gönder ile sana rapor bağlantısı gönderince \"Danışanlarıma kaydet\" ile ekleyebilir ya da elle oluşturabilirsin.","No clients yet. When a client sends you a report link (Tracking → Send report), tap \"Save to my clients\", or create one manually.","Пока нет клиентов. Когда клиент пришлёт ссылку на отчёт (Трекинг → Отправить отчёт), нажми «Сохранить в клиенты» или создай вручную.","Noch keine Klient:innen. Wenn dir jemand einen Berichtslink schickt (Verlauf → Bericht senden), tippe auf „Bei Klient:innen speichern“ oder lege manuell an.","لا يوجد عملاء بعد. عندما يرسل لك عميل رابط تقرير (المتابعة ← إرسال تقرير) اضغط «حفظ في عملائي» أو أنشئه يدويًا."],
@@ -148,14 +150,14 @@ function proBolumuEkle(){
 })();
 
 // ================= Program hazırla: sekmeler =================
-function kocSekme(){ return (D.koc && D.koc.sekme) || 'b'; }
+function kocSekme(){ const s = (D.koc && D.koc.sekme) || 'b'; return !LF_TIBBI && s === 'd' ? 'b' : s; }
 (function(){
   const k0 = kocCiz;
   kocCiz = function(){
     const r = k0.apply(this, arguments);
     const alt = $('koc').querySelector('.wiz-sub');
     if (alt && !$('kocSekmeler')){
-      alt.insertAdjacentHTML('afterend', `<div class="seg seg-genis koc-sekmeler" id="kocSekmeler" role="tablist">${['b', 'a', 'd'].map(s => `<button class="${kocSekme() === s ? 'on' : ''}" role="tab" aria-selected="${kocSekme() === s}" data-ksekme="${s}">${T('prS_' + s).replace(/^(\S+) /, '<span class="ks-ik">$1</span> ')}</button>`).join('')}</div>`);
+      alt.insertAdjacentHTML('afterend', `<div class="seg seg-genis koc-sekmeler" id="kocSekmeler" role="tablist">${['b', 'a', 'd'].filter(s => LF_TIBBI || s !== 'd').map(s => `<button class="${kocSekme() === s ? 'on' : ''}" role="tab" aria-selected="${kocSekme() === s}" data-ksekme="${s}">${T('prS_' + s).replace(/^(\S+) /, '<span class="ks-ik">$1</span> ')}</button>`).join('')}</div>`);
       $('kocSekmeler').querySelectorAll('[data-ksekme]').forEach(b => b.onclick = () => { D.koc.sekme = b.dataset.ksekme; kaydet(); kocCiz(); $('koc').scrollTop = 0; });
     }
     if (kocSekme() !== 'b'){

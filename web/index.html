@@ -1006,6 +1006,9 @@ body.rapor-acik .toast{z-index:75}
 <script>
 // Kaynak HTML'i en başta al: "verilerle HTML indir" bunu kullanır
 const KAYNAK = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+// Google Play (bireysel geliştirici hesabı): tıbbi işlevler (ilaç takibi, tansiyon / kan şekeri günlüğü, danışan sağlık kayıtları)
+// yalnız kurumsal hesapla dağıtılabilir → Android uygulamasında KAPALI. iOS ve web'de açık. (20.11.2026)
+const LF_TIBBI = !(window.__LF_NATIVE && window.__LF_NATIVE.platform === 'android');
 // ---------- Diller ----------
 const DILLER = [
   {k:'tr', ad:'Türkçe', bayrak:'🇹🇷', loc:'tr-TR'},
@@ -7112,9 +7115,9 @@ function kocDanisanHtml(K){
     <label class="field"><span>${T('goalLbl')}</span><select data-kdnsec="hedef">${['ver', 'koru', 'sekil', 'kas', 'al'].map(g => `<option value="${g}"${dn.hedef === g ? ' selected' : ''}>${T('g_' + g)}</option>`).join('')}</select></label></div>
     <div class="field" style="margin-bottom:4px"><span>${T('kocYemedikleri')}</span></div>
     <div class="chips koc-kisit">${[['m','🥩'],['c','🍗'],['f','🐟'],['e','🥚'],['d','🥛']].map(([x, ic]) => `<button class="chip${dn.haric.includes(x) ? ' on' : ''}" data-kkisit="h:${x}">${ic} ${esc(T('x_' + x))}</button>`).join('')}</div>
-    <div class="field" style="margin-bottom:4px"><span>${T('kocKlinik')}</span></div>
+    <div class="field" style="margin-bottom:4px"><span>${T(LF_TIBBI ? 'kocKlinik' : 'kocOdakA')}</span></div>
     <div class="chips koc-odak">${[...ODAKLAR.map(([k, ic]) => [k, ic]), ['emzirme', '🤱']].map(([k, ic]) => `<button class="chip${(dn.odak || []).includes(k) ? ' on' : ''}" data-kodak="${k}">${ic} ${esc(T(k === 'seker' ? 'g_seker' : k === 'emzirme' ? 'kocEmzirme' : 'o_' + k))}</button>`).join('')}</div>
-    <div class="hint" style="margin:-2px 0 8px">${esc(T('kocKlinikNot'))}</div>
+    <div class="hint" style="margin:-2px 0 8px">${esc(T(LF_TIBBI ? 'kocKlinikNot' : 'kocOdakNotA'))}</div>
     <div class="field" style="margin-bottom:4px"><span>${T('kocAlerjiler')}</span></div>
     <input class="search koc-al-ara" data-kalara="1" value="${esc(K.alAra || '')}" placeholder="${esc(T('alerjiAra'))}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
     <div class="koc-al-kap"><div class="koc-al-sonuc">${kocAlerjiListe(K)}</div><div class="kayma-ray" aria-hidden="true"><i></i></div></div>
@@ -9314,8 +9317,9 @@ function takipAc(sekme){
   takipCiz(); $('takip').scrollTop = 0;
 }
 function takipKapat(){ if (!$('takip')) return; kaydet(); $('takip').hidden = true; if ($('koc').hidden) document.body.classList.remove('wiz-acik'); ciz(); }
-const TK_SEKMELER = [['ozet', '🏠'], ['olcu', '📏'], ['saglik', '❤️'], ['aktivite', '👟'], ['besin', '🥦'], ['rapor', '📤'], ['rozet', '🏅']];
+const TK_SEKMELER = [['ozet', '🏠'], ['olcu', '📏'], ['saglik', '❤️'], ['aktivite', '👟'], ['besin', '🥦'], ['rapor', '📤'], ['rozet', '🏅']].filter(([k]) => LF_TIBBI || k !== 'saglik');
 function takipCiz(){
+  if (!LF_TIBBI && TK.sekme === 'saglik') TK.sekme = 'ozet';
   const el = takipKap();
   el.innerHTML = `<div class="wiz-in tk-in">
     <div class="wiz-top"><div class="wiz-brand">📊 ${T('tkBtn')}</div><button class="icon-btn" data-tkkapat="1" aria-label="✕">✕</button></div>
@@ -9339,7 +9343,7 @@ function tkOzet(){
   const once = t.filter(([g]) => g <= gunEkle(bugunK(), -30)), ref = once.length ? once[once.length - 1] : null;
   const t30 = sonT && ref && ref[0] >= gunEkle(bugunK(), -45) ? farkKg(sonT[1], ref[1]) + ' kg' : null;   // 45 günden eski tartı "30 günde" sayılmaz
   const ak = (D.aktivite || {})[bugunK()] || {};
-  const ilacBugun = (D.ilac || []).filter(i => i.aktif !== false);
+  const ilacBugun = LF_TIBBI ? (D.ilac || []).filter(i => i.aktif !== false) : [];
   const el = tkIc(`<div class="tk-kartlar">
       <div class="card tk-kart"><small>🔥 ${T('tkSeri')}</small><b class="tk-buyuk">${T('tkSeriN', {n: s.n})}</b><span class="hint">${T('tkSeriEn', {n: s.enUzun})}</span><p class="hint">${esc(T('tkSeriIpucu'))}</p></div>
       <div class="card tk-kart"><small>🎯 ${T('tkUyum')}</small><div class="tk-ikili"><div><span class="hint">${T('tkUyumBugun')}</span><b class="tk-buyuk">${bu != null ? bu + '%' : '—'}</b></div><div><span class="hint">${T('tkUyum7')}</span><b class="tk-buyuk">${ort != null ? ort + '%' : '—'}</b></div></div>
@@ -9637,7 +9641,7 @@ Object.assign(S, {tkTarih:["Tarih","Date","Дата","Datum","التاريخ"], 
   if ($('lTakip')) $('lTakip').textContent = T('tkBtn');
   try { if (D.ayar.kurulum) setTimeout(() => { const s = seriHesapla(); if (s.n >= 2 && $('cipSatir') && !$('seriCip')){ $('cipSatir').insertAdjacentHTML('afterbegin', '<button class="cip seri-cip" id="seriCip"></button>'); $('seriCip').textContent = '🔥 ' + T('tkSeriN', {n: s.n}); $('seriCip').onclick = () => takipAc('rozet'); } rozetKontrol(true); }, 0); } catch(e){}
   // Açılışta ilaç hatırlatıcılarını yeniden kur (yerel bildirimler uygulama güncellemesinde silinmiş olabilir)
-  setTimeout(() => { try { (D.ilac || []).forEach(ilacBildirimKur); } catch(e){} }, 4000);
+  setTimeout(() => { try { if (LF_TIBBI) (D.ilac || []).forEach(ilacBildirimKur); else (D.ilac || []).forEach(i => window.__lfCancelNotify && window.__lfCancelNotify('ilac-' + i.id)); } catch(e){} }, 4000);
 })();
 
 // ================= Android geri tuşu =================
@@ -9670,6 +9674,7 @@ Object.assign(S, {
   rpOnizle:["Önizle / PDF","Preview / PDF","Просмотр / PDF","Vorschau / PDF","معاينة / PDF"],
   rpGizlilik:["Rapor yalnız gönderdiğin kişiyle paylaşılır: veriler bağlantının içindedir, sunucumuza gelmez. Göndermeden önce önizleyebilirsin.","The report is shared only with the person you send it to: the data is inside the link and never reaches our server. You can preview it first.","Отчёт видит только тот, кому ты его отправишь: данные внутри ссылки и не попадают на наш сервер. Можно сначала посмотреть.","Der Bericht wird nur mit der Person geteilt, der du ihn schickst: Die Daten stecken im Link und erreichen unseren Server nie. Du kannst ihn vorher ansehen.","لا يُشارك التقرير إلا مع من ترسله إليه: البيانات داخل الرابط ولا تصل إلى خادمنا. يمكنك معاينته أولًا."],
   rpIcerik:["Raporda: kalori ve makrolar, su, plana uyum, kilo ve ölçüler, tansiyon ve kan şekeri, adım-uyku, antrenman, ilaç uyumu ve besin öğeleri (girdiklerin).","Includes: calories and macros, water, adherence, weight and measurements, blood pressure and glucose, steps and sleep, workouts, medicine adherence and nutrients (what you logged).","В отчёте: калории и БЖУ, вода, соблюдение плана, вес и замеры, давление и сахар, шаги и сон, тренировки, приём лекарств и нутриенты (что ты вносил).","Enthalten: Kalorien und Makros, Wasser, Planeinhaltung, Gewicht und Maße, Blutdruck und Blutzucker, Schritte und Schlaf, Training, Medikamenteneinnahme und Nährstoffe (was du eingetragen hast).","يشمل: السعرات والمغذيات الكبرى، الماء، الالتزام بالخطة، الوزن والقياسات، ضغط الدم والسكر، الخطوات والنوم، التمارين، الالتزام بالأدوية والعناصر الغذائية (ما أدخلته)."],
+  rpIcerikA:["Raporda: kalori ve makrolar, su, plana uyum, kilo ve ölçüler, adım-uyku, antrenman ve besin öğeleri (girdiklerin).","Includes: calories and macros, water, adherence, weight and measurements, steps and sleep, workouts and nutrients (what you logged).","В отчёте: калории и БЖУ, вода, соблюдение плана, вес и замеры, шаги и сон, тренировки и нутриенты (что ты вносил).","Enthalten: Kalorien und Makros, Wasser, Planeinhaltung, Gewicht und Maße, Schritte und Schlaf, Training und Nährstoffe (was du eingetragen hast).","يتضمن: السعرات والمغذيات الكبرى، الماء، الالتزام بالخطة، الوزن والقياسات، الخطوات والنوم، التمارين والعناصر الغذائية (ما سجّلته)."],
   rpHatirlat:["Her pazar 20:00'de rapor göndermeyi hatırlat","Remind me every Sunday at 20:00 to send the report","Напоминать каждое воскресенье в 20:00","Jeden Sonntag um 20:00 an den Bericht erinnern","ذكّرني كل أحد الساعة 20:00 بإرسال التقرير"],
   rpHatirlatBas:["📤 Haftalık raporun hazır","📤 Your weekly report is ready","📤 Недельный отчёт готов","📤 Dein Wochenbericht ist fertig","📤 تقريرك الأسبوعي جاهز"],
   rpHatirlatGovde:["Diyetisyenine veya antrenörüne göndermek için dokun.","Tap to send it to your dietitian or coach.","Нажми, чтобы отправить диетологу или тренеру.","Tippe, um ihn an Ernährungsberatung oder Coach zu senden.","اضغط لإرساله إلى أخصائي التغذية أو المدرب."],
@@ -9700,13 +9705,13 @@ function raporPaketi(donem){
   const R = {v: 1, a: P.ad || '', l: dil, d0, d1, h: [P.kcal, P.protein, P.karb, P.seker, P.yag, P.lif, v(suHedefi(d1))], g,
     t: tartimlar().filter(([k]) => icinde(k)),
     o: olcumler().filter(([k]) => icinde(k)).map(([k, o]) => [k, o.bel || 0, o.kalca || 0, o.boyun || 0, o.yag || 0]),
-    bp: (D.tansiyon || []).filter(x => x.t >= ts0 && x.t < ts1).map(x => [x.t, x.s, x.d, x.n || 0]),
-    sk: (D.seker || []).filter(x => x.t >= ts0 && x.t < ts1).map(x => [x.t, x.v, x.z]),
+    bp: (LF_TIBBI ? D.tansiyon || [] : []).filter(x => x.t >= ts0 && x.t < ts1).map(x => [x.t, x.s, x.d, x.n || 0]),
+    sk: (LF_TIBBI ? D.seker || [] : []).filter(x => x.t >= ts0 && x.t < ts1).map(x => [x.t, x.v, x.z]),
     ak: gunler.filter(k => (D.aktivite || {})[k]).map(k => [k, (D.aktivite[k].adim) || 0, (D.aktivite[k].uyku) || 0]),
     an: gunler.filter(k => (D.antLog || {})[k]).map(k => [k, Object.keys(D.antLog[k]).length])};
   // tartı dönem öncesi son değer: değişimi göstermek için başlangıç noktası
   const once = tartimlar().filter(([k]) => k < d0); if (once.length && R.t.length) R.t0 = once[once.length - 1];
-  const ilac = (D.ilac || []).filter(i => i.aktif !== false);
+  const ilac = LF_TIBBI ? (D.ilac || []).filter(i => i.aktif !== false) : [];
   if (ilac.length){ let al = 0; gunler.forEach(k => { const L = (D.ilacLog || {})[k] || {}; ilac.forEach(i => { if (L[i.id]) al++; }); }); R.il = [al, ilac.length * gunler.length]; }
   const M = mikroTopla(gunler); if (M.gunSay) R.mk = MIKRO_ALAN.map(a => Math.round(M.top[a] * 10) / 10);
   if (donem === 'gun') R.y = yenenPaketi(bugunK()).o;
@@ -9729,7 +9734,7 @@ function tkRapor(){
     <div class="sec">${T('rpDonem')}</div>
     <div class="seg seg-genis">${['gun', 'hafta', 'ay'].map(d => `<button class="${RP.donem === d ? 'on' : ''}" data-rpd="${d}">${T({gun: 'rpGun', hafta: 'rpHafta', ay: 'rpAy'}[d])}</button>`).join('')}</div>
     <div class="cur" style="margin-top:10px"><b>${esc(rpDonemYaz(R))}</b> · ${T('rpKayitGun')}: ${n}<br><small>${esc(raporOzetMetni(R)).replace(/\n/g, '<br>')}</small></div>
-    <p class="hint" style="margin:8px 0">${esc(T('rpIcerik'))}</p>
+    <p class="hint" style="margin:8px 0">${esc(T(LF_TIBBI ? 'rpIcerik' : 'rpIcerikA'))}</p>
     <div class="rp-dugmeler"><button class="btn green" id="rpWa">💬 ${T('rpWhatsapp')}</button><button class="btn solid" id="rpPay">${T('rpPaylas')}</button><button class="btn" id="rpKop">🔗 ${T('rpKopyala')}</button><button class="btn ghost" id="rpOn">📄 ${T('rpOnizle')}</button></div>
     <p class="tk-not">🔒 ${esc(T('rpGizlilik'))}</p>
     ${window.__LF_NATIVE ? `<div class="saat-liste" style="margin-top:10px"><button class="saat-ek${D.ayar.raporHat ? ' on' : ''}" id="rpHat" aria-pressed="${!!D.ayar.raporHat}"><span class="kutu">${D.ayar.raporHat ? '✓' : ''}</span>${T('rpHatirlat')}</button></div>` : ''}
@@ -9772,7 +9777,7 @@ function raporGoster(R, gelen){
   const bolum = (bas, ic) => ic ? `<section class="rp-bolum"><h2>${bas}</h2>${ic}</section>` : '';
   const ref = mikroReferans();
   const html = `<div class="rapor" id="rapor" translate="no" dir="${RTL() ? 'rtl' : 'ltr'}">
-    <div class="rapor-arac">${gelen && typeof proAcik === 'function' && proAcik() ? `<button class="btn green" id="rpDanisan">👥 ${T('prKaydet')}</button>` : ''}<button class="btn solid" id="rpPdf">${T('rpPdf')}</button><button class="btn ghost" id="rpKapat">✕ ${T('rpClose')}</button></div>
+    <div class="rapor-arac">${gelen && LF_TIBBI && typeof proAcik === 'function' && proAcik() ? `<button class="btn green" id="rpDanisan">👥 ${T('prKaydet')}</button>` : ''}<button class="btn solid" id="rpPdf">${T('rpPdf')}</button><button class="btn ghost" id="rpKapat">✕ ${T('rpClose')}</button></div>
     <article class="rapor-sayfa">
       <header class="rp-bas"><div><small>📊 ${T('rpBaslik')}</small><h1>${esc(String(R.a || '').slice(0, 40)) || '—'}</h1><p>${esc(rpDonemYaz(R))} · ${T('rpKayitGun')}: ${g.length}</p></div></header>
       ${g.length ? `<section class="rp-ozet">
@@ -10307,6 +10312,8 @@ Object.assign(S, {
   // Danışanlar
   prDIntro:["Danışanlarının gönderdiği durum raporlarını, anamnezi, kan tahlillerini ve görüşme notlarını tek yerde tut.","Keep your clients' status reports, history, blood tests and session notes in one place.","Храни отчёты клиентов, анамнез, анализы и заметки о встречах в одном месте.","Behalte Statusberichte, Anamnese, Laborwerte und Sitzungsnotizen deiner Klient:innen an einem Ort.","احتفظ بتقارير عملائك وتاريخهم الطبي وتحاليلهم وملاحظات الجلسات في مكان واحد."],
   kocKlinik:["Klinik durum (isteğe bağlı)","Clinical condition (optional)","Клиническое состояние (необязательно)","Klinischer Zustand (optional)","الحالة السريرية (اختياري)"],
+  kocOdakA:["Beslenme odağı (isteğe bağlı)","Nutrition focus (optional)","Фокус питания (необязательно)","Ernährungsschwerpunkt (optional)","تركيز التغذية (اختياري)"],
+  kocOdakNotA:["Hedef hesabına ve otomatik menüye yansır (ör. karbonhidrat %40'a kadar, tuzlu ya da doymuş yağlı yiyecekler çıkar; emzirme: +500 kcal, +0,7 L su — EFSA). Genel beslenme önerisidir, tıbbi tavsiye değildir.","Applied to targets and the auto-menu (e.g. carbs up to 40%, salty or saturated-fat foods out; breastfeeding: +500 kcal, +0.7 L water — EFSA). General nutrition guidance, not medical advice.","Учитывается в целях и автоменю (напр. углеводы до 40%, без солёного или жирного; кормление: +500 ккал, +0,7 л воды — EFSA). Общие советы по питанию, не медицинская рекомендация.","Fließt in Ziele und Auto-Menü ein (z. B. Kohlenhydrate bis 40 %, ohne Salziges oder gesättigte Fette; Stillzeit: +500 kcal, +0,7 L Wasser – EFSA). Allgemeine Ernährungshinweise, keine medizinische Beratung.","تنعكس على الأهداف والقائمة التلقائية (مثل كربوهيدرات حتى 40%، بدون الأطعمة المالحة أو الدهون المشبعة؛ الرضاعة: +500 سعرة و0.7 لتر ماء — EFSA). إرشادات تغذية عامة وليست نصيحة طبية."],
   kocEmzirme:["Emzirme","Breastfeeding","Грудное вскармливание","Stillzeit","الرضاعة"],
   kocKlinikNot:["Hedef hesabına ve otomatik programa yansır (kan şekeri: karbonhidrat %40'a kadar; tansiyon: tuzlu yiyecekler çıkar; kolesterol: doymuş yağlılar çıkar; emzirme: +500 kcal, +0,7 L su — EFSA). Klinik kararı sen verirsin.","Applied to targets and auto-plan (glucose: carbs up to 40%; blood pressure: salty foods out; cholesterol: saturated-fat foods out; breastfeeding: +500 kcal, +0.7 L water — EFSA). The clinical decision is yours.","Учитывается в целях и автопрограмме (сахар: углеводы до 40%; давление: без солёного; холестерин: без насыщенных жиров; кормление: +500 ккал, +0,7 л воды — EFSA). Клиническое решение за тобой.","Fließt in Ziele und Auto-Plan ein (Blutzucker: Kohlenhydrate bis 40 %; Blutdruck: ohne Salziges; Cholesterin: ohne gesättigte Fette; Stillzeit: +500 kcal, +0,7 L Wasser – EFSA). Die klinische Entscheidung triffst du.","تنعكس على الأهداف والبرنامج التلقائي (السكر: كربوهيدرات حتى 40%؛ الضغط: بدون الأطعمة المالحة؛ الكوليسترول: بدون الدهون المشبعة؛ الرضاعة: +500 سعرة و0.7 لتر ماء — EFSA). القرار السريري لك."],
   prDanisanYok:["Henüz danışan yok. Danışanın Takip → Rapor gönder ile sana rapor bağlantısı gönderince \"Danışanlarıma kaydet\" ile ekleyebilir ya da elle oluşturabilirsin.","No clients yet. When a client sends you a report link (Tracking → Send report), tap \"Save to my clients\", or create one manually.","Пока нет клиентов. Когда клиент пришлёт ссылку на отчёт (Трекинг → Отправить отчёт), нажми «Сохранить в клиенты» или создай вручную.","Noch keine Klient:innen. Wenn dir jemand einen Berichtslink schickt (Verlauf → Bericht senden), tippe auf „Bei Klient:innen speichern“ oder lege manuell an.","لا يوجد عملاء بعد. عندما يرسل لك عميل رابط تقرير (المتابعة ← إرسال تقرير) اضغط «حفظ في عملائي» أو أنشئه يدويًا."],
@@ -10428,14 +10435,14 @@ function proBolumuEkle(){
 })();
 
 // ================= Program hazırla: sekmeler =================
-function kocSekme(){ return (D.koc && D.koc.sekme) || 'b'; }
+function kocSekme(){ const s = (D.koc && D.koc.sekme) || 'b'; return !LF_TIBBI && s === 'd' ? 'b' : s; }
 (function(){
   const k0 = kocCiz;
   kocCiz = function(){
     const r = k0.apply(this, arguments);
     const alt = $('koc').querySelector('.wiz-sub');
     if (alt && !$('kocSekmeler')){
-      alt.insertAdjacentHTML('afterend', `<div class="seg seg-genis koc-sekmeler" id="kocSekmeler" role="tablist">${['b', 'a', 'd'].map(s => `<button class="${kocSekme() === s ? 'on' : ''}" role="tab" aria-selected="${kocSekme() === s}" data-ksekme="${s}">${T('prS_' + s).replace(/^(\S+) /, '<span class="ks-ik">$1</span> ')}</button>`).join('')}</div>`);
+      alt.insertAdjacentHTML('afterend', `<div class="seg seg-genis koc-sekmeler" id="kocSekmeler" role="tablist">${['b', 'a', 'd'].filter(s => LF_TIBBI || s !== 'd').map(s => `<button class="${kocSekme() === s ? 'on' : ''}" role="tab" aria-selected="${kocSekme() === s}" data-ksekme="${s}">${T('prS_' + s).replace(/^(\S+) /, '<span class="ks-ik">$1</span> ')}</button>`).join('')}</div>`);
       $('kocSekmeler').querySelectorAll('[data-ksekme]').forEach(b => b.onclick = () => { D.koc.sekme = b.dataset.ksekme; kaydet(); kocCiz(); $('koc').scrollTop = 0; });
     }
     if (kocSekme() !== 'b'){

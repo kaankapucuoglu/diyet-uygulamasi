@@ -1,3 +1,6 @@
+// Google Play (bireysel geliştirici hesabı): tıbbi işlevler (ilaç takibi, tansiyon / kan şekeri günlüğü, danışan sağlık kayıtları)
+// yalnız kurumsal hesapla dağıtılabilir → Android uygulamasında KAPALI. iOS ve web'de açık. (20.11.2026)
+const LF_TIBBI = !(window.__LF_NATIVE && window.__LF_NATIVE.platform === 'android');
 // ---------- Diller ----------
 const DILLER = [
   {k:'tr', ad:'Türkçe', bayrak:'🇹🇷', loc:'tr-TR'},

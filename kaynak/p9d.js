@@ -443,8 +443,9 @@ function takipAc(sekme){
   takipCiz(); $('takip').scrollTop = 0;
 }
 function takipKapat(){ if (!$('takip')) return; kaydet(); $('takip').hidden = true; if ($('koc').hidden) document.body.classList.remove('wiz-acik'); ciz(); }
-const TK_SEKMELER = [['ozet', '🏠'], ['olcu', '📏'], ['saglik', '❤️'], ['aktivite', '👟'], ['besin', '🥦'], ['rapor', '📤'], ['rozet', '🏅']];
+const TK_SEKMELER = [['ozet', '🏠'], ['olcu', '📏'], ['saglik', '❤️'], ['aktivite', '👟'], ['besin', '🥦'], ['rapor', '📤'], ['rozet', '🏅']].filter(([k]) => LF_TIBBI || k !== 'saglik');
 function takipCiz(){
+  if (!LF_TIBBI && TK.sekme === 'saglik') TK.sekme = 'ozet';
   const el = takipKap();
   el.innerHTML = `<div class="wiz-in tk-in">
     <div class="wiz-top"><div class="wiz-brand">📊 ${T('tkBtn')}</div><button class="icon-btn" data-tkkapat="1" aria-label="✕">✕</button></div>
@@ -468,7 +469,7 @@ function tkOzet(){
   const once = t.filter(([g]) => g <= gunEkle(bugunK(), -30)), ref = once.length ? once[once.length - 1] : null;
   const t30 = sonT && ref && ref[0] >= gunEkle(bugunK(), -45) ? farkKg(sonT[1], ref[1]) + ' kg' : null;   // 45 günden eski tartı "30 günde" sayılmaz
   const ak = (D.aktivite || {})[bugunK()] || {};
-  const ilacBugun = (D.ilac || []).filter(i => i.aktif !== false);
+  const ilacBugun = LF_TIBBI ? (D.ilac || []).filter(i => i.aktif !== false) : [];
   const el = tkIc(`<div class="tk-kartlar">
       <div class="card tk-kart"><small>🔥 ${T('tkSeri')}</small><b class="tk-buyuk">${T('tkSeriN', {n: s.n})}</b><span class="hint">${T('tkSeriEn', {n: s.enUzun})}</span><p class="hint">${esc(T('tkSeriIpucu'))}</p></div>
       <div class="card tk-kart"><small>🎯 ${T('tkUyum')}</small><div class="tk-ikili"><div><span class="hint">${T('tkUyumBugun')}</span><b class="tk-buyuk">${bu != null ? bu + '%' : '—'}</b></div><div><span class="hint">${T('tkUyum7')}</span><b class="tk-buyuk">${ort != null ? ort + '%' : '—'}</b></div></div>
@@ -766,7 +767,7 @@ Object.assign(S, {tkTarih:["Tarih","Date","Дата","Datum","التاريخ"], 
   if ($('lTakip')) $('lTakip').textContent = T('tkBtn');
   try { if (D.ayar.kurulum) setTimeout(() => { const s = seriHesapla(); if (s.n >= 2 && $('cipSatir') && !$('seriCip')){ $('cipSatir').insertAdjacentHTML('afterbegin', '<button class="cip seri-cip" id="seriCip"></button>'); $('seriCip').textContent = '🔥 ' + T('tkSeriN', {n: s.n}); $('seriCip').onclick = () => takipAc('rozet'); } rozetKontrol(true); }, 0); } catch(e){}
   // Açılışta ilaç hatırlatıcılarını yeniden kur (yerel bildirimler uygulama güncellemesinde silinmiş olabilir)
-  setTimeout(() => { try { (D.ilac || []).forEach(ilacBildirimKur); } catch(e){} }, 4000);
+  setTimeout(() => { try { if (LF_TIBBI) (D.ilac || []).forEach(ilacBildirimKur); else (D.ilac || []).forEach(i => window.__lfCancelNotify && window.__lfCancelNotify('ilac-' + i.id)); } catch(e){} }, 4000);
 })();
 
 // ================= Android geri tuşu =================
