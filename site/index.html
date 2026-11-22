@@ -87,7 +87,7 @@ section{padding:64px 0}
 .feat h3{font-size:17.5px;margin-bottom:6px}
 .feat p{color:var(--muted);font-size:15px}
 /* Galeri */
-.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
 .gallery figure{text-align:center}
 .gallery .phone{width:100%;max-width:240px;margin:0 auto}
 .gallery figcaption{margin-top:12px;font-weight:700;font-size:14.5px;color:var(--muted)}
@@ -179,7 +179,7 @@ footer .sp{margin-inline-start:auto}
   <!-- Ekran görüntüsü + kullanım videosu. Yeni video: site/video/kullanim.mp4 (+ kullanim.jpg poster), senaryo: kaynak/video/SENARYO.md -->
   <div class="shots">
     <div class="phone"><img src="/img/app-ana.png" alt="" width="390" height="844" loading="eager"></div>
-    <div class="phone b vid dur"><video src="/video/kullanim.mp4?v=6" poster="/video/kullanim.jpg?v=6" width="600" height="1298" muted loop playsinline preload="none" data-alt="vidAlt"></video><button class="vbtn" type="button" aria-label="Videoyu oynat"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14"/><path class="i-play" d="M7 4.5 19.5 12 7 19.5z"/></svg></button></div>
+    <div class="phone b vid dur"><video src="/video/kullanim.mp4?v=7" poster="/video/kullanim.jpg?v=7" width="600" height="1298" muted loop playsinline preload="none" data-alt="vidAlt"></video><button class="vbtn" type="button" aria-label="Videoyu oynat"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14"/><path class="i-play" d="M7 4.5 19.5 12 7 19.5z"/></svg></button></div>
   </div>
   <p class="vidcap" data-t="vidS"></p>
 </div></div>
@@ -204,7 +204,7 @@ footer .sp{margin-inline-start:auto}
 
 <section id="ekranlar" style="padding-top:20px"><div class="wrap">
   <div class="sec-head"><h2 data-t="galT"></h2><p data-t="galS"></p></div>
-  <!-- Ekran görüntüleri: site/img/app-*.png (780×1688, telefon 390×844 @2x). Şimdilik yer tutucu. -->
+  <!-- Ekran görüntüleri: site/img/app-*.png (780×1688, telefon 390×844 @2x). app-barkod/app-foto: 22.11, kaynak/video/yeni.py akışıyla. -->
   <div class="gallery">
     <figure><div class="phone"><img src="/img/app-ana.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g1"></figcaption></figure>
     <figure><div class="phone"><img src="/img/app-kurulum.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g2"></figcaption></figure>
@@ -212,6 +212,8 @@ footer .sp{margin-inline-start:auto}
     <figure><div class="phone"><img src="/img/tel-ogun.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g4"></figcaption></figure>
     <figure><div class="phone"><img src="/img/app-paylas.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g5"></figcaption></figure>
     <figure><div class="phone"><img src="/img/app-kiyas.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g6"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/app-barkod.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g7"></figcaption></figure>
+    <figure><div class="phone"><img src="/img/app-foto.png" alt="" loading="lazy" width="390" height="844"></div><figcaption data-t="g8"></figcaption></figure>
   </div>
   <figure class="pc"><div class="bar"><i></i><i></i><i></i></div><img src="/img/app-web.png" alt="" loading="lazy" width="1440" height="900"><figcaption data-t="gWeb"></figcaption></figure>
 </div></section>
@@ -341,6 +343,8 @@ g3:['Regl takibi','Period tracking','Отслеживание цикла','Zyklu
 g4:['Öğün ve porsiyon','Meals and portions','Приёмы пищи и порции','Mahlzeiten und Portionen','الوجبات والحصص'],
 g5:['Program paylaşımı','Plan sharing','Обмен программами','Pläne teilen','مشاركة البرامج'],
 g6:['Yemek kıyaslama','Food comparison','Сравнение блюд','Lebensmittelvergleich','مقارنة الأطعمة'],
+g7:['Barkodla ekle','Add by barcode','Добавление по штрихкоду','Per Barcode hinzufügen','الإضافة بالباركود'],
+g8:['Fotoğrafla ekle','Add from a photo','Добавление по фото','Per Foto hinzufügen','الإضافة من صورة'],
 gWeb:['Web sürümü (bilgisayar)','Web version (desktop)','Веб-версия (компьютер)','Web-Version (Computer)','إصدار الويب (الكمبيوتر)'],
 coachT:['Diyetisyenler, doktorlar ve antrenörler için','For dietitians, doctors and coaches','Для диетологов, врачей и тренеров','Für Ernährungsberater, Ärzte und Trainer','لأخصائيي التغذية والأطباء والمدربين'],
 coachS:['Hastan veya danışanın için günlük, haftalık ya da aylık beslenme programı hazırla. Yemekleri tek tek ya da birkaçını birden ekle; istersen “Otomatik oluştur” ile hedeflere uygun programı saniyeler içinde oluştur. Kişinin bilgilerini girmeden önce onu bilgilendir ve iznini al; linki yalnız ona gönder.','Prepare a daily, weekly or monthly meal plan for your patient or client. Add foods one by one or several at once, or let “Auto-generate” build a plan that fits the targets in seconds. Inform the person and get their permission before entering their details; send the link only to them.','Составьте план питания для пациента или клиента на день, неделю или месяц. Добавляйте блюда по одному или сразу несколько либо создайте план под цели за секунды кнопкой «Создать автоматически». Перед вводом данных сообщите человеку и получите его согласие; отправляйте ссылку только ему.','Erstellen Sie für Ihren Patienten oder Klienten einen Tages-, Wochen- oder Monatsplan. Fügen Sie Lebensmittel einzeln oder mehrere auf einmal hinzu, oder lassen Sie „Automatisch erstellen“ in Sekunden einen passenden Plan bauen. Informieren Sie die Person vorher und holen Sie ihre Erlaubnis ein; senden Sie den Link nur an sie.','أعدّ خطة غذائية يومية أو أسبوعية أو شهرية لمريضك أو عميلك. أضف الأطعمة واحدًا تلو الآخر أو عدة أطعمة معًا، أو دع «إنشاء تلقائي» يبني خطة مناسبة للأهداف في ثوانٍ. أبلغ الشخص واحصل على إذنه قبل إدخال بياناته، وأرسل الرابط إليه وحده.'],

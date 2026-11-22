@@ -24,10 +24,11 @@ HOST = urlparse(BASE).hostname or ''
 API = 'http://127.0.0.1:8097/api' if HOST in ('127.0.0.1', 'localhost') else 'https://diyet.maviplay.com/api'
 KULLANICI = 'ayse_' + str(random.randint(1000, 9999))
 PAROLA = 'Lf-' + secrets.token_hex(4)          # 11 karakter (sunucu en az 8)
+FOTO = os.path.join(BURASI, 'pilav.jpg')       # foto adimi icin ornek ogun fotografi (AI uretimi, 22.11)
 SINIR = 59.5                                    # sn; asilirsa tekduze hizlandirma
 
 # Adim butceleri (sn) -> kumulatif hedef zamanlar; her adim sonunda hizala() erken bitince bekler, gec kalinca beklemez
-BUTCE = [2.0, 2.5, 2.0, 5.0, 4.5, 5.0, 6.0, 4.0, 9.0, 6.0, 4.5, 4.5, 2.5]
+BUTCE = [2.0, 2.5, 2.0, 5.0, 4.5, 5.0, 6.0, 3.5, 6.0, 7.0, 8.0, 4.5, 2.5]   # 22.11: hesap+siralama (sunucu kaldirildi) yerine barkod (9) + foto (10)
 HEDEF = [round(sum(BUTCE[:i + 1]), 2) for i in range(len(BUTCE))]
 
 KATMAN = r"""addEventListener('pointerdown', e => {
@@ -76,6 +77,7 @@ TOHUM = r"""() => {
   // Son 3 gun kayitli (hafta seridinde nokta, siralamada seri)
   for (let i = 1; i <= 3; i++) D.kayit[gunEkle(bugun, -i)] = {yendi:{kahvalti:true, ogle:true, aksam:true}, su:7};
   D.ayar.hatirlatici = true;
+  D.ayar.pro = true;   // Program hazirla dugmesi (pro mod) gorunsun
   planYenile();
   // Program hazirla taslagi: bu haftanin menusu (Paylas adiminda link uretilecek)
   const KC = kocBos(); KC.a = 'Ayşe'; KC.h = 'Dyt. Elif'; KC.n = 'Haftalık örnek program';
@@ -147,6 +149,10 @@ async def main():
         await p.reload(wait_until='load'); await w(2.5)
         await p.wait_for_function("typeof D === 'object' && D.ayar.kurulum && document.getElementById('kurulum').hidden", timeout=15000)
         await p.evaluate('window.scrollTo(0,0)'); await w(0.6)
+        try:   # yemek tanima modeli kayittan once yuklensin (foto adimi beklemesin)
+            await p.evaluate('aiYukle().then(() => haritaYukle())')
+        except Exception as e:
+            print('UYARI model isinmasi:', str(e)[:120])
 
         # ---- kare yakalama ----
         calis = [True]
@@ -275,34 +281,9 @@ async def main():
             await gor(p.locator('#notTog'), 0.9); await w(1.2)
         await adim(7, a7)
 
-        # ---- 8 hesap ----
+        # ---- 8 programi paylas ----
         async def a8():
-            nonlocal hesap_acildi, token
-            await alt(8, 'Hesap isteğe bağlı: kullanıcı adı + şifre, cihazlar arasında eşitle')
-            if not await p.locator('#hsKaydolBtn').count():
-                await dokun('#ayarBtn', 0.9)
-            await gor(p.locator('#hsKaydolBtn'), 0.6)
-            await dokun('#hsKaydolBtn', 0.9)
-            await p.locator('#kAd').press_sequentially(KULLANICI, delay=55); await w(0.7)   # "✓ Kullanıcı adı uygun"
-            await p.locator('#kSifre').press_sequentially(PAROLA, delay=28)
-            await p.locator('#kSifre2').press_sequentially(PAROLA, delay=28); await w(0.25)
-            for sel in ('#rKvkk', '#rKosul', '#rSaglik'):
-                await isaretle(sel); await w(0.3)
-            if not SUNUCU:
-                await w(1.0); await kapat(0.5); return
-            hesap_acildi = True
-            await dokun('#kGonder', 2.2)
-            if await p.locator('#kGonder').count():   # form hala acik -> hata
-                print('UYARI kayit basarisiz:', await p.locator('#kHata').inner_text())
-                await kapat(0.4); return
-            token = await p.evaluate("() => { try { return (JSON.parse(localStorage.getItem(HESAP_ANAHTAR) || 'null') || {}).token || null; } catch(e){ return null; } }")
-            await alt(8, 'Hesap açıldı: verilerin eşitleniyor, rozet ana ekranda')
-            await kay(0, 0.6); await w(0.9)
-        await adim(8, a8)
-
-        # ---- 9 programi paylas ----
-        async def a9():
-            await alt(9, 'Programı paylaş: bağlantı, WhatsApp ya da kullanıcı adıyla')
+            await alt(8, 'Programı paylaş: bağlantı ya da WhatsApp ile')
             await kapat(0.2)
             await dokun('#kocBtn', 1.2)
             link = p.locator('#koc [data-klink]').first
@@ -314,20 +295,31 @@ async def main():
             except Exception:
                 await p.evaluate('kocKapat()')
             await w(0.4)
+        await adim(8, a8)
+
+        # ---- 9 barkod ----
+        async def a9():
+            await alt(9, 'Barkod okut: paketli ürün kalori ve porsiyonuyla gelir')
+            await kay(0, 0.3)
+            y = await p.evaluate("document.querySelector('#ogunler .add-row').getBoundingClientRect().top + scrollY - 300")
+            await kay(y, 0.7)
+            await dokun('#ogunler [data-bkekle]', 0.8)
+            await p.locator('#bkKod').press_sequentially('8692886310711', delay=40); await w(0.3)
+            await dokun('#bkAra', 0.3)
+            await p.locator('#sheet #onay').wait_for(state='visible', timeout=12000); await w(1.6)
+            await dokun('#sheet #onay', 0.7)
         await adim(9, a9)
 
-        # ---- 10 siralama ----
+        # ---- 10 foto ----
         async def a10():
-            await alt(10, 'Sıralama (isteğe bağlı): yalnız kullanıcı adı ve seri gün')
-            await dokun('#ayarBtn', 1.2)
-            if SUNUCU:
-                await dokun('#hsSiraBtn', 1.3)
-                katil = p.locator('#lbKatil')
-                if await katil.count():
-                    await katil.tap(); await w(1.3)
-            else:
-                await w(1.6)
-            await kapat(0.3)
+            await alt(10, 'Fotoğrafla ekle: yemek telefonda tanınır, fotoğraf dışarı gönderilmez')
+            async with p.expect_file_chooser() as fc:
+                await dokun('#ogunler [data-ftekle]')
+            await (await fc.value).set_files(FOTO)
+            satir = p.locator('#sheet .frow', has_text='Tavuklu pilav').first
+            await satir.wait_for(state='visible', timeout=15000); await w(2.0)
+            await satir.tap(); await w(1.3)
+            await dokun('#sheet #onay', 0.6)
         await adim(10, a10)
 
         # ---- 11 hamileyim ----
