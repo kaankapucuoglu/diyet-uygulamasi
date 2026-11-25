@@ -105,6 +105,8 @@ Object.assign(S, {
   tkSaglikAlA:["❤️ Health Connect'ten al","❤️ Import from Health Connect","❤️ Загрузить из Health Connect","❤️ Aus Health Connect übernehmen","❤️ استيراد من Health Connect"],
   tkSaglikNot:["Adım, uyku ve kilo yalnız okunur; cihazından çıkmaz, reklamda kullanılmaz.","Steps, sleep and weight are read only; they never leave your device and are never used for ads.","Шаги, сон и вес только считываются, не покидают устройство и не используются для рекламы.","Schritte, Schlaf und Gewicht werden nur gelesen, verlassen dein Gerät nicht und dienen nicht der Werbung.","تُقرأ الخطوات والنوم والوزن فقط؛ لا تغادر جهازك ولا تُستخدم للإعلانات."],
   tkSaglikTamam:["{a} gün adım, {u} gün uyku, {k} tartı alındı","Imported {a} days of steps, {u} of sleep, {k} weigh-ins","Загружено: шаги за {a} дн., сон за {u} дн., взвешиваний: {k}","Übernommen: {a} Tage Schritte, {u} Schlaf, {k} Wiegungen","تم استيراد خطوات {a} يوم، ونوم {u} يوم، و{k} وزن"],
+  tkSaglikGuncelle:["Health Connect kurulmalı ya da güncellenmeli; Play Store açılıyor. Kurduktan sonra tekrar dene.","Health Connect needs to be installed or updated; opening Play Store. Try again afterwards.","Нужно установить или обновить Health Connect; открываю Play Маркет. Потом попробуй снова.","Health Connect muss installiert oder aktualisiert werden; Play Store wird geöffnet. Danach erneut versuchen.","يجب تثبيت Health Connect أو تحديثه؛ جارٍ فتح متجر Play. حاول مجددًا بعد ذلك."],
+  tkSaglikHata:["Sağlık verisi okunamadı. Biraz sonra tekrar dene.","Couldn't read health data. Try again in a moment.","Не удалось прочитать данные о здоровье. Попробуй позже.","Gesundheitsdaten konnten nicht gelesen werden. Versuch es gleich noch einmal.","تعذّرت قراءة البيانات الصحية. حاول مجددًا بعد قليل."],
   tkSaglikYok:["Bu cihazda sağlık verisi kaynağı bulunamadı.","No health data source on this device.","На устройстве нет источника данных о здоровье.","Keine Gesundheitsdatenquelle auf diesem Gerät.","لا يوجد مصدر بيانات صحية على هذا الجهاز."],
   tkSaglikIzin:["İzin verilmedi. Ayarlardan izin verebilirsin.","Permission not granted. You can allow it in Settings.","Разрешение не выдано. Его можно дать в настройках.","Keine Berechtigung. Du kannst sie in den Einstellungen erteilen.","لم يُمنح الإذن. يمكنك منحه من الإعدادات."],
   tkSon14:["Son 14 gün","Last 14 days","Последние 14 дней","Letzte 14 Tage","آخر 14 يومًا"],
@@ -371,7 +373,7 @@ function fotoSec(kaynak){
     return new Promise(ok => {
       fotoBekleyen = r => {
         if (r && r.ok && r.data) ok(r.data);
-        else { if (r && r.izin === false) toast(T('ftIzin'), 3500); else if (r && r.hata) toast(T('ftHata'), 3000); ok(null); }
+        else { if (r && r.izin === false && !r.galeri) toast(T('ftIzin'), 3500); else if (r && (r.hata || r.izin === false)) toast(T('ftHata'), 3000); ok(null); }   // "kamera izni" metni yalnız kamerada
       };
       window.__lfPost({t: 'foto', kaynak});
     });
@@ -664,7 +666,7 @@ window.__lfOnSaglik = r => { const f = saglikBekleyen; saglikBekleyen = null; if
 function saglikAl(gun){
   if (!window.__lfPost) return;
   saglikBekleyen = r => {
-    if (!r.ok){ toast(T(r.yok ? 'tkSaglikYok' : 'tkSaglikIzin'), 3500); return; }
+    if (!r.ok){ toast(T(r.guncelle ? 'tkSaglikGuncelle' : r.yok ? 'tkSaglikYok' : r.hata ? 'tkSaglikHata' : 'tkSaglikIzin'), r.guncelle ? 6000 : 3500); return; }
     const A = D.aktivite || (D.aktivite = {});
     (r.adim || []).forEach(([k, v]) => { A[k] = {...(A[k] || {}), adim: v, kaynak: r.kaynak}; });
     (r.uyku || []).forEach(([k, v]) => { if (v > 0 && v <= 20) A[k] = {...(A[k] || {}), uyku: v, kaynak: r.kaynak}; });
@@ -778,6 +780,12 @@ window.__lfBack = function(){
     if ($('rapor') && $('rpKapat')){ $('rpKapat').click(); return true; }
     if ($('tur') && $('turGec')){ $('turGec').click(); return true; }
     if ($('overlay').classList.contains('open')){ if (geriFn) geriFn(); else kapat(); return true; }
+    // 25.11: kurulum sihirbazında geri tuşu uygulamayı kapatıyor, girilenler kayboluyordu → önceki adım; ilk adımda (profil düzenleme) kapat
+    if ($('kurulum') && !$('kurulum').hidden){
+      if (wAdim > 0){ wHata = ''; wAdim = Math.max(0, wAdim - 1); wCiz(); return true; }
+      if (D.ayar && D.ayar.kurulum){ sihirbazKapat(); return true; }
+      return false;   // ilk kurulumun ilk adımı: uygulamadan çık
+    }
     if ($('takip') && !$('takip').hidden){ takipKapat(); return true; }
     if (!$('koc').hidden){ const k = $('koc').querySelector('[data-kkapat]'); if (k) k.click(); else kocKapat(); return true; }
   } catch(e){}

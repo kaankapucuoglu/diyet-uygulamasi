@@ -906,7 +906,7 @@ async function tasiAc(){
   const yer = ios ? (uyg ? 'U' : 'T') : 'G';   // U: iPhone ana ekran uygulaması, T: iPhone tarayıcı, G: diğer
   if (ver){ const kod = await paketKodla(D); tasiKod = PAYLASIM_TABAN + '#t=' + kod + '&n=' + kod.length; }   // tıklamada hazır olsun (iPhone kopyalamayı yalnız dokunuş anında izin verir)
   // iPhone'da pano okuma isteği sessizce reddedilebiliyor / küçük balon gözden kaçıyor → orada yalnız kutuya yapıştırma
-  const pano = !ios && !!(navigator.clipboard && navigator.clipboard.readText);
+  const pano = !ios && !window.__LF_NATIVE && !!(navigator.clipboard && navigator.clipboard.readText);
   const gonder = ver ? `<div class="tasi-blok">
       <h4>${T('tasiVerT')}</h4><p>${esc(T('tasiVerM' + yer))}</p>
       <div class="tasi-ozet">${T('tasiOzet', {g: gunler.length})}${gunler.length ? ` · ${esc(etiket(gunler[0]))} – ${esc(etiket(gunler[gunler.length - 1]))}` : ''}</div>
@@ -1109,7 +1109,7 @@ function yenenRaporAc(Y){
   const baslik0 = document.title;
   document.title = `${String(Y.a || '').slice(0, 40)} ${Y.d}`.trim();   // PDF dosya adı
   $('rapor').scrollTop = 0;
-  $('rpPdf').onclick = () => window.print();
+  if (window.__LF_NATIVE) $('rpPdf').remove(); else $('rpPdf').onclick = () => window.print();   // WebView'de yazdırma yok
   $('rpKapat').onclick = () => {
     $('rapor').remove(); document.body.classList.remove('rapor-acik'); document.title = baslik0;
     if (/^#y=/.test(location.hash)) raporLinkTemizle();
@@ -1252,7 +1252,7 @@ function hatirlaticiYenile(zorla){
   const simdi = Date.now();
   for (const o of menu){
     const [h, m] = ogunSaati(k, o).split(':').map(Number), {title, body} = notMetin(o), id = 'ogun_' + o.id;
-    if (yerli){ try { window.__lfNotify({id, title, body, hour: h, minute: m, repeat: 'daily'}); } catch(e){} continue; }
+    if (yerli){ try { window.__lfNotify({id, title, body: T('notBodyGenel', {ik: OGUN_IKON[o.id] || '🍽', ogun: ogunAd(o)}), hour: h, minute: m, repeat: 'daily'}); } catch(e){} continue; }   // her gün yinelenir → yemek listesi yazılmaz (bayatlar)
     const z = new Date(); z.setHours(h, m, 0, 0);
     const gecikme = z.getTime() - simdi;
     if (gecikme > 0 && gecikme < 864e5) notZamanlayici.push(setTimeout(() => { bildirimGoster(title, body, id); notImza = null; hatirlaticiYenile(); }, gecikme));
@@ -1323,7 +1323,18 @@ function bildirimGoster(title, body, tag){
   else dogrudan();
 }
 // Ayarlar anahtarı: açarken izin istenir (web); yerli kabukta izni kabuk yönetir
+// Yerel kabukta bildirim izni: kabuğa sor, cevabı bekle (cevap gelmezse 60 sn sonra "bilinmiyor" = true sayılır, akış kilitlenmez)
+function yerliBildirimIzni(){
+  if (!(window.__LF_NATIVE && window.__lfNotifyPermission)) return Promise.resolve(true);
+  return new Promise(ok => {
+    const t = setTimeout(() => { window.__lfOnPermission = null; ok(true); }, 60000);
+    window.__lfOnPermission = v => { clearTimeout(t); window.__lfOnPermission = null; ok(!!v); };
+    try { window.__lfNotifyPermission(); } catch(e){ clearTimeout(t); window.__lfOnPermission = null; ok(true); }
+  });
+}
 async function hatirlaticiAyarla(acik){
+  // 25.11: yerel kabukta izin reddedilse de "Hatırlatıcı açık" deniyor, hiç bildirim gelmiyordu
+  if (acik && window.__LF_NATIVE && !(await yerliBildirimIzni())){ toast(T('notIzinYok'), 5200); return false; }
   if (acik && !window.__LF_NATIVE){
     if (!('Notification' in window)){ toast(T('notYok'), 4000); return false; }
     let izin = Notification.permission;

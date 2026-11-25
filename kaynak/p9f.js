@@ -9,6 +9,7 @@
 //   et 6P/5Y, ekmek 15K/2P, sebze 6K/1P, meyve 15K, yağ 5Y). Yaklaşık değerdir; uzmanın planlaması içindir.
 Object.assign(S, {
   prMod:["Profesyonel mod","Professional mode","Профессиональный режим","Profi-Modus","الوضع الاحترافي"],
+  prModAcikA:["Diyetisyen veya antrenörsen aç: Program hazırla ve antrenman programı görünür.","Turn on if you're a dietitian or coach: shows Program builder and workout plans.","Включи, если ты диетолог или тренер: появятся конструктор программ и тренировки.","Aktiviere ihn als Ernährungsberatung oder Coach: Programmersteller und Trainingspläne erscheinen.","فعّله إذا كنت أخصائي تغذية أو مدربًا: يظهر منشئ البرامج وبرامج التمارين."],
   prModAcik:["Diyetisyen, hekim veya antrenörsen aç: Program hazırla, Danışanlarım ve antrenman programı görünür.","Turn on if you're a dietitian, doctor or coach: shows Program builder, My clients and workout plans.","Включи, если ты диетолог, врач или тренер: появятся конструктор программ, клиенты и тренировки.","Aktiviere ihn als Ernährungsberatung, Ärztin/Arzt oder Coach: Programmersteller, Klient:innen und Trainingspläne erscheinen.","فعّله إذا كنت أخصائي تغذية أو طبيبًا أو مدربًا: يظهر منشئ البرامج وعملائي وبرامج التمارين."],
   prBilgi:["Unvan ve iletişim (programda ve PDF'te görünür)","Title and contact (shown on plans and PDFs)","Звание и контакты (в программе и PDF)","Titel und Kontakt (auf Plänen und PDFs)","اللقب ووسائل التواصل (تظهر في البرنامج وملف PDF)"],
   prUnvan:["Unvan","Title","Звание","Titel","اللقب"],
@@ -124,7 +125,7 @@ function proBolumuEkle(){
   const alan = (k, ad, tip, ph) => `<label class="field"><span>${ad}</span><input autocomplete="off" type="${tip || 'text'}" id="pr_${k}" maxlength="${k === 'ad' || k === 'kurum' ? 60 : 40}" value="${esc(P[k] || '')}"${ph ? ` placeholder="${esc(ph)}"` : ''}></label>`;
   sb.insertAdjacentHTML('beforeend', `<div class="ayar-blok" data-ak="pro"><div class="sec">👩‍⚕️ ${T('prMod')}</div>
     <div class="saat-liste"><button class="saat-ek${acik ? ' on' : ''}" id="proTog" aria-pressed="${acik}"><span class="kutu">${acik ? '✓' : ''}</span>${T('prMod')}</button></div>
-    <div class="hint" style="margin-top:6px">${esc(T('prModAcik'))}</div>
+    <div class="hint" style="margin-top:6px">${esc(T(LF_TIBBI ? 'prModAcik' : 'prModAcikA'))}</div>
     ${acik ? `<div class="sec" style="margin-top:12px">${T('prBilgi')}</div>
       <div class="grid3">${alan('unvan', T('prUnvan'), 'text', T('prUnvanPh'))}${alan('ad', T('prAd'))}${alan('kurum', T('prKurum'))}${alan('tel', T('prTel'), 'tel')}${alan('eposta', T('prEposta'), 'email')}</div>
       <div class="pr-logo"><span class="pr-logo-kutu">${P.logo ? `<img alt="" src="${P.logo}">` : '🏷️'}</span><button class="btn" id="prLogoSec">${T('prLogoSec')}</button>${P.logo ? `<button class="btn ghost" id="prLogoKaldir">${T('prLogoKaldir')}</button>` : ''}</div>

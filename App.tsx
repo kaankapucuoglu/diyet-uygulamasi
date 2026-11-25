@@ -80,12 +80,21 @@ function clampInt(v: unknown, lo: number, hi: number, dflt: number) {
 function isGranted(p: Notifications.NotificationPermissionsStatus) {
   return p.granted || p.ios?.status === Notifications.IosAuthorizationStatus.AUTHORIZED || p.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL;
 }
-async function ensurePermission(ask: boolean): Promise<boolean> {
-  let p = await Notifications.getPermissionsAsync();
-  if (!isGranted(p) && ask && p.canAskAgain !== false) {
-    p = await Notifications.requestPermissionsAsync({ ios: { allowAlert: true, allowSound: true, allowBadge: false } });
+// 25.11: hatırlatıcı açılınca 6–8 `notify` aynı anda gelir; her biri ayrı izin isteği kuyruğa sokuyordu → kullanıcı "İzin verme" deyince
+// pencere hemen yeniden çıkıyor, Android'de ikinci ret KALICI oluyordu. Tek açık istek paylaşılır; oturumda reddedildiyse yeniden sorulmaz
+// (yalnız kullanıcının açık isteğiyle: `force`).
+let izinIstegi: Promise<boolean> | null = null;
+let izinReddedildi = false;
+async function ensurePermission(ask: boolean, force = false): Promise<boolean> {
+  const p = await Notifications.getPermissionsAsync();
+  if (isGranted(p)) { izinReddedildi = false; return true; }
+  if (!ask || p.canAskAgain === false || (izinReddedildi && !force)) return false;
+  if (!izinIstegi) {
+    izinIstegi = Notifications.requestPermissionsAsync({ ios: { allowAlert: true, allowSound: true, allowBadge: false } })
+      .then((r) => { const ok = isGranted(r); izinReddedildi = !ok; return ok; }, () => false)
+      .finally(() => { izinIstegi = null; });
   }
-  return isGranted(p);
+  return izinIstegi;
 }
 async function ensureChannel(name?: string) {
   if (Platform.OS !== 'android') return;
@@ -309,7 +318,7 @@ function Shell() {
       case 'notify:cancel': Notifications.cancelScheduledNotificationAsync(String(m.id)).catch(() => {}); break;
       case 'notify:cancelAll': Notifications.cancelAllScheduledNotificationsAsync().catch(() => {}); break;
       case 'notify:permission':
-        ensurePermission(true).then((ok) => call('__lfOnPermission', ok), () => call('__lfOnPermission', false));
+        ensurePermission(true, true).then((ok) => call('__lfOnPermission', ok), () => call('__lfOnPermission', false));
         break;
       // satın alma (Reklamları kaldır)
       case 'iap:init': iap.init(m.skus); break;

@@ -117,6 +117,7 @@ export function createIapBridge(send: Send) {
         const productId = e.productId || busyProduct || '';
         busyProduct = null;
         const cancelled = L.isUserCancelledError(e);
+        if (!cancelled && /already[-_ ]?owned/i.test(String(e.code || '') + ' ' + String(e.message || ''))) { sweep(L).catch(() => {}); return; }
         send({ t: 'iap:result', ok: false, productId, cancelled, error: cancelled ? '' : String(e.code || e.message || 'error') });
       })
     );

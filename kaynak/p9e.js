@@ -54,18 +54,41 @@ Object.assign(S, {
   bkCeliski:["Kalori ile besin değerleri birbirini tutmuyor; paketteki değerlerle karşılaştır.","Calories and macros don't match each other; compare with the package.","Калории и БЖУ не сходятся; сверь с упаковкой.","Kalorien und Makros passen nicht zusammen; mit der Packung abgleichen.","السعرات والمغذيات لا تتطابق؛ قارنها بالعبوة."],
   ftKaranlik:["Fotoğraf karanlık — daha aydınlık bir yerde, tabağın tam üstünden çekersen tanıma iyileşir.","The photo is dark — shooting in better light, straight above the plate, improves recognition.","Фото тёмное — при лучшем освещении и съёмке сверху распознавание лучше.","Das Foto ist dunkel – bei mehr Licht und von oben fotografiert klappt die Erkennung besser.","الصورة مظلمة — التصوير في إضاءة أفضل ومن فوق الطبق مباشرة يحسّن التعرّف."],
   ftBulanik:["Fotoğraf bulanık — telefonu sabit tutup yeniden çekmeyi dene.","The photo is blurry — hold the phone steady and retake.","Фото размыто — держи телефон ровно и пересними.","Das Foto ist unscharf – halte das Telefon ruhig und fotografiere erneut.","الصورة ضبابية — ثبّت الهاتف وأعد التصوير."],
-  ftYenidenCek:["Yeniden çek","Retake","Переснять","Neu aufnehmen","إعادة التصوير"]
+  ftYenidenCek:["Yeniden çek","Retake","Переснять","Neu aufnehmen","إعادة التصوير"],
+  ftBiriMi:["Emin değilim — şunlardan biri mi?","Not sure — is it one of these?","Не уверен — это что-то из этого?","Nicht sicher – ist es eines davon?","لست متأكدًا — هل هو أحد هذه؟"],
+  ftAraYoksa:["Listede yok mu? Yazıp ara","Not listed? Search","Нет в списке? Найди","Nicht dabei? Suchen","ليس في القائمة؟ ابحث"],
+  ftPaket:["Paketli ürün gibi görünüyor — tam değerler için barkodunu okut.","Looks like a packaged product — scan its barcode for exact values.","Похоже на упакованный продукт — отсканируй штрихкод для точных значений.","Sieht nach einem verpackten Produkt aus – scanne den Barcode für genaue Werte.","يبدو أنه منتج معبّأ — امسح الباركود للحصول على القيم الدقيقة."],
+  ftPaketAlt:["Ya da aşağıdaki genel ürünlerden birini seç.","Or pick a general product below.","Или выбери общий продукт ниже.","Oder wähle unten ein allgemeines Produkt.","أو اختر منتجًا عامًا من الأسفل."],
+  ftBarkodBulundu:["Fotoğrafta barkod bulundu: {k}","Barcode found in the photo: {k}","На фото найден штрихкод: {k}","Barcode im Foto gefunden: {k}","تم العثور على باركود في الصورة: {k}"]
 });
 
 // ================= Model yükleme =================
+// 25.11: iki model. (1) ai/klip.js — TinyCLIP (MIT) sıfır-atış: fotoğraf, uygulamadaki HER yemeğin adından önceden hesaplanmış metin
+// gömmeleriyle karşılaştırılır (Türk mutfağı + paketli ürünler dahil; ambalaj sinyali de verir). (2) ai/tani.js — eski AIY food_V1;
+// puanı küçük ağırlıkla birleştirilir ve klip yüklenemez/çalışmazsa tek başına kullanılır (sessiz geri düşüş).
+// Ölçüm (173 fotoğraf, 25.11): eski top-1/3/5 %31/42/44 → birleşik %64/82/86. Klip yalnız WebGL'de kullanılır (CPU'da telefonda çok yavaş).
 let aiHazir = null, harita = null;
+const betikYukle = (src, ad) => new Promise((ok, hata) => {
+  if (window[ad]) return ok();
+  const s = document.createElement('script'); s.src = src; s.onload = () => ok(); s.onerror = () => hata(new Error(src));
+  document.head.appendChild(s);
+});
 function aiYukle(){
   if (aiHazir) return aiHazir;
-  aiHazir = new Promise((ok, hata) => {
-    if (window.YemekTani) return ok();
-    const s = document.createElement('script'); s.src = 'ai/tani.js'; s.onload = () => ok(); s.onerror = () => hata(new Error('ai/tani.js'));
-    document.head.appendChild(s);
-  }).then(() => window.YemekTani.hazirla());
+  aiHazir = (async () => {
+    const d = {klip: false, eski: false};
+    // sıra önemli: tf betikleri tek kez ve sırayla yüklensin (klip önce yükler, eski model hazır tf'i kullanır)
+    // Yeni model GPU'da ~160–190 MB tutar: belleği az telefonda (deviceMemory < 4 GB) WebView öldürülmesin diye hiç yüklenmez → eski model
+    const azBellek = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory < 4;
+    try {
+      if (azBellek) throw new Error('az bellek');
+      await betikYukle('ai/klip.js', 'YemekKlip'); await window.YemekKlip.hazirla({yalnizWebgl: true});
+      d.klip = true;
+    } catch(e){ d.klip = false; }
+    try { await betikYukle('ai/tani.js', 'YemekTani'); await window.YemekTani.hazirla(); d.eski = true; } catch(e){}
+    if (!d.klip && !d.eski) throw new Error('model yok');
+    return d;
+  })();
   aiHazir.catch(() => { aiHazir = null; });
   return aiHazir;
 }
@@ -80,10 +103,10 @@ const resimYukle = src => new Promise((ok, hata) => { const im = new Image(); im
 // bileşik yemek (tavuklu/etli pilav). Puan yalnız SIRALAMAYI etkiler; besin değeri her zaman veritabanından, kullanıcı onaylar.
 const PIRINC_ET = new Set([563, 572, 1964, 1383, 896, 1335, 1554, 1244, 471, 1450, 655, 1995, 1154]);   // pilav / pirinç / pirinçli yemekler
 const TAVUK_ET = new Set([580, 30, 491, 1477, 588, 635, 443, 983, 1562, 815, 1571, 701, 401, 399, 1531]);   // haşlama/sote/döner tavuk vb.
-function adayHesapla(tahmin, H){
-  const puan = new Map();
+// Öncelik ağırlığı: kullanıcının sık seçtiği/yediği ve Türkiye'de sık yenen yemekler yukarı (yalnız sıralama)
+function fotoOncelik(){
   const ter = (typeof tercihSayaci === 'function' ? tercihSayaci().tum : {}) || {};
-  const on = id => {
+  return id => {
     let w = 1;
     const pop = typeof POP_SIRA !== 'undefined' && POP_SIRA.has(id), v = ter[id] || 0;
     if (pop) w *= 1.3 + 0.6 * Math.max(0, 1 - POP_SIRA.get(id) / 150);
@@ -91,7 +114,30 @@ function adayHesapla(tahmin, H){
     if (!pop && !(v > 0)) w *= 0.6;   // ne Türkiye'de sık yenen ne de kullanıcının yediği (pho, sushi…) → geri planda
     return w;
   };
-  const ekle = (id, v) => { if (!yemek(id) || yemek(id).ad === id) return; puan.set(id, (puan.get(id) || 0) + v); };
+}
+const yemekVar = id => { const f = yemek(id); return f && f.ad !== '?' && f.ad !== id; };
+// Klip (sıfır-atış) + eski model birleşimi: puan = softmax(T·kosinüs) · öncelik + a · eski aday puanı (T=50, a=0,1; test setinde seçildi)
+// Döner: {liste: [{id, p}] (p: tüm puanlar içindeki pay, 0..1), guven: ilk adayın payı}
+function klipAday(k, eski){
+  const on = fotoOncelik(), T = k.sicaklik || 50, a = k.eskiAgirlik != null ? k.eskiAgirlik : 0.1, sim = k.sim, n = sim.length;
+  let mx = -1e9; for (let j = 0; j < n; j++) if (sim[j] > mx) mx = sim[j];
+  const p = new Float64Array(n); let z = 0;
+  for (let j = 0; j < n; j++){ p[j] = Math.exp(T * (sim[j] - mx)); z += p[j]; }
+  const ek = new Map((eski || []).map(x => [x.id, x.p])), puan = [];
+  let top = 0;
+  for (let j = 0; j < n; j++){
+    const id = k.ids[j]; if (!yemekVar(id)) continue;
+    const s = p[j] / z * on(id) + a * (ek.get(id) || 0); top += s;
+    puan.push([id, s]);
+  }
+  puan.sort((x, y) => y[1] - x[1]);
+  const liste = puan.slice(0, 12).map(([id, s]) => ({id, p: top ? s / top : 0}));
+  return {liste, guven: liste.length ? liste[0].p : 0};
+}
+function adayHesapla(tahmin, H){
+  const puan = new Map();
+  const on = fotoOncelik();
+  const ekle = (id, v) => { if (!yemekVar(id)) return; puan.set(id, (puan.get(id) || 0) + v); };
   tahmin.forEach(t => (H[t.i] || []).forEach((id, j) => ekle(id, t.p * (1 - 0.18 * j))));
   const pirinc = tahmin.filter(t => PIRINC_ET.has(t.i)).reduce((a, t) => a + t.p, 0), tavuk = tahmin.filter(t => TAVUK_ET.has(t.i)).reduce((a, t) => a + t.p, 0);
   if (pirinc > 0.02){ ekle('tavuklu_pilav', pirinc * 0.6 + tavuk); ekle('pirinc', pirinc * 0.4); }
@@ -125,15 +171,17 @@ async function fotoAnaliz(oi, data){
   const ogun = menuOku(aktif)[oi]; if (!ogun) return;
   ac('📷 ' + esc(T('ftAnaliz')), `<div class="ft-analiz"><img src="${data}" alt="${esc(T('ftOgunFoto'))}"><div class="ft-bekle"><span class="spin" aria-hidden="true"></span><span id="ftDurum">${T('ftHazirlaniyor')}</span></div></div>`);
   const n = acSayac;
-  let adaylar = [], guven = 0, ilk = '', kaliteNot = '';
+  let adaylar = [], guven = 0, ilk = '', kaliteNot = '', emin = false, paket = false, barkod = '';
   try {
-    await aiYukle();
+    const d = await aiYukle();
     if ($('ftDurum')) $('ftDurum').textContent = T('ftTaniniyor');
-    const [im, H] = await Promise.all([resimYukle(data), haritaYukle()]);
-    const sonuc = window.YemekTani.taniCoklu ? await window.YemekTani.taniCoklu(im, 20) : {liste: await window.YemekTani.tani(im, 20), isik: 128, net: 999};
-    adaylar = adayHesapla(sonuc.liste, H); guven = adaylar.length ? adaylar[0].p : 0; ilk = adaylar.length ? yemek(adaylar[0].id).ad : '';
+    const im = await resimYukle(data);
+    const sonuc = await fotoTani(im, d);
+    adaylar = sonuc.liste; guven = sonuc.guven; emin = sonuc.emin; paket = sonuc.paket;
+    ilk = adaylar.length ? yemek(adaylar[0].id).ad : '';
+    barkod = await fotoBarkod(im);
     // düşük güven: modelin ilk 6 adayının arkasına kullanıcının bu öğünde sık yedikleri (Lose It / MFP mantığı: kişisel geçmişle eşle)
-    if (guven < 0.12){
+    if (sonuc.dusuk){
       const var_ = new Set(adaylar.map(a => a.id)), sik = (typeof sonSecilenler === 'function' ? sonSecilenler(ogun.id) : []).filter(id => !var_.has(id) && yemek(id) && yemek(id).ad !== id).slice(0, 6);
       adaylar = adaylar.slice(0, 6).concat(sik.map(id => ({id, p: 0})), adaylar.slice(6)).slice(0, 14);
     }
@@ -151,14 +199,66 @@ async function fotoAnaliz(oi, data){
     $('ftListe').onclick = () => secimAc({mod: 'ekle', oi});
     return;
   }
-  secimAc({mod: 'ekle', oi, foto: {ids: adaylar.map(a => a.id), img: data, guven, ilk, kalite: kaliteNot}});
+  secimAc({mod: 'ekle', oi, foto: {ids: adaylar.map(a => a.id), img: data, guven, emin, ilk, kalite: kaliteNot, paket, barkod}});
+}
+// Tanıma: klip varsa klip + eski model birleşimi; klip yoksa/hata verirse eski boru hattı (önceki davranış).
+// Döner: {liste, guven, emin, dusuk, paket, isik, net}
+// birleşik puanda ilk adayın payı; 173 fotoğraflık test setinde: ≥0,20 → fotoğrafların %36'sı, bunlarda ilk aday %78 doğru.
+// Daha yüksek eşik isabeti artırmıyor; altında "Emin değilim — şunlardan biri mi?" gösterilir.
+const KLIP_EMIN = 0.20, KLIP_DUSUK = 0.12;
+async function fotoTani(im, d){
+  let eski = null, H = null;
+  if (d.eski){
+    try {
+      H = await haritaYukle();
+      eski = window.YemekTani.taniCoklu ? await window.YemekTani.taniCoklu(im, 20) : {liste: await window.YemekTani.tani(im, 20), isik: 128, net: 999};
+    } catch(e){ eski = null; }
+  }
+  const eskiAday = eski ? adayHesapla(eski.liste, H) : [];
+  if (d.klip){
+    try {
+      const k = await window.YemekKlip.tani(im);
+      const r = klipAday(k, eskiAday);
+      return {liste: r.liste, guven: r.guven, emin: r.guven >= KLIP_EMIN, dusuk: r.guven < KLIP_DUSUK, paket: k.paket >= k.esik, isik: k.isik, net: k.net};
+    } catch(e){ /* sessizce eski modele düş */ }
+  }
+  if (!eski) throw new Error('tanıma yok');
+  const g = eskiAday.length ? eskiAday[0].p : 0;
+  return {liste: eskiAday, guven: g, emin: g >= 0.18, dusuk: g < 0.12, paket: false, isik: eski.isik, net: eski.net};
+}
+// Fotoğrafta barkod görünüyorsa (tarayıcıda BarcodeDetector varsa) numarayı oku — paketli üründe tek dokunuşla arama
+async function fotoBarkod(im){
+  try {
+    if (!('BarcodeDetector' in window)) return '';
+    const b = await new BarcodeDetector({formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e']}).detect(im);
+    const k = b && b[0] && String(b[0].rawValue || '').replace(/\D/g, '');
+    return k && k.length >= 8 && k.length <= 14 && (gtinGecerli(k) || k.length === 8) ? k : '';
+  } catch(e){ return ''; }
 }
 // Seçici başlığında fotoğraf ve tahmin (p7.js listeGorunumu çağırır)
+// 25.11: düşük güvende "Tahmin: X" yerine dürüst "Emin değilim — şunlardan biri mi?"; ambalajlı ürün sinyalinde üstte barkod önerisi;
+// "Listede yok mu? Yazıp ara" arama kutusuna götürür. Düğmeler sarılır (flex-wrap), Arapça (RTL) dahil taşma olmaz.
 function fotoUstHtml(){
   const F = SE.foto; if (!F) return '';
   const kal = F.kalite ? `<small class="ft-kalite">💡 ${esc(T(F.kalite))}</small>` : '';
-  return `<div class="ft-ust"><img src="${F.img}" alt="${esc(T('ftOgunFoto'))}"><div><b>${esc(F.guven >= 0.18 ? T('ftTahmin', {y: F.ilk}) : T('ftEminDegil'))}</b><small>${esc(T('ftIpucu'))}</small>${kal}<button type="button" class="ft-yeniden" data-ftyeniden="1" style="border:0;background:none;padding:4px 0 0;color:var(--blue);font:inherit;font-weight:700;cursor:pointer">📷 ${esc(T('ftYenidenCek'))}</button></div></div>`;
+  const emin = F.emin != null ? F.emin : F.guven >= 0.18;
+  const lnk = 'border:0;background:none;padding:2px 0;color:var(--blue);font:inherit;font-weight:700;cursor:pointer;text-align:start';
+  const bk = F.barkod ? `<div style="margin-top:6px">${esc(T('ftBarkodBulundu', {k: F.barkod}))} <button type="button" class="btn solid" data-ftbarkodara="${esc(F.barkod)}" style="margin-top:4px">${esc(T('bkAra'))}</button></div>` : '';
+  const pk = F.paket || F.barkod ? `<div class="ft-paket" role="status" style="background:var(--gold-soft);border:1px solid var(--gold);border-radius:12px;padding:10px;margin-bottom:10px;overflow-wrap:anywhere">
+      <b style="display:block">📦 ${esc(T('ftPaket'))}</b>${bk}
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center"><button type="button" class="btn solid" data-ftbarkod="1">🏷️ ${esc(T('bkEkle'))}</button><small style="flex:1 1 160px;color:var(--muted)">${esc(T('ftPaketAlt'))}</small></div></div>` : '';
+  return `${pk}<div class="ft-ust"><img src="${F.img}" alt="${esc(T('ftOgunFoto'))}"><div style="min-width:0;overflow-wrap:anywhere"><b>${esc(emin ? T('ftTahmin', {y: F.ilk}) : T('ftBiriMi'))}</b><small>${esc(T('ftIpucu'))}</small>${kal}<div style="display:flex;flex-wrap:wrap;column-gap:14px;row-gap:2px;margin-top:4px"><button type="button" class="ft-yeniden" data-ftyeniden="1" style="${lnk}">📷 ${esc(T('ftYenidenCek'))}</button><button type="button" data-ftara="1" style="${lnk}">🔍 ${esc(T('ftAraYoksa'))}</button></div></div></div>`;
 }
+// Fotoğraf sonucundaki düğmeler: barkod okut (aynı öğün), fotoğraftaki barkodla ara, arama kutusuna git
+document.addEventListener('click', e => {
+  const t = e.target && e.target.closest && e.target.closest('[data-ftbarkod],[data-ftbarkodara],[data-ftara]');
+  if (!t || !SE || !SE.foto) return;
+  const oi = SE.oi != null ? SE.oi : FOTO_OI; if (oi == null) return;
+  if (t.dataset.ftara){ const a = $('ara'); if (a){ a.scrollIntoView({block: 'center'}); a.focus(); } return; }
+  const kod = t.dataset.ftbarkodara;
+  FOTO_BEKLEYEN = null; kapat();
+  setTimeout(() => kod ? barkodAra(oi, kod) : barkodIleEkle(oi), 80);
+});
 // Fotoğraftan sonra eklenen yemekler → fotoğraf o öğünün günlüğüne kaydedilir
 async function ogunFotoKaydet(oi){
   const F = FOTO_BEKLEYEN; FOTO_BEKLEYEN = null;

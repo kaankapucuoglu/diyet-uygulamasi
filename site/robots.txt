@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://diyet.maviplay.com/sitemap.xml

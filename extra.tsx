@@ -38,11 +38,9 @@ export async function fotoAl(kaynak: string): Promise<Record<string, unknown>> {
       if (!izin.granted) return { ok: false, izin: false, tekrarSor: izin.canAskAgain !== false };
       r = await ImagePicker.launchCameraAsync({ ...opt, cameraType: ImagePicker.CameraType.back });
     } else {
-      // iOS 14+ ve Android 13+ sistem seçicisi izin istemez; eski Android'de kütüphane izni gerekebilir
-      if (Platform.OS === 'android' && Number(Platform.Version) < 33) {
-        const izin = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!izin.granted) return { ok: false, izin: false, galeri: true, tekrarSor: izin.canAskAgain !== false };
-      }
+      // Sistem seçicisi (iOS PHPicker, Android fotoğraf seçici / ACTION_GET_CONTENT) depolama izni İSTEMEZ; seçilen dosyaya geçici erişim verir.
+      // 25.11: Android < 13'te requestMediaLibraryPermissionsAsync çağrılıyordu; READ_EXTERNAL_STORAGE manifestte bilerek yok
+      // (blockedPermissions) → izin her zaman "reddedildi" dönüyor, galeri hiç açılmıyor ve "Kamera izni verilmedi" yazıyordu.
       r = await ImagePicker.launchImageLibraryAsync(opt);
     }
     if (r.canceled || !r.assets || !r.assets.length) return { ok: false, iptal: true };
@@ -120,7 +118,8 @@ export async function urunAra(kod: string): Promise<Record<string, unknown>> {
 // ---------- barkod tarayıcı (tam ekran) ----------
 export type BarkodEtiket = { kapat?: string; ipucu?: string; izin?: string; izinVer?: string; fener?: string; elle?: string; ayarlar?: string };
 export function BarkodEkrani({ etiket, onSonuc }: { etiket: BarkodEtiket; onSonuc: (r: Record<string, unknown>) => void }) {
-  const [izin, izinIste] = useCameraPermissions();
+  const [izin, izinIste, izinOku] = useCameraPermissions();
+  const soruldu = useRef(false);   // izin penceresi kendiliğinden YALNIZ bir kez açılır (ikinci ret Android'de kalıcıdır)
   const [fener, setFener] = useState(false);
   const [aktif, setAktif] = useState(AppState.currentState === 'active');
   const [kameraAnahtar, setKameraAnahtar] = useState(0);
@@ -128,16 +127,20 @@ export function BarkodEkrani({ etiket, onSonuc }: { etiket: BarkodEtiket; onSonu
   const bitti = useRef(false);
   const sonOkuma = useRef<{ kod: string; n: number; t: number }>({ kod: '', n: 0, t: 0 });
   const bitir = (r: Record<string, unknown>) => { if (bitti.current) return; bitti.current = true; onSonuc(r); };
-  useEffect(() => { if (izin && !izin.granted && izin.canAskAgain) izinIste().catch(() => {}); }, [izin, izinIste]);
+  // 25.11: ilk retten sonra canAskAgain hâlâ true döndüğü için pencere hemen yeniden açılıyordu (ayrıca AppState 'active' de soruyordu)
+  // → kullanıcı bir kez "Reddet" deyince ikinci pencere çıkıyor, onu da reddedince izin kalıcı kapanıyordu.
+  useEffect(() => {
+    if (izin && !izin.granted && izin.canAskAgain && !soruldu.current) { soruldu.current = true; izinIste().catch(() => {}); }
+  }, [izin, izinIste]);
   // Arka plana inip dönünce kamera önizlemesi siyah/donuk kalıyordu (18.11): arka planda kamerayı kapat, dönüşte yeniden kur.
   // Ayarlardan izin verip dönülürse izin durumu da tazelenir. Fener sistemce kapanır → düğme durumu sıfırlanır.
   useEffect(() => {
     const sub = AppState.addEventListener('change', (s) => {
-      if (s === 'active') { setTimeout(() => { setKameraAnahtar((k) => k + 1); setAktif(true); }, 250); izinIste().catch(() => {}); }
+      if (s === 'active') { setTimeout(() => { setKameraAnahtar((k) => k + 1); setAktif(true); }, 250); izinOku().catch(() => {}); }   // yalnız durumu tazele (sorma)
       else { setAktif(false); setFener(false); }
     });
     return () => sub.remove();
-  }, [izinIste]);
+  }, [izinOku]);
   const okundu = (e: BarcodeScanningResult) => {
     if (bitti.current) return;
     const kod = barkodNormal(e.data);
@@ -214,6 +217,11 @@ export async function saglikOku(gun: number): Promise<Record<string, unknown>> {
   if (Platform.OS === 'android') {
     const HC = require('react-native-health-connect');
     const durum = await HC.getSdkStatus();
+    if (durum === HC.SdkAvailabilityStatus.SDK_UNAVAILABLE_PROVIDER_UPDATE_REQUIRED) {
+      // Android 9–13: Health Connect ayrı uygulama; yoksa/eskiyse "kaynak bulunamadı" deyip bırakıyorduk → Play sayfasını aç
+      Linking.openURL('https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata').catch(() => {});
+      return { ok: false, yok: true, guncelle: true, durum };
+    }
     if (durum !== HC.SdkAvailabilityStatus.SDK_AVAILABLE) return { ok: false, yok: true, durum };
     if (!(await HC.initialize())) return { ok: false, yok: true };
     const istek = [{ accessType: 'read', recordType: 'Steps' }, { accessType: 'read', recordType: 'SleepSession' }, { accessType: 'read', recordType: 'Weight' }];

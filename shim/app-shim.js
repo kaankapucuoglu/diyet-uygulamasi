@@ -106,17 +106,18 @@
   window.__lfDownload = function (name, content, mimeType) {
     post({ t: 'download', name: String(name || 'liferoutine.txt'), data: content == null ? '' : String(content), mime: mimeType || '' });
   };
+  function indirHata(n) { try { if (window.__lfOnDownload) window.__lfOnDownload({ ok: false, err: n }); } catch (e) {} }
   function readUrlAsBase64(url, name) {
     var x = new XMLHttpRequest();
     x.open('GET', url, true); x.responseType = 'blob';
     x.onload = function () {
-      var b = x.response; if (!b) return post({ t: 'err', m: 'indirme: boş yanıt ' + url });
+      var b = x.response; if (!b) { indirHata('bos'); return post({ t: 'err', m: 'indirme: boş yanıt ' + url }); }
       var r = new FileReader();
       r.onload = function () { var s = String(r.result || ''); post({ t: 'download', name: name, b64: s.slice(s.indexOf(',') + 1), mime: b.type || '' }); };
-      r.onerror = function () { post({ t: 'err', m: 'indirme: blob okunamadı ' + url }); };
+      r.onerror = function () { indirHata('okuma'); post({ t: 'err', m: 'indirme: blob okunamadı ' + url }); };
       r.readAsDataURL(b);
     };
-    x.onerror = function () { post({ t: 'err', m: 'indirme: istek başarısız ' + url }); };
+    x.onerror = function () { indirHata('istek'); post({ t: 'err', m: 'indirme: istek başarısız ' + url }); };
     x.send();
   }
   var EXT = /^(https?|mailto|tel|sms|whatsapp):/i;

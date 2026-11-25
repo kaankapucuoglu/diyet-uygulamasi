@@ -89,7 +89,10 @@ function tkRapor(){
   $('rpPay').onclick = async () => { const u = url || await raporLinki(R); say(); if (navigator.share) navigator.share({title: T('rpBaslik'), text: metin(), url: u}).catch(() => {}); else kopyala(metin() + '\n' + u); };
   $('rpKop').onclick = () => { if (!url){ raporLinki(R).then(u => { url = u; kopyala(u); }); return; } say(); kopyala(metin() + '\n' + url); };
   $('rpOn').onclick = () => raporGoster(R, false);
-  if ($('rpHat')) $('rpHat').onclick = () => { D.ayar.raporHat = !D.ayar.raporHat; kaydet(); raporHatirlaticiKur(); tkRapor(); };
+  if ($('rpHat')) $('rpHat').onclick = async () => {
+    if (!D.ayar.raporHat && typeof yerliBildirimIzni === 'function' && !(await yerliBildirimIzni())){ toast(T('notIzinYok'), 5200); tkRapor(); return; }   // izin yoksa açık görünmesin
+    D.ayar.raporHat = !D.ayar.raporHat; kaydet(); raporHatirlaticiKur(); tkRapor();
+  };
 }
 // Haftalık hatırlatıcı: pazar 20:00 (expo-notifications haftanın günü: 1 = pazar)
 function raporHatirlaticiKur(){
@@ -145,7 +148,7 @@ function raporGoster(R, gelen){
   document.body.classList.add('rapor-acik');
   const baslik0 = document.title; document.title = `${String(R.a || '').slice(0, 40)} ${R.d0}_${R.d1}`.trim();
   $('rapor').scrollTop = 0;
-  $('rpPdf').onclick = () => window.print();
+  if (window.__LF_NATIVE) $('rpPdf').remove(); else $('rpPdf').onclick = () => window.print();   // WebView'de yazdırma yok
   if ($('rpDanisan')) $('rpDanisan').onclick = () => danisanaKaydetSor(R);
   $('rpKapat').onclick = () => { $('rapor').remove(); document.body.classList.remove('rapor-acik'); document.title = baslik0; if (/^#r=/.test(location.hash)) raporLinkTemizle(); };
 }
@@ -166,6 +169,7 @@ function raporNormal(R){
     an: dizi(R.an).filter(x => tarih(x[0])).map(x => [x[0], num(x[1])])};
   if (Array.isArray(R.t0) && tarih(R.t0[0])) o.t0 = [R.t0[0], num(R.t0[1])];
   if (Array.isArray(R.il)) o.il = [num(R.il[0]), num(R.il[1])];
+  if (!LF_TIBBI){ o.bp = []; o.sk = []; delete o.il; }   // tıbbi bölümler kapalı: gelen bağlantıda da gösterilmez
   if (Array.isArray(R.mk)) o.mk = R.mk.map(num);
   if (Array.isArray(R.y)) o.y = dizi(R.y).map(m => [str(m[0], 60), str(m[1], 10), m[2] ? 1 : 0, dizi(m[3]).map(it => [str(it[0], 80), str(it[1], 40), ...it.slice(2, 8).map(num)])]);
   return o;

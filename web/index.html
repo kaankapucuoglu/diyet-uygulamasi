@@ -1008,8 +1008,8 @@ body.rapor-acik .toast{z-index:75}
 const KAYNAK = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 // Google Play (bireysel geliştirici hesabı): tıbbi işlevler (ilaç takibi, tansiyon / kan şekeri günlüğü, danışan sağlık kayıtları)
 // yalnız kurumsal hesapla dağıtılabilir → Android'de KAPALI; iOS'ta da KAPALI (Apple 5.1.1(ix) riski, kullanıcı kararı 20.11).
-// Yalnız web (diyet.maviplay.com, shim yok → __LF_NATIVE tanımsız) açık. (20.11.2026)
-const LF_TIBBI = !window.__LF_NATIVE;
+// 25.11.2026 (kullanıcı kararı): web'de de KAPALI → web, Android ve iOS aynı görünür.
+const LF_TIBBI = false;
 // ---------- Diller ----------
 const DILLER = [
   {k:'tr', ad:'Türkçe', bayrak:'🇹🇷', loc:'tr-TR'},
@@ -1795,6 +1795,7 @@ Object.assign(S, {
   dAra:["🍎 {ogun} vaktini aksatma! Planında: {liste} 😋|🥜 Ara öğün vakti geldi! {liste} seni bekliyor 💪|🍏 Küçük bir mola: {ogun} vakti geçti, {liste} ile enerjini tazele ✨","🍎 Don’t skip your {ogun}! On your plan: {liste} 😋|🥜 Snack time! {liste} is waiting for you 💪|🍏 Quick break: {ogun} time has passed, recharge with {liste} ✨","🍎 Не пропускай «{ogun}»! В плане: {liste} 😋|🥜 Время перекуса! {liste} ждёт тебя 💪|🍏 Небольшая пауза: время «{ogun}» прошло, подкрепись — {liste} ✨","🍎 Lass „{ogun}“ nicht ausfallen! Auf dem Plan: {liste} 😋|🥜 Snackzeit! {liste} wartet auf dich 💪|🍏 Kleine Pause: {ogun} ist vorbei, tank auf mit {liste} ✨","🍎 لا تفوّت {ogun}! في خطتك: {liste} 😋|🥜 حان وقت الوجبة الخفيفة! {liste} بانتظارك 💪|🍏 استراحة قصيرة: فات وقت {ogun}، جدّد طاقتك مع {liste} ✨"],
   dAna:["🍽 {ogun} henüz işaretlenmedi. Yedin mi? Kaydetmeyi unutma 😊|🥗 {ogun} nasıl geçti? İşaretlersen günün dengesini görürsün 💚","🍽 {ogun} isn’t ticked yet. Did you eat? Don’t forget to log it 😊|🥗 How was {ogun}? Tick it to see your day’s balance 💚","🍽 «{ogun}» ещё не отмечен. Ты поел(а)? Не забудь отметить 😊|🥗 Как прошёл «{ogun}»? Отметь, чтобы видеть баланс дня 💚","🍽 „{ogun}“ ist noch nicht abgehakt. Schon gegessen? Vergiss das Eintragen nicht 😊|🥗 Wie war „{ogun}“? Abhaken zeigt dir die Tagesbilanz 💚","🍽 لم تؤشّر على {ogun} بعد. هل أكلت؟ لا تنسَ التسجيل 😊|🥗 كيف كان {ogun}؟ سجّله لترى توازن يومك 💚"],
   dGenel:["🌿 Bir süredir kayıt yok. Öğünlerini ve suyunu işaretlemeyi unutma 💚|✨ Hedefine bir adım daha! Bugünkü öğünlerini işaretlemeye ne dersin? 😊","🌿 Nothing logged for a while. Don’t forget your meals and water 💚|✨ One more step to your goal! How about ticking today’s meals? 😊","🌿 Давно нет записей. Не забудь отметить еду и воду 💚|✨ Ещё шаг к цели! Отметим сегодняшние приёмы пищи? 😊","🌿 Eine Weile nichts eingetragen. Denk an Mahlzeiten und Wasser 💚|✨ Ein Schritt näher am Ziel! Hakst du die heutigen Mahlzeiten ab? 😊","🌿 لا تسجيلات منذ فترة. لا تنسَ وجباتك والماء 💚|✨ خطوة أخرى نحو هدفك! ما رأيك بتسجيل وجبات اليوم؟ 😊"],
+  notBodyGenel:["{ik} {ogun} vakti! 😋 Planına göz at.","{ik} Time for {ogun}! 😋 Check your plan.","{ik} Время: {ogun}! 😋 Загляни в план.","{ik} Zeit für {ogun}! 😋 Schau in deinen Plan.","{ik} حان وقت {ogun}! 😋 راجع خطتك."],
   notBody:["{ik} {ogun} vakti! 😋 Planında: {liste}","{ik} Time for {ogun}! 😋 On your plan: {liste}","{ik} Время: {ogun}! 😋 В плане: {liste}","{ik} Zeit für {ogun}! 😋 Auf deinem Plan: {liste}","{ik} حان وقت {ogun}! 😋 في خطتك: {liste}"],
   notIzinYok:["Bildirim izni verilmedi; tarayıcı/telefon ayarlarından izin verip tekrar aç.","Notification permission denied; allow it in browser/phone settings and try again.","Разрешение на уведомления не дано; включите его в настройках и попробуйте снова.","Benachrichtigungen nicht erlaubt; in den Browser-/Handy-Einstellungen erlauben und erneut aktivieren.","لم يُمنح إذن الإشعارات؛ فعّله من إعدادات المتصفح/الهاتف وأعد المحاولة."],
   notYok:["Bu tarayıcı bildirimi desteklemiyor.","This browser doesn’t support notifications.","Этот браузер не поддерживает уведомления.","Dieser Browser unterstützt keine Benachrichtigungen.","هذا المتصفح لا يدعم الإشعارات."],
@@ -7764,7 +7765,7 @@ async function tasiAc(){
   const yer = ios ? (uyg ? 'U' : 'T') : 'G';   // U: iPhone ana ekran uygulaması, T: iPhone tarayıcı, G: diğer
   if (ver){ const kod = await paketKodla(D); tasiKod = PAYLASIM_TABAN + '#t=' + kod + '&n=' + kod.length; }   // tıklamada hazır olsun (iPhone kopyalamayı yalnız dokunuş anında izin verir)
   // iPhone'da pano okuma isteği sessizce reddedilebiliyor / küçük balon gözden kaçıyor → orada yalnız kutuya yapıştırma
-  const pano = !ios && !!(navigator.clipboard && navigator.clipboard.readText);
+  const pano = !ios && !window.__LF_NATIVE && !!(navigator.clipboard && navigator.clipboard.readText);
   const gonder = ver ? `<div class="tasi-blok">
       <h4>${T('tasiVerT')}</h4><p>${esc(T('tasiVerM' + yer))}</p>
       <div class="tasi-ozet">${T('tasiOzet', {g: gunler.length})}${gunler.length ? ` · ${esc(etiket(gunler[0]))} – ${esc(etiket(gunler[gunler.length - 1]))}` : ''}</div>
@@ -7967,7 +7968,7 @@ function yenenRaporAc(Y){
   const baslik0 = document.title;
   document.title = `${String(Y.a || '').slice(0, 40)} ${Y.d}`.trim();   // PDF dosya adı
   $('rapor').scrollTop = 0;
-  $('rpPdf').onclick = () => window.print();
+  if (window.__LF_NATIVE) $('rpPdf').remove(); else $('rpPdf').onclick = () => window.print();   // WebView'de yazdırma yok
   $('rpKapat').onclick = () => {
     $('rapor').remove(); document.body.classList.remove('rapor-acik'); document.title = baslik0;
     if (/^#y=/.test(location.hash)) raporLinkTemizle();
@@ -8110,7 +8111,7 @@ function hatirlaticiYenile(zorla){
   const simdi = Date.now();
   for (const o of menu){
     const [h, m] = ogunSaati(k, o).split(':').map(Number), {title, body} = notMetin(o), id = 'ogun_' + o.id;
-    if (yerli){ try { window.__lfNotify({id, title, body, hour: h, minute: m, repeat: 'daily'}); } catch(e){} continue; }
+    if (yerli){ try { window.__lfNotify({id, title, body: T('notBodyGenel', {ik: OGUN_IKON[o.id] || '🍽', ogun: ogunAd(o)}), hour: h, minute: m, repeat: 'daily'}); } catch(e){} continue; }   // her gün yinelenir → yemek listesi yazılmaz (bayatlar)
     const z = new Date(); z.setHours(h, m, 0, 0);
     const gecikme = z.getTime() - simdi;
     if (gecikme > 0 && gecikme < 864e5) notZamanlayici.push(setTimeout(() => { bildirimGoster(title, body, id); notImza = null; hatirlaticiYenile(); }, gecikme));
@@ -8181,7 +8182,18 @@ function bildirimGoster(title, body, tag){
   else dogrudan();
 }
 // Ayarlar anahtarı: açarken izin istenir (web); yerli kabukta izni kabuk yönetir
+// Yerel kabukta bildirim izni: kabuğa sor, cevabı bekle (cevap gelmezse 60 sn sonra "bilinmiyor" = true sayılır, akış kilitlenmez)
+function yerliBildirimIzni(){
+  if (!(window.__LF_NATIVE && window.__lfNotifyPermission)) return Promise.resolve(true);
+  return new Promise(ok => {
+    const t = setTimeout(() => { window.__lfOnPermission = null; ok(true); }, 60000);
+    window.__lfOnPermission = v => { clearTimeout(t); window.__lfOnPermission = null; ok(!!v); };
+    try { window.__lfNotifyPermission(); } catch(e){ clearTimeout(t); window.__lfOnPermission = null; ok(true); }
+  });
+}
 async function hatirlaticiAyarla(acik){
+  // 25.11: yerel kabukta izin reddedilse de "Hatırlatıcı açık" deniyor, hiç bildirim gelmiyordu
+  if (acik && window.__LF_NATIVE && !(await yerliBildirimIzni())){ toast(T('notIzinYok'), 5200); return false; }
   if (acik && !window.__LF_NATIVE){
     if (!('Notification' in window)){ toast(T('notYok'), 4000); return false; }
     let izin = Notification.permission;
@@ -8980,6 +8992,8 @@ Object.assign(S, {
   tkSaglikAlA:["❤️ Health Connect'ten al","❤️ Import from Health Connect","❤️ Загрузить из Health Connect","❤️ Aus Health Connect übernehmen","❤️ استيراد من Health Connect"],
   tkSaglikNot:["Adım, uyku ve kilo yalnız okunur; cihazından çıkmaz, reklamda kullanılmaz.","Steps, sleep and weight are read only; they never leave your device and are never used for ads.","Шаги, сон и вес только считываются, не покидают устройство и не используются для рекламы.","Schritte, Schlaf und Gewicht werden nur gelesen, verlassen dein Gerät nicht und dienen nicht der Werbung.","تُقرأ الخطوات والنوم والوزن فقط؛ لا تغادر جهازك ولا تُستخدم للإعلانات."],
   tkSaglikTamam:["{a} gün adım, {u} gün uyku, {k} tartı alındı","Imported {a} days of steps, {u} of sleep, {k} weigh-ins","Загружено: шаги за {a} дн., сон за {u} дн., взвешиваний: {k}","Übernommen: {a} Tage Schritte, {u} Schlaf, {k} Wiegungen","تم استيراد خطوات {a} يوم، ونوم {u} يوم، و{k} وزن"],
+  tkSaglikGuncelle:["Health Connect kurulmalı ya da güncellenmeli; Play Store açılıyor. Kurduktan sonra tekrar dene.","Health Connect needs to be installed or updated; opening Play Store. Try again afterwards.","Нужно установить или обновить Health Connect; открываю Play Маркет. Потом попробуй снова.","Health Connect muss installiert oder aktualisiert werden; Play Store wird geöffnet. Danach erneut versuchen.","يجب تثبيت Health Connect أو تحديثه؛ جارٍ فتح متجر Play. حاول مجددًا بعد ذلك."],
+  tkSaglikHata:["Sağlık verisi okunamadı. Biraz sonra tekrar dene.","Couldn't read health data. Try again in a moment.","Не удалось прочитать данные о здоровье. Попробуй позже.","Gesundheitsdaten konnten nicht gelesen werden. Versuch es gleich noch einmal.","تعذّرت قراءة البيانات الصحية. حاول مجددًا بعد قليل."],
   tkSaglikYok:["Bu cihazda sağlık verisi kaynağı bulunamadı.","No health data source on this device.","На устройстве нет источника данных о здоровье.","Keine Gesundheitsdatenquelle auf diesem Gerät.","لا يوجد مصدر بيانات صحية على هذا الجهاز."],
   tkSaglikIzin:["İzin verilmedi. Ayarlardan izin verebilirsin.","Permission not granted. You can allow it in Settings.","Разрешение не выдано. Его можно дать в настройках.","Keine Berechtigung. Du kannst sie in den Einstellungen erteilen.","لم يُمنح الإذن. يمكنك منحه من الإعدادات."],
   tkSon14:["Son 14 gün","Last 14 days","Последние 14 дней","Letzte 14 Tage","آخر 14 يومًا"],
@@ -9246,7 +9260,7 @@ function fotoSec(kaynak){
     return new Promise(ok => {
       fotoBekleyen = r => {
         if (r && r.ok && r.data) ok(r.data);
-        else { if (r && r.izin === false) toast(T('ftIzin'), 3500); else if (r && r.hata) toast(T('ftHata'), 3000); ok(null); }
+        else { if (r && r.izin === false && !r.galeri) toast(T('ftIzin'), 3500); else if (r && (r.hata || r.izin === false)) toast(T('ftHata'), 3000); ok(null); }   // "kamera izni" metni yalnız kamerada
       };
       window.__lfPost({t: 'foto', kaynak});
     });
@@ -9539,7 +9553,7 @@ window.__lfOnSaglik = r => { const f = saglikBekleyen; saglikBekleyen = null; if
 function saglikAl(gun){
   if (!window.__lfPost) return;
   saglikBekleyen = r => {
-    if (!r.ok){ toast(T(r.yok ? 'tkSaglikYok' : 'tkSaglikIzin'), 3500); return; }
+    if (!r.ok){ toast(T(r.guncelle ? 'tkSaglikGuncelle' : r.yok ? 'tkSaglikYok' : r.hata ? 'tkSaglikHata' : 'tkSaglikIzin'), r.guncelle ? 6000 : 3500); return; }
     const A = D.aktivite || (D.aktivite = {});
     (r.adim || []).forEach(([k, v]) => { A[k] = {...(A[k] || {}), adim: v, kaynak: r.kaynak}; });
     (r.uyku || []).forEach(([k, v]) => { if (v > 0 && v <= 20) A[k] = {...(A[k] || {}), uyku: v, kaynak: r.kaynak}; });
@@ -9653,6 +9667,12 @@ window.__lfBack = function(){
     if ($('rapor') && $('rpKapat')){ $('rpKapat').click(); return true; }
     if ($('tur') && $('turGec')){ $('turGec').click(); return true; }
     if ($('overlay').classList.contains('open')){ if (geriFn) geriFn(); else kapat(); return true; }
+    // 25.11: kurulum sihirbazında geri tuşu uygulamayı kapatıyor, girilenler kayboluyordu → önceki adım; ilk adımda (profil düzenleme) kapat
+    if ($('kurulum') && !$('kurulum').hidden){
+      if (wAdim > 0){ wHata = ''; wAdim = Math.max(0, wAdim - 1); wCiz(); return true; }
+      if (D.ayar && D.ayar.kurulum){ sihirbazKapat(); return true; }
+      return false;   // ilk kurulumun ilk adımı: uygulamadan çık
+    }
     if ($('takip') && !$('takip').hidden){ takipKapat(); return true; }
     if (!$('koc').hidden){ const k = $('koc').querySelector('[data-kkapat]'); if (k) k.click(); else kocKapat(); return true; }
   } catch(e){}
@@ -9749,7 +9769,10 @@ function tkRapor(){
   $('rpPay').onclick = async () => { const u = url || await raporLinki(R); say(); if (navigator.share) navigator.share({title: T('rpBaslik'), text: metin(), url: u}).catch(() => {}); else kopyala(metin() + '\n' + u); };
   $('rpKop').onclick = () => { if (!url){ raporLinki(R).then(u => { url = u; kopyala(u); }); return; } say(); kopyala(metin() + '\n' + url); };
   $('rpOn').onclick = () => raporGoster(R, false);
-  if ($('rpHat')) $('rpHat').onclick = () => { D.ayar.raporHat = !D.ayar.raporHat; kaydet(); raporHatirlaticiKur(); tkRapor(); };
+  if ($('rpHat')) $('rpHat').onclick = async () => {
+    if (!D.ayar.raporHat && typeof yerliBildirimIzni === 'function' && !(await yerliBildirimIzni())){ toast(T('notIzinYok'), 5200); tkRapor(); return; }   // izin yoksa açık görünmesin
+    D.ayar.raporHat = !D.ayar.raporHat; kaydet(); raporHatirlaticiKur(); tkRapor();
+  };
 }
 // Haftalık hatırlatıcı: pazar 20:00 (expo-notifications haftanın günü: 1 = pazar)
 function raporHatirlaticiKur(){
@@ -9805,7 +9828,7 @@ function raporGoster(R, gelen){
   document.body.classList.add('rapor-acik');
   const baslik0 = document.title; document.title = `${String(R.a || '').slice(0, 40)} ${R.d0}_${R.d1}`.trim();
   $('rapor').scrollTop = 0;
-  $('rpPdf').onclick = () => window.print();
+  if (window.__LF_NATIVE) $('rpPdf').remove(); else $('rpPdf').onclick = () => window.print();   // WebView'de yazdırma yok
   if ($('rpDanisan')) $('rpDanisan').onclick = () => danisanaKaydetSor(R);
   $('rpKapat').onclick = () => { $('rapor').remove(); document.body.classList.remove('rapor-acik'); document.title = baslik0; if (/^#r=/.test(location.hash)) raporLinkTemizle(); };
 }
@@ -9826,6 +9849,7 @@ function raporNormal(R){
     an: dizi(R.an).filter(x => tarih(x[0])).map(x => [x[0], num(x[1])])};
   if (Array.isArray(R.t0) && tarih(R.t0[0])) o.t0 = [R.t0[0], num(R.t0[1])];
   if (Array.isArray(R.il)) o.il = [num(R.il[0]), num(R.il[1])];
+  if (!LF_TIBBI){ o.bp = []; o.sk = []; delete o.il; }   // tıbbi bölümler kapalı: gelen bağlantıda da gösterilmez
   if (Array.isArray(R.mk)) o.mk = R.mk.map(num);
   if (Array.isArray(R.y)) o.y = dizi(R.y).map(m => [str(m[0], 60), str(m[1], 10), m[2] ? 1 : 0, dizi(m[3]).map(it => [str(it[0], 80), str(it[1], 40), ...it.slice(2, 8).map(num)])]);
   return o;
@@ -9914,18 +9938,41 @@ Object.assign(S, {
   bkCeliski:["Kalori ile besin değerleri birbirini tutmuyor; paketteki değerlerle karşılaştır.","Calories and macros don't match each other; compare with the package.","Калории и БЖУ не сходятся; сверь с упаковкой.","Kalorien und Makros passen nicht zusammen; mit der Packung abgleichen.","السعرات والمغذيات لا تتطابق؛ قارنها بالعبوة."],
   ftKaranlik:["Fotoğraf karanlık — daha aydınlık bir yerde, tabağın tam üstünden çekersen tanıma iyileşir.","The photo is dark — shooting in better light, straight above the plate, improves recognition.","Фото тёмное — при лучшем освещении и съёмке сверху распознавание лучше.","Das Foto ist dunkel – bei mehr Licht und von oben fotografiert klappt die Erkennung besser.","الصورة مظلمة — التصوير في إضاءة أفضل ومن فوق الطبق مباشرة يحسّن التعرّف."],
   ftBulanik:["Fotoğraf bulanık — telefonu sabit tutup yeniden çekmeyi dene.","The photo is blurry — hold the phone steady and retake.","Фото размыто — держи телефон ровно и пересними.","Das Foto ist unscharf – halte das Telefon ruhig und fotografiere erneut.","الصورة ضبابية — ثبّت الهاتف وأعد التصوير."],
-  ftYenidenCek:["Yeniden çek","Retake","Переснять","Neu aufnehmen","إعادة التصوير"]
+  ftYenidenCek:["Yeniden çek","Retake","Переснять","Neu aufnehmen","إعادة التصوير"],
+  ftBiriMi:["Emin değilim — şunlardan biri mi?","Not sure — is it one of these?","Не уверен — это что-то из этого?","Nicht sicher – ist es eines davon?","لست متأكدًا — هل هو أحد هذه؟"],
+  ftAraYoksa:["Listede yok mu? Yazıp ara","Not listed? Search","Нет в списке? Найди","Nicht dabei? Suchen","ليس في القائمة؟ ابحث"],
+  ftPaket:["Paketli ürün gibi görünüyor — tam değerler için barkodunu okut.","Looks like a packaged product — scan its barcode for exact values.","Похоже на упакованный продукт — отсканируй штрихкод для точных значений.","Sieht nach einem verpackten Produkt aus – scanne den Barcode für genaue Werte.","يبدو أنه منتج معبّأ — امسح الباركود للحصول على القيم الدقيقة."],
+  ftPaketAlt:["Ya da aşağıdaki genel ürünlerden birini seç.","Or pick a general product below.","Или выбери общий продукт ниже.","Oder wähle unten ein allgemeines Produkt.","أو اختر منتجًا عامًا من الأسفل."],
+  ftBarkodBulundu:["Fotoğrafta barkod bulundu: {k}","Barcode found in the photo: {k}","На фото найден штрихкод: {k}","Barcode im Foto gefunden: {k}","تم العثور على باركود في الصورة: {k}"]
 });
 
 // ================= Model yükleme =================
+// 25.11: iki model. (1) ai/klip.js — TinyCLIP (MIT) sıfır-atış: fotoğraf, uygulamadaki HER yemeğin adından önceden hesaplanmış metin
+// gömmeleriyle karşılaştırılır (Türk mutfağı + paketli ürünler dahil; ambalaj sinyali de verir). (2) ai/tani.js — eski AIY food_V1;
+// puanı küçük ağırlıkla birleştirilir ve klip yüklenemez/çalışmazsa tek başına kullanılır (sessiz geri düşüş).
+// Ölçüm (173 fotoğraf, 25.11): eski top-1/3/5 %31/42/44 → birleşik %64/82/86. Klip yalnız WebGL'de kullanılır (CPU'da telefonda çok yavaş).
 let aiHazir = null, harita = null;
+const betikYukle = (src, ad) => new Promise((ok, hata) => {
+  if (window[ad]) return ok();
+  const s = document.createElement('script'); s.src = src; s.onload = () => ok(); s.onerror = () => hata(new Error(src));
+  document.head.appendChild(s);
+});
 function aiYukle(){
   if (aiHazir) return aiHazir;
-  aiHazir = new Promise((ok, hata) => {
-    if (window.YemekTani) return ok();
-    const s = document.createElement('script'); s.src = 'ai/tani.js'; s.onload = () => ok(); s.onerror = () => hata(new Error('ai/tani.js'));
-    document.head.appendChild(s);
-  }).then(() => window.YemekTani.hazirla());
+  aiHazir = (async () => {
+    const d = {klip: false, eski: false};
+    // sıra önemli: tf betikleri tek kez ve sırayla yüklensin (klip önce yükler, eski model hazır tf'i kullanır)
+    // Yeni model GPU'da ~160–190 MB tutar: belleği az telefonda (deviceMemory < 4 GB) WebView öldürülmesin diye hiç yüklenmez → eski model
+    const azBellek = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory < 4;
+    try {
+      if (azBellek) throw new Error('az bellek');
+      await betikYukle('ai/klip.js', 'YemekKlip'); await window.YemekKlip.hazirla({yalnizWebgl: true});
+      d.klip = true;
+    } catch(e){ d.klip = false; }
+    try { await betikYukle('ai/tani.js', 'YemekTani'); await window.YemekTani.hazirla(); d.eski = true; } catch(e){}
+    if (!d.klip && !d.eski) throw new Error('model yok');
+    return d;
+  })();
   aiHazir.catch(() => { aiHazir = null; });
   return aiHazir;
 }
@@ -9940,10 +9987,10 @@ const resimYukle = src => new Promise((ok, hata) => { const im = new Image(); im
 // bileşik yemek (tavuklu/etli pilav). Puan yalnız SIRALAMAYI etkiler; besin değeri her zaman veritabanından, kullanıcı onaylar.
 const PIRINC_ET = new Set([563, 572, 1964, 1383, 896, 1335, 1554, 1244, 471, 1450, 655, 1995, 1154]);   // pilav / pirinç / pirinçli yemekler
 const TAVUK_ET = new Set([580, 30, 491, 1477, 588, 635, 443, 983, 1562, 815, 1571, 701, 401, 399, 1531]);   // haşlama/sote/döner tavuk vb.
-function adayHesapla(tahmin, H){
-  const puan = new Map();
+// Öncelik ağırlığı: kullanıcının sık seçtiği/yediği ve Türkiye'de sık yenen yemekler yukarı (yalnız sıralama)
+function fotoOncelik(){
   const ter = (typeof tercihSayaci === 'function' ? tercihSayaci().tum : {}) || {};
-  const on = id => {
+  return id => {
     let w = 1;
     const pop = typeof POP_SIRA !== 'undefined' && POP_SIRA.has(id), v = ter[id] || 0;
     if (pop) w *= 1.3 + 0.6 * Math.max(0, 1 - POP_SIRA.get(id) / 150);
@@ -9951,7 +9998,30 @@ function adayHesapla(tahmin, H){
     if (!pop && !(v > 0)) w *= 0.6;   // ne Türkiye'de sık yenen ne de kullanıcının yediği (pho, sushi…) → geri planda
     return w;
   };
-  const ekle = (id, v) => { if (!yemek(id) || yemek(id).ad === id) return; puan.set(id, (puan.get(id) || 0) + v); };
+}
+const yemekVar = id => { const f = yemek(id); return f && f.ad !== '?' && f.ad !== id; };
+// Klip (sıfır-atış) + eski model birleşimi: puan = softmax(T·kosinüs) · öncelik + a · eski aday puanı (T=50, a=0,1; test setinde seçildi)
+// Döner: {liste: [{id, p}] (p: tüm puanlar içindeki pay, 0..1), guven: ilk adayın payı}
+function klipAday(k, eski){
+  const on = fotoOncelik(), T = k.sicaklik || 50, a = k.eskiAgirlik != null ? k.eskiAgirlik : 0.1, sim = k.sim, n = sim.length;
+  let mx = -1e9; for (let j = 0; j < n; j++) if (sim[j] > mx) mx = sim[j];
+  const p = new Float64Array(n); let z = 0;
+  for (let j = 0; j < n; j++){ p[j] = Math.exp(T * (sim[j] - mx)); z += p[j]; }
+  const ek = new Map((eski || []).map(x => [x.id, x.p])), puan = [];
+  let top = 0;
+  for (let j = 0; j < n; j++){
+    const id = k.ids[j]; if (!yemekVar(id)) continue;
+    const s = p[j] / z * on(id) + a * (ek.get(id) || 0); top += s;
+    puan.push([id, s]);
+  }
+  puan.sort((x, y) => y[1] - x[1]);
+  const liste = puan.slice(0, 12).map(([id, s]) => ({id, p: top ? s / top : 0}));
+  return {liste, guven: liste.length ? liste[0].p : 0};
+}
+function adayHesapla(tahmin, H){
+  const puan = new Map();
+  const on = fotoOncelik();
+  const ekle = (id, v) => { if (!yemekVar(id)) return; puan.set(id, (puan.get(id) || 0) + v); };
   tahmin.forEach(t => (H[t.i] || []).forEach((id, j) => ekle(id, t.p * (1 - 0.18 * j))));
   const pirinc = tahmin.filter(t => PIRINC_ET.has(t.i)).reduce((a, t) => a + t.p, 0), tavuk = tahmin.filter(t => TAVUK_ET.has(t.i)).reduce((a, t) => a + t.p, 0);
   if (pirinc > 0.02){ ekle('tavuklu_pilav', pirinc * 0.6 + tavuk); ekle('pirinc', pirinc * 0.4); }
@@ -9985,15 +10055,17 @@ async function fotoAnaliz(oi, data){
   const ogun = menuOku(aktif)[oi]; if (!ogun) return;
   ac('📷 ' + esc(T('ftAnaliz')), `<div class="ft-analiz"><img src="${data}" alt="${esc(T('ftOgunFoto'))}"><div class="ft-bekle"><span class="spin" aria-hidden="true"></span><span id="ftDurum">${T('ftHazirlaniyor')}</span></div></div>`);
   const n = acSayac;
-  let adaylar = [], guven = 0, ilk = '', kaliteNot = '';
+  let adaylar = [], guven = 0, ilk = '', kaliteNot = '', emin = false, paket = false, barkod = '';
   try {
-    await aiYukle();
+    const d = await aiYukle();
     if ($('ftDurum')) $('ftDurum').textContent = T('ftTaniniyor');
-    const [im, H] = await Promise.all([resimYukle(data), haritaYukle()]);
-    const sonuc = window.YemekTani.taniCoklu ? await window.YemekTani.taniCoklu(im, 20) : {liste: await window.YemekTani.tani(im, 20), isik: 128, net: 999};
-    adaylar = adayHesapla(sonuc.liste, H); guven = adaylar.length ? adaylar[0].p : 0; ilk = adaylar.length ? yemek(adaylar[0].id).ad : '';
+    const im = await resimYukle(data);
+    const sonuc = await fotoTani(im, d);
+    adaylar = sonuc.liste; guven = sonuc.guven; emin = sonuc.emin; paket = sonuc.paket;
+    ilk = adaylar.length ? yemek(adaylar[0].id).ad : '';
+    barkod = await fotoBarkod(im);
     // düşük güven: modelin ilk 6 adayının arkasına kullanıcının bu öğünde sık yedikleri (Lose It / MFP mantığı: kişisel geçmişle eşle)
-    if (guven < 0.12){
+    if (sonuc.dusuk){
       const var_ = new Set(adaylar.map(a => a.id)), sik = (typeof sonSecilenler === 'function' ? sonSecilenler(ogun.id) : []).filter(id => !var_.has(id) && yemek(id) && yemek(id).ad !== id).slice(0, 6);
       adaylar = adaylar.slice(0, 6).concat(sik.map(id => ({id, p: 0})), adaylar.slice(6)).slice(0, 14);
     }
@@ -10011,14 +10083,66 @@ async function fotoAnaliz(oi, data){
     $('ftListe').onclick = () => secimAc({mod: 'ekle', oi});
     return;
   }
-  secimAc({mod: 'ekle', oi, foto: {ids: adaylar.map(a => a.id), img: data, guven, ilk, kalite: kaliteNot}});
+  secimAc({mod: 'ekle', oi, foto: {ids: adaylar.map(a => a.id), img: data, guven, emin, ilk, kalite: kaliteNot, paket, barkod}});
+}
+// Tanıma: klip varsa klip + eski model birleşimi; klip yoksa/hata verirse eski boru hattı (önceki davranış).
+// Döner: {liste, guven, emin, dusuk, paket, isik, net}
+// birleşik puanda ilk adayın payı; 173 fotoğraflık test setinde: ≥0,20 → fotoğrafların %36'sı, bunlarda ilk aday %78 doğru.
+// Daha yüksek eşik isabeti artırmıyor; altında "Emin değilim — şunlardan biri mi?" gösterilir.
+const KLIP_EMIN = 0.20, KLIP_DUSUK = 0.12;
+async function fotoTani(im, d){
+  let eski = null, H = null;
+  if (d.eski){
+    try {
+      H = await haritaYukle();
+      eski = window.YemekTani.taniCoklu ? await window.YemekTani.taniCoklu(im, 20) : {liste: await window.YemekTani.tani(im, 20), isik: 128, net: 999};
+    } catch(e){ eski = null; }
+  }
+  const eskiAday = eski ? adayHesapla(eski.liste, H) : [];
+  if (d.klip){
+    try {
+      const k = await window.YemekKlip.tani(im);
+      const r = klipAday(k, eskiAday);
+      return {liste: r.liste, guven: r.guven, emin: r.guven >= KLIP_EMIN, dusuk: r.guven < KLIP_DUSUK, paket: k.paket >= k.esik, isik: k.isik, net: k.net};
+    } catch(e){ /* sessizce eski modele düş */ }
+  }
+  if (!eski) throw new Error('tanıma yok');
+  const g = eskiAday.length ? eskiAday[0].p : 0;
+  return {liste: eskiAday, guven: g, emin: g >= 0.18, dusuk: g < 0.12, paket: false, isik: eski.isik, net: eski.net};
+}
+// Fotoğrafta barkod görünüyorsa (tarayıcıda BarcodeDetector varsa) numarayı oku — paketli üründe tek dokunuşla arama
+async function fotoBarkod(im){
+  try {
+    if (!('BarcodeDetector' in window)) return '';
+    const b = await new BarcodeDetector({formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e']}).detect(im);
+    const k = b && b[0] && String(b[0].rawValue || '').replace(/\D/g, '');
+    return k && k.length >= 8 && k.length <= 14 && (gtinGecerli(k) || k.length === 8) ? k : '';
+  } catch(e){ return ''; }
 }
 // Seçici başlığında fotoğraf ve tahmin (p7.js listeGorunumu çağırır)
+// 25.11: düşük güvende "Tahmin: X" yerine dürüst "Emin değilim — şunlardan biri mi?"; ambalajlı ürün sinyalinde üstte barkod önerisi;
+// "Listede yok mu? Yazıp ara" arama kutusuna götürür. Düğmeler sarılır (flex-wrap), Arapça (RTL) dahil taşma olmaz.
 function fotoUstHtml(){
   const F = SE.foto; if (!F) return '';
   const kal = F.kalite ? `<small class="ft-kalite">💡 ${esc(T(F.kalite))}</small>` : '';
-  return `<div class="ft-ust"><img src="${F.img}" alt="${esc(T('ftOgunFoto'))}"><div><b>${esc(F.guven >= 0.18 ? T('ftTahmin', {y: F.ilk}) : T('ftEminDegil'))}</b><small>${esc(T('ftIpucu'))}</small>${kal}<button type="button" class="ft-yeniden" data-ftyeniden="1" style="border:0;background:none;padding:4px 0 0;color:var(--blue);font:inherit;font-weight:700;cursor:pointer">📷 ${esc(T('ftYenidenCek'))}</button></div></div>`;
+  const emin = F.emin != null ? F.emin : F.guven >= 0.18;
+  const lnk = 'border:0;background:none;padding:2px 0;color:var(--blue);font:inherit;font-weight:700;cursor:pointer;text-align:start';
+  const bk = F.barkod ? `<div style="margin-top:6px">${esc(T('ftBarkodBulundu', {k: F.barkod}))} <button type="button" class="btn solid" data-ftbarkodara="${esc(F.barkod)}" style="margin-top:4px">${esc(T('bkAra'))}</button></div>` : '';
+  const pk = F.paket || F.barkod ? `<div class="ft-paket" role="status" style="background:var(--gold-soft);border:1px solid var(--gold);border-radius:12px;padding:10px;margin-bottom:10px;overflow-wrap:anywhere">
+      <b style="display:block">📦 ${esc(T('ftPaket'))}</b>${bk}
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center"><button type="button" class="btn solid" data-ftbarkod="1">🏷️ ${esc(T('bkEkle'))}</button><small style="flex:1 1 160px;color:var(--muted)">${esc(T('ftPaketAlt'))}</small></div></div>` : '';
+  return `${pk}<div class="ft-ust"><img src="${F.img}" alt="${esc(T('ftOgunFoto'))}"><div style="min-width:0;overflow-wrap:anywhere"><b>${esc(emin ? T('ftTahmin', {y: F.ilk}) : T('ftBiriMi'))}</b><small>${esc(T('ftIpucu'))}</small>${kal}<div style="display:flex;flex-wrap:wrap;column-gap:14px;row-gap:2px;margin-top:4px"><button type="button" class="ft-yeniden" data-ftyeniden="1" style="${lnk}">📷 ${esc(T('ftYenidenCek'))}</button><button type="button" data-ftara="1" style="${lnk}">🔍 ${esc(T('ftAraYoksa'))}</button></div></div></div>`;
 }
+// Fotoğraf sonucundaki düğmeler: barkod okut (aynı öğün), fotoğraftaki barkodla ara, arama kutusuna git
+document.addEventListener('click', e => {
+  const t = e.target && e.target.closest && e.target.closest('[data-ftbarkod],[data-ftbarkodara],[data-ftara]');
+  if (!t || !SE || !SE.foto) return;
+  const oi = SE.oi != null ? SE.oi : FOTO_OI; if (oi == null) return;
+  if (t.dataset.ftara){ const a = $('ara'); if (a){ a.scrollIntoView({block: 'center'}); a.focus(); } return; }
+  const kod = t.dataset.ftbarkodara;
+  FOTO_BEKLEYEN = null; kapat();
+  setTimeout(() => kod ? barkodAra(oi, kod) : barkodIleEkle(oi), 80);
+});
 // Fotoğraftan sonra eklenen yemekler → fotoğraf o öğünün günlüğüne kaydedilir
 async function ogunFotoKaydet(oi){
   const F = FOTO_BEKLEYEN; FOTO_BEKLEYEN = null;
@@ -10295,6 +10419,7 @@ function barkodSecimeAc(oi, id, kod, uyari){
 //   et 6P/5Y, ekmek 15K/2P, sebze 6K/1P, meyve 15K, yağ 5Y). Yaklaşık değerdir; uzmanın planlaması içindir.
 Object.assign(S, {
   prMod:["Profesyonel mod","Professional mode","Профессиональный режим","Profi-Modus","الوضع الاحترافي"],
+  prModAcikA:["Diyetisyen veya antrenörsen aç: Program hazırla ve antrenman programı görünür.","Turn on if you're a dietitian or coach: shows Program builder and workout plans.","Включи, если ты диетолог или тренер: появятся конструктор программ и тренировки.","Aktiviere ihn als Ernährungsberatung oder Coach: Programmersteller und Trainingspläne erscheinen.","فعّله إذا كنت أخصائي تغذية أو مدربًا: يظهر منشئ البرامج وبرامج التمارين."],
   prModAcik:["Diyetisyen, hekim veya antrenörsen aç: Program hazırla, Danışanlarım ve antrenman programı görünür.","Turn on if you're a dietitian, doctor or coach: shows Program builder, My clients and workout plans.","Включи, если ты диетолог, врач или тренер: появятся конструктор программ, клиенты и тренировки.","Aktiviere ihn als Ernährungsberatung, Ärztin/Arzt oder Coach: Programmersteller, Klient:innen und Trainingspläne erscheinen.","فعّله إذا كنت أخصائي تغذية أو طبيبًا أو مدربًا: يظهر منشئ البرامج وعملائي وبرامج التمارين."],
   prBilgi:["Unvan ve iletişim (programda ve PDF'te görünür)","Title and contact (shown on plans and PDFs)","Звание и контакты (в программе и PDF)","Titel und Kontakt (auf Plänen und PDFs)","اللقب ووسائل التواصل (تظهر في البرنامج وملف PDF)"],
   prUnvan:["Unvan","Title","Звание","Titel","اللقب"],
@@ -10410,7 +10535,7 @@ function proBolumuEkle(){
   const alan = (k, ad, tip, ph) => `<label class="field"><span>${ad}</span><input autocomplete="off" type="${tip || 'text'}" id="pr_${k}" maxlength="${k === 'ad' || k === 'kurum' ? 60 : 40}" value="${esc(P[k] || '')}"${ph ? ` placeholder="${esc(ph)}"` : ''}></label>`;
   sb.insertAdjacentHTML('beforeend', `<div class="ayar-blok" data-ak="pro"><div class="sec">👩‍⚕️ ${T('prMod')}</div>
     <div class="saat-liste"><button class="saat-ek${acik ? ' on' : ''}" id="proTog" aria-pressed="${acik}"><span class="kutu">${acik ? '✓' : ''}</span>${T('prMod')}</button></div>
-    <div class="hint" style="margin-top:6px">${esc(T('prModAcik'))}</div>
+    <div class="hint" style="margin-top:6px">${esc(T(LF_TIBBI ? 'prModAcik' : 'prModAcikA'))}</div>
     ${acik ? `<div class="sec" style="margin-top:12px">${T('prBilgi')}</div>
       <div class="grid3">${alan('unvan', T('prUnvan'), 'text', T('prUnvanPh'))}${alan('ad', T('prAd'))}${alan('kurum', T('prKurum'))}${alan('tel', T('prTel'), 'tel')}${alan('eposta', T('prEposta'), 'email')}</div>
       <div class="pr-logo"><span class="pr-logo-kutu">${P.logo ? `<img alt="" src="${P.logo}">` : '🏷️'}</span><button class="btn" id="prLogoSec">${T('prLogoSec')}</button>${P.logo ? `<button class="btn ghost" id="prLogoKaldir">${T('prLogoKaldir')}</button>` : ''}</div>

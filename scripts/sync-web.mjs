@@ -76,7 +76,7 @@ let aiCount = 0;
 if (fs.existsSync(aiDir)) {
   for (const f of fs.readdirSync(aiDir)) {
     if (/^_/.test(f)) continue;   // test dosyaları
-    if (/\.(js|json|bin)$/i.test(f)) { cp(path.join(aiDir, f), path.join(OUT, 'ai', f)); aiCount++; }
+    if (/\.(js|json|bin|txt)$/i.test(f)) { cp(path.join(aiDir, f), path.join(OUT, 'ai', f)); aiCount++; }   // .txt: LISANS-NOTICE (MIT/Apache atıfları pakete girmeli)
   }
 }
 if (aiCount < 6) throw new Error('[sync-web] ai/ eksik (' + aiCount + ' dosya)');

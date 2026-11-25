@@ -1,0 +1,43 @@
+LifeRoutine - cihaz ici yemek tanima: ucuncu taraf bilesenler / third-party notices
+===================================================================================
+
+1) ai/klip.bin, ai/klip.json  (ai/klip.js tarafindan kullanilir)
+   Model : TinyCLIP-ViT-40M-32-Text-19M-LAION400M - yalniz goruntu kodlayicisi (vision encoder) + projeksiyon,
+           int8'e nicemlenmis (cikis sutunu basina olcek). Metin kodlayicisi pakette YOK; uygulamadaki yemek
+           adlarindan uretilen metin gommeleri (embedding) onceden hesaplanip klip.bin icine konmustur.
+   Kaynak: https://huggingface.co/wkcn/TinyCLIP-ViT-40M-32-Text-19M-LAION400M  (model karti: license: mit)
+           ONNX donusumu: https://huggingface.co/onnx-community/TinyCLIP-ViT-40M-32-Text-19M-LAION400M-ONNX (onnx/model.onnx)
+           Kod/proje: https://github.com/microsoft/Cream/tree/main/TinyCLIP  (LICENSE: MIT)
+   Makale: Wu et al., "TinyCLIP: CLIP Distillation via Affinity Mimicking and Weight Inheritance", ICCV 2023.
+   Lisans: MIT License
+
+   MIT License
+   Copyright (c) Microsoft Corporation.
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+
+2) ai/food.bin, ai/food.json, ai/harita.json (ai/tani.js)
+   Model : Google AIY Vision Classifier food_V1 (MobileNet V1) - Apache License 2.0.
+
+3) ai/tf-core.min.js, ai/tf-backend-cpu.min.js, ai/tf-backend-webgl.min.js
+   TensorFlow.js 4.22.0 - Copyright Google LLC - Apache License 2.0.
+
+Not: Modeller yalniz ADAY onerir; besin degerleri uygulamanin yemek veritabanindan gelir ve kullanici onaylar.
+Klip metin gommeleri yemek veritabaninin 25.11.2026 durumuna gore uretildi (1637 kalem); sonradan eklenen yemekler
+fotograf adaylarinda cikmaz (aramada cikar) - gommeler yeniden uretilmelidir.
