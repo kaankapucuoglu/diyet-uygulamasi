@@ -1,7 +1,7 @@
 // Google Play (bireysel geliştirici hesabı): tıbbi işlevler (ilaç takibi, tansiyon / kan şekeri günlüğü, danışan sağlık kayıtları)
 // yalnız kurumsal hesapla dağıtılabilir → Android'de KAPALI; iOS'ta da KAPALI (Apple 5.1.1(ix) riski, kullanıcı kararı 20.11).
-// Yalnız web (diyet.maviplay.com, shim yok → __LF_NATIVE tanımsız) açık. (20.11.2026)
-const LF_TIBBI = !window.__LF_NATIVE;
+// 25.11.2026 (kullanıcı kararı): web'de de KAPALI → web, Android ve iOS aynı görünür.
+const LF_TIBBI = false;
 // ---------- Diller ----------
 const DILLER = [
   {k:'tr', ad:'Türkçe', bayrak:'🇹🇷', loc:'tr-TR'},
