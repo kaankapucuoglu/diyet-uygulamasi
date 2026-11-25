@@ -14,7 +14,7 @@
 import { Platform, TurboModuleRegistry } from 'react-native';
 
 type AdsLib = typeof import('react-native-google-mobile-ads');
-type Ad = import('react-native-google-mobile-ads').RewardedAd | import('react-native-google-mobile-ads').InterstitialAd;
+type Ad = import('react-native-google-mobile-ads').RewardedAd | import('react-native-google-mobile-ads').InterstitialAd | import('react-native-google-mobile-ads').AppOpenAd;
 export type Send = (msg: Record<string, unknown>) => void;
 
 // ---- Reklam birimi kimlikleri (AdMob yayıncı pub-3896205622796453, 17.10.2026). Boş → Google'ın resmi TEST reklamları. ----
@@ -22,8 +22,9 @@ export type Send = (msg: Record<string, unknown>) => void;
 // kendi reklamına tıklamak AdMob'da geçersiz trafik sayılır.
 // LifeRoutine AdMob uygulamaları 01.11.2026: Android ~6882387869, iOS ~3011872724 (yayıncı pub-3896205622796453)
 const UNITS = {
-  android: { rewarded: 'ca-app-pub-3896205622796453/1507219364', inter: 'ca-app-pub-3896205622796453/5665956220' },
-  ios: { rewarded: 'ca-app-pub-3896205622796453/3941811019', inter: 'ca-app-pub-3896205622796453/1438489496' },
+  // 25.11.2026: banner + open (uygulama açıkken) birimleri eklendi
+  android: { rewarded: 'ca-app-pub-3896205622796453/1507219364', inter: 'ca-app-pub-3896205622796453/5665956220', open: 'ca-app-pub-3896205622796453/4053254946', banner: 'ca-app-pub-3896205622796453/2931744963' },
+  ios: { rewarded: 'ca-app-pub-3896205622796453/3941811019', inter: 'ca-app-pub-3896205622796453/1438489496', open: 'ca-app-pub-3896205622796453/1235519916', banner: 'ca-app-pub-3896205622796453/9114009933' },
 };
 // Sağlık uygulaması: reklam içeriği en çok "PG"
 const MAX_RATING = 'PG';
@@ -42,12 +43,14 @@ function loadAds(): AdsLib | null {
   return lib;
 }
 
-type Kind = 'rewarded' | 'inter';
+type Kind = 'rewarded' | 'inter' | 'open';
+const OPEN_TTL = 3.5 * 3600 * 1000;   // açılış reklamı yüklendikten 4 saat sonra geçersizleşir → 3,5 saatte yenile
 
 export function createAdsBridge(send: Send, game: (state: 'background' | 'active') => void) {
-  const slot: Record<Kind, { ad: Ad | null; loaded: boolean; loading: boolean; tries: number; timer: ReturnType<typeof setTimeout> | null; off: (() => void)[] }> = {
+  const slot: Record<Kind, { ad: Ad | null; loaded: boolean; loading: boolean; tries: number; timer: ReturnType<typeof setTimeout> | null; off: (() => void)[]; at?: number }> = {
     rewarded: { ad: null, loaded: false, loading: false, tries: 0, timer: null, off: [] },
     inter: { ad: null, loaded: false, loading: false, tries: 0, timer: null, off: [] },
+    open: { ad: null, loaded: false, loading: false, tries: 0, timer: null, off: [] },
   };
   let started: Promise<boolean> | null = null;
   let privacyForm = false; // AB: ayarlarda "Reklam gizlilik seçenekleri" gösterilmeli
@@ -56,11 +59,11 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
   let showing: { id: string; kind: Kind; earned: boolean } | null = null;
   let disposed = false;
 
-  const status = () => send({ t: 'ad:status', rewarded: slot.rewarded.loaded, inter: slot.inter.loaded && !noAds, privacy: privacyForm });
+  const status = () => send({ t: 'ad:status', rewarded: slot.rewarded.loaded, inter: slot.inter.loaded && !noAds, open: slot.open.loaded && !noAds, privacy: privacyForm });
 
   const unitId = (L: AdsLib, kind: Kind) => {
     const u = __DEV__ ? '' : (Platform.OS === 'ios' ? UNITS.ios : UNITS.android)[kind];
-    return u || (kind === 'rewarded' ? L.TestIds.REWARDED : L.TestIds.INTERSTITIAL);
+    return u || (kind === 'rewarded' ? L.TestIds.REWARDED : kind === 'open' ? L.TestIds.APP_OPEN : L.TestIds.INTERSTITIAL);
   };
 
   let lastDone: { id: string; kind: Kind; ok: boolean; at: number } | null = null;
@@ -82,7 +85,8 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
     s.off.forEach((f) => f());
     s.off = [];
     const opts = { requestNonPersonalizedAdsOnly: npa };
-    const ad: Ad = kind === 'rewarded' ? L.RewardedAd.createForAdRequest(unitId(L, kind), opts) : L.InterstitialAd.createForAdRequest(unitId(L, kind), opts);
+    const ad: Ad = kind === 'rewarded' ? L.RewardedAd.createForAdRequest(unitId(L, kind), opts)
+      : kind === 'open' ? L.AppOpenAd.createForAdRequest(unitId(L, kind), opts) : L.InterstitialAd.createForAdRequest(unitId(L, kind), opts);
     s.ad = ad;
     s.loading = true;
     type Listen = { addAdEventListener(type: string, fn: (...a: unknown[]) => void): () => void };
@@ -90,7 +94,7 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
     const loadedEv = kind === 'rewarded' ? L.RewardedAdEventType.LOADED : L.AdEventType.LOADED;
     s.off.push(
       on(loadedEv, () => {
-        s.loading = false; s.loaded = true; s.tries = 0;
+        s.loading = false; s.loaded = true; s.tries = 0; s.at = Date.now();
         status();
       })
     );
@@ -112,7 +116,7 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
       on(L.AdEventType.CLOSED, () => {
         s.loaded = false; s.ad = null;
         const close = () => {
-          finish(kind === 'inter' ? true : !!showing?.earned);
+          finish(kind === 'rewarded' ? !!showing?.earned : true);
           load(kind); // sıradaki reklam hemen hazırlanır
           status();
         };
@@ -168,6 +172,7 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
       if (!ok) { started = null; return; }
       load('rewarded');
       load('inter');
+      load('open');
     });
     return started;
   };
@@ -185,7 +190,7 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
         return;
       }
       status();
-      if (await start()) { load('rewarded'); load('inter'); }
+      if (await start()) { load('rewarded'); load('inter'); load('open'); }
       status();
     },
     setNoAds(on: unknown) {
@@ -193,11 +198,12 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
       status();
     },
     show(kind: unknown, id: unknown) {
-      const k: Kind = kind === 'inter' ? 'inter' : 'rewarded';
+      const k: Kind = kind === 'inter' ? 'inter' : kind === 'open' ? 'open' : 'rewarded';
       const rid = String(id || '');
       const s = slot[k];
       if (showing) { send({ t: 'ad:result', id: rid, kind: k, ok: false, error: 'busy' }); return; }
-      if ((k === 'inter' && noAds) || !s.loaded || !s.ad) {
+      if (k === 'open' && s.loaded && s.at && Date.now() - s.at > OPEN_TTL) { s.loaded = false; s.ad = null; }   // süresi dolmuş açılış reklamı
+      if ((k !== 'rewarded' && noAds) || !s.loaded || !s.ad) {
         send({ t: 'ad:result', id: rid, kind: k, ok: false, error: 'not-ready' });
         load(k);
         return;
@@ -210,6 +216,15 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
         status();
       });
     },
+    // Alt bant (banner): App.tsx WebView'in altında çizer. SDK + onay hazır olunca bileşen ve ayarları döner; reklamsız / modül yok → null.
+    async banner(): Promise<{ BannerAd: AdsLib['BannerAd']; size: string; unitId: string; npa: boolean } | null> {
+      const L = loadAds();
+      if (!L || noAds || disposed) return null;
+      if (!(await start())) return null;
+      if (noAds) return null;
+      const u = __DEV__ ? '' : (Platform.OS === 'ios' ? UNITS.ios : UNITS.android).banner;
+      return { BannerAd: L.BannerAd, size: L.BannerAdSize.ANCHORED_ADAPTIVE_BANNER, unitId: u || L.TestIds.ADAPTIVE_BANNER, npa };
+    },
     // ayarlar → "Reklam gizlilik seçenekleri" (yalnız AB'de gerekli)
     async privacy() {
       const L = loadAds();
@@ -218,7 +233,7 @@ export function createAdsBridge(send: Send, game: (state: 'background' | 'active
     },
     dispose() {
       disposed = true;
-      for (const k of ['rewarded', 'inter'] as Kind[]) {
+      for (const k of ['rewarded', 'inter', 'open'] as Kind[]) {
         const s = slot[k];
         if (s.timer) clearTimeout(s.timer);
         s.off.forEach((f) => f());

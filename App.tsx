@@ -9,7 +9,7 @@
 //    kabuk → web mesajları window.__lfAd / window.__lfIap (shim kuyruklar). Sistem çubukları görünür; güvenli alan (çentik, durum/gezinme çubuğu) payı yerel tarafta dolgu olarak
 //    uygulanır → WebView çubukların altına girmez, sayfadaki env(safe-area-inset-*) 0 kalır (CSS yedek değerleri geçerli).
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AppState, BackHandler, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AppState, BackHandler, Keyboard, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -217,6 +217,23 @@ function Shell() {
     (state) => js(`window.__lfApp&&window.__lfApp(${JSON.stringify(state)})`),
   ), [js]);
   useEffect(() => () => ads.dispose(), [ads]);
+  // Alt bant reklam (25.11): web {t:'ad:banner', on} ister; WebView'in ALTINDA ayrı şerit (içeriğe binmez, yanlışlıkla tıklama olmaz).
+  // Klavye açıkken ve barkod ekranında gizlenir.
+  type Bant = NonNullable<Awaited<ReturnType<typeof ads.banner>>>;
+  const [bantIstek, setBantIstek] = useState(false);
+  const [bant, setBant] = useState<Bant | null>(null);
+  const [klavye, setKlavye] = useState(false);
+  useEffect(() => {
+    let iptal = false;
+    if (!bantIstek) { setBant(null); return; }
+    ads.banner().then((b) => { if (!iptal) setBant(b); }, () => {});
+    return () => { iptal = true; };
+  }, [bantIstek, ads]);
+  useEffect(() => {
+    const a = Keyboard.addListener('keyboardDidShow', () => setKlavye(true));
+    const k = Keyboard.addListener('keyboardDidHide', () => setKlavye(false));
+    return () => { a.remove(); k.remove(); };
+  }, []);
   // Sürüm 13: öğün fotoğrafı, barkod, sağlık verisi (yalnız okuma), paylaş — extra.tsx
   // Sonuç teslimi: sayfa o an yükleniyorsa (iOS arka planda/kamera açıkken web sürecini bellek için öldürüp yeniden yükler) sonuç
   // kaybolmasın → 'ready' gelince sırayla verilir. Web tarafı bekleyen isteği yoksa kayıtlı tarama bağlamıyla devam eder (p9e.js).
@@ -328,7 +345,8 @@ function Shell() {
       case 'iap:restore': iap.restore(); break;
       // reklamlar
       case 'ad:init': ads.init(m); break;
-      case 'ad:noads': ads.setNoAds(m.on); break;
+      case 'ad:noads': ads.setNoAds(m.on); if (m.on) setBantIstek(false); break;
+      case 'ad:banner': setBantIstek(!!m.on); break;
       case 'ad:show': ads.show(m.kind, m.id); break;
       case 'ad:privacy': ads.privacy(); break;
       default: extra.handle(m);
@@ -424,6 +442,11 @@ function Shell() {
           setAttempt((a) => a + 1);
         }}
       />
+      {bant && !klavye && !barkod && !failed && (
+        <View style={styles.bant}>
+          <bant.BannerAd unitId={bant.unitId} size={bant.size} requestOptions={{ requestNonPersonalizedAdsOnly: bant.npa }} onAdFailedToLoad={() => {}} />
+        </View>
+      )}
       {barkod && (
         <BarkodEkrani etiket={barkod} onSonuc={(r) => { setBarkod(null); teslim('__lfOnBarkod', r); }} />
       )}
@@ -451,6 +474,7 @@ export default function App() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: BG },
   web: { flex: 1, backgroundColor: BG },
+  bant: { alignItems: 'center', backgroundColor: BG },
   center: { flex: 1, backgroundColor: BG, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
   overlay: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(243,246,251,0.97)', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
   title: { color: '#172338', fontSize: 26, fontWeight: '800', marginBottom: 16, textAlign: 'center' },

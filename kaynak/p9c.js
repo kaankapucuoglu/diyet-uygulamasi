@@ -30,9 +30,11 @@ Object.assign(S, {
 
 const NOADS_URUN = 'com.maviplay.liferoutine.noads';
 const REKLAM_ANAHTAR = 'lf_reklam';
-const REKLAM = {ilkSure: 10 * 60000, aralik: 180000, gunluk: 8, yemekHer: 5, gunHer: 4, gecikme: 1000, fiyat: '99,99 TL'};
+// 25.11 (vc18): reklam sıklığı artırıldı — ilk 5 dk reklamsız (10'du), günde 12 (8'di), her 3. yemek/gün değişimi (5/4'tü);
+// yeni: alt bant (banner), arka plandan dönüşte açılış reklamı (en az 60 sn arka planda kaldıysa), Takip kapanınca, foto/barkodla eklemede.
+const REKLAM = {ilkSure: 5 * 60000, aralik: 180000, gunluk: 12, yemekHer: 3, gunHer: 3, gecikme: 1000, arkaPlan: 60000, fiyat: '99,99 TL'};
 // magaza: null = henüz bilinmiyor, true/false = iap:status · aliniyor/geriYukleniyor: düğme kilidi · sonNoAds: kabuğa en son bildirilen
-const Reklam = {inter: false, privacy: false, magaza: null, fiyat: '', aliniyor: false, geriYukleniyor: false, bekliyor: false, sonNoAds: null, sonSupur: 0};
+const Reklam = {inter: false, acilis: false, bant: null, arka: 0, privacy: false, magaza: null, fiyat: '', aliniyor: false, geriYukleniyor: false, bekliyor: false, sonNoAds: null, sonSupur: 0};
 const yerelKabuk = () => !!window.__LF_NATIVE;
 function lfGonder(o){ try { if (window.__lfPost) window.__lfPost(o); } catch(e){} }   // shim yoksa no-op
 function rdOku(){ try { const v = JSON.parse(localStorage.getItem(REKLAM_ANAHTAR) || 'null'); return v && typeof v === 'object' ? v : {}; } catch(e){ return {}; } }
@@ -50,8 +52,8 @@ function ilkAcilis(){
   return Math.max(R.ilk, (D && D.ayar && D.ayar.ilkAcilis) || 0);
 }
 // Şu an geçiş reklamı gösterilebilir mi? (tüm sınırlar burada; tetik anında değil, gösterim anında denetlenir)
-function reklamUygun(){
-  if (!yerelKabuk() || reklamsizMi() || !Reklam.inter || document.visibilityState === 'hidden') return false;
+function reklamUygun(tur){
+  if (!yerelKabuk() || reklamsizMi() || !(tur === 'open' ? Reklam.acilis : Reklam.inter) || document.visibilityState === 'hidden') return false;
   if (!D || !D.ayar || !D.ayar.kurulum || !$('kurulum').hidden || document.body.classList.contains('wiz-acik')) return false;   // kurulum sihirbazı (W)
   if ($('overlay').classList.contains('open') && $('sheet').querySelector('#onayEvet, #impEvet, #rKvkk, #rSaglik')) return false;   // onay / rıza penceresi
   if ($('tur') || $('rapor') || ($('koc') && !$('koc').hidden)) return false;   // kullanım turu, rapor belgesi, başkası için program ekranı
@@ -61,19 +63,37 @@ function reklamUygun(){
   if (R.gun === bugunK() && (R.n || 0) >= REKLAM.gunluk) return false;
   return true;
 }
-function reklamGoster(){
-  if (!reklamUygun()) return;
+function reklamGoster(tur){
+  tur = tur === 'open' ? 'open' : 'inter';
+  if (!reklamUygun(tur)) return;
   const R = rdOku(), bugun = bugunK();
   if (R.gun !== bugun){ R.gun = bugun; R.n = 0; }
   R.n = (R.n || 0) + 1; R.son = Date.now();
   const id = 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   rdYaz(R);
-  lfGonder({t: 'ad:show', kind: 'inter', id});
+  lfGonder({t: 'ad:show', kind: tur, id});
+}
+// Alt bant (banner): kabuk WebView'in ALTINDA ayrı bir şeritte gösterir (içeriğin üstüne binmez). Yalnız kurulum bittiyse ve reklamsız değilse.
+function bantGuncelle(){
+  if (!yerelKabuk()) return;
+  const on = !reklamsizMi() && !!(D && D.ayar && D.ayar.kurulum) && !!$('kurulum') && $('kurulum').hidden && !$('tur');
+  if (Reklam.bant === on) return;
+  Reklam.bant = on; lfGonder({t: 'ad:banner', on});
+}
+// Açılış reklamı: uygulama arka plandan dönünce. Kamera/galeri/barkod/satın alma/paylaşım dönüşünde ve açık pencere varken GÖSTERİLMEZ.
+function acilisDene(){
+  const sure = Reklam.arka ? Date.now() - Reklam.arka : 0; Reklam.arka = 0;
+  if (sure < REKLAM.arkaPlan) return;
+  let mesgul = false;
+  try { mesgul = !!(fotoBekleyen || barkodBekleyen || saglikBekleyen || Reklam.aliniyor || Reklam.geriYukleniyor || sessionStorage.getItem('lf_tarama') || localStorage.getItem('lf_tarama')); } catch(e){ mesgul = true; }
+  if (mesgul || $('overlay').classList.contains('open') || ($('takip') && !$('takip').hidden) || $('gorselTam')) return;
+  setTimeout(() => reklamGoster('open'), 400);
 }
 // Tetik: 'program' | 'yemek' (her 5.) | 'gun' (her 4.) | 'paylas' | 'rapor'. Gösterim kısa gecikmeyle (ekran çizilsin, bildirim görünsün).
 let reklamSessiz = 0, reklamZaman = null;
 function reklamTetik(neden){
   if (!yerelKabuk() || reklamSessiz || reklamsizMi()) return;
+  bantGuncelle();
   const her = {yemek: REKLAM.yemekHer, gun: REKLAM.gunHer}[neden];
   if (her){
     const R = rdOku(), s = R.s && typeof R.s === 'object' ? R.s : (R.s = {});
@@ -92,6 +112,7 @@ function reklamsizBildir(ilk){
   if (Reklam.sonNoAds === on) return;
   Reklam.sonNoAds = on;
   lfGonder(ilk ? {t: 'ad:init', noAds: on} : {t: 'ad:noads', on});
+  bantGuncelle();
 }
 
 // ---------- Kabuk → web ----------
@@ -99,7 +120,7 @@ window.__lfAd = function(m){
   if (!m || typeof m !== 'object') return;
   if (m.t === 'ad:status'){
     const p0 = Reklam.privacy;
-    Reklam.inter = !!m.inter; Reklam.privacy = !!m.privacy;
+    Reklam.inter = !!m.inter; Reklam.acilis = !!m.open; Reklam.privacy = !!m.privacy;
     if (p0 !== Reklam.privacy) reklamBolumuCiz();
     return;
   }
@@ -211,7 +232,8 @@ if (yerelKabuk()){
 
   // 2) Öğüne yemek ekleme ve "Yedim" işareti (ikisi tek sayaç, her 5.'de)
   const ogeEkleR0 = ogeEkle;
-  ogeEkle = function(){ const r = ogeEkleR0.apply(this, arguments); reklamTetik('yemek'); return r; };
+  // fotoğraf ya da barkodla ekleme: sayaç beklemeden (doğal geçiş anı); elle ekleme her 3.'de
+  ogeEkle = function(){ let tarama = false; try { tarama = !!(SE && (SE.barkod || SE.foto)); } catch(e){} const r = ogeEkleR0.apply(this, arguments); reklamTetik(tarama ? 'tarama' : 'yemek'); return r; };
   const yedimDegisR0 = yedimDegis;
   yedimDegis = function(oi){
     const r = yedimDegisR0.apply(this, arguments);
@@ -236,6 +258,12 @@ if (yerelKabuk()){
     if (pay) reklamTetik('paylas');
     return r;
   };
+  // 6) Takip ekranı kapanınca
+  const takipKapatR0 = takipKapat;
+  takipKapat = function(){ const r = takipKapatR0.apply(this, arguments); reklamTetik('takip'); return r; };
+  // 7) Arka plandan dönüş → açılış reklamı; alt bant durumu düzenli tazelenir (kurulum bitişi, tur, reklamsız)
+  document.addEventListener('lf:appstate', e => { if (e.detail === 'background'){ if (!Reklam.arka) Reklam.arka = Date.now(); } else if (e.detail === 'active') acilisDene(); });
+  setInterval(bantGuncelle, 3000); setTimeout(bantGuncelle, 1200);
   // 5) Rapor (belge görünümü) kapanınca — #rpKapat kendi onclick'iyle raporu kaldırır, bu dinleyici ondan sonra çalışır
   document.addEventListener('click', e => { if (e.target.closest && e.target.closest('#rpKapat')) reklamTetik('rapor'); });
 
