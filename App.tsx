@@ -442,7 +442,7 @@ function Shell() {
           setAttempt((a) => a + 1);
         }}
       />
-      {bant && !klavye && !barkod && !failed && (
+      {bant && !klavye && !failed && (
         <View style={styles.bant}>
           <bant.BannerAd unitId={bant.unitId} size={bant.size} requestOptions={{ requestNonPersonalizedAdsOnly: bant.npa }} onAdFailedToLoad={() => {}} />
         </View>

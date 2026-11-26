@@ -4,7 +4,7 @@
 // Web → kabuk: {t:'foto', kaynak:'kamera'|'galeri'} · {t:'barkod', l:{...}} · {t:'saglik', gun} · {t:'paylas', text, url, title}
 // Kabuk → web: __lfOnFoto({ok, data?, iptal?, hata?}) · __lfOnBarkod({ok, kod?, iptal?}) · __lfOnSaglik({ok, adim, uyku, kilo, hata?}) · __lfOnPaylas({ok})
 import { useEffect, useRef, useState } from 'react';
-import { AppState, Linking, Platform, Pressable, Share, StyleSheet, Text, View } from 'react-native';
+import { AppState, Linking, Modal, Platform, Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { CameraView, useCameraPermissions, type BarcodeScanningResult } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -126,7 +126,11 @@ export function BarkodEkrani({ etiket, onSonuc }: { etiket: BarkodEtiket; onSonu
   const [okunan, setOkunan] = useState<string | null>(null);
   const bitti = useRef(false);
   const sonOkuma = useRef<{ kod: string; n: number; t: number }>({ kod: '', n: 0, t: 0 });
-  const bitir = (r: Record<string, unknown>) => { if (bitti.current) return; bitti.current = true; onSonuc(r); };
+  // 26.11 (Android): ekran kapanınca kameranın önizleme yüzeyi (SurfaceView) ana pencerede kalıyor, üstte ~4:3 siyah bir alan
+  // olarak görünüyordu. İki önlem: (1) ekran AYRI pencerede (Modal) açılır — pencere yok olunca yüzeyi de gider;
+  // (2) kapanırken ÖNCE kamera durdurulup önizleme kaldırılır, sonuç kısa bir gecikmeyle bildirilir.
+  const teslimEt = (r: Record<string, unknown>) => { setAktif(false); setFener(false); setTimeout(() => onSonuc(r), 160); };
+  const bitir = (r: Record<string, unknown>) => { if (bitti.current) return; bitti.current = true; teslimEt(r); };
   // 25.11: ilk retten sonra canAskAgain hâlâ true döndüğü için pencere hemen yeniden açılıyordu (ayrıca AppState 'active' de soruyordu)
   // → kullanıcı bir kez "Reddet" deyince ikinci pencere çıkıyor, onu da reddedince izin kalıcı kapanıyordu.
   useEffect(() => {
@@ -136,7 +140,7 @@ export function BarkodEkrani({ etiket, onSonuc }: { etiket: BarkodEtiket; onSonu
   // Ayarlardan izin verip dönülürse izin durumu da tazelenir. Fener sistemce kapanır → düğme durumu sıfırlanır.
   useEffect(() => {
     const sub = AppState.addEventListener('change', (s) => {
-      if (s === 'active') { setTimeout(() => { setKameraAnahtar((k) => k + 1); setAktif(true); }, 250); izinOku().catch(() => {}); }   // yalnız durumu tazele (sorma)
+      if (s === 'active') { setTimeout(() => { if (bitti.current) return; setKameraAnahtar((k) => k + 1); setAktif(true); }, 250); izinOku().catch(() => {}); }   // yalnız durumu tazele (sorma)
       else { setAktif(false); setFener(false); }
     });
     return () => sub.remove();
@@ -153,10 +157,12 @@ export function BarkodEkrani({ etiket, onSonuc }: { etiket: BarkodEtiket; onSonu
     bitti.current = true;
     setOkunan(kod);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-    setTimeout(() => onSonuc({ ok: true, kod }), 350);   // okunan numara bir an görünür (kullanıcı neyin okunduğunu görür)
+    setTimeout(() => teslimEt({ ok: true, kod }), 350);   // okunan numara bir an görünür (kullanıcı neyin okunduğunu görür)
   };
   const izinVar = !!(izin && izin.granted);
   return (
+    <Modal visible transparent={false} animationType="none" statusBarTranslucent navigationBarTranslucent hardwareAccelerated
+      onRequestClose={() => bitir({ ok: false, iptal: true })}>
     <View style={st.kaplama}>
       {izinVar && aktif ? (
         <CameraView key={kameraAnahtar} style={StyleSheet.absoluteFill} facing="back" enableTorch={fener} active={aktif}
@@ -185,6 +191,7 @@ export function BarkodEkrani({ etiket, onSonuc }: { etiket: BarkodEtiket; onSonu
         </View>
       </View>
     </View>
+    </Modal>
   );
 }
 
@@ -289,11 +296,11 @@ export function createExtraBridge(call: Call, barkodAc: (etiket: BarkodEtiket) =
 }
 
 const st = StyleSheet.create({
-  kaplama: { ...StyleSheet.absoluteFill, backgroundColor: '#000', zIndex: 50 },
+  kaplama: { flex: 1, backgroundColor: '#000' },   // Modal içinde tam ekran
   orta: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 28 },
   metin: { color: '#fff', fontSize: 17, textAlign: 'center', lineHeight: 24, marginBottom: 18 },
   cerceve: { position: 'absolute', left: '12%', right: '12%', top: '34%', height: '18%', borderWidth: 3, borderColor: '#16a36b', borderRadius: 16 },
-  alt: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, paddingBottom: 28, paddingTop: 16, backgroundColor: 'rgba(0,0,0,0.55)' },
+  alt: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, paddingBottom: 44, paddingTop: 16, backgroundColor: 'rgba(0,0,0,0.55)' },
   ipucu: { color: '#fff', fontSize: 15, textAlign: 'center', marginBottom: 14, lineHeight: 21 },
   satir: { flexDirection: 'row', justifyContent: 'center', gap: 10, flexWrap: 'wrap' },
   dug: { backgroundColor: '#16a36b', paddingVertical: 13, paddingHorizontal: 16, borderRadius: 14, minWidth: 96, flexShrink: 1, alignItems: 'center' },
