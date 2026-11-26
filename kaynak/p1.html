@@ -212,6 +212,18 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .past-head .paylas-btn .mi:only-child,.past-head .paylas-btn .lbl[hidden]{margin:0}
 .kart-bas{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .kart-bas h3{margin:0;flex:1;min-width:0}
+.card.bilgili{position:relative}
+.bilgi-btn{position:absolute;top:6px;inset-inline-end:6px;width:34px;height:34px;border-radius:50%;background:none;border:0;padding:0;color:var(--blue);display:grid;place-items:center;z-index:1}
+.bilgi-btn:active{background:var(--blue-soft)}
+.bilgi-btn svg{display:block}
+.card.bilgili > .kart-bas,.card.bilgili > .past-head{padding-inline-end:32px}
+@media (max-width:440px){ .past-card.bilgili > .past-head > .paylas-btn{order:1} .past-card.bilgili > .past-head > .tag,.past-card.bilgili > .past-head > :not(h3):not(.paylas-btn){order:2} }
+.hb-satir{padding:10px 0;border-bottom:1px solid var(--line)}
+.hb-satir:last-of-type{border-bottom:0}
+.hb-ust{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.hb-ust b{font-size:15px}
+.hb-ust span{font-weight:700;color:var(--blue);white-space:nowrap}
+.hb-satir p{margin:4px 0 0;font-size:13.5px;line-height:1.45;color:var(--muted)}
 .paylas-btn{min-height:32px;padding:0 12px;border-radius:99px;background:var(--blue-soft);color:var(--blue);font-weight:700;font-size:13px;white-space:nowrap;flex-shrink:0;margin-inline-start:auto}
 /* Paylaşılan gün: belge (A4) görünümü */
 .rapor{position:fixed;inset:0;z-index:60;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#e8ecf2;padding:12px 12px 32px}

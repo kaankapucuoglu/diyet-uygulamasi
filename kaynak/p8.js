@@ -1,11 +1,21 @@
 // ---------- Kurulum sihirbazı ----------
 let W = null, wAdim = 0, wHata = '';
 const HEDEFLER = [['ver','🔥'],['sekil','🏋️'],['koru','⚖️'],['kas','💪'],['al','📈']];
+// Çoklu hedefin açıklama anahtarı (gc_…): seçimlerin hesaba etkisini tek cümleyle söyler
+function hedefBirlesim(p){
+  const l = hedefListe(p), v = k => l.includes(k);
+  if (v('ver') && v('kas')) return 'verkas';
+  if (v('ver') && v('sekil')) return 'versekil';
+  if (v('al') && v('kas')) return 'alkas';
+  if (v('koru')) return 'korukas';
+  return 'sekilkas';
+}
 const odakAd = k => T(k === 'seker' ? 'g_seker' : 'o_' + k);
 const wAdimlar = () => ['dil','ad', ...(W.cins === 'k' ? ['hamile'] : []), 'olcu','hedef','aktivite','spor','takviye',
   ...(!W.hamile && (W.hedef === 'ver' || W.hedef === 'al') ? ['kilo'] : []), 'tercih','alerji','saat','ozet'];
 function sihirbazAc(baslangic = 0){
   W = {...kopya(D.profil), dil: D.ayar.dil || 'tr', alerjiAra: ''};
+  hedefYaz(W, hedefListe(W));
   // Saatler: yeni kullanıcıda 07:00 / 12:00 / 19:00, ara öğünler bunlara göre
   const st = saatSeti(bugunK());
   W.saatler = D.ayar.kurulum ? {...st} : {kahvalti:'07:00', ogle:'12:00', aksam:'19:00'};
@@ -67,10 +77,11 @@ function wCiz(){
     govde = wStepper('yas', 'age', 1) + wStepper('boy', 'height', 1) + wStepper('kilo', 'weight', 0.5) + wStepper('hedefKilo', 'targetW', 0.5)
       + `<div class="wmsg info" id="wVki">${T('bmi')}: <b>${sayi(b)}</b> · ${T(vkiSinif(b))}</div>`;
   } else if (ad === 'hedef'){
-    baslik = T('wGoalT'); alt = T('wGoalS');
+    baslik = T('wGoalT'); alt = T('wGoalS2');
     const zayif = b < 18.5;
     govde = (W.hamile ? `<div class="wmsg info" style="margin:0 0 12px">${esc(T('hamileNot'))}</div>` : '')
-      + `<div class="opts">${HEDEFLER.map(([k, ic]) => wOpt('whedef', k, W.hedef === k, ic, T('g_' + k), T('gd_' + k), (zayif || W.hamile) && (k === 'ver' || k === 'sekil'))).join('')}</div>`
+      + `<div class="opts coklu">${HEDEFLER.map(([k, ic]) => wOpt('whedef', k, hedefListe(W).includes(k), ic, T('g_' + k), T('gd_' + k), (zayif || W.hamile) && (k === 'ver' || k === 'sekil'))).join('')}</div>`
+      + (hedefListe(W).length > 1 ? `<div class="wmsg info">${esc(T('wGoalCoklu', {l: hedefAd(W)}))} ${esc(T('gc_' + hedefBirlesim(W)))}</div>` : '')
       + (zayif ? `<div class="wmsg warn">${T('warnLow')}</div>` : '') + (W.yas < 18 ? `<div class="wmsg warn">${T('warn18')}</div>` : '')
       + `<div class="wsec">${T('wOdakT')}</div><div class="hint" style="margin:-2px 0 8px">${T('wOdakS')}</div>`
       + `<div class="opts">${ODAKLAR.map(([k, ic]) => wOpt('wodak', k, (W.odaklar || []).includes(k), ic, odakAd(k), T('od_' + k))).join('')}</div>`;
@@ -126,7 +137,7 @@ function wCiz(){
         ${kut(T('fiber'), h.lif, T('g'))}${kut('💧 ' + T('water'), litre(h.su), T('L'), ' water')}
         ${kut(T('bmi'), sayi(h.vki), T(vkiSinif(h.vki)))}${kut(T('bmr'), h.bmr, T('kcal'))}${kut(T('tdee'), h.tdee, T('kcal'))}
       </div>
-      <div class="wmsg info">${T('goalLbl')}: <b>${T('g_' + W.hedef)}</b> · ${T('a' + W.aktivite)}${h.hafta ? ' · ' + T('weeks', {n: h.hafta}) : ''}</div>
+      <div class="wmsg info">${T('goalLbl')}: <b>${esc(hedefAd(W))}</b> · ${T('a' + W.aktivite)}${h.hafta ? ' · ' + T('weeks', {n: h.hafta}) : ''}</div>
       ${(W.odaklar || []).map(k => `<div class="wmsg info"><b>${ODAKLAR.find(o => o[0] === k)[1]} ${odakAd(k)}:</b> ${T('od_' + k)}</div>`).join('')}
       ${W.hamile ? `<div class="wmsg info"><b>🤰 ${T('gHamile', {t: W.trimester || 1})}:</b> ${esc(T('hamileNot'))}</div>` : ''}
       <div class="wmsg info"><b>🏋️ ${esc(sporOzet(W.spor))}</b>${h.sporEk ? ' · ' + esc(T('sporEkNot', {g: W.spor.gun >= 5 ? '5+' : '3–4', n: Math.round(h.sporEk * 100 / PAL[(W.aktivite || 2) - 1])})) : ''}${W.takviyeVar === 'var' && W.takviye.length ? `<br>💊 ${T('takLbl')}: ${W.takviye.map(k => esc(T('tk_' + k))).join(', ')}` : ''}</div>
@@ -176,7 +187,7 @@ function wSureYaz(){
 function wDogrula(ad){
   if (ad === 'ad' && (!W.ad.trim() || !W.cins)) return T('errName');
   if (ad === 'olcu' && !(W.yas >= 14 && W.yas <= 100 && W.boy >= 120 && W.boy <= 230 && W.kilo >= 30 && W.kilo <= 300)) return T('errBody');
-  if (ad === 'hedef' && (!W.hedef || (vki(W) < 18.5 && (W.hedef === 'ver' || W.hedef === 'sekil')))) return W.hedef ? T('warnLow') : T('errGoal');
+  if (ad === 'hedef' && (!W.hedef || (vki(W) < 18.5 && hedefListe(W).some(k => k === 'ver' || k === 'sekil')))) return W.hedef ? T('warnLow') : T('errGoal');
   if (ad === 'alerji' && !W.alerjiVar) return T('errGoal');
   if (ad === 'saat'){
     const s = W.saatler;
@@ -232,7 +243,7 @@ $('kurulum').addEventListener('click', e => {
   }
   if (ds.whamile){
     W.hamile = ds.whamile === '1';
-    if (W.hamile && (W.hedef === 'ver' || W.hedef === 'sekil')) W.hedef = 'koru';   // hamilelikte kilo verme yok
+    if (W.hamile && hedefListe(W).some(k => k === 'ver' || k === 'sekil')) hedefYaz(W, ['koru']);   // hamilelikte kilo verme yok
     wCiz(); return;
   }
   if (ds.wtri){ W.trimester = +ds.wtri; wCiz(); return; }
@@ -248,11 +259,13 @@ $('kurulum').addEventListener('click', e => {
     W.alerjiler = [...s]; wHata = ''; alListeCiz(); return;
   }
   if (ds.whedef){
-    W.hedef = ds.whedef; wHata = '';
+    // Çoklu seçim: dokunulan hedef eklenir/çıkar; onunla çelişen (kilo vermek ↔ korumak ↔ almak, sıkılaşmak ↔ kilo almak) kendiliğinden kalkar
+    hedefYaz(W, hedefSec(hedefListe(W), ds.whedef)); wHata = '';
+    const yon = kiloYonu(W);
     if (W.hedef === 'ver' && !(W.hedefKilo < W.kilo)) W.hedefKilo = Math.round(Math.max(W.kilo - 5, 18.5 * Math.pow(W.boy / 100, 2)));
     if (W.hedef === 'al' && !(W.hedefKilo > W.kilo)) W.hedefKilo = Math.round(W.kilo + 4);
-    if (W.hedef === 'kas' && !(W.hedefKilo >= W.kilo)) W.hedefKilo = Math.round(W.kilo + 3);   // kas kazanırken hedef kilo düşmez
-    if (W.hedef === 'koru') W.hedefKilo = W.kilo;
+    if (W.hedef === 'kas' && !(W.hedefKilo >= W.kilo)) W.hedefKilo = Math.round(W.kilo + 3);   // yalnız kas kazanırken hedef kilo düşmez
+    if (yon === 0 && W.hedef) W.hedefKilo = W.kilo;   // koruma ya da sıkılaşma + kas: kilo sabit
     wCiz(); return;
   }
   if (ds.wodak){ const o = new Set(W.odaklar || []); o.has(ds.wodak) ? o.delete(ds.wodak) : o.add(ds.wodak); W.odaklar = [...o]; wCiz(); return; }
@@ -313,7 +326,13 @@ function baslat2(){
     kaydet();
   }
   // Plan üretici güncellendi (porsiyonlar, ara öğün, akşam içeceği): kendi planı olanın şablonu yenilenir; diyetisyen programı ve elle düzenlenmiş günler korunur
-  if (!D.program && (D.planSurum || 0) < PLAN_SURUM){ D.planlar = planOlustur(D.profil); D.planSurum = PLAN_SURUM; kaydet(); }
+  if (!D.program && (D.planSurum || 0) < PLAN_SURUM){
+    // Sürüm 3 (26.11): hedef hesabı da düzeldi (protein hedef kiloya göre, şeker tabanı, hamilelik proteini). Hedeflerine elle dokunmamış
+    // kullanıcının (kalori ve yağ uygulamanın hesabıyla aynı) hedefleri yeniden hesaplanır; elle değiştirilmiş hedefler korunur.
+    const P = D.profil, h = P.hedef ? hedefHesapla(P) : null;
+    if ((D.planSurum || 0) < 3 && h && !P.elleKcal && P.kcal === h.kcal && P.yag === h.yag) hedefleriYenile();
+    D.planlar = planOlustur(D.profil); D.planSurum = PLAN_SURUM; kaydet();
+  }
   // Telefon uygulamasında öğün/su hatırlatıcıları varsayılan açık (kullanıcı kapattıysa dokunulmaz)
   if (window.__LF_NATIVE && D.ayar.hatirlatici === undefined){ D.ayar.hatirlatici = true; kaydet(); }
   ciz();

@@ -411,7 +411,7 @@ YEMEK_EK.push(
   ['antep_katmeri','tatli',420,9,42,24,15,2,1,'adet:150','dy','','antep katmeri fıstıklı kaymaklı gaziantep','Antep katmeri (fıstıklı, kaymaklı)','Gaziantep katmer (pistachio & clotted cream)','Антепский катмер с фисташками','Antep-Katmer (Pistazie & Kaymak)','قطمر عنتاب بالفستق والقشطة'],
   ['lor_tatlisi','tatli',299,6,45,10.5,30,0.3,1,'adet:60','de','','lor tatlısı şerbetli','Lor tatlısı','Lor cheese syrup cake','Десерт из творога лор','Lor-Käse-Sirupkuchen','حلوى جبن اللور'],
   ['su_muhallebisi','tatli',92,0.3,22,0.3,14,0,150,'','','','su muhallebisi gül suyu','Su muhallebisi','Water pudding (su muhallebisi)','Водный мухаллеби','Wasserpudding (Su Muhallebisi)','مهلبية الماء'],
-  ['pismaniye','tatli',528,5,73,24,55,0.8,30,'','dy','','pişmaniye kocaeli','Pişmaniye','Pişmaniye (Turkish cotton candy)','Пишмание','Pişmaniye','بشمانية'],
+  ['pismaniye','tatli',508,5,68,24,55,0.8,30,'','dy','','pişmaniye kocaeli','Pişmaniye','Pişmaniye (Turkish cotton candy)','Пишмание','Pişmaniye','بشمانية'],
   ['incir_tatlisi','tatli',286,3,55,6,48,4,1,'adet:60','','','incir tatlısı cevizli kuru incir','İncir tatlısı (cevizli)','Fig dessert with walnuts','Десерт из инжира с орехами','Feigendessert mit Walnüssen','حلوى التين بالجوز'],
   ['zerde','tatli',111,1,25,0.8,15,0.3,150,'','','','zerde safranlı pirinç tatlısı','Zerde','Zerde (saffron rice pudding)','Зерде (шафрановый рисовый десерт)','Zerde (Safran-Reispudding)','زردة'],
   ['hosmerim','tatli',333,9,35,17.5,24,0.2,100,'','d','','höşmerim peynir helvası','Höşmerim','Höşmerim (cheese halva)','Хёшмерим (сырная халва)','Höşmerim (Käsehalwa)','حلاوة الجبن'],

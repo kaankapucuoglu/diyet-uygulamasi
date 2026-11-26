@@ -26,6 +26,7 @@ document.querySelector('.wrap').addEventListener('click', e => {
   if (ds.togall !== undefined){ hepsiniTogla(ds.togall === '1'); return; }
   if (ds.progkaldir){ programKaldir(); return; }
   if (ds.paylas){ yenenPaylasAc(aktif); return; }
+  if (ds.hedefbilgi){ hedefBilgiAc(); return; }
   if (ds.reglbas){ reglBaslat(aktif); return; }
   if (ds.reglbit){ reglBitir(aktif); return; }
 });
@@ -362,7 +363,7 @@ function ayarlarAc(dilAcik = false){
     </div><div class="ayar-blok" data-ak="tur"><button class="btn ghost full" style="margin-top:8px" id="turAc">🧭 ${T('tourBtn')}</button>
     </div><div class="ayar-blok" data-ak="profil"><div class="sec">${T('sProfile')}</div>
     <div class="cur"><b>${esc(P.ad || '—')}</b> · ${P.cins ? T(P.cins === 'k' ? 'female' : 'male') : ''} · ${P.yas} · ${P.boy} cm · ${sayi(P.kilo)} kg${h ? ` · ${T('bmi')} ${sayi(h.vki)}` : ''}<br>
-      <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + T('g_' + P.hedef) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
+      <small>${hamileMi() ? T('gHamile', {t: P.trimester || 1}) + ' · ' : ''}${P.hedef ? T('goalLbl') + ': ' + hedefAd(P) + ' · ' + T('a' + P.aktivite) : ''}${(P.odaklar || []).length ? ' · ' + T('odakLbl') + ': ' + P.odaklar.map(k => T(k === 'seker' ? 'g_seker' : 'o_' + k)).join(', ') : ''}<br>
       ${T('alerjiLbl')}: ${(P.alerjiler || []).length ? P.alerjiler.map(a => esc((alerjen(a) || {ad:a}).ad)).join(', ') : T('alerjiYok')}</small></div>
     <div class="acts"><button class="btn solid" id="profilDuzenle">${T('editProfile')}</button><button class="btn" id="alerjiDuzenle">${T('editAlerji')}</button></div>
     </div><div class="ayar-blok" data-ak="spor"><div class="sec">${T('sSpor')}</div>
@@ -424,9 +425,11 @@ function ayarlarAc(dilAcik = false){
     const y = $('sbody').scrollTop; ayarlarAc(); $('sbody').scrollTop = y;   // hedef alanları yeni değerleri göstersin
     // Hedef kilo hedef türüyle çelişiyorsa (ör. kas kazanmak ama hedef kilo şimdikinden düşük) hedefi değiştirmeyi sor
     const oneri = hedefKiloDegisti && hedefOnerisi(P);
-    if (oneri) icinden(ayarlarAc, () => onayAc(T(P.hedefKilo > P.kilo ? 'cHedefYukari' : 'cHedefAsagi', {h: sayi(P.hedefKilo), k: sayi(P.kilo), g: T('g_' + P.hedef), y: T('g_' + oneri)}), () => {
-      logEkle('diger', null, T('lHedef', {a: T('g_' + P.hedef), b: T('g_' + oneri)}));
-      P.hedef = oneri; if (oneri === 'ver' && !P.hiz) P.hiz = 0.5;
+    if (oneri) icinden(ayarlarAc, () => onayAc(T(P.hedefKilo > P.kilo ? 'cHedefYukari' : 'cHedefAsagi', {h: sayi(P.hedefKilo), k: sayi(P.kilo), g: hedefAd(P), y: T('g_' + oneri)}), () => {
+      const eski = hedefAd(P);
+      // Önerilen hedef eklenir; onunla çelişenler (ör. kilo vermek ↔ kilo almak) listeden çıkar, uyumlu olanlar (ör. kas kazanmak) kalır
+      hedefYaz(P, hedefSec(hedefListe(P), oneri)); if (oneri === 'ver' && !P.hiz) P.hiz = 0.5;
+      logEkle('diger', null, T('lHedef', {a: eski, b: hedefAd(P)}));
       hedefUygula(false);
     }));
   };
@@ -444,14 +447,14 @@ function ayarlarAc(dilAcik = false){
   MAKRO.forEach(k => $('p_' + k).addEventListener('input', () => { elle.add(k); makroGuncelle(); }));
   makroToplamYaz();
   $('hedefKaydet').onclick = () => {
-    const degisen = [], once = [P.kcal, P.protein, P.karb, P.yag].join(), eskiKcal = P.kcal;
+    const degisen = [], once = hedefAnahtar(P), eskiKcal = P.kcal;
     HEDEF_KEYS.forEach(k => { const v = Math.max(0, Math.round(+$('p_' + k).value)) || P[k]; if (v !== P[k]) degisen.push(`${T(HEDEF_ETIKET[k])}: ${P[k]} → ${v}`); P[k] = v; });
     if (P.kcal !== eskiKcal){ const m = makroOku(); if (m && m.lif !== P.lif){ degisen.push(`${T('fiber')}: ${P.lif} → ${m.lif}`); P.lif = m.lif; } }
     if (degisen.length) logEkle('diger', null, T('lTargets', {l: degisen.join(', ')}));
     // Elle verilen kalori haftalık tartıda ezilmesin (profil/ölçü değişince yeniden hesaplanır)
     if (P.hedef && !D.program) P.elleKcal = P.kcal !== hedefHesapla(P).kcal;
     // Kalori veya makro değiştiyse bugünden sonraki menüler yeni hedeflere göre hazırlanır (diyetisyen programındaki menüye dokunulmaz)
-    if (!D.program && [P.kcal, P.protein, P.karb, P.yag].join() !== once){ planYenile(); kaydet(); ciz(); kapat(); toast(T('tPlanYeni', {b: P.kcal}), 5200); return; }
+    if (!D.program && hedefAnahtar(P) !== once){ planYenile(); kaydet(); ciz(); kapat(); toast(T('tPlanYeni', {b: P.kcal}), 5200); return; }
     kaydet(); ciz(); kapat(); toast(T('tSaved'));
   };
   $('yedekIndir').onclick = () => indir(JSON.stringify(D, null, 1), `${dosyaAdi()}_yedek_${bugunK()}.json`, 'application/json');
@@ -496,7 +499,7 @@ function planYenile(){
   D.planBaslangic = gunEkle(bugunK(), -haftaGunu(bugunK()));   // bu hafta = 1. hafta
   D.miktar = {};   // yeni planda eski miktar tercihleri geçersiz
   menuleriTemizle();
-  logEkle('diger', null, T('lPlan', {h: T('g_' + D.profil.hedef), k: D.profil.kcal, p: D.profil.protein}));
+  logEkle('diger', null, T('lPlan', {h: hedefAd(D.profil), k: D.profil.kcal, p: D.profil.protein}));
 }
 const dosyaAdi = () => (D.profil.ad || 'diyet').toLocaleLowerCase('tr-TR').replace(/[çğıöşü]/g, c => KATLA[c]).replace(/[^a-z0-9]+/g, '_') || 'diyet';
 function indir(icerik, ad, tip){
@@ -551,26 +554,152 @@ function hedefleriYenile(){
   Object.assign(D.profil, {kcal:h.kcal, protein:h.protein, karb:h.karb, seker:h.seker, yag:h.yag, lif:h.lif, su:h.su});
   D.profil.elleKcal = false;
 }
+// ---------- 26.11: hedef bilgi penceresi (ⓘ), çoklu hedef ve hedef kilo metinleri (tr, en, ru, de, ar) ----------
+Object.assign(S, {
+  hbBaslik:["Hedefler nasıl hesaplanıyor?","How are the targets calculated?","Как рассчитаны цели?","Wie werden die Ziele berechnet?","كيف تُحسب الأهداف؟"],
+  hbKisi:["Senin değerlerin: {kilo} kg · {boy} cm · {yas} yaş · bazal metabolizma {bmr} kcal · günlük harcama {tdee} kcal · hedef: {hedef}",
+    "Your values: {kilo} kg · {boy} cm · age {yas} · basal metabolic rate {bmr} kcal · daily energy use {tdee} kcal · goal: {hedef}",
+    "Ваши данные: {kilo} кг · {boy} см · {yas} лет · базальный обмен {bmr} ккал · суточный расход {tdee} ккал · цель: {hedef}",
+    "Deine Werte: {kilo} kg · {boy} cm · {yas} Jahre · Grundumsatz {bmr} kcal · Tagesbedarf {tdee} kcal · Ziel: {hedef}",
+    "قيمك: {kilo} كغ · {boy} سم · العمر {yas} · الأيض الأساسي {bmr} سعرة · الاستهلاك اليومي {tdee} سعرة · الهدف: {hedef}"],
+  hbKcal:["Bazal metabolizma Mifflin-St Jeor denklemiyle, günlük harcama FAO/DSÖ hareket katsayısıyla bulunur. Kilo vermede haftalık hıza göre açık bırakılır (1 kg yağ ≈ 7700 kcal; en çok %25, kas kazanmayla birlikte %20). Kas kazanmada %10, kilo almada %15 eklenir. Alt sınır kadında 1200, erkekte 1500 kcal.",
+    "Basal metabolic rate comes from the Mifflin-St Jeor equation, daily energy use from the FAO/WHO activity factor. For weight loss a deficit is set by your weekly pace (1 kg fat ≈ 7700 kcal; at most 25%, 20% when combined with muscle gain). Muscle gain adds 10%, weight gain 15%. Floor: 1200 kcal for women, 1500 kcal for men.",
+    "Базальный обмен — по формуле Миффлина — Сан Жеора, суточный расход — по коэффициенту активности ФАО/ВОЗ. При похудении дефицит задаётся недельным темпом (1 кг жира ≈ 7700 ккал; не более 25%, вместе с набором мышц — 20%). Набор мышц +10%, набор веса +15%. Минимум: 1200 ккал для женщин, 1500 для мужчин.",
+    "Der Grundumsatz stammt aus der Mifflin-St-Jeor-Formel, der Tagesbedarf aus dem FAO/WHO-Aktivitätsfaktor. Beim Abnehmen richtet sich das Defizit nach deinem Wochentempo (1 kg Fett ≈ 7700 kcal; höchstens 25 %, zusammen mit Muskelaufbau 20 %). Muskelaufbau +10 %, Zunehmen +15 %. Untergrenze: 1200 kcal für Frauen, 1500 kcal für Männer.",
+    "يُحسب الأيض الأساسي بمعادلة ميفلين-سانت جيور والاستهلاك اليومي بمعامل النشاط (الفاو/منظمة الصحة العالمية). عند إنقاص الوزن يُحدَّد العجز حسب وتيرتك الأسبوعية (1 كغ دهون ≈ 7700 سعرة؛ 25% كحد أقصى، و20% مع بناء العضلات). بناء العضلات +10% وزيادة الوزن +15%. الحد الأدنى 1200 سعرة للنساء و1500 للرجال."],
+  hbProtein:["Kilo başına {kg} g × {ref} kg (ISSN önerisi). Kilo verirken hedef kilona, fazla kiloda düzeltilmiş kiloya göre hesaplanır; kalorinin en çok %35’i. Alt hedeftir: üstüne çıkmak sorun değildir.",
+    "{kg} g per kg × {ref} kg (ISSN guidance). When losing weight it is based on your target weight, with excess weight on adjusted body weight; at most 35% of calories. It is a minimum: going above it is fine.",
+    "{kg} г на кг × {ref} кг (рекомендации ISSN). При похудении расчёт идёт по целевому весу, при лишнем весе — по скорректированному; не более 35% калорий. Это минимум: больше — не проблема.",
+    "{kg} g pro kg × {ref} kg (ISSN-Empfehlung). Beim Abnehmen bezogen auf dein Zielgewicht, bei Übergewicht auf das angepasste Körpergewicht; höchstens 35 % der Kalorien. Es ist ein Mindestwert: Mehr ist in Ordnung.",
+    "{kg} غ لكل كغ × {ref} كغ (توصيات ISSN). عند إنقاص الوزن يُحسب حسب وزنك المستهدف، ومع الوزن الزائد حسب الوزن المعدَّل؛ 35% من السعرات كحد أقصى. هذا حدّ أدنى: تجاوزه لا يضرّ."],
+  hbYag:["Kalorinin %28’i (kan şekeri odağında %30). Sağlıklı aralık %20–35’tir (IOM); %20’nin altı hormon dengesi ve yağda çözünen vitaminler için önerilmez. Üst sınırdır.",
+    "28% of calories (30% with the blood sugar focus). The healthy range is 20–35% (IOM); below 20% is not advised for hormone balance and fat-soluble vitamins. It is an upper limit.",
+    "28% калорий (30% при контроле сахара). Здоровый диапазон — 20–35% (IOM); ниже 20% не рекомендуется из-за гормонов и жирорастворимых витаминов. Это верхний предел.",
+    "28 % der Kalorien (30 % beim Blutzucker-Fokus). Der gesunde Bereich ist 20–35 % (IOM); unter 20 % ist wegen Hormonhaushalt und fettlöslicher Vitamine nicht ratsam. Es ist eine Obergrenze.",
+    "28% من السعرات (30% مع تركيز سكر الدم). النطاق الصحي 20–35% (IOM)؛ أقل من 20% غير مستحسن لتوازن الهرمونات والفيتامينات الذائبة في الدهون. هذا حدّ أعلى."],
+  hbKarb:["Protein ve yağdan kalan kalori karbonhidrata ayrılır. Kan şekeri odağında en çok %40.",
+    "The calories left after protein and fat go to carbohydrates. At most 40% with the blood sugar focus.",
+    "На углеводы идут калории, оставшиеся после белка и жиров. При контроле сахара — не более 40%.",
+    "Die nach Eiweiß und Fett verbleibenden Kalorien entfallen auf Kohlenhydrate. Beim Blutzucker-Fokus höchstens 40 %.",
+    "السعرات المتبقية بعد البروتين والدهون تُخصَّص للكربوهيدرات. 40% كحد أقصى مع تركيز سكر الدم."],
+  hbSeker:["Üst sınır: kalorinin %13’ü, en az 45 g. Meyvenin, sütün ve sebzenin doğal şekeri de sayılır. DSÖ’nün %10 sınırı yalnız eklenmiş şeker içindir; AB etiket referansı toplam şeker için 2000 kcal’de 90 g’dır.",
+    "Upper limit: 13% of calories, at least 45 g. Natural sugar in fruit, milk and vegetables counts too. WHO’s 10% limit is for added sugar only; the EU label reference for total sugars is 90 g per 2000 kcal.",
+    "Верхний предел: 13% калорий, не менее 45 г. Учитывается и натуральный сахар фруктов, молока и овощей. Лимит ВОЗ 10% относится только к добавленному сахару; ориентир ЕС для всех сахаров — 90 г на 2000 ккал.",
+    "Obergrenze: 13 % der Kalorien, mindestens 45 g. Natürlicher Zucker aus Obst, Milch und Gemüse zählt mit. Die 10 % der WHO gelten nur für zugesetzten Zucker; der EU-Referenzwert für Gesamtzucker ist 90 g pro 2000 kcal.",
+    "الحد الأعلى: 13% من السعرات، و45 غ على الأقل. يُحتسب أيضًا السكر الطبيعي في الفاكهة والحليب والخضار. حدّ منظمة الصحة العالمية 10% خاص بالسكر المضاف فقط؛ ومرجع الاتحاد الأوروبي لإجمالي السكريات 90 غ لكل 2000 سعرة."],
+  hbLif:["1000 kcal başına 14 g (IOM). Kolesterol ve kan şekeri odağında en az 30 g. Alt hedeftir.",
+    "14 g per 1000 kcal (IOM). At least 30 g with the cholesterol and blood sugar focus. It is a minimum.",
+    "14 г на 1000 ккал (IOM). При контроле холестерина и сахара — не менее 30 г. Это минимум.",
+    "14 g pro 1000 kcal (IOM). Beim Cholesterin- und Blutzucker-Fokus mindestens 30 g. Es ist ein Mindestwert.",
+    "14 غ لكل 1000 سعرة (IOM). 30 غ على الأقل مع تركيز الكوليسترول وسكر الدم. هذا حدّ أدنى."],
+  hbSu:["Kilo başına 35 ml; hareketliysen +500 ml, hamilelikte +300 ml (en az 1,5 L, en çok 4 L).",
+    "35 ml per kg; +500 ml if you are active, +300 ml in pregnancy (at least 1.5 L, at most 4 L).",
+    "35 мл на кг; +500 мл при активности, +300 мл при беременности (не менее 1,5 л, не более 4 л).",
+    "35 ml pro kg; +500 ml, wenn du aktiv bist, +300 ml in der Schwangerschaft (mindestens 1,5 L, höchstens 4 L).",
+    "35 مل لكل كغ؛ +500 مل إذا كنت نشيطًا و+300 مل في الحمل (1.5 لتر على الأقل و4 لترات كحد أقصى)."],
+  hbDegisim:["Kilo, boy, yaş, hareket, hedef, hedef kilo ya da haftalık hız değişince hedefler ve menüler yeniden hesaplanır. Menü bu hedeflere olabildiğince yakın hazırlanır; tek bir günde küçük sapmalar olabilir.",
+    "When your weight, height, age, activity, goal, target weight or weekly pace changes, the targets and menus are recalculated. Menus are built as close to these targets as possible; a single day may deviate slightly.",
+    "При изменении веса, роста, возраста, активности, цели, целевого веса или недельного темпа цели и меню пересчитываются. Меню составляется как можно ближе к целям; в отдельный день возможны небольшие отклонения.",
+    "Ändern sich Gewicht, Größe, Alter, Aktivität, Ziel, Zielgewicht oder Wochentempo, werden Ziele und Menüs neu berechnet. Die Menüs liegen so nah wie möglich an diesen Zielen; einzelne Tage können leicht abweichen.",
+    "عند تغيّر الوزن أو الطول أو العمر أو النشاط أو الهدف أو الوزن المستهدف أو الوتيرة الأسبوعية يُعاد حساب الأهداف والقوائم. تُعَدّ القوائم بأقرب ما يمكن من هذه الأهداف؛ وقد يختلف يوم واحد قليلًا."],
+  hbProgram:["Hedeflerin sana gönderilen programdan geliyor; aşağıdaki kurallar uygulamanın kendi hesabını anlatır.",
+    "Your targets come from the programme sent to you; the rules below describe the app’s own calculation.",
+    "Ваши цели взяты из присланной программы; правила ниже описывают собственный расчёт приложения.",
+    "Deine Ziele stammen aus dem dir gesendeten Programm; die Regeln unten beschreiben die eigene Berechnung der App.",
+    "أهدافك مأخوذة من البرنامج المُرسَل إليك؛ والقواعد أدناه تشرح حساب التطبيق نفسه."],
+  hbElle:["Hedeflerini Ayarlar’da elle değiştirmişsin; aşağıdaki kurallar uygulamanın otomatik hesabını anlatır.",
+    "You have changed your targets by hand in Settings; the rules below describe the app’s automatic calculation.",
+    "Вы изменили цели вручную в настройках; правила ниже описывают автоматический расчёт приложения.",
+    "Du hast deine Ziele in den Einstellungen von Hand geändert; die Regeln unten beschreiben die automatische Berechnung der App.",
+    "لقد غيّرت أهدافك يدويًا من الإعدادات؛ والقواعد أدناه تشرح الحساب التلقائي للتطبيق."],
+  tHedefKiloYeni:["✅ Hedef kilona göre protein {p} g, karbonhidrat {c} g oldu; kalori aynı kaldı ({k} kcal, haftalık hıza bağlı). Bugünden sonraki menüler yeniden hazırlandı.",
+    "✅ Based on your target weight, protein is now {p} g and carbs {c} g; calories stay the same ({k} kcal, set by your weekly pace). Menus from today on were rebuilt.",
+    "✅ По целевому весу белок теперь {p} г, углеводы {c} г; калории те же ({k} ккал, зависят от недельного темпа). Меню с сегодняшнего дня пересобраны.",
+    "✅ Nach deinem Zielgewicht sind es jetzt {p} g Eiweiß und {c} g Kohlenhydrate; die Kalorien bleiben gleich ({k} kcal, abhängig vom Wochentempo). Die Menüs ab heute wurden neu erstellt.",
+    "✅ وفق وزنك المستهدف أصبح البروتين {p} غ والكربوهيدرات {c} غ؛ والسعرات كما هي ({k} سعرة، حسب الوتيرة الأسبوعية). أُعيد إعداد القوائم من اليوم."],
+  tKcalAyni:["Kaydedildi. Günlük hedeflerin değişmedi ({k} kcal): “{g}” hedefinde bu hedef kilo hesabı değiştirmiyor; yalnız tahmini süre güncellendi.",
+    "Saved. Your daily targets are unchanged ({k} kcal): for “{g}”, this target weight does not change the calculation; only the estimated timeline was updated.",
+    "Сохранено. Дневные цели не изменились ({k} ккал): для цели «{g}» этот целевой вес не меняет расчёт; обновлён только примерный срок.",
+    "Gespeichert. Deine Tagesziele bleiben gleich ({k} kcal): Bei „{g}“ ändert dieses Zielgewicht die Berechnung nicht; nur die geschätzte Dauer wurde aktualisiert.",
+    "تم الحفظ. أهدافك اليومية لم تتغير ({k} سعرة): مع هدف «{g}» لا يغيّر هذا الوزن المستهدف الحساب؛ حُدِّثت المدة التقديرية فقط."],
+  wGoalS2:["Birden fazla seçebilirsiniz (ör. kilo vermek + kas kazanmak). Planınız seçimlerinize göre hazırlanır.",
+    "You can choose more than one (e.g. lose weight + build muscle). Your plan is built around your choices.",
+    "Можно выбрать несколько (например, похудеть + набрать мышцы). План строится под ваш выбор.",
+    "Mehrfachauswahl möglich (z. B. Abnehmen + Muskeln aufbauen). Dein Plan richtet sich nach deiner Auswahl.",
+    "يمكنك اختيار أكثر من هدف (مثل إنقاص الوزن + بناء العضلات). تُبنى خطتك حسب اختياراتك."],
+  wGoalCoklu:["Seçiminiz: {l}.","Your choice: {l}.","Ваш выбор: {l}.","Deine Auswahl: {l}.","اختيارك: {l}."],
+  gc_verkas:["Orta düzeyde kalori açığı (en çok %20) ve çok yüksek protein (2,2 g/kg): yağ azalırken kas yapımı desteklenir. Direnç antrenmanı şarttır.",
+    "A moderate deficit (at most 20%) and very high protein (2.2 g/kg): fat goes down while muscle building is supported. Strength training is essential.",
+    "Умеренный дефицит (не более 20%) и очень много белка (2,2 г/кг): жир уходит, рост мышц поддерживается. Силовые тренировки обязательны.",
+    "Mäßiges Defizit (höchstens 20 %) und sehr viel Eiweiß (2,2 g/kg): Fett geht runter, der Muskelaufbau wird unterstützt. Krafttraining ist Pflicht.",
+    "عجز معتدل (20% كحد أقصى) وبروتين عالٍ جدًا (2.2 غ/كغ): تقلّ الدهون ويُدعَم بناء العضلات. تمارين المقاومة ضرورية."],
+  gc_versekil:["Kalori açığı haftalık hızınıza göre belirlenir, protein 2,0 g/kg olur: yağ azalır, kas korunur.",
+    "The deficit follows your weekly pace and protein is 2.0 g/kg: fat goes down, muscle is kept.",
+    "Дефицит задаётся недельным темпом, белок — 2,0 г/кг: жир уходит, мышцы сохраняются.",
+    "Das Defizit richtet sich nach deinem Wochentempo, Eiweiß liegt bei 2,0 g/kg: Fett geht runter, Muskeln bleiben.",
+    "يُحدَّد العجز حسب وتيرتك الأسبوعية والبروتين 2.0 غ/كغ: تقلّ الدهون وتُحفَظ العضلات."],
+  gc_alkas:["%15 kalori fazlası ve 1,8 g/kg protein: direnç antrenmanıyla birlikte kilo artışının kas ağırlıklı olması hedeflenir.",
+    "A 15% calorie surplus and 1.8 g/kg protein: together with strength training, the gain is meant to be mostly muscle.",
+    "Профицит 15% и 1,8 г/кг белка: вместе с силовыми тренировками прибавка должна быть в основном мышечной.",
+    "15 % Kalorienüberschuss und 1,8 g/kg Eiweiß: Zusammen mit Krafttraining soll die Zunahme überwiegend Muskelmasse sein.",
+    "فائض 15% من السعرات وبروتين 1.8 غ/كغ: مع تمارين المقاومة يُراد أن تكون الزيادة عضلية في معظمها."],
+  gc_korukas:["Kalori koruma düzeyinde kalır, protein yükselir: kilonuz sabitken vücut biçiminiz değişir.",
+    "Calories stay at maintenance and protein goes up: your weight stays stable while your body shape changes.",
+    "Калории на уровне поддержания, белка больше: вес стабилен, а форма тела меняется.",
+    "Die Kalorien bleiben auf Erhaltungsniveau, das Eiweiß steigt: Dein Gewicht bleibt stabil, die Körperform verändert sich.",
+    "تبقى السعرات عند مستوى الحفاظ ويرتفع البروتين: يثبت وزنك ويتغيّر شكل جسمك."],
+  gc_sekilkas:["Yeniden şekillenme: kalori koruma düzeyinde, protein 2,0 g/kg. Yağ azalırken kas artar; kilonuz pek değişmez.",
+    "Body recomposition: calories at maintenance, protein 2.0 g/kg. Fat goes down while muscle goes up; your weight hardly changes.",
+    "Рекомпозиция: калории на уровне поддержания, белок 2,0 г/кг. Жир уходит, мышцы растут; вес почти не меняется.",
+    "Rekomposition: Kalorien auf Erhaltungsniveau, Eiweiß 2,0 g/kg. Fett geht runter, Muskeln nehmen zu; dein Gewicht ändert sich kaum.",
+    "إعادة تشكيل الجسم: سعرات عند مستوى الحفاظ وبروتين 2.0 غ/كغ. تقلّ الدهون وتزداد العضلات؛ ووزنك لا يتغير كثيرًا."]
+});
+// Menüyü belirleyen günlük hedefler (biri değişirse bugünden sonraki menüler yeniden hazırlanır)
+const hedefAnahtar = P => [P.kcal, P.protein, P.karb, P.yag, P.seker, P.lif].join();
 // Ölçü/hedef değişince: günlük hedefler yeniden hesaplanır; değiştiyse bugünden sonraki menüler yeni hedeflere göre hazırlanır
 // (bugün "yedim" denen öğünler ve geçmiş günler korunur). Diyetisyen programında hedefler ve menü programdan gelir, dokunulmaz.
+// 26.11: hedef kilo da hesaba girer (protein hedef kiloya göre) → hedef kilo değişince makrolar ve menü yeniden hesaplanır.
 function hedefUygula(hedefKiloDegisti){
   const P = D.profil;
   if (D.program){ kaydet(); ciz(); toast(T('tProgHedef'), 5200); return; }
-  const anahtar = () => [P.kcal, P.protein, P.karb, P.yag].join();
-  const once = anahtar();
+  const once = hedefAnahtar(P), eskiKcal = P.kcal;
   hedefleriYenile();
-  if (anahtar() !== once){ planYenile(); kaydet(); ciz(); toast(T('tPlanYeni', {b: P.kcal}), 5200); return; }
+  if (hedefAnahtar(P) !== once){
+    planYenile(); kaydet(); ciz();
+    // Hedef kilo kaloriyi değiştirmez (kalori haftalık hıza bağlı): kullanıcı neyin değiştiğini görsün
+    toast(hedefKiloDegisti && P.kcal === eskiKcal ? T('tHedefKiloYeni', {k: P.kcal, p: P.protein, c: P.karb}) : T('tPlanYeni', {b: P.kcal}), 6000); return;
+  }
   kaydet(); ciz();
-  // Kalori aynı kaldıysa nedenini söyle: kalori hedef türüne göre hesaplanır, hedef kilo yalnız süreyi etkiler
-  toast(hedefKiloDegisti && P.hedef ? T('tKcalAyni', {k: P.kcal, g: T('g_' + P.hedef)}) : T('tSaved'), hedefKiloDegisti ? 5200 : 2200);
+  toast(hedefKiloDegisti && P.hedef ? T('tKcalAyni', {k: P.kcal, g: hedefAd(P)}) : T('tSaved'), hedefKiloDegisti ? 5200 : 2200);
 }
-// Hedef kilo şimdiki kilonun belirgin üstünde/altındaysa ve hedef türü ters yöndeyse önerilecek hedef ('' = uyumlu)
+// Hedef kilo şimdiki kilonun belirgin üstünde/altındaysa ve seçili hedefler ters yöndeyse önerilecek hedef ('' = uyumlu)
 function hedefOnerisi(P){
   if (hamileMi() || !P.hedef) return '';
-  const fark = P.hedefKilo - P.kilo;
-  if (fark >= 1 && ['ver', 'sekil', 'koru'].includes(P.hedef)) return P.hedef === 'sekil' ? 'kas' : 'al';
-  if (fark <= -1 && ['kas', 'al', 'koru'].includes(P.hedef) && vki(P) >= 18.5) return 'ver';
+  const fark = P.hedefKilo - P.kilo, yon = kiloYonu(P), l = hedefListe(P);
+  if (fark >= 1 && yon <= 0) return l.includes('sekil') && !l.includes('ver') && !l.includes('koru') ? 'kas' : 'al';
+  if (fark <= -1 && yon >= 0 && vki(P) >= 18.5) return 'ver';
   return '';
+}
+// ---------- Günlük hedefler nasıl hesaplanıyor? (ⓘ penceresi: ✕, Esc ya da pencere dışına dokununca kapanır) ----------
+function hedefBilgiAc(){
+  const P = D.profil, h = P.hedef ? hedefHesapla(P) : null, yuzde = (g, k) => P.kcal ? Math.round(g * k * 100 / P.kcal) : 0;
+  const satir = (ik, ad, deger, metin) => `<div class="hb-satir"><div class="hb-ust"><b>${ik} ${esc(ad)}</b><span>${deger}</span></div><p>${esc(metin)}</p></div>`;
+  const g = n => `${n} ${T('g')}`;
+  // Hedefler elle değiştirildiyse ya da diyetisyen programından geliyorsa bunu söyle (aşağıdaki kurallar otomatik hesabı anlatır)
+  const not = D.program ? T('hbProgram') : h && hedefAnahtar(P) !== hedefAnahtar(h) ? T('hbElle') : '';
+  const kisi = h ? T('hbKisi', {kilo: sayi(P.kilo), boy: P.boy, yas: P.yas, bmr: h.bmr, tdee: h.tdee, hedef: hamileMi() ? T('gHamile', {t: P.trimester || 1}) : hedefAd(P)}) : '';
+  ac('ⓘ ' + T('hbBaslik'), `<div class="hb">
+    ${kisi ? `<div class="tip">${esc(kisi)}</div>` : ''}${not ? `<div class="wmsg warn" style="margin:8px 0 0">${esc(not)}</div>` : ''}
+    ${satir('🔥', T('calories'), `${P.kcal} ${T('kcal')}`, T('hbKcal'))}
+    ${satir('🥩', T('protein'), `${g(P.protein)} · %${yuzde(P.protein, 4)}`, T('hbProtein', {kg: h ? sayi(h.pKg) : '1,2–2,2', ref: h ? sayi(Math.round(h.pKilo * 10) / 10) : '—'}))}
+    ${satir('🫒', T('fat'), `${g(P.yag)} · %${yuzde(P.yag, 9)}`, T('hbYag'))}
+    ${satir('🍞', T('carb'), `${g(P.karb)} · %${yuzde(P.karb, 4)}`, T('hbKarb'))}
+    ${satir('🍬', T('sugar'), `≤ ${g(P.seker)}`, T('hbSeker'))}
+    ${satir('🌾', T('fiber'), `≥ ${g(P.lif)}`, T('hbLif'))}
+    ${satir('💧', T('water'), `${litre(P.su)} ${T('L')}`, T('hbSu'))}
+    <div class="hint" style="margin-top:10px">${esc(T('hbDegisim'))}</div>
+    <div class="wmsg warn" style="margin-top:10px">${esc(T('disclaimer'))}</div>
+  </div>`);
 }
 function hamileDegistir(){
   if (hamileMi()){

@@ -134,7 +134,7 @@ const REGL_ONERI = ['biftek','dana_sis','dana_kusbasi','kofte_firin','ispanak_ki
 const HAMILE_ONERI = ['ispanak_hasl','ispanak_salata','brokoli','mercimek','nohut','yesil_mercimek','nohut_ispanak','mcorba','yumurta','yogurt','suzme','beyazp','lor','badem','ceviz','keten',
   'biftek','dana_kusbasi','kofte_firin','portakal','kivi','mandalina','cilek','levrek','hamsi','somon'];
 
-const BOS_PROFIL = {ad:'', cins:'', hamile:false, ara0:false, trimester:1, yas:30, boy:170, kilo:70, hedefKilo:65, hedef:'', odaklar:[], alerjiler:[], aktivite:2, hiz:0.5, haric:[],
+const BOS_PROFIL = {ad:'', cins:'', hamile:false, ara0:false, trimester:1, yas:30, boy:170, kilo:70, hedefKilo:65, hedef:'', hedefler:[], odaklar:[], alerjiler:[], aktivite:2, hiz:0.5, haric:[],
   spor:{gun:0, tur:'karma'}, takviye:[], antrenmanGunleri:[],
   kcal:1800, protein:130, karb:180, seker:55, yag:60, lif:25, su:2500, bardak:250};
 // v8: birimi gramdan adede/dilime dönen yemekler (eski kayıtlardaki gram miktarı adede çevrilir)
@@ -159,9 +159,12 @@ function tamamla(x){
   if (!Array.isArray(x.profil.takviye)) x.profil.takviye = [];
   if (!Array.isArray(x.profil.antrenmanGunleri)) x.profil.antrenmanGunleri = antrenmanVarsayilan(x.profil.spor.gun || 0);
   if (!Array.isArray(x.regl)) x.regl = [];
+  // 26.11: hedef çoklu seçim (hedefler); eski tek seçimli kayıt tek elemanlı listeye taşınır, "hedef" ana hedef olarak kalır
+  if (!Array.isArray(x.profil.hedefler) || !x.profil.hedefler.length) x.profil.hedefler = x.profil.hedef && x.profil.hedef !== 'seker' ? [x.profil.hedef] : [];
   // Eski tek seçimli "Kan şekeri" hedefi → kilo hedefi + kan şekeri odağı
   if (x.profil.hedef === 'seker'){
     x.profil.hedef = vki(x.profil) >= 25 ? 'ver' : 'koru';
+    x.profil.hedefler = [x.profil.hedef];
     if (!x.profil.odaklar.includes('seker')) x.profil.odaklar.push('seker');
   }
   x.ozelYemek.forEach(f => {
@@ -281,25 +284,70 @@ function miktarOku(f, v){
 }
 const sinirla = (v, a, b) => Math.min(b, Math.max(a, v));
 
-// ---------- Hedef hesaplama (Mifflin-St Jeor, FAO/WHO PAL, ISSN, WHO) ----------
+// ---------- Hedef hesaplama ----------
+// Kaynaklar: bazal metabolizma Mifflin-St Jeor (1990); günlük harcama FAO/DSÖ/BMÜ aktivite katsayıları; protein ISSN (2017) g/kg;
+// yağ ve karbonhidrat IOM kabul edilebilir makro besin aralıkları (AMDR: yağ %20–35, karbonhidrat %45–65, protein %10–35);
+// lif IOM 14 g/1000 kcal; su kg başına 35 ml; hamilelik IOM (+340 / +450 kcal, protein 1,1 g/kg).
 const PAL = [1.2, 1.375, 1.55, 1.725, 1.9];
 const PROTEIN_KG = {ver:1.8, sekil:2.0, koru:1.2, kas:1.8, al:1.6};
+// Hedefler (26.11): birden fazla seçilebilir (ör. kilo vermek + kas kazanmak). Kilo yönü hedefleri (ver / koru / al) birbirini dışlar;
+// "sıkılaşmak" kalori açığı gerektirdiği için "kilo almak" ile birlikte seçilemez. p.hedef = ana hedef (eski tek seçimli alan, geriye uyum).
+const HEDEF_SIRA = ['ver', 'sekil', 'koru', 'kas', 'al'];
+const HEDEF_CELISKI = {ver:['koru', 'al'], koru:['ver', 'al'], al:['ver', 'koru', 'sekil'], sekil:['al'], kas:[]};
+function hedefListe(p){
+  const l = Array.isArray(p.hedefler) && p.hedefler.length ? p.hedefler : p.hedef ? [p.hedef] : [];
+  return HEDEF_SIRA.filter(k => l.includes(k));
+}
+const anaHedef = l => ['ver', 'al', 'koru', 'sekil', 'kas'].find(k => l.includes(k)) || '';
+// Seçimi aç/kapat: yeni seçilen hedefle çelişenler listeden çıkar
+function hedefSec(l, k){
+  l = HEDEF_SIRA.filter(x => (l || []).includes(x));
+  return l.includes(k) ? l.filter(x => x !== k) : HEDEF_SIRA.filter(x => x === k || (l.includes(x) && !HEDEF_CELISKI[k].includes(x)));
+}
+// Profildeki hedef listesini ve ana hedefi birlikte yazar
+function hedefYaz(p, l){ p.hedefler = HEDEF_SIRA.filter(k => (l || []).includes(k)); p.hedef = anaHedef(p.hedefler); return p; }
+const hedefAd = p => hedefListe(p).map(k => T('g_' + k)).join(' + ');
+// Beklenen kilo yönü: −1 azalır, +1 artar, 0 sabit (koruma ya da sıkılaşma + kas = yeniden şekillenme)
+function kiloYonu(p){
+  const l = hedefListe(p);
+  if (l.includes('ver')) return -1;
+  if (l.includes('al')) return 1;
+  if (l.includes('koru')) return 0;
+  return l.includes('sekil') && l.includes('kas') ? 0 : l.includes('sekil') ? -1 : l.includes('kas') ? 1 : 0;
+}
 // Ek sağlık odakları kalori hedefine eklenen kurallardır; menüde dışlanacak içerik harfi (t tuzlu, y doymuş yağı yüksek)
 const ODAKLAR = [['seker','🩺',''], ['tansiyon','❤️','t'], ['kolesterol','🫀','y']];
 function vki(p){ return p.kilo / Math.pow(p.boy / 100, 2); }
 function vkiSinif(b){ return b < 18.5 ? 'bmi1' : b < 25 ? 'bmi2' : b < 30 ? 'bmi3' : 'bmi4'; }
+// Şeker üst sınırı (toplam şeker: meyvenin, sütün, sebzenin doğal şekeri dâhil): kalorinin %13'ü, en az 45 g.
+// 26.11: taban eklendi ve kan şekeri odağındaki %10 kaldırıldı — DSÖ'nün %10'u yalnız EKLENMİŞ şeker içindir; veritabanı toplam şekeri tutar
+// ve 2 porsiyon süt ürünü + 1 meyve + sebze tek başına ~45 g doğal şeker eder (düşük kalorili planda sınır yoğurt ve meyveyle aşılıyordu).
+// Kan şekeri odağı: karbonhidrat en çok %40, lif en az 30 g, şekeri yüksek meyve yerine düşük şekerli meyve (gunuOlcekle).
+const SEKER_TABAN = 45;
 // Günlük kaloriyi makrolara böler (hedefHesapla ve elle kalori değişimi aynı kuralları kullanır).
 // s.protein / s.yag / s.karb: kullanıcının elle verdiği değer (aynen kalır, karbonhidrat kalandan hesaplanır);
 // s.protein0: protein ihtiyacı (g), kalorinin en çok %35'i olacak şekilde kırpılır
 function makroBol(kcal, p, s = {}){
   const od = new Set(p.odaklar || []), seker = od.has('seker');
   const protein = s.protein != null ? Math.round(s.protein) : Math.round(Math.min(s.protein0 != null ? s.protein0 : kcal * 0.2 / 4, kcal * 0.35 / 4));
-  // Kan şekeri: yağ %30, karbonhidrat en çok %40, şeker %10 · Kolesterol: yağ %28'de kalır, doymuş yağlı kalemler menüden çıkar
+  // Kan şekeri: yağ %30, karbonhidrat en çok %40 · Kolesterol: yağ %28'de kalır, doymuş yağlı kalemler menüden çıkar
   const yag = s.yag != null ? Math.round(s.yag) : Math.round(kcal * (seker ? 0.30 : 0.28) / 9);
   let karb = s.karb != null ? Math.round(s.karb) : Math.max(0, Math.round((kcal - protein * 4 - yag * 9) / 4));
   if (seker && s.karb == null) karb = Math.min(karb, Math.round(kcal * 0.40 / 4));
   // Lif: 14 g/1000 kcal; kolesterol ve kan şekerinde en az 30 g (çözünür lif LDL ve kan şekerini düşürür)
-  return {protein, karb, yag, seker: Math.round(kcal * (seker ? 0.10 : 0.13) / 4), lif: Math.max(Math.round(kcal / 1000 * 14), od.has('kolesterol') || seker ? 30 : 0)};
+  return {protein, karb, yag, seker: Math.max(SEKER_TABAN, Math.round(kcal * 0.13 / 4)), lif: Math.max(Math.round(kcal / 1000 * 14), od.has('kolesterol') || seker ? 30 : 0)};
+}
+// Protein hesabında kullanılan kilo (26.11: hedef kilo hesaba girer; değişince protein, karbonhidrat ve menü yeniden hesaplanır):
+// · kilo veren: hedef kilo (geçerliyse); alt sınır VKİ 18,5 kilosu, üst sınır şimdiki kilo — fazla kiloluda düzeltilmiş kilo
+//   (VKİ 25 kilosu + fazlanın %40'ı; yağ dokusu protein ihtiyacını aynı oranda artırmaz)
+// · kilo alan / kas kazanan: hedef kilo, şimdiki kilonun en çok %10 üstü
+// · diğerleri: şimdiki kilo (VKİ 25'in üstündeyse VKİ 25 kilosu)
+function proteinKilo(p){
+  const kg = v => v * Math.pow(p.boy / 100, 2), b = vki(p), yon = kiloYonu(p), hk = +p.hedefKilo || 0;
+  const ust = b > 25 ? kg(25) + 0.4 * (p.kilo - kg(25)) : p.kilo;
+  if (yon < 0 && hk > 0 && hk < p.kilo) return sinirla(hk, Math.min(kg(18.5), ust), ust);
+  if (yon > 0 && hk > p.kilo) return Math.min(hk, p.kilo * 1.1);
+  return b > 25 ? kg(25) : p.kilo;
 }
 function hedefHesapla(p){
   const bmr = 10 * p.kilo + 6.25 * p.boy - 5 * p.yas + (p.cins === 'k' ? -161 : 5);
@@ -308,23 +356,29 @@ function hedefHesapla(p){
   const tdee = bmr * (PAL[(p.aktivite || 2) - 1] + sporEk);
   const b = vki(p), od = new Set(p.odaklar || []), seker = od.has('seker');
   const hamile = p.cins === 'k' && !!p.hamile, tri = p.trimester || 1;
+  const H = new Set(hedefListe(p)), kas = H.has('kas');
   let kcal = tdee;
   if (hamile) kcal = tdee + [0, 340, 450][tri - 1];
-  else if (p.hedef === 'ver') kcal = tdee - Math.min(p.hiz * 7700 / 7, tdee * 0.25);
-  else if (p.hedef === 'sekil') kcal = tdee * 0.9;
-  else if (p.hedef === 'kas') kcal = tdee * 1.1;
-  else if (p.hedef === 'al') kcal = tdee * 1.15;
+  // Kilo vermek: açık = haftalık hız × 7700 / 7, en çok günlük harcamanın %25'i; kas kazanmakla birlikteyse en çok %20 (büyük açıkta kas yapımı durur)
+  else if (H.has('ver')) kcal = tdee - Math.min((p.hiz || 0.5) * 7700 / 7, tdee * (kas ? 0.20 : 0.25));
+  else if (H.has('al')) kcal = tdee * 1.15;
+  else if (H.has('koru')) kcal = tdee;
+  else if (H.has('sekil')) kcal = tdee * (kas ? 1 : 0.9);   // sıkılaşmak + kas kazanmak = yeniden şekillenme: koruma kalorisi, yüksek protein
+  else if (kas) kcal = tdee * 1.1;
   const taban = p.cins === 'k' ? 1200 : 1500;
   kcal = Math.round(Math.max(kcal, Math.min(taban, tdee)) / 50) * 50;
-  const refKilo = b > 25 ? 25 * Math.pow(p.boy / 100, 2) : p.kilo;
-  const pKg = Math.max(PROTEIN_KG[p.hedef] || 1.2, seker ? 1.3 : 0);
-  const m = makroBol(kcal, p, {protein0: hamile ? 1.1 * p.kilo + (tri >= 2 ? 25 : 0) : pKg * refKilo});
+  // Protein (g/kg): seçilen hedeflerin en yükseği; kilo verirken kas kazanmak 2,2 (ISSN: kalori açığında kas için üst aralık)
+  let pKg = Math.max(1.2, ...[...H].map(k => PROTEIN_KG[k] || 0), seker ? 1.3 : 0);
+  if (kas && H.has('ver')) pKg = 2.2;
+  // Hamilelik: 1,1 g/kg (IOM). 26.11 düzeltme: eskiden 2. ve 3. trimesterde buna ayrıca +25 g ekleniyordu (aynı artış iki kez sayılıyordu)
+  const pKilo = hamile ? p.kilo : proteinKilo(p);
+  const m = makroBol(kcal, p, {protein0: (hamile ? 1.1 : pKg) * pKilo});
   const {protein, karb, yag, lif} = m, sekerG = m.seker;
   const su = sinirla(Math.round((p.kilo * 35 + (p.aktivite >= 3 ? 500 : 0) + (hamile ? 300 : 0)) / 250) * 250, 1500, 4000);
   let hafta = 0;
-  if (!hamile && p.hedef === 'ver' && p.hedefKilo < p.kilo) hafta = Math.ceil((p.kilo - p.hedefKilo) / p.hiz);
-  if (!hamile && p.hedef === 'al' && p.hedefKilo > p.kilo) hafta = Math.ceil((p.hedefKilo - p.kilo) / 0.35);
-  return {bmr:Math.round(bmr), tdee:Math.round(tdee), vki:b, kcal, protein, karb, seker: sekerG, yag, lif, su, hafta, sporEk};
+  if (!hamile && H.has('ver') && p.hedefKilo < p.kilo) hafta = Math.ceil((p.kilo - p.hedefKilo) / (p.hiz || 0.5));
+  if (!hamile && H.has('al') && p.hedefKilo > p.kilo) hafta = Math.ceil((p.hedefKilo - p.kilo) / 0.35);
+  return {bmr:Math.round(bmr), tdee:Math.round(tdee), vki:b, kcal, protein, karb, seker: sekerG, yag, lif, su, hafta, sporEk, pKg: hamile ? 1.1 : pKg, pKilo};
 }
 
 // ---------- Plan üretici ----------
@@ -443,13 +497,13 @@ function oneriAgirlik(gun, liste, izinli, tohum = 0){
 }
 // ---------- Diyetisyen porsiyonları ----------
 // Plan üretici sürümü: değişince kendi planı olan kullanıcıların şablonu yeniden üretilir (diyetisyen programına dokunulmaz)
-const PLAN_SURUM = 2;
+const PLAN_SURUM = 3;   // 3 (26.11): yağ hedefi gözetilir, şeker/lif adımları, hedef hesabı düzeltmeleri
 const ARA_IDLER = new Set(['ara0', 'ara1', 'gece']);
 // İçecekler 1 bardak / fincan sabit kalır (ölçeklenmez, ara öğün kalem sayısına girmez)
 const SABIT_ICECEK = ['ayran', 'maden_suyu', 'bitki_cayi', 'kahve', 'cay', 'yesilcay'];
 // Porsiyon aralığı [en az, en çok]: adet birimlide adet, diğerlerinde gram (ara öğünde et ve yumurta daha küçük).
 // s: kalori hedefi ölçeği (2200 kcal = 1, en çok 1,7): yüksek hedefte üst sınırlar ve ana öğün et/tahıl alt sınırı büyür
-function porsiyonAralik(f, ogunId, s = 1){
+function porsiyonAralik(f, ogunId, s = 1, az = false){
   const ara = ARA_IDLER.has(ogunId);
   if (ara){
     // Ara öğün: tek oturuşta yenebilecek porsiyon; kalori gerekiyorsa kalem büyümez, 3. kalem eklenir (araTamamla)
@@ -484,7 +538,7 @@ function porsiyonAralik(f, ogunId, s = 1){
   }
   if (SIVI.has(f.id)) return [150, ust(300, 400)];
   switch (f.kat){
-    case 'et': case 'balik': return ara ? [60, 120] : [alt(90), ust(220, 280)];
+    case 'et': case 'balik': return ara ? [60, 120] : [az ? 70 : alt(90), ust(220, 280)];
     case 'bitkisel': return [80, ust(200, 260)];
     case 'yumurta': return [100, ust(250, 300)];
     case 'kuruyemis': return ['zeytinyagi', 'keten', 'chia'].includes(f.id) ? [5, ust(15, 25)] : f.id === 'fistikezme' ? [10, ust(20, 35)] : [10, ust(30, 50)];
@@ -500,14 +554,16 @@ function porsiyonAralik(f, ogunId, s = 1){
   }
 }
 // Miktarı porsiyon aralığına oturt; adetler tam sayı ("3,5 zeytin", "yarım elma" olmaz; lavaş ve avokado yarım olabilir), gramlar 5/10'luk
-function porsiyon(f, ogunId, m, s = 1){
-  const [a, b] = porsiyonAralik(f, ogunId, s), x = sinirla(m, a, b);
+function porsiyon(f, ogunId, m, s = 1, az = false){
+  const [a, b] = porsiyonAralik(f, ogunId, s, az), x = sinirla(m, a, b);
   if (!f.a) return yuvarla(f, x);
   return ['lavas', 'avokado'].includes(f.id) ? sinirla(Math.round(x * 2) / 2, a, b) : sinirla(Math.round(x), Math.ceil(a), b);
 }
 // Eksik kalori: ara öğüne kalem eklenmez; öğle/akşama tam tahıllı garnitür, gerekirse kahvaltıya tek yoğun kalem
 const GARNITUR = ['bulgur', 'kinoa', 'tammakarna', 'patates_firin'];
 const ARA_TAMAMLAYICI = [['muz', 1], ['ceviz', 20], ['badem', 20], ['hurma', 3], ['elma', 1]];
+const DUSUK_SEKER_MEYVE = ['cilek', 'kivi', 'mandalina', 'bogurtlen', 'ahududu', 'erik'];
+const EKMEK_EK = ['tamekmek', 'cavdarekmek', 'glutensiz_ekmek'];
 const KAHVALTI_EK = [['fistikezme', 20], ['ceviz', 20], ['avokado', 0.5], ['yulaf', 40], ['tamekmek', 1]];
 // Akşam yemeğine içecek: yoğurtlu yan yoksa ayran, varsa maden suyu; tuz kısıtında bitki çayı
 function aksamIcecekEkle(gun, izinli){
@@ -540,26 +596,75 @@ function araSadele(gun, sabit, por){
 }
 function gunuOlcekle(gun, p, izinli){
   const sabit = new Set([...takviyeIdleri(p), ...SABIT_ICECEK]);   // takviye (1 ölçek) ve içecekler (1 bardak) ölçeklenmez
-  const s = sinirla((p.kcal || 2000) / 2200, 1, 1.7), por = (f, id, m) => porsiyon(f, id, m, s);
+  // Protein hedefi kalorinin %19'undan azsa (kilo koruma, kilo alma, hamilelik): et/balık alt sınırı 70 g, protein kalemleri daha çok küçülebilir
+  const azP = p.protein > 0 && p.protein * 4 / (p.kcal || 2000) < 0.19, pAlt = azP ? 0.45 : 0.6;
+  const s = sinirla((p.kcal || 2000) / 2200, 1, 1.7), por = (f, id, m) => porsiyon(f, id, m, s, azP);
   const hepsi = () => gun.flatMap(o => o.ogeler);
   const top = r => topla(hepsi().filter(it => !r || rol(yemek(it.f)) === r));
-  const her = fn => gun.forEach(o => o.ogeler.forEach(it => { const f = yemek(it.f); if (!sabit.has(it.f)) fn(it, f, o.id); }));
+  // Şeker sınırı devreye girdiyse şekerli kalemler (meyve, süt ürünü) sonraki adımlarda büyümez (sekerKilit)
+  let sekerKilit = false;
+  const sekerli = f => !['sebze', 'salata', 'corba'].includes(f.kat) && f.k && f.s * 4 / f.k >= 0.2;
+  const her = fn => gun.forEach(o => o.ogeler.forEach(it => {
+    const f = yemek(it.f); if (sabit.has(it.f)) return;
+    const once = it.g; fn(it, f, o.id);
+    if (sekerKilit && it.g > once && sekerli(f)) it.g = once;
+  }));
   const uygula = (r, k) => her((it, f, id) => { if (rol(f) === r) it.g = por(f, id, it.g * k); });
   const tumu = () => top().k;
+  // Seçiciyle çalışan eşdeğerleri (yalnız ölçeklenebilir kalemler)
+  const topS = sec => topla(hepsi().filter(it => !sabit.has(it.f) && sec(yemek(it.f))));
+  const uygulaS = (sec, k) => her((it, f, id) => { if (sec(f)) it.g = por(f, id, it.g * k); });
+  // Yağ hedefi (26.11): eskiden yağ hiç gözetilmiyordu, menü hedefin ortalama %20 üstünde yağ veriyordu.
+  // Yağlı kalem = kalorisinin en az %40'ı yağdan (yumurta, omlet, somon, köfte, etli sebze yemeği, kuruyemiş, peynir)
+  const yagHedef = p.yag > 0 ? p.yag : (p.kcal || 2000) * 0.28 / 9;
+  const yagli = f => f.k > 0 && f.y * 9 / f.k >= 0.4;
+  const yagFazla = () => top().y - yagHedef;
+  const yagsizP = f => rol(f) === 'P' && !yagli(f), yagliP = f => rol(f) === 'P' && yagli(f);
+  const yagliS = f => rol(f) === 'S' && yagli(f), yagK = f => rol(f) === 'Y';
   // 0) Başlangıç miktarları porsiyon aralığına
   her((it, f, id) => { it.g = por(f, id, it.g); });
-  // 1) Protein hedefi
-  const pP = top('P').p, pDiger = tumu() ? top().p - pP : 0;
-  if (pP > 0) uygula('P', sinirla((p.protein - pDiger) / pP, 0.6, 2.5));
+  // 1) Protein hedefi: ihtiyaç önce yağsız kaynaklarla (tavuk, hindi, balık, süzme, baklagil) kapatılır; yağlı kaynaklar ancak yetmezse büyür
+  const proteinAyarla = () => {
+    const pL = topS(yagsizP).p, pF = topS(yagliP).p, ihtiyac = p.protein - (top().p - pL - pF);
+    if (pL > 0){
+      uygulaS(yagsizP, sinirla((ihtiyac - pF) / pL, pAlt, 2.2));
+      if (pF > 0) uygulaS(yagliP, sinirla((ihtiyac - topS(yagsizP).p) / pF, pAlt, 1.5));
+    } else if (pF > 0) uygulaS(yagliP, sinirla(ihtiyac / pF, pAlt, 2));
+  };
+  proteinAyarla();
   // 2) Karbonhidratla kaloriyi tuttur
   const kAyarla = () => { const kK = top('K').k; if (kK > 0) uygula('K', sinirla((p.kcal - (tumu() - kK)) / kK, 0.35, 2.5)); };
   kAyarla();
-  // 3) Yağ kaynaklarıyla ince ayar
-  const yAyarla = (alt, ust) => { const kY = top('Y').k; if (kY > 0) uygula('Y', sinirla((kY + p.kcal - tumu()) / kY, alt, ust)); };
+  // 3) Yağ kaynaklarıyla ince ayar: kalori eksiğini kapatır ama yağ hedefini aşacak kadar büyümez
+  const yAyarla = (alt, ust) => {
+    const tY = topS(yagK); if (!(tY.k > 0)) return;
+    const kKcal = (tY.k + p.kcal - tumu()) / tY.k, kYag = tY.y > 0 ? (tY.y - yagFazla()) / tY.y : ust;
+    uygula('Y', sinirla(Math.min(kKcal, kYag), alt, ust));
+  };
   yAyarla(0.5, 1.6);
-  // 4) Hâlâ eksikse (kas / kilo alma gibi yüksek hedefler): a) akşam ve öğleye tam tahıllı garnitür, b) salataya zeytinyağı ve yağ porsiyonları,
-  //    c) kahvaltıya tek yoğun kalem. Ara öğüne kalem eklenmez.
+  // 3b) Yağ hedefin %5'inden fazla aşılıyorsa: a) yağlı protein kalemleri küçülür, kaybedilen protein yağsız kaynakla tamamlanır,
+  //     b) yağlı karışık yemekler (etli sebze, köfte, zeytinyağlı) en çok %30 küçülür, c) yağ kalemleri alt sınıra iner. Açılan kalori tahılla kapanır.
+  const yagKis = () => {
+    for (let i = 0; i < 2 && yagFazla() > yagHedef * 0.05; i++){
+      const tF = topS(yagliP);
+      if (tF.y > 0){
+        const pOnce = top().p;
+        uygulaS(yagliP, sinirla(1 - yagFazla() / tF.y, 0.6, 1));
+        const pL = topS(yagsizP).p, kayip = Math.min(pOnce, p.protein) - top().p;
+        if (pL > 0 && kayip > 0) uygulaS(yagsizP, sinirla((pL + kayip) / pL, 1, 1.6));
+      }
+      const tS = topS(yagliS);
+      if (yagFazla() > yagHedef * 0.05 && tS.y > 0) uygulaS(yagliS, sinirla(1 - yagFazla() / tS.y, 0.7, 1));
+      const tY = topS(yagK);
+      if (yagFazla() > yagHedef * 0.05 && tY.y > 0) uygula('Y', sinirla(1 - yagFazla() / tY.y, 0.4, 1));
+    }
+  };
+  yagKis(); kAyarla();
+  // 4) Hâlâ eksikse (kas / kilo alma gibi yüksek hedefler): a) akşam ve öğleye tam tahıllı garnitür, b) yağ payı varsa salataya zeytinyağı ve yağ porsiyonları,
+  //    c) kahvaltıya tek yoğun kalem. Yağ hedefi dolduysa yağlı ek (fıstık ezmesi, ceviz, avokado, badem) seçilmez.
   const eksik = () => tumu() < p.kcal * 0.95;
+  const yagPayi = () => -yagFazla();   // hedefe kadar kalan yağ (g)
+  const ekUygun = f => izinli(yemek(f)) && (!yagli(yemek(f)) || yagPayi() >= 8);
   for (const id of ['aksam', 'ogle']){
     if (!eksik()) break;
     const o = gun.find(o => o.id === id);
@@ -567,14 +672,14 @@ function gunuOlcekle(gun, p, izinli){
     const g = GARNITUR.find(x => izinli(yemek(x)) && !DOKTOR_DISI.has(x));
     if (g){ o.ogeler.push({f: g, g: 100}); kAyarla(); }
   }
-  if (eksik()){
+  if (eksik() && yagPayi() >= 8){
     const o = gun.find(o => ['ogle', 'aksam'].includes(o.id) && o.ogeler.some(it => yemek(it.f).kat === 'salata') && !o.ogeler.some(it => it.f === 'zeytinyagi'));
     if (o && izinli(yemek('zeytinyagi'))) o.ogeler.push({f: 'zeytinyagi', g: 10});
     yAyarla(1, 2);
   }
   if (eksik()){
     const o = gun.find(o => o.id === 'kahvalti') || gun[0];
-    const ek = KAHVALTI_EK.find(([f]) => izinli(yemek(f)) && !o.ogeler.some(it => it.f === f));
+    const ek = KAHVALTI_EK.find(([f]) => ekUygun(f) && !o.ogeler.some(it => it.f === f));
     if (ek){ o.ogeler.push({f: ek[0], g: ek[1]}); kAyarla(); yAyarla(1, 2); }
   }
   // d) ara öğünlere farklı rolden tamamlayıcı (en çok ARA_EN_COK kalem; kalem büyütmek yerine çeşit)
@@ -584,16 +689,34 @@ function gunuOlcekle(gun, p, izinli){
     const say = o.ogeler.filter(it => !sabit.has(it.f));
     if (!say.length || say.length >= ARA_EN_COK) continue;
     const roller = new Set(say.map(it => rol(yemek(it.f))));
-    const ek = ARA_TAMAMLAYICI.find(([f]) => izinli(yemek(f)) && !roller.has(rol(yemek(f))) && !o.ogeler.some(it => it.f === f))
-      || ARA_TAMAMLAYICI.find(([f]) => izinli(yemek(f)) && !o.ogeler.some(it => it.f === f));
+    const ek = ARA_TAMAMLAYICI.find(([f]) => ekUygun(f) && !roller.has(rol(yemek(f))) && !o.ogeler.some(it => it.f === f))
+      || ARA_TAMAMLAYICI.find(([f]) => ekUygun(f) && !o.ogeler.some(it => it.f === f));
     if (ek) o.ogeler.push({f: ek[0], g: ek[1]});
   }
+  // e) hâlâ eksikse ekmeği olmayan ana öğüne tam tahıllı ekmek (yağsız kalori)
+  for (const id of ['ogle', 'aksam', 'kahvalti']){
+    if (!eksik()) break;
+    const o = gun.find(o => o.id === id);
+    if (!o || o.ogeler.some(it => yemek(it.f).kat === 'tahil')) continue;
+    const e = EKMEK_EK.find(x => izinli(yemek(x)));
+    if (e){ o.ogeler.push({f: e, g: 1}); kAyarla(); }
+  }
   // 5) Şeker sınırı aşılıyorsa şekerli kalemleri (meyve, süt ürünü, tatlı) azalt, kaloriyi tahılla geri tamamla
-  const sekerli = f => !['sebze', 'salata', 'corba'].includes(f.kat) && f.k && f.s * 4 / f.k >= 0.2;
   const sToplam = topla(hepsi().filter(it => !sabit.has(it.f) && sekerli(yemek(it.f)))).s;
   if (top().s > p.seker * 1.05 && sToplam > 0){
     const k = sinirla(1 - (top().s - p.seker) / sToplam, 0.5, 1);
     her((it, f, id) => { if (sekerli(f)) it.g = por(f, id, it.g * k); });
+    sekerKilit = true;
+    // Kan şekeri odağı: hâlâ aşılıyorsa şekeri yüksek meyve (porsiyonda ≥ 12 g: armut, muz, üzüm…) düşük şekerli meyveyle değişir
+    if ((p.odaklar || []).includes('seker') && top().s > p.seker * 1.05){
+      let n = 0;
+      gun.forEach(o => o.ogeler.forEach(it => {
+        const f = yemek(it.f);
+        if (sabit.has(it.f) || f.kat !== 'meyve' || top().s <= p.seker * 1.05 || besin(it.f, it.g).s < 12) return;
+        const y = DUSUK_SEKER_MEYVE.map(yemek).filter(m => m.kat && izinli(m) && !o.ogeler.some(x => x.f === m.id))[n++ % DUSUK_SEKER_MEYVE.length];
+        if (y){ it.f = y.id; it.g = por(y, o.id, y.a ? 1 : 150); }
+      }));
+    }
     kAyarla();
   }
   // 6) Hâlâ fazlaysa sebze dışındaki sabit kalemleri (karışık yemek, süt ürünü) biraz azalt
@@ -606,11 +729,47 @@ function gunuOlcekle(gun, p, izinli){
   araSadele(gun, sabit, por);
   kAyarla();
   // 8) Son denge: hedeften %3'ten fazla saparsa sebze/salata dışındaki kalemler birlikte, porsiyon sınırları içinde ölçeklenir
-  for (let i = 0; i < 4; i++){
+  const sonDenge = () => { for (let i = 0; i < 4; i++){
     const r = p.kcal / (tumu() || 1);
     if (Math.abs(1 - r) < 0.03) break;
-    // büyütürken protein kalemleri (et, balık, yumurta, süzme…) en çok %15 büyür: protein hedefin çok üstüne çıkmaz
-    her((it, f, id) => { if (!['sebze', 'salata'].includes(f.kat)) it.g = por(f, id, it.g * sinirla(r, 0.8, r > 1 && rol(f) === 'P' ? 1.15 : 1.35)); });
+    const yagDolu = yagFazla() >= 0;
+    // büyütürken protein kalemleri (et, balık, yumurta, süzme…) en çok %15 büyür: protein hedefin çok üstüne çıkmaz;
+    // yağ hedefi dolduysa yağlı kalemler büyümez, küçültürken önce onlar küçülür
+    her((it, f, id) => {
+      if (['sebze', 'salata'].includes(f.kat)) return;
+      let k = sinirla(r, 0.8, r > 1 && rol(f) === 'P' ? 1.15 : 1.35);
+      if (yagDolu && yagli(f)) k = r > 1 ? 1 : Math.max(0.75, k * k);
+      it.g = por(f, id, it.g * k);
+    });
+  } };
+  sonDenge();
+  // 9) Son yağ denetimi: son denge yağı yeniden taşırdıysa bir kez daha kıs, kaloriyi tahılla kapat
+  if (yagFazla() > yagHedef * 0.1){ yagKis(); kAyarla(); }
+  // 10) Porsiyonlar alt sınırda ve yağ hâlâ %10'dan fazla aşılıyorsa (düşük kalorili hedefler): akşam ayranı maden suyuna döner,
+  //     ardından yanında başka kalem bulunan ara öğünden / kahvaltıdan en yağlı yağ kalemi (kuruyemiş, zeytin, peynir) çıkarılır (günde en çok 2)
+  if (yagFazla() > yagHedef * 0.1){
+    const aksam = gun.find(o => o.id === 'aksam'), ay = aksam && aksam.ogeler.find(it => it.f === 'ayran');
+    if (ay && izinli(yemek('maden_suyu')) && !aksam.ogeler.some(it => it.f === 'maden_suyu')){ ay.f = 'maden_suyu'; ay.g = 1; }
+    for (let n = 0; n < 2 && yagFazla() > yagHedef * 0.1; n++){
+      let en = null;
+      for (const o of gun){
+        if (o.ogeler.filter(it => !sabit.has(it.f)).length < 2) continue;
+        for (const it of o.ogeler){
+          if (sabit.has(it.f) || !yagK(yemek(it.f))) continue;
+          const y = besin(it.f, it.g).y;
+          if (!en || y > en.y) en = {o, it, y};
+        }
+      }
+      if (!en) break;
+      en.o.ogeler.splice(en.o.ogeler.indexOf(en.it), 1);
+    }
+    kAyarla(); sonDenge();
+  }
+  // 11) Lif hedefin altındaysa (özellikle kolesterol ve kan şekeri odağında en az 30 g): sebze ve salata porsiyonları büyür (en çok 1,6 kat, 300 g)
+  if (p.lif > 0 && top().l < p.lif * 0.97){
+    const sebze = f => ['sebze', 'salata'].includes(f.kat) && f.l > 0, tL = topS(sebze).l;
+    if (tL > 0) uygulaS(sebze, sinirla((tL + p.lif - top().l) / tL, 1, 1.6));
+    if (tumu() > p.kcal * 1.03) kAyarla();
   }
 }
 

@@ -578,7 +578,9 @@ function kocOtomatikOlustur(mod){
   const yag = +K.t.yag > 0 ? +K.t.yag : Math.round(kcal * 0.28 / 9);
   const karb = +K.t.karb > 0 ? +K.t.karb : Math.max(50, Math.round((kcal - protein * 4 - yag * 9) / 4));
   const p = {cins: K.dn.cins || 'e', hamile:false, odaklar:(K.dn.odak || []).filter(o => o !== 'emzirme'), haric:[...K.dn.haric], alerjiler:[...K.dn.alerjiler], takviye:[], antrenmanGunleri:[], ara0:!!K.ara0,
-    kcal, protein, karb, yag, seker: Math.round(kcal * 0.13 / 4), lif: Math.round(kcal / 1000 * 14)};
+    kcal, protein, karb, yag};
+  // şeker sınırı ve lif hedefi uygulamanın kendi kurallarıyla (şeker tabanı 45 g; kolesterol / kan şekeri odağında lif en az 30 g)
+  const mk = makroBol(kcal, p); p.seker = mk.seker; p.lif = mk.lif;
   const planlar = planOlustur(p), ids = kocOgunler(K), n = kocGunSayisi(K), hs = planlar.length;
   const pzt = k => gunEkle(k, -haftaGunu(k));
   const haftaSira = k => ((Math.round(tarihDen(pzt(k)) / 6048e5) % hs) + hs) % hs;
