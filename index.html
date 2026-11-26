@@ -10292,7 +10292,20 @@ Object.assign(S, {
   ftAraYoksa:["Listede yok mu? Yazıp ara","Not listed? Search","Нет в списке? Найди","Nicht dabei? Suchen","ليس في القائمة؟ ابحث"],
   ftPaket:["Paketli ürün gibi görünüyor — tam değerler için barkodunu okut.","Looks like a packaged product — scan its barcode for exact values.","Похоже на упакованный продукт — отсканируй штрихкод для точных значений.","Sieht nach einem verpackten Produkt aus – scanne den Barcode für genaue Werte.","يبدو أنه منتج معبّأ — امسح الباركود للحصول على القيم الدقيقة."],
   ftPaketAlt:["Ya da aşağıdaki genel ürünlerden birini seç.","Or pick a general product below.","Или выбери общий продукт ниже.","Oder wähle unten ein allgemeines Produkt.","أو اختر منتجًا عامًا من الأسفل."],
-  ftBarkodBulundu:["Fotoğrafta barkod bulundu: {k}","Barcode found in the photo: {k}","На фото найден штрихкод: {k}","Barcode im Foto gefunden: {k}","تم العثور على باركود في الصورة: {k}"]
+  ftBarkodBulundu:["Fotoğrafta barkod bulundu: {k}","Barcode found in the photo: {k}","На фото найден штрихкод: {k}","Barcode im Foto gefunden: {k}","تم العثور على باركود في الصورة: {k}"],
+  // 26.11: "Yiyecek mi?" kapısı — fotoğrafta yiyecek yoksa aday gösterilmez, nedeni söylenir
+  ftYiyecekYok:["Bu fotoğrafta yiyecek göremedim.","I couldn't see any food in this photo.","Я не вижу еды на этом фото.","Auf diesem Foto sehe ich kein Essen.","لا أرى طعامًا في هذه الصورة."],
+  ftNeden_insan:["Bir insan ya da yüz gibi görünüyor.","It looks like a person or a face.","Похоже на человека или лицо.","Es sieht nach einer Person oder einem Gesicht aus.","يبدو أنها لشخص أو وجه."],
+  ftNeden_el:["El ya da vücudun bir bölümü gibi görünüyor.","It looks like a hand or part of a body.","Похоже на руку или часть тела.","Es sieht nach einer Hand oder einem Körperteil aus.","يبدو أنها ليد أو جزء من الجسم."],
+  ftNeden_hayvan:["Bir hayvan gibi görünüyor.","It looks like an animal.","Похоже на животное.","Es sieht nach einem Tier aus.","يبدو أنها لحيوان."],
+  ftNeden_bos:["Boş bir tabak ya da mutfak eşyası gibi görünüyor.","It looks like an empty plate or kitchenware.","Похоже на пустую тарелку или кухонную утварь.","Es sieht nach einem leeren Teller oder Küchengeschirr aus.","يبدو أنها لطبق فارغ أو أدوات مطبخ."],
+  ftNeden_esya:["Bir eşya gibi görünüyor.","It looks like an object.","Похоже на какой-то предмет.","Es sieht nach einem Gegenstand aus.","يبدو أنها لشيء ما."],
+  ftNeden_mekan:["Bir yer ya da manzara gibi görünüyor.","It looks like a place or a view.","Похоже на место или пейзаж.","Es sieht nach einem Ort oder einer Landschaft aus.","يبدو أنها لمكان أو منظر."],
+  ftNeden_belge:["Bir belge, yazı ya da ekran görüntüsü gibi görünüyor.","It looks like a document, text or a screenshot.","Похоже на документ, текст или снимок экрана.","Es sieht nach einem Dokument, Text oder Screenshot aus.","يبدو أنها لمستند أو نص أو لقطة شاشة."],
+  ftNeden_bitki:["Bir bitki ya da çiçek gibi görünüyor.","It looks like a plant or a flower.","Похоже на растение или цветок.","Es sieht nach einer Pflanze oder Blume aus.","يبدو أنها لنبات أو زهرة."],
+  ftYiyecekIpucu:["Yemeği yakından ve tabağın üstünden çekip yeniden dene ya da listeden ara.","Retake it close up from above the plate, or search the list.","Пересними блюдо вблизи сверху или найди его в списке.","Fotografiere das Essen nah von oben oder suche es in der Liste.","أعد تصوير الطعام عن قرب من فوق الطبق، أو ابحث في القائمة."],
+  ftListeAra:["Listeden ara","Search the list","Найти в списке","In der Liste suchen","ابحث في القائمة"],
+  ftYineGoster:["Yine de tahminleri göster","Show guesses anyway","Всё равно показать варианты","Trotzdem Vorschläge zeigen","اعرض التخمينات على أي حال"]
 });
 
 // ================= Model yükleme =================
@@ -10351,16 +10364,25 @@ function fotoOncelik(){
 const yemekVar = id => { const f = yemek(id); return f && f.ad !== '?' && f.ad !== id; };
 // Klip (sıfır-atış) + eski model birleşimi: puan = softmax(T·kosinüs) · öncelik + a · eski aday puanı (T=50, a=0,1; test setinde seçildi)
 // Döner: {liste: [{id, p}] (p: tüm puanlar içindeki pay, 0..1), guven: ilk adayın payı}
+// 26.11 kaba sınıf ipucu (hiyerarşik): klip fotoğrafın kaba sınıf olasılığını verir (kuruyemiş, meyve, tatlı, içecek…); yemeğin kat alanı
+// gruba eşlenir ve puan (G·p_grup)^us ile hafifçe çarpılır (us=0,25). Eşlenmeyen kategoriler (dünya, ana yemek, tahıl…) etkilenmez.
+// Ölçüm: top-1/3/5 yemek setinde %62,9/79,4/84,6 → %64,0/80,0/85,7; ek 103 fotoğraflık sette %66/80/84 → %67/81/86.
+const KABA_KAT = {kuruyemis: 'kuruyemis', meyve: 'meyve', sebze: 'sebze', salata: 'sebze', tatli: 'tatli', icecek: 'icecek', corba: 'corba', et: 'et', balik: 'et',
+  hamur: 'hamur', sandvic: 'hamur', pilav: 'pilav', kahvaltilik: 'kahvalti', yumurta: 'kahvalti', hazir: 'paket', atistirmalik: 'paket'};
 function klipAday(k, eski){
   const on = fotoOncelik(), T = k.sicaklik || 50, a = k.eskiAgirlik != null ? k.eskiAgirlik : 0.1, sim = k.sim, n = sim.length;
+  const kb = k.kaba, us = k.kabaUs || 0, G = kb ? Object.keys(kb).length : 0;
+  const fm = new Map(); tumYemekler().forEach(f => { if (!fm.has(f.id)) fm.set(f.id, f); });   // yemek() doğrusal arar (find: ilk eşleşme); tek seferlik eşlem
+  const var_ = id => { const f = fm.get(id); return !!f && f.ad !== '?' && f.ad !== id; };   // = yemekVar
+  const kabaW = id => { if (!kb || !us) return 1; const g = KABA_KAT[(fm.get(id) || {}).kat]; return g && kb[g] != null ? Math.pow(G * kb[g], us) : 1; };
   let mx = -1e9; for (let j = 0; j < n; j++) if (sim[j] > mx) mx = sim[j];
   const p = new Float64Array(n); let z = 0;
   for (let j = 0; j < n; j++){ p[j] = Math.exp(T * (sim[j] - mx)); z += p[j]; }
   const ek = new Map((eski || []).map(x => [x.id, x.p])), puan = [];
   let top = 0;
   for (let j = 0; j < n; j++){
-    const id = k.ids[j]; if (!yemekVar(id)) continue;
-    const s = p[j] / z * on(id) + a * (ek.get(id) || 0); top += s;
+    const id = k.ids[j]; if (!var_(id)) continue;
+    const s = p[j] / z * on(id) * kabaW(id) + a * (ek.get(id) || 0); top += s;
     puan.push([id, s]);
   }
   puan.sort((x, y) => y[1] - x[1]);
@@ -10404,7 +10426,7 @@ async function fotoAnaliz(oi, data){
   const ogun = menuOku(aktif)[oi]; if (!ogun) return;
   ac('📷 ' + esc(T('ftAnaliz')), `<div class="ft-analiz"><img src="${data}" alt="${esc(T('ftOgunFoto'))}"><div class="ft-bekle"><span class="spin" aria-hidden="true"></span><span id="ftDurum">${T('ftHazirlaniyor')}</span></div></div>`);
   const n = acSayac;
-  let adaylar = [], guven = 0, ilk = '', kaliteNot = '', emin = false, paket = false, barkod = '';
+  let adaylar = [], guven = 0, ilk = '', kaliteNot = '', emin = false, paket = false, barkod = '', degil = '';
   try {
     const d = await aiYukle();
     if ($('ftDurum')) $('ftDurum').textContent = T('ftTaniniyor');
@@ -10413,6 +10435,7 @@ async function fotoAnaliz(oi, data){
     adaylar = sonuc.liste; guven = sonuc.guven; emin = sonuc.emin; paket = sonuc.paket;
     ilk = adaylar.length ? yemek(adaylar[0].id).ad : '';
     barkod = await fotoBarkod(im);
+    if (sonuc.degil && !barkod) degil = sonuc.neden || 'esya';   // fotoğrafta barkod varsa paketli üründür → reddetme
     // düşük güven: modelin ilk 6 adayının arkasına kullanıcının bu öğünde sık yedikleri (Lose It / MFP mantığı: kişisel geçmişle eşle)
     if (sonuc.dusuk){
       const var_ = new Set(adaylar.map(a => a.id)), sik = (typeof sonSecilenler === 'function' ? sonSecilenler(ogun.id) : []).filter(id => !var_.has(id) && yemek(id) && yemek(id).ad !== id).slice(0, 6);
@@ -10427,6 +10450,18 @@ async function fotoAnaliz(oi, data){
   }
   if (acSayac !== n) return;   // kullanıcı pencereyi kapattı
   FOTO_BEKLEYEN = {data, k: aktif, o: ogun.id};
+  // yiyecek yok (insan, hayvan, boş tabak, eşya…): aday GÖSTERME; nedeni söyle, yeniden çek / listeden ara / yine de göster
+  if (degil){
+    const nd = 'ftNeden_' + degil, lnk = 'border:0;background:none;padding:6px 0;color:var(--blue);font:inherit;font-weight:700;cursor:pointer;text-align:start';
+    $('sbody').innerHTML = `<div class="ft-analiz"><img src="${data}" alt=""></div><div class="onay-metin" role="status" style="overflow-wrap:anywhere"><b style="display:block">${esc(T('ftYiyecekYok'))}</b>${S[nd] ? esc(T(nd)) + ' ' : ''}<small style="display:block;margin-top:6px;color:var(--muted)">${esc(T('ftYiyecekIpucu'))}</small></div>
+      <div class="acts" style="flex-wrap:wrap"><button class="btn solid" id="ftYeniden">📷 ${esc(T('ftYenidenCek'))}</button><button class="btn" id="ftListe">🔍 ${esc(T('ftListeAra'))}</button></div>
+      ${adaylar.length ? `<button type="button" id="ftYine" style="${lnk}">${esc(T('ftYineGoster'))}</button>` : ''}`;
+    FOTO_BEKLEYEN = null;   // yiyecek olmayan fotoğraf (ör. bir kişinin yüzü) öğün günlüğüne kaydedilmesin
+    $('ftYeniden').onclick = () => { kapat(); setTimeout(() => fotoIleEkle(oi), 80); };
+    $('ftListe').onclick = () => { secimAc({mod: 'ekle', oi}); setTimeout(() => { const a = $('ara'); if (a) a.focus(); }, 60); };
+    if ($('ftYine')) $('ftYine').onclick = () => (FOTO_BEKLEYEN = {data, k: aktif, o: ogun.id}, secimAc({mod: 'ekle', oi, foto: {ids: adaylar.map(a => a.id), img: data, guven, emin: false, ilk, kalite: kaliteNot, paket, barkod}}));
+    return;
+  }
   if (!adaylar.length){
     $('sbody').innerHTML = `<div class="ft-analiz"><img src="${data}" alt=""></div><p class="onay-metin">${esc(T('ftBulunamadi'))}</p><div class="acts"><button class="btn solid" id="ftListe">${T('ftListe')}</button></div>`;
     $('ftListe').onclick = () => secimAc({mod: 'ekle', oi});
@@ -10438,6 +10473,10 @@ async function fotoAnaliz(oi, data){
 // Döner: {liste, guven, emin, dusuk, paket, isik, net}
 // birleşik puanda ilk adayın payı; 173 fotoğraflık test setinde: ≥0,20 → fotoğrafların %36'sı, bunlarda ilk aday %78 doğru.
 // Daha yüksek eşik isabeti artırmıyor; altında "Emin değilim — şunlardan biri mi?" gösterilir.
+// 26.11 yeniden ölçüm (276 yemek fotoğrafı, kaba sınıf ipucuyla): ≥0,20 → %50 kapsama, %82 isabet (altında %49); <0,12 → %43 → eşikler korundu.
+// Kapıdan geçen (reddedilmeyen) yiyecek-dışı fotoğrafların hepsi zaten "Emin değilim" gösterdi.
+// "Yiyecek mi?" kapısı (klip.js kapiPuan): yiyecek-dışı kütle ≥ 0,80 ise aday gösterilmez. Ölçüm: 191 yiyecek-dışı fotoğrafın 181'i reddedildi
+// (insan 41/42, hayvan 31/31, boş tabak 13/14, eşya 26/29, mekân 34/36, belge 13/15, bitki 14/14, el 9/10); 294 yiyecek fotoğrafında yanlış ret 3.
 const KLIP_EMIN = 0.20, KLIP_DUSUK = 0.12;
 async function fotoTani(im, d){
   let eski = null, H = null;
@@ -10452,7 +10491,8 @@ async function fotoTani(im, d){
     try {
       const k = await window.YemekKlip.tani(im);
       const r = klipAday(k, eskiAday);
-      return {liste: r.liste, guven: r.guven, emin: r.guven >= KLIP_EMIN, dusuk: r.guven < KLIP_DUSUK, paket: k.paket >= k.esik, isik: k.isik, net: k.net};
+      return {liste: r.liste, guven: r.guven, emin: r.guven >= KLIP_EMIN, dusuk: r.guven < KLIP_DUSUK, paket: k.paket >= k.esik, isik: k.isik, net: k.net,
+              degil: k.degil >= k.degilEsik, neden: k.neden, degilP: k.degil};
     } catch(e){ /* sessizce eski modele düş */ }
   }
   if (!eski) throw new Error('tanıma yok');
