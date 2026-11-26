@@ -5,7 +5,9 @@
  *   (istemler klip.json → metin.istem). Ayrıca "ambalajlı ürün" / "tabak yemeği" istemleri (paket) ambalaj sinyali için kullanılır.
  * Çalışma: TensorFlow.js (ai/tf-*.min.js, eski modelle ortak; webgl, yoksa cpu). Dosyalar XHR ile okunur (file:// için fetch yok).
  * Model yalnız ADAY sıralar; besin değeri uygulamanın veritabanından gelir, kullanıcı seçer ve porsiyonu onaylar.
- * Kullanım: YemekKlip.hazirla() → Promise; YemekKlip.tani(kaynak) → Promise<{ids, sim: Float32Array, paket: 0..1, ms}>
+ * 26.11 "Yiyecek mi?" kapısı: klip.json → kapi (genel yiyecek istemleri ↔ insan/hayvan/boş tabak/eşya/mekân/belge/bitki/el istemleri);
+ *   aynı görüntü gömmesiyle hesaplanır (ek ileri geçiş yok). Fotoğrafta yiyecek yoksa uygulama aday göstermez (p9e.js).
+ * Kullanım: YemekKlip.hazirla() → Promise; YemekKlip.tani(kaynak) → Promise<{ids, sim: Float32Array, paket: 0..1, degil: 0..1, neden, ms}>
  */
 (function () {
   'use strict';
@@ -13,7 +15,7 @@
     var s = document.currentScript && document.currentScript.src;
     return s ? s.replace(/[^/]*$/, '') : 'ai/';
   })();
-  var hazirlik = null, M = null, BUF = null, W = null, METIN = null, PAKET = null, bosZaman = null;
+  var hazirlik = null, M = null, BUF = null, W = null, METIN = null, PAKET = null, KAPI = null, KABA = null, bosZaman = null;
 
   function xhr(url, tip) {
     return new Promise(function (ok, hata) {
@@ -75,6 +77,13 @@
         var mt = M.metin;
         METIN = { q: new Int8Array(BUF, mt.o, mt.n * mt.d), s: new Float32Array(BUF, mt.so, mt.n), n: mt.n, d: mt.d };
         PAKET = new Float32Array(BUF, M.paket.o, (M.paket.np + M.paket.nn) * mt.d);
+        if (M.kapi) {
+          var kp = M.kapi, gr = Object.keys(kp.degil), nd = 0;
+          KAPI = { ny: kp.yiyecek.length, grup: [] };
+          gr.forEach(function (g) { for (var i = 0; i < kp.degil[g].length; i++) KAPI.grup.push(g); nd += kp.degil[g].length; });
+          KAPI.v = new Float32Array(BUF, kp.o, (KAPI.ny + nd) * mt.d);
+        }
+        if (M.kaba) KABA = { ad: Object.keys(M.kaba.istem), v: new Float32Array(BUF, M.kaba.o, Object.keys(M.kaba.istem).length * mt.d) };
       }
       W = {};
       Object.keys(M.tensor).forEach(function (k) { W[k] = tensorYap(tf, k); });
@@ -152,7 +161,36 @@
     for (var i = 0; i < nt; i++) { var u = 0; for (var k2 = 0; k2 < d; k2++) u += PAKET[i * d + k2] * v[k2]; ps[i] = u; if (u > mx) mx = u; }
     var top = 0, pk = 0;
     for (var i2 = 0; i2 < nt; i2++) { var ex = Math.exp(M.paket.T * (ps[i2] - mx)); top += ex; if (i2 < np) pk += ex; }
-    return { sim: sim, paket: pk / top };
+    return { sim: sim, paket: pk / top, kapi: kapiPuan(v, sim, ps, np), kaba: kabaPuan(v) };
+  }
+  // Kaba sınıf olasılıkları (kuruyemiş, meyve, tatlı, içecek…): softmax(T·cos) → {grup: p}; uygulama yemeğin kat alanıyla eşler
+  function kabaPuan(v) {
+    if (!KABA) return null;
+    var d = METIN.d, n = KABA.ad.length, u = [], mx = -1e9, z = 0, r = {};
+    for (var i = 0; i < n; i++) { var t = 0; for (var k = 0; k < d; k++) t += KABA.v[i * d + k] * v[k]; u.push(t); if (t > mx) mx = t; }
+    for (var j = 0; j < n; j++) { u[j] = Math.exp(M.kaba.T * (u[j] - mx)); z += u[j]; }
+    for (var g = 0; g < n; g++) r[KABA.ad[g]] = u[g] / z;
+    return r;
+  }
+  // "Yiyecek mi?" kapısı (açık küme reddi, NegLabel/MCM benzeri): softmax(T·cos) — artı taraf: genel yiyecek istemleri (+ ambalajlı ürün
+  // istemleri, + isteğe bağlı tüm yemek adları); eksi taraf: insan/hayvan/boş tabak/eşya/mekân/belge/bitki/el istemleri.
+  // Döner {degil: 0..1 yiyecek-dışı kütlesi, neden: en güçlü eksi grubun adı}
+  function kapiPuan(v, sim, ps, np) {
+    if (!KAPI) return null;
+    var kp = M.kapi, d = METIN.d, n = KAPI.ny + KAPI.grup.length, u = new Float32Array(n), mx = -1e9;
+    for (var i = 0; i < n; i++) { var t = 0, o = i * d; for (var k = 0; k < d; k++) t += KAPI.v[o + k] * v[k]; u[i] = t; if (t > mx) mx = t; }
+    if (kp.paketDahil) for (var a = 0; a < np; a++) if (ps[a] > mx) mx = ps[a];
+    if (kp.yemekDahil) for (var b = 0; b < sim.length; b++) if (sim[b] > mx) mx = sim[b];
+    var T = kp.T, arti = 0, eksi = 0, gk = {}, en = '', enP = -1;
+    for (var j = 0; j < n; j++) {
+      var e = Math.exp(T * (u[j] - mx));
+      if (j < KAPI.ny) arti += e;
+      else { eksi += e; var g = KAPI.grup[j - KAPI.ny]; gk[g] = (gk[g] || 0) + e; }
+    }
+    if (kp.paketDahil) for (var a2 = 0; a2 < np; a2++) arti += Math.exp(T * (ps[a2] - mx));
+    if (kp.yemekDahil) for (var b2 = 0; b2 < sim.length; b2++) arti += Math.exp(T * (sim[b2] - mx));
+    Object.keys(gk).forEach(function (g) { if (gk[g] > enP) { enP = gk[g]; en = g; } });
+    return { degil: eksi / (arti + eksi), neden: en };
   }
 
   async function tani(kaynak) {
@@ -164,7 +202,9 @@
     var r = puanla(v), q = { isik: 128, net: 999 };
     try { q = kalite(kaynak); } catch (e) {}
     bosaCikar();
-    return { ids: M.ids, sim: r.sim, paket: r.paket, sicaklik: M.sicaklik, eskiAgirlik: M.eskiAgirlik, esik: M.paket.esik, isik: q.isik, net: q.net, ms: performance.now() - t0 };
+    return { ids: M.ids, sim: r.sim, paket: r.paket, sicaklik: M.sicaklik, eskiAgirlik: M.eskiAgirlik, esik: M.paket.esik, isik: q.isik, net: q.net,
+      degil: r.kapi ? r.kapi.degil : 0, neden: r.kapi ? r.kapi.neden : '', degilEsik: M.kapi ? M.kapi.esik : 2,
+      kaba: r.kaba, kabaUs: M.kaba ? M.kaba.us : 0, ms: performance.now() - t0 };
   }
   // ışık (ortalama parlaklık) ve netlik (Laplace varyansı) — tani.js ile aynı ölçü
   function kalite(kaynak) {
