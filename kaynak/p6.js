@@ -249,7 +249,7 @@ function tartiKaydet(){
   logEkle('diger', aktif, T('lTarti', {b: sayi(kg), f: onc != null ? farkKg(kg, onc) + ' kg' : T('tartiIlk')}));
   kaydet(); ciz(); toast(planDegisti ? T('tPlanYeni', {b: P.kcal}) : T('tSaved'), planDegisti ? 5200 : 2200);
 }
-// Günlük hedefler kartının tam sağ üst köşesindeki standart bilgi simgesi (daire içinde i): hedeflerin neye ve hangi kaynağa göre hesaplandığını açar (hedefBilgiAc, p7.js)
+// Günlük hedefler kartının başlık satırının sağ ucundaki standart bilgi simgesi (daire içinde i; Paylaş ile aynı hizada): hedeflerin neye ve hangi kaynağa göre hesaplandığını açar (hedefBilgiAc, p7.js)
 const bilgiDugme = () => `<button class="bilgi-btn" data-hedefbilgi="1" title="${esc(T('hbBaslik'))}" aria-label="${esc(T('hbBaslik'))}"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7.6" r="1.35" fill="currentColor"/><path d="M12 11v6.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>`;
 function ozetCiz(){
   const P = D.profil, kay = kayitOku(aktif), menu = menuOku(aktif), yenen = yenenToplam(aktif), suH = suHedefi(aktif);
@@ -261,8 +261,8 @@ function ozetCiz(){
       return `<div class="stat${asti ? (enAz ? ' tamam' : ' asti') : ''}"><small>${ad}</small><b>${deger}</b> <span>${birim}${hedef ? ' / ' + hedef : ''}</span>${asti ? `<div class="kalan ${enAz ? 'tamam' : 'asti'}">${enAz ? '✓ ' : ''}+${deger - hedef} ${birim}</div>` : ''}</div>`;
     };
     const tv = (D.tartim || {})[aktif], to = tv != null ? oncekiTartim(aktif) : null;
-    $('ozet').innerHTML = tartiKarti() + `<div class="card past-card bilgili">${bilgiDugme()}
-      <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span>${reglEtiket(aktif)}<button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}" aria-label="${esc(T('shTitle'))}">${ikonlu('shBtn')}</button></div>
+    $('ozet').innerHTML = tartiKarti() + `<div class="card past-card">
+      <div class="past-head"><h3>${T('daySummary', {d: etiket(aktif)})}</h3><span class="tag">${T('pastRecord')}</span>${reglEtiket(aktif)}<button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}" aria-label="${esc(T('shTitle'))}">${ikonlu('shBtn')}</button>${bilgiDugme()}</div>
       <div class="stats">
         <div class="stat water"><small>💧 ${T('water')}</small><b>${litre(ml)}</b> <span>${T('L')} / ${litre(suH)}</span>
           <div class="stat-acts"><button data-su="-1" aria-label="${T('dec')}">−</button><span>${T('glassN', {n: kay.su})}</span><button data-su="1" aria-label="${T('inc')}">+</button></div></div>
@@ -284,8 +284,8 @@ function ozetCiz(){
   const makro = (cls, ad, a, hedef, enAz = false) => `<div class="macro ${cls}"><small>${ad}</small><b>${yuv(a)}</b><span class="hint"> / <span class="tgt">${hedef}</span> ${T('g')}</span>${cubuk(a, hedef, enAz)}${kalanYazi(a, hedef, T('g'), enAz)}</div>`;
   const bardakGoster = Math.max(bardakSay, kay.su);
   $('ozet').innerHTML = tartiKarti() + `
-    <div class="card bilgili">${bilgiDugme()}
-      <div class="kart-bas"><h3>${aktif === bugunK() ? T('eatenToday') : T('eaten')}</h3>${aktif === bugunK() ? `<button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}">${T('shBtn')}</button>` : ''}</div>
+    <div class="card">
+      <div class="kart-bas"><h3>${aktif === bugunK() ? T('eatenToday') : T('eaten')}</h3>${aktif === bugunK() ? `<button class="paylas-btn" data-paylas="1" title="${esc(T('shTitle'))}">${T('shBtn')}</button>` : ''}${bilgiDugme()}</div>
       <div class="kcal-big"><b>${yuv(yenen.k)}</b><span>/ <span class="tgt">${P.kcal}</span> ${T('kcal')} · ${T('hedefK')}</span></div>
       ${cubuk(yenen.k, P.kcal)}${kalanYazi(yenen.k, P.kcal, T('kcal'))}
       <div class="macros">${makro('p', T('protein'), yenen.p, P.protein, true)}${makro('c', T('carbS'), yenen.c, P.karb)}${makro('s', T('sugar'), yenen.s, P.seker)}${makro('y', T('fat'), yenen.y, P.yag)}${makro('l', T('fiber'), yenen.l, P.lif, true)}</div>

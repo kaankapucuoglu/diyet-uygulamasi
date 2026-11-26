@@ -212,12 +212,13 @@ h1{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.02em;margin
 .past-head .paylas-btn .mi:only-child,.past-head .paylas-btn .lbl[hidden]{margin:0}
 .kart-bas{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .kart-bas h3{margin:0;flex:1;min-width:0}
-.card.bilgili{position:relative}
-.bilgi-btn{position:absolute;top:6px;inset-inline-end:6px;width:34px;height:34px;border-radius:50%;background:none;border:0;padding:0;color:var(--blue);display:grid;place-items:center;z-index:1}
+.bilgi-btn{width:28px;height:28px;border-radius:50%;background:none;border:0;padding:0;color:var(--blue);display:grid;place-items:center;flex-shrink:0}
 .bilgi-btn:active{background:var(--blue-soft)}
 .bilgi-btn svg{display:block}
-.card.bilgili > .kart-bas,.card.bilgili > .past-head{padding-inline-end:32px}
-@media (max-width:440px){ .past-card.bilgili > .past-head > .paylas-btn{order:1} .past-card.bilgili > .past-head > .tag,.past-card.bilgili > .past-head > :not(h3):not(.paylas-btn){order:2} }
+.kart-bas > .bilgi-btn{margin-inline-start:0}
+.past-head > .bilgi-btn{margin-inline-start:auto}
+.past-head > .paylas-btn + .bilgi-btn{margin-inline-start:0}
+@media (max-width:440px){ .past-head > .paylas-btn,.past-head > .bilgi-btn{order:1} .past-head > .tag,.past-head > :not(h3):not(.paylas-btn):not(.bilgi-btn){order:2} }
 .hb-satir{padding:10px 0;border-bottom:1px solid var(--line)}
 .hb-satir:last-of-type{border-bottom:0}
 .hb-ust{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
