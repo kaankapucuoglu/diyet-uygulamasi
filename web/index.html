@@ -8937,6 +8937,7 @@ Object.assign(S, {
   rkT:["Reklamlar","Ads","Реклама","Werbung","الإعلانات"],
   rkIntro:["Uygulama ücretsizdir; ara sıra reklam gösterir.","The app is free and shows an occasional ad.","Приложение бесплатное и иногда показывает рекламу.","Die App ist kostenlos und zeigt gelegentlich Werbung.","التطبيق مجاني ويعرض إعلانات من حين لآخر."],
   rkKaldir:["Reklamları kaldır · {f}","Remove ads · {f}","Убрать рекламу · {f}","Werbung entfernen · {f}","إزالة الإعلانات · {f}"],
+  rkSerit:["Reklamsız kullan · {f}","Go ad-free · {f}","Без рекламы · {f}","Werbefrei nutzen · {f}","استخدم بلا إعلانات · {f}"],
   rkTekSefer:["Tek seferlik ödeme; abonelik değildir.","One-time payment, not a subscription.","Разовый платёж, не подписка.","Einmalzahlung, kein Abo.","دفعة واحدة، وليست اشتراكاً."],
   rkGeriYukle:["Satın alımları geri yükle","Restore purchases","Восстановить покупки","Käufe wiederherstellen","استعادة المشتريات"],
   rkGizlilik:["Reklam gizlilik seçenekleri","Ad privacy options","Настройки конфиденциальности рекламы","Datenschutzoptionen für Werbung","خيارات خصوصية الإعلانات"],
@@ -8955,7 +8956,7 @@ const REKLAM_ANAHTAR = 'lf_reklam';
 // yeni: alt bant (banner), arka plandan dönüşte açılış reklamı (en az 60 sn arka planda kaldıysa), Takip kapanınca, foto/barkodla eklemede.
 const REKLAM = {ilkSure: 5 * 60000, aralik: 180000, gunluk: 12, yemekHer: 3, gunHer: 3, gecikme: 1000, arkaPlan: 60000, fiyat: '99,99 TL'};
 // magaza: null = henüz bilinmiyor, true/false = iap:status · aliniyor/geriYukleniyor: düğme kilidi · sonNoAds: kabuğa en son bildirilen
-const Reklam = {inter: false, acilis: false, bant: null, arka: 0, privacy: false, magaza: null, fiyat: '', aliniyor: false, geriYukleniyor: false, bekliyor: false, sonNoAds: null, sonSupur: 0};
+const Reklam = {inter: false, acilis: false, bant: null, bantDolu: false, arka: 0, privacy: false, magaza: null, fiyat: '', aliniyor: false, geriYukleniyor: false, bekliyor: false, sonNoAds: null, sonSupur: 0};
 const yerelKabuk = () => !!window.__LF_NATIVE;
 function lfGonder(o){ try { if (window.__lfPost) window.__lfPost(o); } catch(e){} }   // shim yoksa no-op
 function rdOku(){ try { const v = JSON.parse(localStorage.getItem(REKLAM_ANAHTAR) || 'null'); return v && typeof v === 'object' ? v : {}; } catch(e){ return {}; } }
@@ -9000,6 +9001,26 @@ function bantGuncelle(){
   const on = !reklamsizMi() && !!(D && D.ayar && D.ayar.kurulum) && !!$('kurulum') && $('kurulum').hidden && !$('tur');
   if (Reklam.bant === on) return;
   Reklam.bant = on; lfGonder({t: 'ad:banner', on});
+  if (!on){ Reklam.bantDolu = false; rkSeritCiz(); }
+}
+// "Reklamsız kullan" satırı (28.11): alt bant reklamı GÖRÜNÜRKEN sayfanın en altında, reklamın hemen üstünde ince bir satır →
+// kullanıcı reklamı gördüğü anda kaldırma seçeneğini de görür. Dokununca Ayarlar › Reklamlar açılır (satın alma oradan; yanlış
+// dokunuşla ödeme penceresi açılmaz). Kabuk şeridin durumunu {t:'ad:banner', shown} ile bildirir.
+function rkSeritCiz(){
+  if (!yerelKabuk()) return;
+  const goster = !!Reklam.bantDolu && !!Reklam.bant && !reklamsizMi();
+  let el = $('rkSerit');
+  if (!goster){ if (el) el.remove(); document.body.classList.remove('rk-serit-var'); return; }
+  if (!el){
+    el = document.createElement('button'); el.id = 'rkSerit'; el.type = 'button';
+    el.onclick = () => {
+      ayarlarAc();
+      setTimeout(() => { const b = $('reklamBolum'); if (b) b.scrollIntoView({block: 'center'}); }, 150);
+    };
+    document.body.appendChild(el);
+  }
+  el.textContent = '✨ ' + T('rkSerit', {f: Reklam.fiyat || REKLAM.fiyat}) + ' ›';
+  document.body.classList.add('rk-serit-var');
 }
 // Açılış reklamı: uygulama arka plandan dönünce. Kamera/galeri/barkod/satın alma/paylaşım dönüşünde ve açık pencere varken GÖSTERİLMEZ.
 function acilisDene(){
@@ -9045,6 +9066,7 @@ window.__lfAd = function(m){
     if (p0 !== Reklam.privacy) reklamBolumuCiz();
     return;
   }
+  if (m.t === 'ad:banner'){ Reklam.bantDolu = !!m.shown; rkSeritCiz(); return; }
   // Reklam süresince kabuk uygulamayı zaten duraklatır; sonrasında yalnız zaman damgası (180 sn bekleme reklam kapanınca başlar)
   if (m.t === 'ad:result'){ const R = rdOku(); R.son = Date.now(); rdYaz(R); }
 };
@@ -9054,7 +9076,7 @@ window.__lfIap = function(m){
   if (m.t === 'iap:products'){
     const p = (Array.isArray(m.products) ? m.products : []).find(x => x && x.id === NOADS_URUN);
     if (p && p.displayPrice) Reklam.fiyat = String(p.displayPrice);
-    reklamBolumuCiz(); return;
+    reklamBolumuCiz(); rkSeritCiz(); return;
   }
   if (m.t === 'iap:result'){ satinAlmaSonucu(m); return; }
   if (m.t === 'iap:restored'){
@@ -9079,7 +9101,7 @@ function satinAlmaSonucu(m){
     const R = rdOku(); R.noads = true; rdYaz(R);
     if (tx) lfGonder({t: 'iap:ack', transactionId: tx});
     Reklam.sonNoAds = true; lfGonder({t: 'ad:noads', on: true});
-    clearTimeout(reklamZaman);
+    clearTimeout(reklamZaman); rkSeritCiz();
     if (m.restored) toast(T('rkGeriOk'), 3500);
     else if (!onceden) toast(T('rkTesekkur'), 3500);
     reklamBolumuCiz();
@@ -9094,6 +9116,11 @@ function satinAlmaSonucu(m){
 document.head.insertAdjacentHTML('beforeend', `<style>
 .rk-kart b{color:var(--green)}
 #reklamBolum .wmsg{margin-top:8px}
+#rkSerit{position:fixed;left:0;right:0;bottom:0;z-index:30;height:30px;border:0;border-top:1px solid var(--line);background:var(--card);
+  color:var(--green);font:inherit;font-size:12.5px;font-weight:700;line-height:29px;text-align:center;padding:0 12px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+body.rk-serit-var .wrap{padding-bottom:calc(58px + env(safe-area-inset-bottom))}
+body.klavye #rkSerit{display:none}
 </style>`);
 function reklamBolumuEkle(){
   if (!yerelKabuk()) return;

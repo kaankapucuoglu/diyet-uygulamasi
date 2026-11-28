@@ -48,6 +48,13 @@ const NATIVE_CFG = 'window.__LF_NATIVE=' + JSON.stringify({
   version: Constants.expoConfig?.version || '', build: String(Constants.expoConfig?.ios?.buildNumber || Constants.expoConfig?.android?.versionCode || ''),
 }) + ';';
 
+// "Reklamları kaldır" alınmış mı — kabuk tarafındaki yansı (yalnız açılışta SDK'yı önceden başlatıp başlatmamak için).
+const noAdsDosya = () => new File(Paths.document, 'lf_noads');
+function noAdsIsaret(): boolean { try { return noAdsDosya().exists; } catch { return false; } }
+function noAdsIsaretYaz(on: boolean) {
+  try { const f = noAdsDosya(); if (on && !f.exists) f.create(); else if (!on && f.exists) f.delete(); } catch { /* yoksay */ }
+}
+
 type Source = { uri: string; readAccess?: string; bundled: boolean };
 
 function bundledSource(): Source | null {
@@ -223,6 +230,18 @@ function Shell() {
   const [bantIstek, setBantIstek] = useState(false);
   const [bant, setBant] = useState<Bant | null>(null);
   const [klavye, setKlavye] = useState(false);
+  // 28.11: şerit, reklam GERÇEKTEN yüklenince açılır (yüklenene / yüklenemeyince yükseklik 0 → boş kutu görünmez).
+  // Web'e {t:'ad:banner', shown} bildirilir → sayfa reklamın hemen üstünde "Reklamları kaldır" satırını gösterir.
+  const [bantDolu, setBantDolu] = useState(false);
+  const bantDoluRef = useRef(false);
+  const bantDurum = useCallback((dolu: boolean) => {
+    bantDoluRef.current = dolu;
+    setBantDolu(dolu);
+    js(`window.__lfAd&&window.__lfAd(${JSON.stringify({ t: 'ad:banner', shown: dolu })})`);
+  }, [js]);
+  // Açılışta reklam SDK'sı önceden başlatılır (ilk reklam birkaç saniye erken gelir) — reklamsız kullanıcıda ASLA:
+  // reklamsız bilgisi web'den gelir, kabuk bunu küçük bir işaret dosyasında tutar.
+  useEffect(() => { if (!noAdsIsaret()) ads.prefetch(); }, [ads]);
   useEffect(() => {
     let iptal = false;
     if (!bantIstek) { setBant(null); return; }
@@ -234,6 +253,9 @@ function Shell() {
     const k = Keyboard.addListener('keyboardDidHide', () => setKlavye(false));
     return () => { a.remove(); k.remove(); };
   }, []);
+  // Şerit kalkınca (klavye, reklamsız, hata ekranı) BannerAd sökülür → dönüşte yeniden yüklenene dek yine yer tutmaz
+  const bantGorunur = !!bant && !klavye && !failed;
+  useEffect(() => { if (!bantGorunur) bantDurum(false); }, [bantGorunur, bantDurum]);
   // Sürüm 13: öğün fotoğrafı, barkod, sağlık verisi (yalnız okuma), paylaş — extra.tsx
   // Sonuç teslimi: sayfa o an yükleniyorsa (iOS arka planda/kamera açıkken web sürecini bellek için öldürüp yeniden yükler) sonuç
   // kaybolmasın → 'ready' gelince sırayla verilir. Web tarafı bekleyen isteği yoksa kayıtlı tarama bağlamıyla devam eder (p9e.js).
@@ -344,14 +366,15 @@ function Shell() {
       case 'iap:sweep': iap.sweepNow(); break;
       case 'iap:restore': iap.restore(); break;
       // reklamlar
-      case 'ad:init': ads.init(m); break;
-      case 'ad:noads': ads.setNoAds(m.on); if (m.on) setBantIstek(false); break;
-      case 'ad:banner': setBantIstek(!!m.on); break;
+      case 'ad:init': noAdsIsaretYaz(!!m.noAds); ads.init(m); break;
+      case 'ad:noads': noAdsIsaretYaz(!!m.on); ads.setNoAds(m.on); if (m.on) setBantIstek(false); break;
+      // sayfa yeniden yüklendiyse (iOS web sürecini öldürdü) şeridin o anki durumu yeniden bildirilir
+      case 'ad:banner': setBantIstek(!!m.on); if (m.on) bantDurum(bantDoluRef.current); break;
       case 'ad:show': ads.show(m.kind, m.id); break;
       case 'ad:privacy': ads.privacy(); break;
       default: extra.handle(m);
     }
-  }, [hideSplash, call, iap, ads, extra]);   // eslint-disable-line react-hooks/exhaustive-deps
+  }, [hideSplash, call, iap, ads, extra, bantDurum]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const gone = useRef(0);   // çizim süreci ölüm sayısı (onRenderProcessGone)
   const retry = useCallback(() => { setFailed(null); setAttempt((a) => a + 1); }, []);
@@ -442,9 +465,10 @@ function Shell() {
           setAttempt((a) => a + 1);
         }}
       />
-      {bant && !klavye && !failed && (
-        <View style={styles.bant}>
-          <bant.BannerAd unitId={bant.unitId} size={bant.size} requestOptions={{ requestNonPersonalizedAdsOnly: bant.npa }} onAdFailedToLoad={() => {}} />
+      {bantGorunur && bant && (
+        <View style={[styles.bant, !bantDolu && styles.bantBos]}>
+          <bant.BannerAd unitId={bant.unitId} size={bant.size} requestOptions={{ requestNonPersonalizedAdsOnly: bant.npa }}
+            onAdLoaded={() => bantDurum(true)} onAdFailedToLoad={() => {}} />
         </View>
       )}
       {barkod && (
@@ -475,6 +499,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: BG },
   web: { flex: 1, backgroundColor: BG },
   bant: { alignItems: 'center', backgroundColor: BG },
+  bantBos: { height: 0, overflow: 'hidden' },   // reklam yüklenene dek yer tutmaz
   center: { flex: 1, backgroundColor: BG, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
   overlay: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(243,246,251,0.97)', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 },
   title: { color: '#172338', fontSize: 26, fontWeight: '800', marginBottom: 16, textAlign: 'center' },
